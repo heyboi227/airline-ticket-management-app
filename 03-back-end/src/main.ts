@@ -51,7 +51,9 @@ async function main() {
 
   const applicationResources: IApplicationResources = {
     databaseConnection: db,
-    services: {},
+    services: {
+      /* TODO: Implement DB entity services */
+    },
   };
 
   const application: express.Application = express();
