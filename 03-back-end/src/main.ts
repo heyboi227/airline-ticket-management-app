@@ -7,6 +7,9 @@ import * as morgan from "morgan";
 import IApplicationResources from "./common/IApplicationResources.interface";
 import * as mysql2 from "mysql2/promise";
 import fileUpload = require("express-fileupload");
+import AddressService from "./components/user/AddressService.service";
+import AdministratorService from "./components/administrator/AdministratorService.service";
+import UserService from "./components/user/UserService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -52,10 +55,20 @@ async function main() {
   const applicationResources: IApplicationResources = {
     databaseConnection: db,
     services: {
+      address: null,
       administrator: null,
+      user: null,
       /* TODO: Implement DB entity services */
     },
   };
+
+  applicationResources.services.address = new AddressService(
+    applicationResources
+  );
+  applicationResources.services.administrator = new AdministratorService(
+    applicationResources
+  );
+  applicationResources.services.user = new UserService(applicationResources);
 
   const application: express.Application = express();
 
