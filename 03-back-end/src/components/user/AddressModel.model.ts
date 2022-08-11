@@ -1,4 +1,5 @@
 import IModel from "../../common/IModel.interface";
+import CountryModel from "../country/CountryModel.model";
 import UserModel from "./UserModel.model";
 
 export default class AddressModel implements IModel {
@@ -8,9 +9,10 @@ export default class AddressModel implements IModel {
   streetAndNumber: string;
   zipCode: number;
   city: string;
-  country: string;
+  countryId: number;
   phoneNumber: string;
   isActive: boolean;
 
   user?: UserModel;
+  country?: CountryModel;
 }

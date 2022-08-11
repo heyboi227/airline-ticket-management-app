@@ -1,6 +1,8 @@
 import IConfig from "./common/IConfig.interface";
 import { MailConfigurationParameters } from "./config.mail";
 import { readFileSync } from "fs";
+import AdministratorRouter from "./components/administrator/AdministratorRouter.router";
+import UserRouter from "./components/user/UserRouter.router";
 
 const DevConfig: IConfig = {
   server: {
@@ -31,9 +33,7 @@ const DevConfig: IConfig = {
     timezone: "+01:00",
     supportBigNumbers: true,
   },
-  routers: [
-    /* TODO: implement DB entity routers */
-  ],
+  routers: [new AdministratorRouter(), new CountryRouter(), new UserRouter()],
   fileUploads: {
     maxFiles: 5,
     maxFileSize: 5 * 1024 * 1024, // 5MB
