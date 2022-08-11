@@ -4,7 +4,7 @@ import IRouter from "../../common/IRouter.interface";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
 import AdministratorController from "./AdministratorController.controller";
 
-class AdministratorRouter implements IRouter {
+export default class AdministratorRouter implements IRouter {
   public setupRoutes(
     application: express.Application,
     resources: IApplicationResources
@@ -34,5 +34,3 @@ class AdministratorRouter implements IRouter {
     );
   }
 }
-
-export default AdministratorRouter;

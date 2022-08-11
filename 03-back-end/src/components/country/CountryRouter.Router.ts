@@ -4,7 +4,7 @@ import IApplicationResources from "../../common/IApplicationResources.interface"
 import CountryController from "./CountryController.controller";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
 
-class CountryRouter implements IRouter {
+export default class CountryRouter implements IRouter {
   public setupRoutes(
     application: express.Application,
     resources: IApplicationResources

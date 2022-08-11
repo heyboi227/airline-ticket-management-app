@@ -3,6 +3,7 @@ import { MailConfigurationParameters } from "./config.mail";
 import { readFileSync } from "fs";
 import AdministratorRouter from "./components/administrator/AdministratorRouter.router";
 import UserRouter from "./components/user/UserRouter.router";
+import CountryRouter from "./components/country/CountryRouter.Router";
 
 const DevConfig: IConfig = {
   server: {
