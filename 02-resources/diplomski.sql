@@ -27,14 +27,16 @@ CREATE TABLE IF NOT EXISTS `address` (
   `street_and_number` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `zip_code` int(10) unsigned NOT NULL,
   `city` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_id` int(10) unsigned NOT NULL,
   `phone_number` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`address_id`),
   UNIQUE KEY `uq_address_phone_number` (`phone_number`),
-  KEY `fk_adress_user_user_id` (`user_id`),
-  CONSTRAINT `fk_adress_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
+  KEY `fk_address_user_id` (`user_id`),
+  KEY `fk_address_country_id` (`country_id`),
+  CONSTRAINT `fk_address_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_address_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -72,9 +74,11 @@ CREATE TABLE IF NOT EXISTS `airport` (
   `airport_code` varchar(3) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `city` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `country` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `country_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`airport_id`),
-  UNIQUE KEY `uq_airport_airport_code` (`airport_code`)
+  UNIQUE KEY `uq_airport_airport_code` (`airport_code`),
+  KEY `fk_airport_country_id` (`country_id`),
+  CONSTRAINT `fk_airport_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -100,6 +104,17 @@ CREATE TABLE IF NOT EXISTS `cabin` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table diplomski_app.country
+DROP TABLE IF EXISTS `country`;
+CREATE TABLE IF NOT EXISTS `country` (
+  `country_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`country_id`),
+  UNIQUE KEY `uq_country_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table diplomski_app.document
 DROP TABLE IF EXISTS `document`;
 CREATE TABLE IF NOT EXISTS `document` (
@@ -110,10 +125,10 @@ CREATE TABLE IF NOT EXISTS `document` (
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`document_id`),
   UNIQUE KEY `uq_document_document_number` (`document_number`),
-  KEY `fk_document_country_country_id` (`country_id`),
-  KEY `fk_document_user_user_id` (`user_id`),
-  CONSTRAINT `fk_document_country_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_document_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
+  KEY `fk_document_user_id` (`user_id`),
+  KEY `fk_document_country_id` (`country_id`),
+  CONSTRAINT `fk_document_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_document_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
