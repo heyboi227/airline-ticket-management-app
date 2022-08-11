@@ -52,6 +52,7 @@ async function main() {
   const applicationResources: IApplicationResources = {
     databaseConnection: db,
     services: {
+      administrator: null,
       /* TODO: Implement DB entity services */
     },
   };

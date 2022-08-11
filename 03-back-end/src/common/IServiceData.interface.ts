@@ -1,1 +1,1 @@
-export default interface IServiceData { }
+export default interface IServiceData {}

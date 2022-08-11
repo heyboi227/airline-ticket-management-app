@@ -1,1 +1,1 @@
-export default interface IAdapterOptions { }
+export default interface IAdapterOptions {}

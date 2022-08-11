@@ -1,1 +1,1 @@
-export default interface IModel { }
+export default interface IModel {}
