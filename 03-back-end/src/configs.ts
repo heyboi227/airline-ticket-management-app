@@ -24,9 +24,9 @@ const DevConfig: IConfig = {
   database: {
     host: "localhost",
     port: 3306,
-    user: "aplikacija",
-    password: "aplikacija",
-    database: "piivt",
+    user: "jeknic_m",
+    password: "jeknic_m",
+    database: "diplomski_app",
     charset: "utf8",
     timezone: "+01:00",
     supportBigNumbers: true,
@@ -69,7 +69,7 @@ const DevConfig: IConfig = {
     },
   },
   mail: {
-    host: "smtp.office365.com",
+    host: "smtp.gmail.com",
     port: 587,
     email: "",
     password: "",
@@ -88,7 +88,7 @@ const DevConfig: IConfig = {
           },
         },
         refresh: {
-          duration: 60 * 60 * 24 * 60, // Za dev: 60 dana - inace treba oko mesec dana
+          duration: 60 * 60 * 24 * 30,
           keys: {
             public: readFileSync("./.keystore/app.public", "ascii"),
             private: readFileSync("./.keystore/app.private", "ascii"),
@@ -108,7 +108,7 @@ const DevConfig: IConfig = {
           },
         },
         refresh: {
-          duration: 60 * 60 * 24 * 60, // Za dev: 60 dana - inace treba oko mesec dana
+          duration: 60 * 60 * 24 * 30,
           keys: {
             public: readFileSync("./.keystore/app.public", "ascii"),
             private: readFileSync("./.keystore/app.private", "ascii"),
@@ -116,7 +116,7 @@ const DevConfig: IConfig = {
         },
       },
     },
-    allowAllRoutesWithoutAuthTokens: false, // Samo dok traje razvoj front-end dela bez mogucnosti prijave
+    allowAllRoutesWithoutAuthTokens: false,
   },
 };
 
