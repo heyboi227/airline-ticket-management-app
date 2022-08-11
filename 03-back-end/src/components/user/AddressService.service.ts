@@ -26,10 +26,9 @@ export default class AddressService extends BaseService<
       address.addressId = +data?.address_id;
       address.userId = +data?.user_id;
 
-      address.streetAndNmber = data?.street_and_nmber;
-      address.floor = data?.floor ?? null;
-      address.apartment = data?.apartment ?? null;
+      address.streetAndNumber = data?.street_and_number;
       address.city = data?.city;
+      address.country = data?.country;
       address.phoneNumber = data?.phone_number;
 
       address.isActive = +data?.is_active === 1;

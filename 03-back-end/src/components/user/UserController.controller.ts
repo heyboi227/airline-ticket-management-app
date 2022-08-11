@@ -540,10 +540,10 @@ export default class UserController extends BaseController {
     this.services.address
       .add(
         {
-          street_and_nmber: data.streetAndNmber,
-          floor: data?.floor ?? null,
-          apartment: data?.apartment ?? null,
+          street_and_number: data.streetAndNumber,
+          zip_code: data.zipCode,
           city: data.city,
+          country: data.country,
           phone_number: data.phoneNumber,
           user_id: userId,
         },
@@ -596,10 +596,10 @@ export default class UserController extends BaseController {
         return this.services.address.editById(
           addressId,
           {
-            street_and_nmber: data.streetAndNmber,
-            floor: data?.floor ?? null,
-            apartment: data?.apartment ?? null,
+            street_and_number: data.streetAndNumber,
+            zip_code: data.zipCode,
             city: data.city,
+            country: data.country,
             phone_number: data.phoneNumber,
             user_id: userId,
             is_active: data?.isActive ?? address.isActive ? 1 : 0,

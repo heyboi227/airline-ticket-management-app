@@ -5,10 +5,10 @@ export default class AddressModel implements IModel {
   addressId: number;
   userId: number;
 
-  streetAndNmber: string;
-  floor?: number | null;
-  apartment?: number | null;
+  streetAndNumber: string;
+  zipCode: number;
   city: string;
+  country: string;
   phoneNumber: string;
   isActive: boolean;
 

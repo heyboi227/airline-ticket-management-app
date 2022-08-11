@@ -6,54 +6,50 @@ const ajv = new Ajv();
 addFormats(ajv);
 
 export interface IAddAddressDto {
-    streetAndNmber: string;
-    floor?: number | null;
-    apartment?: number | null;
-    city: string;
-    phoneNumber: string;
+  streetAndNumber: string;
+  zipCode: number;
+  city: string;
+  country: string;
+  phoneNumber: string;
 }
 
 export interface IAddAddress extends IServiceData {
-    user_id: number;
-    street_and_nmber: string;
-    floor: number | null;
-    apartment: number | null;
-    city: string;
-    phone_number: string;
+  user_id: number;
+  street_and_number: string;
+  zip_code: number;
+  city: string;
+  country: string;
+  phone_number: string;
 }
 
 const AddAddressValidator = ajv.compile({
-    type: "object",
-    properties: {
-        streetAndNmber: {
-            type: "string",
-            minLength: 2,
-            maxLength: 255,
-        },
-        floor: {
-            type: "integer",
-            nullable: true,
-        },
-        apartment: {
-            type: "integer",
-            nullable: true,
-        },
-        city: {
-            type: "string",
-            minLength: 2,
-            maxLength: 64,
-        },
-        phoneNumber: {
-            type: "string",
-            pattern: "\\+[0-9]{8,23}",
-        },
+  type: "object",
+  properties: {
+    streetAndNumber: {
+      type: "string",
+      minLength: 2,
+      maxLength: 255,
     },
-    required: [
-        "streetAndNmber",
-        "city",
-        "phoneNumber",
-    ],
-    additionalProperties: false,
+    zipCode: {
+      type: "integer",
+    },
+    city: {
+      type: "string",
+      minLength: 2,
+      maxLength: 64,
+    },
+    country: {
+      type: "string",
+      minLength: 2,
+      maxLength: 64,
+    },
+    phoneNumber: {
+      type: "string",
+      pattern: "\\+[0-9]{8,23}",
+    },
+  },
+  required: ["streetAndNumber", "zipCode", "city", "country", "phoneNumber"],
+  additionalProperties: false,
 });
 
 export { AddAddressValidator };
