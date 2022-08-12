@@ -27,8 +27,8 @@ const DevConfig: IConfig = {
   database: {
     host: "localhost",
     port: 3306,
-    user: "jeknic_m",
-    password: "jeknic_m",
+    user: "jeknicm",
+    password: "jeknicm",
     database: "diplomski_app",
     charset: "utf8",
     timezone: "+01:00",
@@ -117,7 +117,7 @@ const DevConfig: IConfig = {
         },
       },
     },
-    allowAllRoutesWithoutAuthTokens: false,
+    allowAllRoutesWithoutAuthTokens: true, // only during development
   },
 };
 
