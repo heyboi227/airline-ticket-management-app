@@ -11,6 +11,7 @@ import AddressService from "./components/user/AddressService.service";
 import AdministratorService from "./components/administrator/AdministratorService.service";
 import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
+import AircraftService from "./components/aircraft/AircraftService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -58,6 +59,7 @@ async function main() {
     services: {
       address: null,
       administrator: null,
+      aircraft: null,
       country: null,
       user: null,
       /* TODO: Implement DB entity services */
@@ -68,6 +70,9 @@ async function main() {
     applicationResources
   );
   applicationResources.services.administrator = new AdministratorService(
+    applicationResources
+  );
+  applicationResources.services.aircraft = new AircraftService(
     applicationResources
   );
   applicationResources.services.country = new CountryService(

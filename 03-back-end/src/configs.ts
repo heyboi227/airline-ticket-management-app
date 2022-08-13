@@ -5,6 +5,7 @@ import AdministratorRouter from "./components/administrator/AdministratorRouter.
 import UserRouter from "./components/user/UserRouter.router";
 import CountryRouter from "./components/country/CountryRouter.Router";
 import AuthRouter from "./components/auth/AuthRouter.router";
+import AircraftRouter from "./components/aircraft/AircraftRouter.router";
 
 const DevConfig: IConfig = {
   server: {
@@ -37,6 +38,7 @@ const DevConfig: IConfig = {
   },
   routers: [
     new AdministratorRouter(),
+    new AircraftRouter(),
     new AuthRouter(),
     new CountryRouter(),
     new UserRouter(),
