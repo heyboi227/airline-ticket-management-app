@@ -37,7 +37,7 @@ class UserRouter implements IRouter {
       userController.activate.bind(userController)
     );
     application.post(
-      "/api/user/resetPassword",
+      "/api/user/reset-password",
       userController.passwordResetEmailSend.bind(userController)
     );
     application.get(
