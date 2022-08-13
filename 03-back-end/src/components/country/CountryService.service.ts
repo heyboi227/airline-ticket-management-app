@@ -16,7 +16,7 @@ export default class CountryService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: ICountryAdapterOptions
+    _options: ICountryAdapterOptions
   ): Promise<CountryModel> {
     const country = new CountryModel();
 
@@ -31,23 +31,23 @@ export default class CountryService extends BaseService<
   }
 
   public async editById(
-    id: number,
+    countryId: number,
     data: IEditCountry,
     options: ICountryAdapterOptions
   ): Promise<CountryModel> {
-    return this.baseEditById(id, data, options);
+    return this.baseEditById(countryId, data, options);
   }
 
-  public async deleteById(id: number) {
-    return this.baseDeleteById(id);
+  public async deleteById(countryId: number) {
+    return this.baseDeleteById(countryId);
   }
 
   public async getCountryByName(
-    code: string,
+    name: string,
     options: ICountryAdapterOptions
   ): Promise<CountryModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", code, options)
+      this.getAllByFieldNameAndValue("name", name, options)
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

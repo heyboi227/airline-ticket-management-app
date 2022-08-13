@@ -43,16 +43,16 @@ export default class AdministratorService extends BaseService<
     return this.baseAdd(data, DefaultAdministratorAdapterOptions);
   }
 
-  public async edit(
-    id: number,
+  public async editById(
+    administratorId: number,
     data: IEditAdministrator
   ): Promise<AdministratorModel> {
-    return this.baseEditById(id, data, {
+    return this.baseEditById(administratorId, data, {
       removePassword: true,
     });
   }
 
-  public async getByUsername(
+  public async getAdministratorByUsername(
     username: string
   ): Promise<AdministratorModel | null> {
     return new Promise((resolve, reject) => {

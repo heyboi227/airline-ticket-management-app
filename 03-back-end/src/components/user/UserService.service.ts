@@ -62,15 +62,15 @@ export default class UserService extends BaseService<
     });
   }
 
-  public async edit(
-    id: number,
+  public async editById(
+    userId: number,
     data: IEditUser,
     options: IUserAdapterOptions = {
       removePassword: true,
       removeActivationCode: true,
     }
   ): Promise<UserModel> {
-    return this.baseEditById(id, data, options);
+    return this.baseEditById(userId, data, options);
   }
 
   public async getUserByActivateionCode(
@@ -111,7 +111,7 @@ export default class UserService extends BaseService<
     });
   }
 
-  public async getByEmail(
+  public async getUserByEmail(
     email: string,
     option: IUserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {

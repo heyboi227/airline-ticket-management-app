@@ -11,7 +11,7 @@ import IEditAdministrator, {
 } from "./dto/IEditAdministrator.dto";
 
 export default class AdministratorController extends BaseController {
-  getAll(req: Request, res: Response) {
+  getAll(_req: Request, res: Response) {
     this.services.administrator
       .getAll({
         removePassword: true,
@@ -85,7 +85,7 @@ export default class AdministratorController extends BaseController {
     }
 
     this.services.administrator
-      .edit(id, serviceData)
+      .editById(id, serviceData)
       .then((result) => {
         res.send(result);
       })

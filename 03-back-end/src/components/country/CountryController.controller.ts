@@ -4,7 +4,7 @@ import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
 import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
 
 export default class CountryController extends BaseController {
-  getAll(req: Request, res: Response) {
+  getAll(_req: Request, res: Response) {
     this.services.country
       .getAll({})
       .then((result) => {

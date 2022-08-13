@@ -13,7 +13,7 @@ export default class AuthController extends BaseController {
     const data = req.body as IAdministratorLoginDto;
 
     this.services.administrator
-      .getByUsername(data.username)
+      .getAdministratorByUsername(data.username)
       .then((result) => {
         if (result === null) {
           throw {
@@ -106,7 +106,7 @@ export default class AuthController extends BaseController {
     const data = req.body as IUserLoginDto;
 
     this.services.user
-      .getByEmail(data.email)
+      .getUserByEmail(data.email)
       .then((result) => {
         if (result === null) {
           throw {

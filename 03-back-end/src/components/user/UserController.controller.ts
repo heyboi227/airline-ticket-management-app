@@ -23,7 +23,7 @@ import {
 import * as generatePassword from "generate-password";
 
 export default class UserController extends BaseController {
-  getAll(req: Request, res: Response) {
+  getAll(_req: Request, res: Response) {
     this.services.user
       .getAll({
         removePassword: true,
@@ -152,7 +152,7 @@ export default class UserController extends BaseController {
     }
 
     this.services.user
-      .getByEmail(data.email, {
+      .getUserByEmail(data.email, {
         removeActivationCode: false,
         removePassword: true,
       })
@@ -179,7 +179,7 @@ export default class UserController extends BaseController {
       .then((user) => {
         const code = uuid.v4() + "-" + uuid.v4();
 
-        return this.services.user.edit(
+        return this.services.user.editById(
           user.userId,
           {
             password_reset_code: code,
@@ -226,7 +226,7 @@ export default class UserController extends BaseController {
       .then((result) => {
         const user = result as UserModel;
 
-        return this.services.user.edit(user.userId, {
+        return this.services.user.editById(user.userId, {
           is_active: 1,
           activation_code: null,
         });
@@ -286,7 +286,7 @@ export default class UserController extends BaseController {
         return new Promise<{ user: UserModel; newPassword: string }>(
           (resolve) => {
             this.services.user
-              .edit(
+              .editById(
                 user.userId,
                 {
                   password_hash: passwordHash,
@@ -520,7 +520,7 @@ export default class UserController extends BaseController {
     }
 
     this.services.user
-      .edit(id, serviceData)
+      .editById(id, serviceData)
       .then((result) => {
         res.send(result);
       })
@@ -560,7 +560,7 @@ export default class UserController extends BaseController {
       });
   }
 
-  editAddress(req: Request, res: Response) {
+  editAddressById(req: Request, res: Response) {
     const addressId = +req.params?.aid;
     const data = req.body as IEditAddressDto;
     const userId = req.authorization?.id;
