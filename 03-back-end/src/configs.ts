@@ -4,6 +4,7 @@ import { readFileSync } from "fs";
 import AdministratorRouter from "./components/administrator/AdministratorRouter.router";
 import UserRouter from "./components/user/UserRouter.router";
 import CountryRouter from "./components/country/CountryRouter.Router";
+import AuthRouter from "./components/auth/AuthRouter.router";
 
 const DevConfig: IConfig = {
   server: {
@@ -34,7 +35,12 @@ const DevConfig: IConfig = {
     timezone: "+01:00",
     supportBigNumbers: true,
   },
-  routers: [new AdministratorRouter(), new CountryRouter(), new UserRouter()],
+  routers: [
+    new AdministratorRouter(),
+    new AuthRouter(),
+    new CountryRouter(),
+    new UserRouter(),
+  ],
   fileUploads: {
     maxFiles: 5,
     maxFileSize: 5 * 1024 * 1024, // 5MB
