@@ -543,12 +543,13 @@ export default class UserController extends BaseController {
           street_and_number: data.streetAndNumber,
           zip_code: data.zipCode,
           city: data.city,
-          country: data.country,
+          country_id: data.countryId,
           phone_number: data.phoneNumber,
           user_id: userId,
         },
         {
           loadUserData: true,
+          loadCountryData: true,
         }
       )
       .then((address) => {
@@ -571,6 +572,7 @@ export default class UserController extends BaseController {
     this.services.address
       .getById(addressId, {
         loadUserData: true,
+        loadCountryData: true,
       })
       .then((result) => {
         if (!result) {
@@ -599,13 +601,14 @@ export default class UserController extends BaseController {
             street_and_number: data.streetAndNumber,
             zip_code: data.zipCode,
             city: data.city,
-            country: data.country,
+            country_id: data.countryId,
             phone_number: data.phoneNumber,
             user_id: userId,
             is_active: data?.isActive ?? address.isActive ? 1 : 0,
           },
           {
             loadUserData: true,
+            loadCountryData: false,
           }
         );
       })

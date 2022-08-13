@@ -6,6 +6,7 @@ import AddressModel from "./AddressModel.model";
 
 export interface IAddressAdapterOptions extends IAdapterOptions {
   loadUserData: boolean;
+  loadCountryData: boolean;
 }
 
 export default class AddressService extends BaseService<
@@ -18,7 +19,10 @@ export default class AddressService extends BaseService<
 
   protected adaptToModel(
     data: any,
-    options: IAddressAdapterOptions = { loadUserData: false }
+    options: IAddressAdapterOptions = {
+      loadUserData: false,
+      loadCountryData: false,
+    }
   ): Promise<AddressModel> {
     return new Promise(async (resolve) => {
       const address = new AddressModel();
@@ -28,7 +32,7 @@ export default class AddressService extends BaseService<
 
       address.streetAndNumber = data?.street_and_number;
       address.city = data?.city;
-      address.country = data?.country;
+      address.countryId = +data?.country_id;
       address.phoneNumber = data?.phone_number;
 
       address.isActive = +data?.is_active === 1;
@@ -40,6 +44,12 @@ export default class AddressService extends BaseService<
         });
       }
 
+      if (options.loadCountryData) {
+        address.country = await this.services.country.getById(
+          address.countryId,
+          {}
+        );
+      }
       resolve(address);
     });
   }

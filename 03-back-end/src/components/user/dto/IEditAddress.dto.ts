@@ -9,7 +9,7 @@ export interface IEditAddressDto {
   streetAndNumber: string;
   zipCode: number;
   city: string;
-  country: string;
+  countryId: number;
   phoneNumber: string;
   isActive?: boolean;
 }
@@ -19,7 +19,7 @@ export interface IEditAddress extends IServiceData {
   street_and_number: string;
   zip_code: number;
   city: string;
-  country: string;
+  country_id: number;
   phone_number: string;
   is_active: number;
 }
@@ -40,10 +40,8 @@ const EditAddressValidator = ajv.compile({
       minLength: 2,
       maxLength: 64,
     },
-    country: {
-      type: "string",
-      minLength: 2,
-      maxLength: 64,
+    countryId: {
+      type: "integer",
     },
     phoneNumber: {
       type: "string",
@@ -53,7 +51,7 @@ const EditAddressValidator = ajv.compile({
       type: "boolean",
     },
   },
-  required: ["streetAndNumber", "zipCode", "city", "country", "phoneNumber"],
+  required: ["streetAndNumber", "zipCode", "city", "countryId", "phoneNumber"],
   additionalProperties: false,
 });
 

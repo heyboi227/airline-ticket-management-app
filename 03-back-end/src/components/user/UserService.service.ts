@@ -49,6 +49,7 @@ export default class UserService extends BaseService<
 
     user.addresses = await this.services.address.getAllByUserId(user.userId, {
       loadUserData: false,
+      loadCountryData: false,
     });
 
     return user;
