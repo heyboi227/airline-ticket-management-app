@@ -85,7 +85,7 @@ const DevConfig: IConfig = {
   auth: {
     administrator: {
       algorithm: "RS256",
-      issuer: "PIiVT",
+      issuer: "Singidunum University",
       tokens: {
         auth: {
           duration: 60 * 60 * 24,
@@ -105,7 +105,7 @@ const DevConfig: IConfig = {
     },
     user: {
       algorithm: "RS256",
-      issuer: "PIiVT",
+      issuer: "Singidunum University",
       tokens: {
         auth: {
           duration: 60 * 60 * 24,
@@ -123,7 +123,7 @@ const DevConfig: IConfig = {
         },
       },
     },
-    allowAllRoutesWithoutAuthTokens: true, // only during development
+    allowAllRoutesWithoutAuthTokens: false,
   },
 };
 
