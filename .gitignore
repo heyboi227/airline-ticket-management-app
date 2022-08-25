@@ -3,4 +3,5 @@
 03-back-end/node_modules/
 03-back-end/static/uploads/
 03-back-end/src/config.mail.ts
+03-back-end/.env
 temp/

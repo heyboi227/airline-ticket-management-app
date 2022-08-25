@@ -6,6 +6,7 @@ import UserRouter from "./components/user/UserRouter.router";
 import CountryRouter from "./components/country/CountryRouter.Router";
 import AuthRouter from "./components/auth/AuthRouter.router";
 import AircraftRouter from "./components/aircraft/AircraftRouter.router";
+import "dotenv/config";
 
 const DevConfig: IConfig = {
   server: {
@@ -29,8 +30,8 @@ const DevConfig: IConfig = {
   database: {
     host: "localhost",
     port: 3306,
-    user: "jeknicm",
-    password: "jeknicm",
+    user: process.env.DATABASE_USERNAME,
+    password: process.env.DATABASE_PASSWORD,
     database: "diplomski_app",
     charset: "utf8",
     timezone: "+01:00",
