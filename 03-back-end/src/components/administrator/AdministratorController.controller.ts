@@ -13,33 +13,71 @@ import IEditAdministrator, {
 export default class AdministratorController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.administrator
-      .getAll({
-        removePassword: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.administrator.getAll({
+          removePassword: true,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
+        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.administrator.rollbackChanges();
         res.status(500).send(error?.message);
       });
   }
 
   getById(req: Request, res: Response) {
-    const id: number = +req.params?.id;
+    const id: number = +req.params?.aid;
 
     this.services.administrator
-      .getById(id, {
-        removePassword: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.administrator.getById(id, {
+          removePassword: true,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
         if (result === null) {
           res.status(404).send("Administrator not found!");
         }
 
+        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.administrator.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
+      });
+  }
+
+  getByUsername(req: Request, res: Response) {
+    const username: string = req.params?.ausername;
+
+    this.services.administrator
+      .startTransaction()
+      .then(() => {
+        return this.services.administrator.getByUsername(username, {
+          removePassword: true,
+        });
+      })
+      .then(async (result) => {
+        if (result === null) {
+          res.status(404).send("Administrator not found!");
+        }
+
+        await this.services.administrator.commitChanges();
+        res.send(result);
+      })
+      .catch(async (error) => {
+        await this.services.administrator.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -53,14 +91,19 @@ export default class AdministratorController extends BaseController {
     const passwordHash = bcrypt.hashSync(body.password, 10);
 
     this.services.administrator
-      .add({
-        username: body.username,
-        password_hash: passwordHash,
+      .startTransaction()
+      .then(() => {
+        return this.services.administrator.add({
+          username: body.username,
+          password_hash: passwordHash,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
+        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.administrator.rollbackChanges();
         res.status(500).send(error?.message);
       });
   }
@@ -85,11 +128,16 @@ export default class AdministratorController extends BaseController {
     }
 
     this.services.administrator
-      .editById(id, serviceData)
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.administrator.editById(id, serviceData);
+      })
+      .then(async (result) => {
+        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.administrator.rollbackChanges();
         res.status(500).send(error?.message);
       });
   }

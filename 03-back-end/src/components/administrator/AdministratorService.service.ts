@@ -4,17 +4,18 @@ import AdministratorModel from "./AdministratorModel.model";
 import IAddAdministrator from "./dto/IAddAdministrator.dto";
 import IEditAdministrator from "./dto/IEditAdministrator.dto";
 
-export class AdministratorAdapterOptions implements IAdapterOptions {
+export class IAdministratorAdapterOptions implements IAdapterOptions {
   removePassword: boolean;
 }
 
-export const DefaultAdministratorAdapterOptions: AdministratorAdapterOptions = {
-  removePassword: false,
-};
+export const DefaultAdministratorAdapterOptions: IAdministratorAdapterOptions =
+  {
+    removePassword: false,
+  };
 
 export default class AdministratorService extends BaseService<
   AdministratorModel,
-  AdministratorAdapterOptions
+  IAdministratorAdapterOptions
 > {
   tableName(): string {
     return "administrator";
@@ -22,7 +23,7 @@ export default class AdministratorService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: AdministratorAdapterOptions = DefaultAdministratorAdapterOptions
+    options: IAdministratorAdapterOptions = DefaultAdministratorAdapterOptions
   ): Promise<AdministratorModel> {
     const administrator = new AdministratorModel();
 
@@ -52,13 +53,12 @@ export default class AdministratorService extends BaseService<
     });
   }
 
-  public async getAdministratorByUsername(
-    username: string
+  public async getByUsername(
+    username: string,
+    options: IAdministratorAdapterOptions
   ): Promise<AdministratorModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("username", username, {
-        removePassword: false,
-      })
+      this.getAllByFieldNameAndValue("username", username, options)
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

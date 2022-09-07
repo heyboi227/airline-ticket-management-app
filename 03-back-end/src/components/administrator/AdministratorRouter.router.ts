@@ -19,9 +19,15 @@ export default class AdministratorRouter implements IRouter {
     );
 
     application.get(
-      "/api/administrator/:id",
+      "/api/administrator/:aid",
       AuthMiddleware.getVerifier("administrator"),
       administratorController.getById.bind(administratorController)
+    );
+
+    application.get(
+      "/api/administrator/username/:ausername",
+      AuthMiddleware.getVerifier("administrator"),
+      administratorController.getByUsername.bind(administratorController)
     );
 
     application.post(
@@ -29,7 +35,7 @@ export default class AdministratorRouter implements IRouter {
       AuthMiddleware.getVerifier("administrator"),
       administratorController.add.bind(administratorController)
     );
-    
+
     application.put(
       "/api/administrator/:aid",
       AuthMiddleware.getVerifier("administrator"),
