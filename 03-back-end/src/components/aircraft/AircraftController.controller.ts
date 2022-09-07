@@ -9,12 +9,19 @@ import {
 export default class AircraftController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.aircraft
-      .getAll({})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.getAll({});
+      })
+      .then(async (result) => {
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -22,16 +29,26 @@ export default class AircraftController extends BaseController {
     const aircraftId: number = +req.params?.aid;
 
     this.services.aircraft
-      .getById(aircraftId, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.getById(aircraftId, {});
+      })
+      .then(async (result) => {
         if (result === null) {
-          res.status(404).send("The aircraft is not found!");
+          throw {
+            status: 404,
+            message: "The aircraft is not found!",
+          };
         }
 
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -39,16 +56,26 @@ export default class AircraftController extends BaseController {
     const type: string = req.params?.atype;
 
     this.services.aircraft
-      .getAircraftByType(type, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.getAircraftByType(type, {});
+      })
+      .then(async (result) => {
         if (result === null) {
-          res.status(404).send("The aircraft are not found!");
+          throw {
+            status: 404,
+            message: "The aircraft are not found!",
+          };
         }
 
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -56,16 +83,26 @@ export default class AircraftController extends BaseController {
     const name: string = req.params?.aname;
 
     this.services.aircraft
-      .getAircraftByName(name, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.getAircraftByName(name, {});
+      })
+      .then(async (result) => {
         if (result === null) {
-          res.status(404).send("The aircraft is not found!");
+          throw {
+            status: 404,
+            message: "The aircraft is not found!",
+          };
         }
 
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -77,20 +114,27 @@ export default class AircraftController extends BaseController {
     }
 
     this.services.aircraft
-      .add({
-        type: body.type,
-        name: body.name,
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.add({
+          type: body.type,
+          name: body.name,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
   editById(req: Request, res: Response) {
-    const aircraftId: number = +req.params?.cid;
+    const aircraftId: number = +req.params?.aid;
     const data = req.body as IEditAircraftDto;
 
     if (!EditAircraftValidator(data)) {
@@ -98,19 +142,26 @@ export default class AircraftController extends BaseController {
     }
 
     this.services.aircraft
-      .editById(
-        aircraftId,
-        {
-          type: data.type,
-          name: data.name,
-        },
-        {}
-      )
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.editById(
+          aircraftId,
+          {
+            type: data.type,
+            name: data.name,
+          },
+          {}
+        );
+      })
+      .then(async (result) => {
+        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -118,7 +169,10 @@ export default class AircraftController extends BaseController {
     const aircraftId: number = +req.params?.aid;
 
     this.services.aircraft
-      .getById(aircraftId, {})
+      .startTransaction()
+      .then(() => {
+        return this.services.aircraft.getById(aircraftId, {});
+      })
       .then((result) => {
         if (result === null) {
           throw {
@@ -127,14 +181,18 @@ export default class AircraftController extends BaseController {
           };
         }
       })
-      .then(() => {
+      .then(async () => {
+        await this.services.aircraft.commitChanges();
         return this.services.aircraft.deleteById(aircraftId);
       })
       .then(() => {
         res.send("This aircraft has been deleted!");
       })
-      .catch((error) => {
-        res.status(error?.status ?? 500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.aircraft.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 }

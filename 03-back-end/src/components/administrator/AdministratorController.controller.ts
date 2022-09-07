@@ -5,6 +5,7 @@ import {
   IAddAdministratorDto,
 } from "./dto/IAddAdministrator.dto";
 import * as bcrypt from "bcrypt";
+import { DefaultAdministratorAdapterOptions } from "./AdministratorService.service";
 import IEditAdministrator, {
   EditAdministratorValidator,
   IEditAdministratorDto,
@@ -25,23 +26,28 @@ export default class AdministratorController extends BaseController {
       })
       .catch(async (error) => {
         await this.services.administrator.rollbackChanges();
-        res.status(500).send(error?.message);
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
   getById(req: Request, res: Response) {
-    const id: number = +req.params?.aid;
+    const administratorId: number = +req.params?.aid;
 
     this.services.administrator
       .startTransaction()
       .then(() => {
-        return this.services.administrator.getById(id, {
+        return this.services.administrator.getById(administratorId, {
           removePassword: true,
         });
       })
       .then(async (result) => {
         if (result === null) {
-          res.status(404).send("Administrator not found!");
+          throw {
+            status: 404,
+            message: "The administrator is not found!",
+          };
         }
 
         await this.services.administrator.commitChanges();
@@ -50,7 +56,7 @@ export default class AdministratorController extends BaseController {
       .catch(async (error) => {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
-          res.status(500).send(error?.message);
+          res.status(error?.status ?? 500).send(error?.message);
         }, 300);
       });
   }
@@ -67,7 +73,10 @@ export default class AdministratorController extends BaseController {
       })
       .then(async (result) => {
         if (result === null) {
-          res.status(404).send("Administrator not found!");
+          throw {
+            status: 404,
+            message: "The administrator is not found!",
+          };
         }
 
         await this.services.administrator.commitChanges();
@@ -76,7 +85,7 @@ export default class AdministratorController extends BaseController {
       .catch(async (error) => {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
-          res.status(500).send(error?.message);
+          res.status(error?.status ?? 500).send(error?.message);
         }, 300);
       });
   }
@@ -104,12 +113,14 @@ export default class AdministratorController extends BaseController {
       })
       .catch(async (error) => {
         await this.services.administrator.rollbackChanges();
-        res.status(500).send(error?.message);
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
   editById(req: Request, res: Response) {
-    const id: number = +req.params?.aid;
+    const administratorId: number = +req.params?.aid;
     const data = req.body as IEditAdministratorDto;
 
     if (!EditAdministratorValidator(data)) {
@@ -130,7 +141,11 @@ export default class AdministratorController extends BaseController {
     this.services.administrator
       .startTransaction()
       .then(() => {
-        return this.services.administrator.editById(id, serviceData);
+        return this.services.administrator.editById(
+          administratorId,
+          serviceData,
+          DefaultAdministratorAdapterOptions
+        );
       })
       .then(async (result) => {
         await this.services.administrator.commitChanges();
@@ -138,7 +153,9 @@ export default class AdministratorController extends BaseController {
       })
       .catch(async (error) => {
         await this.services.administrator.rollbackChanges();
-        res.status(500).send(error?.message);
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 }
