@@ -33,22 +33,18 @@ export default class AircraftService extends BaseService<
 
   public async editById(
     aircraftId: number,
-    data: IEditAircraft,
-    options: IAircraftAdapterOptions
+    data: IEditAircraft
   ): Promise<AircraftModel> {
-    return this.baseEditById(aircraftId, data, options);
+    return this.baseEditById(aircraftId, data, {});
   }
 
   public async deleteById(aircraftId: number) {
     return this.baseDeleteById(aircraftId);
   }
 
-  public async getAircraftByType(
-    type: string,
-    options: IAircraftAdapterOptions
-  ): Promise<AircraftModel[]> {
+  public async getByType(type: string): Promise<AircraftModel[]> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("type", type, options)
+      this.getAllByFieldNameAndValue("type", type, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve([]);
@@ -62,12 +58,9 @@ export default class AircraftService extends BaseService<
     });
   }
 
-  public async getAircraftByName(
-    name: string,
-    options: IAircraftAdapterOptions
-  ): Promise<AircraftModel | null> {
+  public async getByName(name: string): Promise<AircraftModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", name, options)
+      this.getAllByFieldNameAndValue("name", name, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

@@ -73,12 +73,12 @@ export default class UserService extends BaseService<
     return this.baseEditById(userId, data, options);
   }
 
-  public async getUserByActivateionCode(
-    code: string,
+  public async getByActivationCode(
+    activationCode: string,
     option: IUserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("activation_code", code, option)
+      this.getAllByFieldNameAndValue("activation_code", activationCode, option)
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);
@@ -92,12 +92,16 @@ export default class UserService extends BaseService<
     });
   }
 
-  public async getUserByPasswordResetCode(
-    code: string,
+  public async getByPasswordResetCode(
+    passwordResetCode: string,
     option: IUserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("password_reset_code", code, option)
+      this.getAllByFieldNameAndValue(
+        "password_reset_code",
+        passwordResetCode,
+        option
+      )
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);
@@ -111,7 +115,7 @@ export default class UserService extends BaseService<
     });
   }
 
-  public async getUserByEmail(
+  public async getByEmail(
     email: string,
     option: IUserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {

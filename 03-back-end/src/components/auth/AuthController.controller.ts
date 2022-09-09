@@ -7,13 +7,14 @@ import ITokenData from "./dto/ITokenData";
 import { DevConfig } from "../../configs";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
 import { IUserLoginDto } from "./dto/IUserLogin.dto";
+import { DefaultAdministratorAdapterOptions } from "../administrator/AdministratorService.service";
 
 export default class AuthController extends BaseController {
   public async administratorLogin(req: Request, res: Response) {
     const data = req.body as IAdministratorLoginDto;
 
     this.services.administrator
-      .getAdministratorByUsername(data.username)
+      .getByUsername(data.username, DefaultAdministratorAdapterOptions)
       .then((result) => {
         if (result === null) {
           throw {
@@ -106,7 +107,7 @@ export default class AuthController extends BaseController {
     const data = req.body as IUserLoginDto;
 
     this.services.user
-      .getUserByEmail(data.email)
+      .getByEmail(data.email)
       .then((result) => {
         if (result === null) {
           throw {

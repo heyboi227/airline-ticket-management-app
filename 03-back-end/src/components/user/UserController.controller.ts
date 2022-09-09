@@ -25,15 +25,22 @@ import * as generatePassword from "generate-password";
 export default class UserController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.user
-      .getAll({
-        removePassword: true,
-        removeActivationCode: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.user.getAll({
+          removePassword: true,
+          removeActivationCode: true,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
+        await this.services.user.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -47,19 +54,28 @@ export default class UserController extends BaseController {
     }
 
     this.services.user
-      .getById(id, {
-        removePassword: true,
-        removeActivationCode: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.user.getById(id, {
+          removePassword: true,
+          removeActivationCode: true,
+        });
       })
       .then((result) => {
         if (result === null) {
-          res.status(404).send("User not found!");
+          throw {
+            status: 404,
+            message: "The user is not found!",
+          };
         }
 
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -152,9 +168,12 @@ export default class UserController extends BaseController {
     }
 
     this.services.user
-      .getUserByEmail(data.email, {
-        removeActivationCode: false,
-        removePassword: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.user.getByEmail(data.email, {
+          removeActivationCode: false,
+          removePassword: true,
+        });
       })
       .then((result) => {
         if (result === null) {
@@ -190,7 +209,8 @@ export default class UserController extends BaseController {
           }
         );
       })
-      .then((user) => {
+      .then(async (user) => {
+        await this.services.user.commitChanges();
         return this.sendRecoveryEmail(user);
       })
       .then(() => {
@@ -198,7 +218,8 @@ export default class UserController extends BaseController {
           message: "Sent",
         });
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -209,9 +230,12 @@ export default class UserController extends BaseController {
     const code: string = req.params?.code;
 
     this.services.user
-      .getUserByActivateionCode(code, {
-        removeActivationCode: true,
-        removePassword: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.user.getByActivationCode(code, {
+          removeActivationCode: true,
+          removePassword: true,
+        });
       })
       .then((result) => {
         if (result === null) {
@@ -231,13 +255,15 @@ export default class UserController extends BaseController {
           activation_code: null,
         });
       })
-      .then((user) => {
+      .then(async (user) => {
+        await this.services.user.commitChanges();
         return this.sendActivationEmail(user);
       })
       .then((user) => {
         res.send(user);
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -248,9 +274,12 @@ export default class UserController extends BaseController {
     const code: string = req.params?.code;
 
     this.services.user
-      .getUserByPasswordResetCode(code, {
-        removeActivationCode: false,
-        removePassword: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.user.getByPasswordResetCode(code, {
+          removeActivationCode: false,
+          removePassword: true,
+        });
       })
       .then((result) => {
         if (result === null) {
@@ -286,18 +315,22 @@ export default class UserController extends BaseController {
         return new Promise<{ user: UserModel; newPassword: string }>(
           (resolve) => {
             this.services.user
-              .editById(
-                user.userId,
-                {
-                  password_hash: passwordHash,
-                  password_reset_code: null,
-                },
-                {
-                  removeActivationCode: true,
-                  removePassword: true,
-                }
-              )
-              .then((user) => {
+              .startTransaction()
+              .then(() => {
+                return this.services.user.editById(
+                  user.userId,
+                  {
+                    password_hash: passwordHash,
+                    password_reset_code: null,
+                  },
+                  {
+                    removeActivationCode: true,
+                    removePassword: true,
+                  }
+                );
+              })
+              .then(async (user) => {
+                await this.services.user.commitChanges();
                 return this.sendNewPassword(user, newPassword);
               })
               .then((user) => {
@@ -306,18 +339,21 @@ export default class UserController extends BaseController {
                   newPassword: newPassword,
                 });
               })
-              .catch((error) => {
+              .catch(async (error) => {
+                await this.services.user.rollbackChanges();
                 throw error;
               });
           }
         );
       })
-      .then(() => {
+      .then(async () => {
+        await this.services.user.commitChanges();
         res.send({
           message: "Sent!",
         });
       })
-      .catch((error) => {
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -520,12 +556,19 @@ export default class UserController extends BaseController {
     }
 
     this.services.user
-      .editById(id, serviceData)
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.user.editById(id, serviceData);
+      })
+      .then(async (result) => {
+        await this.services.user.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 500);
       });
   }
 
@@ -538,25 +581,32 @@ export default class UserController extends BaseController {
     }
 
     this.services.address
-      .add(
-        {
-          street_and_number: data.streetAndNumber,
-          zip_code: data.zipCode,
-          city: data.city,
-          country_id: data.countryId,
-          phone_number: data.phoneNumber,
-          user_id: userId,
-        },
-        {
-          loadUserData: true,
-          loadCountryData: true,
-        }
-      )
-      .then((address) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.address.add(
+          {
+            street_and_number: data.streetAndNumber,
+            zip_code: data.zipCode,
+            city: data.city,
+            country_id: data.countryId,
+            phone_number: data.phoneNumber,
+            user_id: userId,
+          },
+          {
+            loadUserData: true,
+            loadCountryData: true,
+          }
+        );
+      })
+      .then(async (address) => {
+        await this.services.address.commitChanges();
         res.send(address);
       })
-      .catch((error) => {
-        res.status(error?.status ?? 500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.address.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 500);
       });
   }
 
@@ -570,9 +620,12 @@ export default class UserController extends BaseController {
     }
 
     this.services.address
-      .getById(addressId, {
-        loadUserData: true,
-        loadCountryData: true,
+      .startTransaction()
+      .then(() => {
+        return this.services.address.getById(addressId, {
+          loadUserData: true,
+          loadCountryData: true,
+        });
       })
       .then((result) => {
         if (!result) {
@@ -612,11 +665,15 @@ export default class UserController extends BaseController {
           }
         );
       })
-      .then((address) => {
+      .then(async (address) => {
+        await this.services.address.commitChanges();
         res.send(address);
       })
-      .catch((error) => {
-        res.status(error?.status ?? 500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.address.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 }

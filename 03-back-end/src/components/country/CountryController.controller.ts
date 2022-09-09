@@ -6,12 +6,19 @@ import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
 export default class CountryController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.country
-      .getAll({})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.country.getAll({});
+      })
+      .then(async (result) => {
+        await this.services.country.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -19,16 +26,26 @@ export default class CountryController extends BaseController {
     const countryId: number = +req.params?.cid;
 
     this.services.country
-      .getById(countryId, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.country.getById(countryId, {});
+      })
+      .then(async (result) => {
         if (result === null) {
-          res.status(404).send("The country is not found!");
+          throw {
+            status: 404,
+            message: "The country is not found!",
+          };
         }
 
+        await this.services.country.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -36,16 +53,26 @@ export default class CountryController extends BaseController {
     const name: string = req.params?.cname;
 
     this.services.country
-      .getCountryByName(name, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.country.getByName(name);
+      })
+      .then(async (result) => {
         if (result === null) {
-          res.status(404).send("The country is not found!");
+          throw {
+            status: 404,
+            message: "The country is not found!",
+          };
         }
 
+        await this.services.country.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -57,14 +84,21 @@ export default class CountryController extends BaseController {
     }
 
     this.services.country
-      .add({
-        name: body.name,
+      .startTransaction()
+      .then(() => {
+        return this.services.country.add({
+          name: body.name,
+        });
       })
-      .then((result) => {
+      .then(async (result) => {
+        await this.services.country.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -77,12 +111,21 @@ export default class CountryController extends BaseController {
     }
 
     this.services.country
-      .editById(countryId, { name: data.name }, {})
-      .then((result) => {
+      .startTransaction()
+      .then(() => {
+        return this.services.country.editById(countryId, {
+          name: data.name,
+        });
+      })
+      .then(async (result) => {
+        await this.services.country.commitChanges();
         res.send(result);
       })
-      .catch((error) => {
-        res.status(500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.rollbackChanges();
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
       });
   }
 
@@ -90,7 +133,10 @@ export default class CountryController extends BaseController {
     const countryId: number = +req.params?.cid;
 
     this.services.country
-      .getById(countryId, {})
+      .startTransaction()
+      .then(() => {
+        return this.services.country.getById(countryId, {});
+      })
       .then((result) => {
         if (result === null) {
           throw {
@@ -99,14 +145,18 @@ export default class CountryController extends BaseController {
           };
         }
       })
-      .then(() => {
+      .then(async () => {
+        await this.services.country.commitChanges();
         return this.services.country.deleteById(countryId);
       })
       .then(() => {
         res.send("This country has been deleted!");
       })
-      .catch((error) => {
-        res.status(error?.status ?? 500).send(error?.message);
+      .catch(async (error) => {
+        await this.services.country.commitChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 300);
       });
   }
 }

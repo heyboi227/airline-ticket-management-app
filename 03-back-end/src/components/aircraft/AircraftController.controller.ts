@@ -21,7 +21,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -48,7 +48,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -58,7 +58,7 @@ export default class AircraftController extends BaseController {
     this.services.aircraft
       .startTransaction()
       .then(() => {
-        return this.services.aircraft.getAircraftByType(type, {});
+        return this.services.aircraft.getByType(type);
       })
       .then(async (result) => {
         if (result === null) {
@@ -75,7 +75,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -85,7 +85,7 @@ export default class AircraftController extends BaseController {
     this.services.aircraft
       .startTransaction()
       .then(() => {
-        return this.services.aircraft.getAircraftByName(name, {});
+        return this.services.aircraft.getByName(name);
       })
       .then(async (result) => {
         if (result === null) {
@@ -102,7 +102,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -129,7 +129,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -144,14 +144,10 @@ export default class AircraftController extends BaseController {
     this.services.aircraft
       .startTransaction()
       .then(() => {
-        return this.services.aircraft.editById(
-          aircraftId,
-          {
-            type: data.type,
-            name: data.name,
-          },
-          {}
-        );
+        return this.services.aircraft.editById(aircraftId, {
+          type: data.type,
+          name: data.name,
+        });
       })
       .then(async (result) => {
         await this.services.aircraft.commitChanges();
@@ -161,7 +157,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -192,7 +188,7 @@ export default class AircraftController extends BaseController {
         await this.services.aircraft.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 }

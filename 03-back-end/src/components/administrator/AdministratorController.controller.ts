@@ -28,7 +28,7 @@ export default class AdministratorController extends BaseController {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -57,7 +57,7 @@ export default class AdministratorController extends BaseController {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -86,7 +86,7 @@ export default class AdministratorController extends BaseController {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -115,7 +115,7 @@ export default class AdministratorController extends BaseController {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 
@@ -155,7 +155,7 @@ export default class AdministratorController extends BaseController {
         await this.services.administrator.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
-        }, 300);
+        }, 500);
       });
   }
 }
