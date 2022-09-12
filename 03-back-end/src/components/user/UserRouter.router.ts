@@ -20,7 +20,7 @@ class UserRouter implements IRouter {
     );
 
     application.get(
-      "/api/user/:id",
+      "/api/user/:uid",
       AuthMiddleware.getVerifier("administrator", "user"),
       userController.getById.bind(userController)
     );
@@ -31,13 +31,13 @@ class UserRouter implements IRouter {
     );
 
     application.put(
-      "/api/user/:aid",
+      "/api/user/:uid",
       AuthMiddleware.getVerifier("administrator", "user"),
       userController.editById.bind(userController)
     );
 
     application.get(
-      "/api/user/activate/:code",
+      "/api/user/activate/:acode",
       userController.activate.bind(userController)
     );
 
@@ -47,7 +47,7 @@ class UserRouter implements IRouter {
     );
 
     application.get(
-      "/api/user/reset/:code",
+      "/api/user/reset/:rcode",
       userController.resetPassword.bind(userController)
     );
 

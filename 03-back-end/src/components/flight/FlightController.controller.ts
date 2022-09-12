@@ -1,11 +1,11 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
-import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
+import { AddFlightValidator, IAddFlightDto } from "./dto/IAddFlight.dto";
+import { EditFlightValidator, IEditFlightDto } from "./dto/IEditFlight.dto";
 
-export default class CountryController extends BaseController {
+export default class FlightController extends BaseController {
   getAll(_req: Request, res: Response) {
-    this.services.country
+    this.services.flight
       .getAll({})
       .then((result) => {
         res.send(result);
@@ -18,15 +18,15 @@ export default class CountryController extends BaseController {
   }
 
   getById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
+    const flightId: number = +req.params?.fid;
 
-    this.services.country
-      .getById(countryId, {})
+    this.services.flight
+      .getById(flightId, {})
       .then((result) => {
         if (result === null) {
           throw {
             status: 404,
-            message: "The country is not found!",
+            message: "The flight is not found!",
           };
         }
 
@@ -39,16 +39,16 @@ export default class CountryController extends BaseController {
       });
   }
 
-  getByName(req: Request, res: Response) {
-    const name: string = req.params?.cname;
+  getByFlightFareCode(req: Request, res: Response) {
+    const flightFareCode: string = req.params?.fcode;
 
-    this.services.country
-      .getByName(name)
+    this.services.flight
+      .getByFlightFareCode(flightFareCode)
       .then((result) => {
         if (result === null) {
           throw {
             status: 404,
-            message: "The country is not found!",
+            message: "The flight is not found!",
           };
         }
 
@@ -62,25 +62,25 @@ export default class CountryController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddCountryDto;
+    const body = req.body as IAddFlightDto;
 
-    if (!AddCountryValidator(body)) {
-      return res.status(400).send(AddCountryValidator.errors);
+    if (!AddFlightValidator(body)) {
+      return res.status(400).send(AddFlightValidator.errors);
     }
 
-    this.services.country
+    this.services.flight
       .startTransaction()
       .then(() => {
-        return this.services.country.add({
-          name: body.name,
+        return this.services.flight.add({
+          flight_fare_code: body.flightFareCode,
         });
       })
       .then(async (result) => {
-        await this.services.country.commitChanges();
+        await this.services.flight.commitChanges();
         res.send(result);
       })
       .catch(async (error) => {
-        await this.services.country.rollbackChanges();
+        await this.services.flight.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
@@ -88,26 +88,26 @@ export default class CountryController extends BaseController {
   }
 
   editById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
-    const data = req.body as IEditCountryDto;
+    const flightId: number = +req.params?.fid;
+    const data = req.body as IEditFlightDto;
 
-    if (!EditCountryValidator(data)) {
-      return res.status(400).send(EditCountryValidator.errors);
+    if (!EditFlightValidator(data)) {
+      return res.status(400).send(EditFlightValidator.errors);
     }
 
-    this.services.country
+    this.services.flight
       .startTransaction()
       .then(() => {
-        return this.services.country.editById(countryId, {
-          name: data.name,
+        return this.services.flight.editById(flightId, {
+          flight_fare_code: data.flightFareCode,
         });
       })
       .then(async (result) => {
-        await this.services.country.commitChanges();
+        await this.services.flight.commitChanges();
         res.send(result);
       })
       .catch(async (error) => {
-        await this.services.country.rollbackChanges();
+        await this.services.flight.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
@@ -115,30 +115,30 @@ export default class CountryController extends BaseController {
   }
 
   deleteById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
+    const flightId: number = +req.params?.fid;
 
-    this.services.country
+    this.services.flight
       .startTransaction()
       .then(() => {
-        return this.services.country.getById(countryId, {});
+        return this.services.flight.getById(flightId, {});
       })
       .then((result) => {
         if (result === null) {
           throw {
             status: 404,
-            message: "The country is not found!",
+            message: "The flight is not found!",
           };
         }
       })
       .then(async () => {
-        await this.services.country.commitChanges();
-        return this.services.country.deleteById(countryId);
+        await this.services.flight.commitChanges();
+        return this.services.flight.deleteById(flightId);
       })
       .then(() => {
-        res.send("This country has been deleted!");
+        res.send("This flight has been deleted!");
       })
       .catch(async (error) => {
-        await this.services.country.commitChanges();
+        await this.services.flight.commitChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 300);

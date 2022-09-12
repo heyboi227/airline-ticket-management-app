@@ -9,16 +9,11 @@ import {
 export default class AircraftController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.aircraft
-      .startTransaction()
-      .then(() => {
-        return this.services.aircraft.getAll({});
-      })
-      .then(async (result) => {
-        await this.services.aircraft.commitChanges();
+      .getAll({})
+      .then((result) => {
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.aircraft.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 500);
@@ -29,11 +24,8 @@ export default class AircraftController extends BaseController {
     const aircraftId: number = +req.params?.aid;
 
     this.services.aircraft
-      .startTransaction()
-      .then(() => {
-        return this.services.aircraft.getById(aircraftId, {});
-      })
-      .then(async (result) => {
+      .getById(aircraftId, {})
+      .then((result) => {
         if (result === null) {
           throw {
             status: 404,
@@ -41,11 +33,9 @@ export default class AircraftController extends BaseController {
           };
         }
 
-        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.aircraft.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -56,11 +46,8 @@ export default class AircraftController extends BaseController {
     const type: string = req.params?.atype;
 
     this.services.aircraft
-      .startTransaction()
-      .then(() => {
-        return this.services.aircraft.getByType(type);
-      })
-      .then(async (result) => {
+      .getByType(type)
+      .then((result) => {
         if (result === null) {
           throw {
             status: 404,
@@ -68,11 +55,9 @@ export default class AircraftController extends BaseController {
           };
         }
 
-        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.aircraft.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -83,11 +68,8 @@ export default class AircraftController extends BaseController {
     const name: string = req.params?.aname;
 
     this.services.aircraft
-      .startTransaction()
-      .then(() => {
-        return this.services.aircraft.getByName(name);
-      })
-      .then(async (result) => {
+      .getByName(name)
+      .then((result) => {
         if (result === null) {
           throw {
             status: 404,
@@ -95,11 +77,9 @@ export default class AircraftController extends BaseController {
           };
         }
 
-        await this.services.aircraft.commitChanges();
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.aircraft.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);

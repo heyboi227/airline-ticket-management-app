@@ -4,16 +4,11 @@ import { Request, Response } from "express";
 export default class CabinController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.cabin
-      .startTransaction()
-      .then(() => {
-        return this.services.cabin.getAll({});
-      })
-      .then(async (result) => {
-        await this.services.cabin.commitChanges();
+      .getAll({})
+      .then((result) => {
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.cabin.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);

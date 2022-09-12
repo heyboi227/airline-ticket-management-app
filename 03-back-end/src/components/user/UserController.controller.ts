@@ -25,19 +25,14 @@ import * as generatePassword from "generate-password";
 export default class UserController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.user
-      .startTransaction()
-      .then(() => {
-        return this.services.user.getAll({
-          removePassword: true,
-          removeActivationCode: true,
-        });
+      .getAll({
+        removePassword: true,
+        removeActivationCode: true,
       })
-      .then(async (result) => {
-        await this.services.user.commitChanges();
+      .then((result) => {
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.user.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
@@ -45,21 +40,18 @@ export default class UserController extends BaseController {
   }
 
   getById(req: Request, res: Response) {
-    const id: number = +req.params?.id;
+    const userId: number = +req.params?.uid;
 
     if (req.authorization?.role === "user") {
-      if (req.authorization?.id !== id) {
+      if (req.authorization?.id !== userId) {
         return res.status(403).send("You do not have access to this resource!");
       }
     }
 
     this.services.user
-      .startTransaction()
-      .then(() => {
-        return this.services.user.getById(id, {
-          removePassword: true,
-          removeActivationCode: true,
-        });
+      .getById(userId, {
+        removePassword: true,
+        removeActivationCode: true,
       })
       .then((result) => {
         if (result === null) {
@@ -71,8 +63,7 @@ export default class UserController extends BaseController {
 
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.user.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 300);
@@ -227,12 +218,12 @@ export default class UserController extends BaseController {
   }
 
   activate(req: Request, res: Response) {
-    const code: string = req.params?.code;
+    const activationCode: string = req.params?.acode;
 
     this.services.user
       .startTransaction()
       .then(() => {
-        return this.services.user.getByActivationCode(code, {
+        return this.services.user.getByActivationCode(activationCode, {
           removeActivationCode: true,
           removePassword: true,
         });
@@ -271,12 +262,12 @@ export default class UserController extends BaseController {
   }
 
   resetPassword(req: Request, res: Response) {
-    const code: string = req.params?.code;
+    const passwordResetCode: string = req.params?.rcode;
 
     this.services.user
       .startTransaction()
       .then(() => {
-        return this.services.user.getByPasswordResetCode(code, {
+        return this.services.user.getByPasswordResetCode(passwordResetCode, {
           removeActivationCode: false,
           removePassword: true,
         });
@@ -518,11 +509,11 @@ export default class UserController extends BaseController {
   }
 
   editById(req: Request, res: Response) {
-    const id: number = +req.params?.aid;
+    const userId: number = +req.params?.uid;
     const data = req.body as IEditUserDto;
 
     if (req.authorization?.role === "user") {
-      if (req.authorization?.id !== id) {
+      if (req.authorization?.id !== userId) {
         return res.status(403).send("You do not have access to this resource!");
       }
     }
@@ -558,7 +549,7 @@ export default class UserController extends BaseController {
     this.services.user
       .startTransaction()
       .then(() => {
-        return this.services.user.editById(id, serviceData);
+        return this.services.user.editById(userId, serviceData);
       })
       .then(async (result) => {
         await this.services.user.commitChanges();

@@ -14,18 +14,13 @@ import IEditAdministrator, {
 export default class AdministratorController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.administrator
-      .startTransaction()
-      .then(() => {
-        return this.services.administrator.getAll({
-          removePassword: true,
-        });
+      .getAll({
+        removePassword: true,
       })
-      .then(async (result) => {
-        await this.services.administrator.commitChanges();
+      .then((result) => {
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.administrator.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 500);
@@ -36,13 +31,10 @@ export default class AdministratorController extends BaseController {
     const administratorId: number = +req.params?.aid;
 
     this.services.administrator
-      .startTransaction()
-      .then(() => {
-        return this.services.administrator.getById(administratorId, {
-          removePassword: true,
-        });
+      .getById(administratorId, {
+        removePassword: true,
       })
-      .then(async (result) => {
+      .then((result) => {
         if (result === null) {
           throw {
             status: 404,
@@ -50,11 +42,9 @@ export default class AdministratorController extends BaseController {
           };
         }
 
-        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.administrator.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
@@ -65,13 +55,10 @@ export default class AdministratorController extends BaseController {
     const username: string = req.params?.ausername;
 
     this.services.administrator
-      .startTransaction()
-      .then(() => {
-        return this.services.administrator.getByUsername(username, {
-          removePassword: true,
-        });
+      .getByUsername(username, {
+        removePassword: true,
       })
-      .then(async (result) => {
+      .then((result) => {
         if (result === null) {
           throw {
             status: 404,
@@ -79,11 +66,9 @@ export default class AdministratorController extends BaseController {
           };
         }
 
-        await this.services.administrator.commitChanges();
         res.send(result);
       })
-      .catch(async (error) => {
-        await this.services.administrator.rollbackChanges();
+      .catch((error) => {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
