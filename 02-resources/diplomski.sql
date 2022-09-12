@@ -88,8 +88,9 @@ CREATE TABLE IF NOT EXISTS `airport` (
 DROP TABLE IF EXISTS `bag`;
 CREATE TABLE IF NOT EXISTS `bag` (
   `bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `type` enum('checked bag','cabin bag') COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`bag_id`)
+  `type` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`bag_id`),
+  UNIQUE KEY `uq_bag_type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -123,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `document` (
   `country_id` int(10) unsigned NOT NULL,
   `type` enum('Passport','National ID') COLLATE utf8mb4_unicode_ci NOT NULL,
   `document_number` int(10) unsigned NOT NULL,
-  `user_id` int(10) unsigned NOT NULL,
+  `user_id` int(10) unsigned DEFAULT NULL,
   PRIMARY KEY (`document_id`),
   UNIQUE KEY `uq_document_document_number` (`document_number`),
   KEY `fk_document_user_id` (`user_id`),
@@ -153,9 +154,9 @@ CREATE TABLE IF NOT EXISTS `flight_flight_leg` (
   `flight_leg_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`flight_flight_leg_id`),
   UNIQUE KEY `uq_flight_flight_leg_flight_id_flight_leg_id` (`flight_id`,`flight_leg_id`),
-  KEY `fk_flight_flight_leg_flight_leg_flight_leg_id` (`flight_leg_id`),
-  CONSTRAINT `fk_flight_flight_leg_flight_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_flight_leg_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
+  KEY `fk_flight_flight_leg_flight_leg_id` (`flight_leg_id`) USING BTREE,
+  CONSTRAINT `fk_flight_flight_leg_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -172,12 +173,12 @@ CREATE TABLE IF NOT EXISTS `flight_leg` (
   `aircraft_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`flight_leg_id`) USING BTREE,
   UNIQUE KEY `uq_flight_flight_code` (`flight_code`),
-  KEY `fk_flight_airport_origin_airport_id` (`origin_airport_id`),
-  KEY `fk_flight_airport_destination_airport_id` (`destination_airport_id`),
-  KEY `fk_flight_aircraft_aircraft_id` (`aircraft_id`),
-  CONSTRAINT `fk_flight_aircraft_aircraft_id` FOREIGN KEY (`aircraft_id`) REFERENCES `aircraft` (`aircraft_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_airport_destination_airport_id` FOREIGN KEY (`destination_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_airport_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
+  KEY `fk_flight_origin_airport_id` (`origin_airport_id`) USING BTREE,
+  KEY `fk_flight_destination_airport_id` (`destination_airport_id`) USING BTREE,
+  KEY `fk_flight_aircraft_id` (`aircraft_id`) USING BTREE,
+  CONSTRAINT `fk_flight_leg_aircraft_id` FOREIGN KEY (`aircraft_id`) REFERENCES `aircraft` (`aircraft_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_destination_airport_id` FOREIGN KEY (`destination_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -186,14 +187,14 @@ CREATE TABLE IF NOT EXISTS `flight_leg` (
 DROP TABLE IF EXISTS `flight_leg_bag`;
 CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
   `flight_bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_id` int(10) unsigned NOT NULL,
+  `flight_leg_id` int(10) unsigned NOT NULL,
   `bag_id` int(10) unsigned NOT NULL,
   `price` decimal(10,0) unsigned NOT NULL,
   PRIMARY KEY (`flight_bag_id`),
-  UNIQUE KEY `uq_flight_bag_id_flight_id_bag_id` (`flight_id`,`bag_id`),
-  KEY `fk_flight_leg_bag_bag_id` (`bag_id`),
-  CONSTRAINT `fk_flight_leg_bag_bag_id` FOREIGN KEY (`bag_id`) REFERENCES `bag` (`bag_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_bag_flight_leg_id` FOREIGN KEY (`flight_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
+  UNIQUE KEY `uq_flight_bag_id_flight_id_bag_id` (`flight_leg_id`,`bag_id`) USING BTREE,
+  KEY `fk_flight_leg_bag_id` (`bag_id`) USING BTREE,
+  CONSTRAINT `fk_flight_leg_bag_id` FOREIGN KEY (`bag_id`) REFERENCES `bag` (`bag_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -207,9 +208,9 @@ CREATE TABLE IF NOT EXISTS `flight_leg_cabin` (
   `price` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`flight_leg_cabin_id`),
   UNIQUE KEY `uq_flight_leg_cabin_flight_leg_id_cabin_id` (`flight_leg_id`,`cabin_id`),
-  KEY `fk_flight_leg_cabin_cabin_cabin_id` (`cabin_id`),
-  CONSTRAINT `fk_flight_leg_cabin_cabin_cabin_id` FOREIGN KEY (`cabin_id`) REFERENCES `cabin` (`cabin_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_cabin_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
+  KEY `fk_flight_leg_cabin_id` (`cabin_id`) USING BTREE,
+  CONSTRAINT `fk_flight_leg_cabin_cabin_id` FOREIGN KEY (`cabin_id`) REFERENCES `cabin` (`cabin_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_cabin_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -228,11 +229,11 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   PRIMARY KEY (`ticket_id`) USING BTREE,
   UNIQUE KEY `uq_ticket_ticket_number` (`ticket_number`),
   UNIQUE KEY `uq_ticket_flight_id_seat_number` (`flight_id`,`seat_number`),
-  KEY `fk_ticket_document_ticket_holder_document_id` (`document_id`) USING BTREE,
-  KEY `fk_ticket_user_user_id` (`user_id`),
-  CONSTRAINT `fk_ticket_document_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_ticket_flight_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_ticket_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
+  KEY `fk_ticket_document_id` (`document_id`) USING BTREE,
+  KEY `fk_ticket_user_id` (`user_id`) USING BTREE,
+  CONSTRAINT `fk_ticket_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_ticket_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_ticket_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
