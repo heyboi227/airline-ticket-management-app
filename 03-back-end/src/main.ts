@@ -2,8 +2,6 @@ import * as express from "express";
 import * as cors from "cors";
 import IConfig from "./common/IConfig.interface";
 import { DevConfig } from "./configs";
-import * as fs from "fs";
-import * as morgan from "morgan";
 import IApplicationResources from "./common/IApplicationResources.interface";
 import * as mysql2 from "mysql2/promise";
 import fileUpload = require("express-fileupload");
@@ -12,14 +10,10 @@ import AdministratorService from "./components/administrator/AdministratorServic
 import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
 import AircraftService from "./components/aircraft/AircraftService.service";
+import BagService from "./components/bag/BagService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
-
-  fs.mkdirSync(config.logging.path, {
-    mode: 0o755,
-    recursive: true,
-  });
 
   let db = await mysql2.createConnection({
     host: config.database.host,
@@ -60,6 +54,7 @@ async function main() {
       address: null,
       administrator: null,
       aircraft: null,
+      bag: null,
       country: null,
       user: null,
       /* TODO: Implement DB entity services */
@@ -75,21 +70,13 @@ async function main() {
   applicationResources.services.aircraft = new AircraftService(
     applicationResources
   );
+  applicationResources.services.bag = new BagService(applicationResources);
   applicationResources.services.country = new CountryService(
     applicationResources
   );
   applicationResources.services.user = new UserService(applicationResources);
 
   const application: express.Application = express();
-
-  application.use(
-    morgan(config.logging.format, {
-      stream: fs.createWriteStream(
-        config.logging.path + "/" + config.logging.filename,
-        { flags: "a" }
-      ),
-    })
-  );
 
   application.use(cors());
 

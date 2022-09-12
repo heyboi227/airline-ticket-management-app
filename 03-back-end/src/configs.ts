@@ -7,6 +7,7 @@ import CountryRouter from "./components/country/CountryRouter.Router";
 import AuthRouter from "./components/auth/AuthRouter.router";
 import AircraftRouter from "./components/aircraft/AircraftRouter.router";
 import "dotenv/config";
+import BagRouter from "./components/bag/BagRouter.Router";
 
 const DevConfig: IConfig = {
   server: {
@@ -20,12 +21,6 @@ const DevConfig: IConfig = {
       path: "./static",
       route: "/assets",
     },
-  },
-  logging: {
-    path: "./logs",
-    format:
-      ":date[iso]\t:remote-addr\t:method\t:url\t:status\t:res[content-length] bytes\t:response-time ms",
-    filename: "access.log",
   },
   database: {
     host: "localhost",
@@ -41,6 +36,7 @@ const DevConfig: IConfig = {
     new AdministratorRouter(),
     new AircraftRouter(),
     new AuthRouter(),
+    new BagRouter(),
     new CountryRouter(),
     new UserRouter(),
   ],

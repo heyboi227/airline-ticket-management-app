@@ -52,11 +52,6 @@ interface IConfig {
       path: string;
     };
   };
-  logging: {
-    path: string;
-    filename: string;
-    format: string;
-  };
   database: {
     host: string;
     port: number;
