@@ -11,6 +11,7 @@ import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
 import AircraftService from "./components/aircraft/AircraftService.service";
 import BagService from "./components/bag/BagService.service";
+import CabinService from "./components/cabin/CabinService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -55,6 +56,7 @@ async function main() {
       administrator: null,
       aircraft: null,
       bag: null,
+      cabin: null,
       country: null,
       user: null,
       /* TODO: Implement DB entity services */
@@ -71,6 +73,7 @@ async function main() {
     applicationResources
   );
   applicationResources.services.bag = new BagService(applicationResources);
+  applicationResources.services.cabin = new CabinService(applicationResources);
   applicationResources.services.country = new CountryService(
     applicationResources
   );
@@ -115,7 +118,7 @@ async function main() {
     router.setupRoutes(application, applicationResources);
   }
 
-  application.use((req, res) => {
+  application.use((_req, res) => {
     res.sendStatus(404);
   });
 
