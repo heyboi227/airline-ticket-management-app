@@ -19,7 +19,7 @@
     "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.3",
     "@types/node": "^18.7.17",
-    "@types/nodemailer": "^6.4.5",
+    "@types/nodemailer": "^6.4.6",
     "@types/sharp": "^0.30.5",
     "@types/uuid": "^8.3.4",
     "rimraf": "^3.0.2",
