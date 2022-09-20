@@ -8,7 +8,7 @@ import AuthRouter from "./components/auth/AuthRouter.router";
 import AircraftRouter from "./components/aircraft/AircraftRouter.router";
 import "dotenv/config";
 import BagRouter from "./components/bag/BagRouter.Router";
-import CabinRouter from "./components/cabin/CabinRouter.Router";
+import TravelClassRouter from "./components/class/TravelClassRouter.Router";
 
 const DevConfig: IConfig = {
   server: {
@@ -38,7 +38,7 @@ const DevConfig: IConfig = {
     new AircraftRouter(),
     new AuthRouter(),
     new BagRouter(),
-    new CabinRouter(),
+    new TravelClassRouter(),
     new CountryRouter(),
     new UserRouter(),
   ],

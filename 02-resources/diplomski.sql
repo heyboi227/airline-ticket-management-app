@@ -95,17 +95,6 @@ CREATE TABLE IF NOT EXISTS `bag` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table diplomski_app.cabin
-DROP TABLE IF EXISTS `cabin`;
-CREATE TABLE IF NOT EXISTS `cabin` (
-  `cabin_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`cabin_id`),
-  UNIQUE KEY `uq_cabin_name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Data exporting was unselected.
-
 -- Dumping structure for table diplomski_app.country
 DROP TABLE IF EXISTS `country`;
 CREATE TABLE IF NOT EXISTS `country` (
@@ -140,6 +129,7 @@ DROP TABLE IF EXISTS `flight`;
 CREATE TABLE IF NOT EXISTS `flight` (
   `flight_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `flight_fare_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price` decimal(10,2) unsigned NOT NULL,
   PRIMARY KEY (`flight_id`),
   UNIQUE KEY `uq_flight_flight_fare_code` (`flight_fare_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -199,18 +189,32 @@ CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
 
 -- Data exporting was unselected.
 
--- Dumping structure for table diplomski_app.flight_leg_cabin
-DROP TABLE IF EXISTS `flight_leg_cabin`;
-CREATE TABLE IF NOT EXISTS `flight_leg_cabin` (
-  `flight_leg_cabin_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+-- Dumping structure for table diplomski_app.flight_leg_travel_class
+DROP TABLE IF EXISTS `flight_leg_travel_class`;
+CREATE TABLE IF NOT EXISTS `flight_leg_travel_class` (
+  `flight_leg_travel_class_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `flight_leg_id` int(10) unsigned NOT NULL,
-  `cabin_id` int(10) unsigned NOT NULL,
+  `travel_class_id` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
-  PRIMARY KEY (`flight_leg_cabin_id`),
-  UNIQUE KEY `uq_flight_leg_cabin_flight_leg_id_cabin_id` (`flight_leg_id`,`cabin_id`),
-  KEY `fk_flight_leg_cabin_id` (`cabin_id`) USING BTREE,
-  CONSTRAINT `fk_flight_leg_cabin_cabin_id` FOREIGN KEY (`cabin_id`) REFERENCES `cabin` (`cabin_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_cabin_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
+  PRIMARY KEY (`flight_leg_travel_class_id`) USING BTREE,
+  UNIQUE KEY `uq_flight_leg_cabin_flight_leg_id_cabin_id` (`flight_leg_id`,`travel_class_id`) USING BTREE,
+  KEY `fk_flight_leg_cabin_id` (`travel_class_id`) USING BTREE,
+  CONSTRAINT `fk_flight_leg_travel_class_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table diplomski_app.photo
+DROP TABLE IF EXISTS `photo`;
+CREATE TABLE IF NOT EXISTS `photo` (
+  `photo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `file_path` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `document_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`photo_id`),
+  UNIQUE KEY `uq_photo_file_path` (`file_path`) USING HASH,
+  KEY `fk_photo_document_id` (`document_id`),
+  CONSTRAINT `fk_photo_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.
@@ -234,6 +238,17 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   CONSTRAINT `fk_ticket_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_ticket_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_ticket_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Data exporting was unselected.
+
+-- Dumping structure for table diplomski_app.travel_class
+DROP TABLE IF EXISTS `travel_class`;
+CREATE TABLE IF NOT EXISTS `travel_class` (
+  `travel_class_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`travel_class_id`) USING BTREE,
+  UNIQUE KEY `uq_cabin_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Data exporting was unselected.

@@ -1,22 +1,21 @@
 import IRouter from "../../common/IRouter.interface";
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
-import CabinController from "./CabinController.controller";
+import TravelClassController from "./TravelClassController.controller";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
 
-export default class CabinRouter implements IRouter {
+export default class TravelClassRouter implements IRouter {
   public setupRoutes(
     application: express.Application,
     resources: IApplicationResources
   ) {
-    const cabinController: CabinController = new CabinController(
-      resources.services
-    );
+    const travelClassController: TravelClassController =
+      new TravelClassController(resources.services);
 
     application.get(
-      "/api/cabin",
+      "/api/travel-class",
       AuthMiddleware.getVerifier("administrator", "user"),
-      cabinController.getAll.bind(cabinController)
+      travelClassController.getAll.bind(travelClassController)
     );
   }
 }

@@ -2,7 +2,7 @@ import * as mysql2 from "mysql2/promise";
 import AdministratorService from "../components/administrator/AdministratorService.service";
 import AircraftService from "../components/aircraft/AircraftService.service";
 import BagService from "../components/bag/BagService.service";
-import CabinService from "../components/cabin/CabinService.service";
+import TravelClassService from "../components/class/TravelClassService.service";
 import CountryService from "../components/country/CountryService.service";
 import FlightService from "../components/flight/FlightService.service";
 import AddressService from "../components/user/AddressService.service";
@@ -13,9 +13,9 @@ export interface IServices {
   administrator: AdministratorService;
   aircraft: AircraftService;
   bag: BagService;
-  cabin: CabinService;
   country: CountryService;
   flight: FlightService;
+  travelClass: TravelClassService;
   user: UserService;
   /* TODO: implement DB entity services */
 }

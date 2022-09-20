@@ -1,6 +1,6 @@
 import IModel from "../../common/IModel.interface";
 
-export default class CabinModel implements IModel {
-  cabinId: number;
+export default class ClassModel implements IModel {
+  classId: number;
   name: string;
 }

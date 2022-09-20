@@ -11,7 +11,8 @@ import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
 import AircraftService from "./components/aircraft/AircraftService.service";
 import BagService from "./components/bag/BagService.service";
-import CabinService from "./components/cabin/CabinService.service";
+import TravelClassService from "./components/class/TravelClassService.service";
+import FlightService from "./components/flight/FlightService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -56,8 +57,9 @@ async function main() {
       administrator: null,
       aircraft: null,
       bag: null,
-      cabin: null,
       country: null,
+      flight: null,
+      travelClass: null,
       user: null,
       /* TODO: Implement DB entity services */
     },
@@ -73,7 +75,12 @@ async function main() {
     applicationResources
   );
   applicationResources.services.bag = new BagService(applicationResources);
-  applicationResources.services.cabin = new CabinService(applicationResources);
+  applicationResources.services.flight = new FlightService(
+    applicationResources
+  );
+  applicationResources.services.travelClass = new TravelClassService(
+    applicationResources
+  );
   applicationResources.services.country = new CountryService(
     applicationResources
   );
