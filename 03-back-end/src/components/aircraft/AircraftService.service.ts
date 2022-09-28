@@ -10,6 +10,9 @@ export default class AircraftService extends BaseService<
   AircraftModel,
   IAircraftAdapterOptions
 > {
+  getByCity(city: string) {
+      throw new Error("Method not implemented.");
+  }
   tableName(): string {
     return "aircraft";
   }
