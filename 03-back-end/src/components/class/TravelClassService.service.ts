@@ -18,7 +18,7 @@ export default class TravelClassService extends BaseService<
   ): Promise<TravelClassModel> {
     const travelClass = new TravelClassModel();
 
-    travelClass.classId = +data?.class_id;
+    travelClass.travelClassId = +data?.travel_class_id;
     travelClass.name = data?.name;
 
     return travelClass;
