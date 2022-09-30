@@ -83,11 +83,11 @@ export default class AirportController extends BaseController {
       });
   }
 
-  getByCity(req: Request, res: Response) {
+  getAllByCity(req: Request, res: Response) {
     const city: string = req.params?.acity;
 
     this.services.airport
-      .getByCity(city)
+      .getAllByCity(city)
       .then((result) => {
         if (result === null) {
           throw {
@@ -105,11 +105,11 @@ export default class AirportController extends BaseController {
       });
   }
 
-  getByCountryId(req: Request, res: Response) {
+  getAllByCountryId(req: Request, res: Response) {
     const countryId: string = req.params?.cid;
 
     this.services.airport
-      .getByCountryId(countryId)
+      .getAllByCountryId(countryId)
       .then((result) => {
         if (result === null) {
           throw {

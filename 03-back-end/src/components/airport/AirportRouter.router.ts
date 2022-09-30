@@ -40,13 +40,13 @@ export default class AirportRouter implements IRouter {
     application.get(
       "/api/airport/city/:acity",
       AuthMiddleware.getVerifier("administrator", "user"),
-      airportController.getByCity.bind(airportController)
+      airportController.getAllByCity.bind(airportController)
     );
 
     application.get(
       "/api/airport/country/:cid",
       AuthMiddleware.getVerifier("administrator", "user"),
-      airportController.getByCountryId.bind(airportController)
+      airportController.getAllByCountryId.bind(airportController)
     );
 
     application.post(

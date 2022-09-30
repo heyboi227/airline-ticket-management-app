@@ -28,7 +28,7 @@ export default class AircraftRouter implements IRouter {
     application.get(
       "/api/aircraft/type/:atype",
       AuthMiddleware.getVerifier("administrator", "user"),
-      aircraftController.getByType.bind(aircraftController)
+      aircraftController.getAllByType.bind(aircraftController)
     );
 
     application.get(

@@ -10,9 +10,6 @@ export default class AircraftService extends BaseService<
   AircraftModel,
   IAircraftAdapterOptions
 > {
-  getByCity(city: string) {
-      throw new Error("Method not implemented.");
-  }
   tableName(): string {
     return "aircraft";
   }
@@ -45,7 +42,7 @@ export default class AircraftService extends BaseService<
     return this.baseDeleteById(aircraftId);
   }
 
-  public async getByType(type: string): Promise<AircraftModel[]> {
+  public async getAllByType(type: string): Promise<AircraftModel[]> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("type", type, {})
         .then((result) => {

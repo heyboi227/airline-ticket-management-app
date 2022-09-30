@@ -42,11 +42,11 @@ export default class AircraftController extends BaseController {
       });
   }
 
-  getByType(req: Request, res: Response) {
+  getAllByType(req: Request, res: Response) {
     const type: string = req.params?.atype;
 
     this.services.aircraft
-      .getByType(type)
+      .getAllByType(type)
       .then((result) => {
         if (result === null) {
           throw {

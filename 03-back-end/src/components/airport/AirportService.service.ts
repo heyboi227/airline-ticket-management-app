@@ -78,7 +78,7 @@ export default class AirportService extends BaseService<
     });
   }
 
-  public async getByCity(city: string): Promise<AirportModel[]> {
+  public async getAllByCity(city: string): Promise<AirportModel[]> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("city", city, {})
         .then((result) => {
@@ -94,7 +94,7 @@ export default class AirportService extends BaseService<
     });
   }
 
-  public async getByCountryId(countryId: string): Promise<AirportModel[]> {
+  public async getAllByCountryId(countryId: string): Promise<AirportModel[]> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("country_idd", countryId, {})
         .then((result) => {
