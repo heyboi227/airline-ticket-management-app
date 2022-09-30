@@ -460,13 +460,13 @@ DELETE FROM `photo`;
 DROP TABLE IF EXISTS `ticket`;
 CREATE TABLE IF NOT EXISTS `ticket` (
   `ticket_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `ticket_number` int(10) unsigned NOT NULL,
+  `ticket_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ticket_holder_name` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
   `document_id` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `flight_id` int(10) unsigned NOT NULL,
-  `seat_number` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `seat_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ticket_id`) USING BTREE,
   UNIQUE KEY `uq_ticket_ticket_number` (`ticket_number`),
   UNIQUE KEY `uq_ticket_flight_id_seat_number` (`flight_id`,`seat_number`),
