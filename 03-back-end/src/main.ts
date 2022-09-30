@@ -11,9 +11,10 @@ import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
 import AircraftService from "./components/aircraft/AircraftService.service";
 import BagService from "./components/bag/BagService.service";
-import TravelClassService from "./components/class/TravelClassService.service";
+import TravelClassService from "./components/travel_class/TravelClassService.service";
 import FlightService from "./components/flight/FlightService.service";
 import AirportService from "./components/airport/AirportService.service";
+import DocumentService from "./components/document/DocumentService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -60,6 +61,7 @@ async function main() {
       airport: null,
       bag: null,
       country: null,
+      document: null,
       flight: null,
       travelClass: null,
       user: null,
@@ -80,6 +82,9 @@ async function main() {
     applicationResources
   );
   applicationResources.services.bag = new BagService(applicationResources);
+  applicationResources.services.document = new DocumentService(
+    applicationResources
+  );
   applicationResources.services.flight = new FlightService(
     applicationResources
   );

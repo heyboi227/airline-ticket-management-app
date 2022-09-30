@@ -8,7 +8,7 @@ import AuthRouter from "./components/auth/AuthRouter.router";
 import AircraftRouter from "./components/aircraft/AircraftRouter.router";
 import "dotenv/config";
 import BagRouter from "./components/bag/BagRouter.Router";
-import TravelClassRouter from "./components/class/TravelClassRouter.Router";
+import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
 import AirportRouter from "./components/airport/AirportRouter.router";
 
 const DevConfig: IConfig = {
@@ -40,8 +40,8 @@ const DevConfig: IConfig = {
     new AirportRouter(),
     new AuthRouter(),
     new BagRouter(),
-    new TravelClassRouter(),
     new CountryRouter(),
+    new TravelClassRouter(),
     new UserRouter(),
   ],
   fileUploads: {
