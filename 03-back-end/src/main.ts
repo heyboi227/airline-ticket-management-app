@@ -15,6 +15,7 @@ import TravelClassService from "./components/travel_class/TravelClassService.ser
 import FlightService from "./components/flight/FlightService.service";
 import AirportService from "./components/airport/AirportService.service";
 import DocumentService from "./components/document/DocumentService.service";
+import TicketService from "./components/ticket/TicketService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -63,9 +64,9 @@ async function main() {
       country: null,
       document: null,
       flight: null,
+      ticket: null,
       travelClass: null,
       user: null,
-      /* TODO: Implement DB entity services */
     },
   };
 
@@ -86,6 +87,9 @@ async function main() {
     applicationResources
   );
   applicationResources.services.flight = new FlightService(
+    applicationResources
+  );
+  applicationResources.services.ticket = new TicketService(
     applicationResources
   );
   applicationResources.services.travelClass = new TravelClassService(

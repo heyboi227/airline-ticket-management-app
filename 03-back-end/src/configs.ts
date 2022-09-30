@@ -10,6 +10,7 @@ import "dotenv/config";
 import BagRouter from "./components/bag/BagRouter.Router";
 import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
 import AirportRouter from "./components/airport/AirportRouter.router";
+import TicketRouter from "./components/ticket/TicketRouter.Router";
 
 const DevConfig: IConfig = {
   server: {
@@ -41,6 +42,7 @@ const DevConfig: IConfig = {
     new AuthRouter(),
     new BagRouter(),
     new CountryRouter(),
+    new TicketRouter(),
     new TravelClassRouter(),
     new UserRouter(),
   ],

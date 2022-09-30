@@ -9,6 +9,7 @@ import DocumentService from "../components/document/DocumentService.service";
 import FlightService from "../components/flight/FlightService.service";
 import AddressService from "../components/user/AddressService.service";
 import UserService from "../components/user/UserService.service";
+import TicketService from "../components/ticket/TicketService.service";
 
 export interface IServices {
   address: AddressService;
@@ -19,6 +20,7 @@ export interface IServices {
   country: CountryService;
   document: DocumentService;
   flight: FlightService;
+  ticket: TicketService;
   travelClass: TravelClassService;
   user: UserService;
   /* TODO: implement DB entity services */
