@@ -7,6 +7,7 @@ export interface IAddAirportDto {
   airportCode: string;
   name: string;
   city: string;
+  countryId: number;
 }
 
 export interface IAddAirport extends IServiceData {
@@ -34,8 +35,11 @@ const AddAirportValidator = ajv.compile({
       minLength: 2,
       maxLength: 128,
     },
+    countryId: {
+      type: "number",
+    },
   },
-  required: ["airportCode", "name", "city"],
+  required: ["airportCode", "name", "city", "countryId"],
   additionalProperties: false,
 });
 
