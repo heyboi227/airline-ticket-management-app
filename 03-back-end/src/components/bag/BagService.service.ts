@@ -19,7 +19,7 @@ export default class BagService extends BaseService<
     const bag = new BagModel();
 
     bag.bagId = +data?.bag_id;
-    bag.type = data?.type;
+    bag.name = data?.name;
 
     return bag;
   }
