@@ -1,4 +1,5 @@
 import IModel from "../../common/IModel.interface";
+import CountryModel from "../country/CountryModel.model";
 
 export default class AirportModel implements IModel {
   airportId: number;
@@ -6,4 +7,6 @@ export default class AirportModel implements IModel {
   name: string;
   city: string;
   countryId: number;
+
+  country?: CountryModel;
 }

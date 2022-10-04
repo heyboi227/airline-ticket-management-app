@@ -4,19 +4,25 @@ import AirportModel from "./AirportModel.model";
 import { IAddAirport } from "./dto/IAddAirport.dto";
 import { IEditAirport } from "./dto/IEditAirport.dto";
 
-export interface IAirportAdapterOptions extends IAdapterOptions {}
+export interface IAirportAdapterOptions extends IAdapterOptions {
+  showCountry: boolean;
+}
+
+export const DefaultAirportAdapterOptions: IAirportAdapterOptions = {
+  showCountry: true,
+};
 
 export default class AirportService extends BaseService<
   AirportModel,
   IAirportAdapterOptions
 > {
   tableName(): string {
-    return "aircraft";
+    return "airport";
   }
 
   protected async adaptToModel(
     data: any,
-    _options: IAirportAdapterOptions
+    options: IAirportAdapterOptions
   ): Promise<AirportModel> {
     const airport = new AirportModel();
 
@@ -26,18 +32,25 @@ export default class AirportService extends BaseService<
     airport.city = data?.city;
     airport.countryId = +data?.country_id;
 
+    if (options.showCountry) {
+      airport.country = await this.services.country.getById(
+        airport.countryId,
+        {}
+      );
+    }
+
     return airport;
   }
 
   public async add(data: IAddAirport): Promise<AirportModel> {
-    return this.baseAdd(data, {});
+    return this.baseAdd(data, DefaultAirportAdapterOptions);
   }
 
   public async editById(
     airportId: number,
     data: IEditAirport
   ): Promise<AirportModel> {
-    return this.baseEditById(airportId, data, {});
+    return this.baseEditById(airportId, data, DefaultAirportAdapterOptions);
   }
 
   public async deleteById(airportId: number) {
@@ -48,7 +61,11 @@ export default class AirportService extends BaseService<
     airportCode: string
   ): Promise<AirportModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("airport_code", airportCode, {})
+      this.getAllByFieldNameAndValue(
+        "airport_code",
+        airportCode,
+        DefaultAirportAdapterOptions
+      )
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);
@@ -64,7 +81,7 @@ export default class AirportService extends BaseService<
 
   public async getByName(name: string): Promise<AirportModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", name, {})
+      this.getAllByFieldNameAndValue("name", name, DefaultAirportAdapterOptions)
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);
@@ -80,7 +97,7 @@ export default class AirportService extends BaseService<
 
   public async getAllByCity(city: string): Promise<AirportModel[]> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("city", city, {})
+      this.getAllByFieldNameAndValue("city", city, DefaultAirportAdapterOptions)
         .then((result) => {
           if (result.length === 0) {
             return resolve([]);
@@ -94,9 +111,13 @@ export default class AirportService extends BaseService<
     });
   }
 
-  public async getAllByCountryId(countryId: string): Promise<AirportModel[]> {
+  public async getAllByCountryId(countryId: number): Promise<AirportModel[]> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("country_idd", countryId, {})
+      this.getAllByFieldNameAndValue(
+        "country_id",
+        countryId,
+        DefaultAirportAdapterOptions
+      )
         .then((result) => {
           if (result.length === 0) {
             return resolve([]);

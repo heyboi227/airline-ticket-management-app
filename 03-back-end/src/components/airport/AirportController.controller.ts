@@ -2,11 +2,12 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddAirportValidator, IAddAirportDto } from "./dto/IAddAirport.dto";
 import { EditAirportValidator, IEditAirportDto } from "./dto/IEditAirport.dto";
+import { DefaultAirportAdapterOptions } from "./AirportService.service";
 
 export default class AirportController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.airport
-      .getAll({})
+      .getAll(DefaultAirportAdapterOptions)
       .then((result) => {
         res.send(result);
       })
@@ -21,7 +22,7 @@ export default class AirportController extends BaseController {
     const airportId: number = +req.params?.aid;
 
     this.services.airport
-      .getById(airportId, {})
+      .getById(airportId, DefaultAirportAdapterOptions)
       .then((result) => {
         if (result === null) {
           throw {
@@ -106,7 +107,7 @@ export default class AirportController extends BaseController {
   }
 
   getAllByCountryId(req: Request, res: Response) {
-    const countryId: string = req.params?.cid;
+    const countryId: number = +req.params?.cid;
 
     this.services.airport
       .getAllByCountryId(countryId)
@@ -128,7 +129,6 @@ export default class AirportController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
     const body = req.body as IAddAirportDto;
 
     if (!AddAirportValidator(body)) {
@@ -136,7 +136,7 @@ export default class AirportController extends BaseController {
     }
 
     this.services.country
-      .getById(countryId, {})
+      .getById(body.countryId, DefaultAirportAdapterOptions)
       .then((resultCountry) => {
         if (resultCountry === null) {
           throw {
@@ -152,11 +152,14 @@ export default class AirportController extends BaseController {
           airport_code: body.airportCode,
           name: body.name,
           city: body.city,
-          country_id: countryId,
+          country_id: body.countryId,
         });
       })
       .then((newAirport) => {
-        return this.services.airport.getById(newAirport.airportId, {});
+        return this.services.airport.getById(
+          newAirport.airportId,
+          DefaultAirportAdapterOptions
+        );
       })
       .then(async (result) => {
         await this.services.airport.commitChanges();
@@ -203,7 +206,10 @@ export default class AirportController extends BaseController {
     this.services.airport
       .startTransaction()
       .then(() => {
-        return this.services.airport.getById(airportId, {});
+        return this.services.airport.getById(
+          airportId,
+          DefaultAirportAdapterOptions
+        );
       })
       .then((result) => {
         if (result === null) {
