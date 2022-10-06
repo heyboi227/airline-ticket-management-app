@@ -22,6 +22,9 @@ export interface IAddDocument extends IServiceData {
 const AddDocumentValidator = ajv.compile({
   type: "object",
   properties: {
+    countryId: {
+      type: "number",
+    },
     type: {
       type: "string",
       minLength: 8,
@@ -32,8 +35,11 @@ const AddDocumentValidator = ajv.compile({
       minLength: 2,
       maxLength: 50,
     },
+    userId: {
+      type: "number",
+    },
   },
-  required: ["type", "documentNumber"],
+  required: ["countryId", "type", "documentNumber", "userId"],
   additionalProperties: false,
 });
 
