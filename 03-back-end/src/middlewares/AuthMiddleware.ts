@@ -40,7 +40,7 @@ export default class AuthMiddleware {
       if (checks.length === 0) {
         throw {
           status: 403,
-          message: "You are not authorised to access this resource!",
+          message: "You are not authorized to access this resource!",
         };
       }
 
