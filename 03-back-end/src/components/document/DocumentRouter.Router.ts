@@ -14,6 +14,12 @@ export default class DocumentRouter implements IRouter {
     );
 
     application.get(
+      "/api/document",
+      AuthMiddleware.getVerifier("administrator"),
+      documentController.getAll.bind(documentController)
+    );
+
+    application.get(
       "/api/document/:did",
       AuthMiddleware.getVerifier("administrator", "user"),
       documentController.getById.bind(documentController)
@@ -29,12 +35,6 @@ export default class DocumentRouter implements IRouter {
       "/api/document",
       AuthMiddleware.getVerifier("user"),
       documentController.add.bind(documentController)
-    );
-
-    application.put(
-      "/api/document/:did",
-      AuthMiddleware.getVerifier("user"),
-      documentController.editById.bind(documentController)
     );
 
     application.delete(

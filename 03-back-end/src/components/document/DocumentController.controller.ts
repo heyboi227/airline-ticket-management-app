@@ -2,12 +2,21 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
-import {
-  EditDocumentValidator,
-  IEditDocumentDto,
-} from "./dto/IEditDocument.dto";
 
 export default class DocumentController extends BaseController {
+  getAll(_req: Request, res: Response) {
+    this.services.document
+      .getAll(DefaultDocumentAdapterOptions)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((error) => {
+        setTimeout(() => {
+          res.status(500).send(error?.message);
+        }, 300);
+      });
+  }
+
   getById(req: Request, res: Response) {
     const documentId: number = +req.params?.did;
 
@@ -85,36 +94,6 @@ export default class DocumentController extends BaseController {
           document_number: body.documentNumber,
           type: body.type,
           user_id: body.userId,
-        });
-      })
-      .then(async (result) => {
-        await this.services.document.commitChanges();
-        res.send(result);
-      })
-      .catch(async (error) => {
-        await this.services.document.rollbackChanges();
-        setTimeout(() => {
-          res.status(500).send(error?.message);
-        }, 300);
-      });
-  }
-
-  editById(req: Request, res: Response) {
-    const documentId: number = +req.params?.did;
-    const data = req.body as IEditDocumentDto;
-
-    if (!EditDocumentValidator(data)) {
-      return res.status(400).send(EditDocumentValidator.errors);
-    }
-
-    this.services.document
-      .startTransaction()
-      .then(() => {
-        return this.services.document.editById(documentId, {
-          country_id: data.countryId,
-          type: data.type,
-          document_number: data.documentNumber,
-          user_id: data.userId,
         });
       })
       .then(async (result) => {

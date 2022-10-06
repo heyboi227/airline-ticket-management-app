@@ -2,7 +2,6 @@ import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import DocumentModel from "./DocumentModel.model";
 import { IAddDocument } from "./dto/IAddDocument.dto";
-import { IEditDocument } from "./dto/IEditDocument.dto";
 
 export interface IDocumentAdapterOptions extends IAdapterOptions {
   showCountry: boolean;
@@ -55,16 +54,6 @@ export default class DocumentService extends BaseService<
     return this.baseAdd(data, {
       showCountry: true,
       showUser: true,
-    });
-  }
-
-  public async editById(
-    documentId: number,
-    data: IEditDocument
-  ): Promise<DocumentModel> {
-    return this.baseEditById(documentId, data, {
-      showCountry: false,
-      showUser: false,
     });
   }
 
