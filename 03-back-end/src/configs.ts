@@ -7,11 +7,10 @@ import CountryRouter from "./components/country/CountryRouter.Router";
 import AuthRouter from "./components/auth/AuthRouter.router";
 import AircraftRouter from "./components/aircraft/AircraftRouter.router";
 import "dotenv/config";
-import BagRouter from "./components/bag/BagRouter.Router";
-import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
 import AirportRouter from "./components/airport/AirportRouter.router";
 import TicketRouter from "./components/ticket/TicketRouter.Router";
 import DocumentRouter from "./components/document/DocumentRouter.Router";
+import FlightRouter from "./components/flight/FlightRouter.Router";
 
 const DevConfig: IConfig = {
   server: {
@@ -41,11 +40,10 @@ const DevConfig: IConfig = {
     new AircraftRouter(),
     new AirportRouter(),
     new AuthRouter(),
-    new BagRouter(),
     new CountryRouter(),
     new DocumentRouter(),
+    new FlightRouter(),
     new TicketRouter(),
-    new TravelClassRouter(),
     new UserRouter(),
   ],
   fileUploads: {
