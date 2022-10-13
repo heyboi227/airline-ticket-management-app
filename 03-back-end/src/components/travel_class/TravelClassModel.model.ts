@@ -1,6 +1,6 @@
 import IModel from "../../common/IModel.interface";
 
-export default class ClassModel implements IModel {
+export default class TravelClassModel implements IModel {
   travelClassId: number;
   name: string;
 }
