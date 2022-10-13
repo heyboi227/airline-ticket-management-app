@@ -3,6 +3,7 @@ import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
 import FlightController from "./FlightController.controller";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import FlightLegController from "../flight_leg/FlightLegController.controller";
 
 export default class FlightRouter implements IRouter {
   public setupRoutes(
@@ -10,6 +11,9 @@ export default class FlightRouter implements IRouter {
     resources: IApplicationResources
   ) {
     const flightController: FlightController = new FlightController(
+      resources.services
+    );
+    const flightLegController: FlightLegController = new FlightLegController(
       resources.services
     );
 
@@ -43,10 +47,34 @@ export default class FlightRouter implements IRouter {
       flightController.editById.bind(flightController)
     );
 
-    application.delete(
-      "/api/flight/:fid",
+    application.get(
+      "/api/flight/:fid/flight-leg",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      flightLegController.getAllFlightLegsByFlightId.bind(flightLegController)
+    );
+
+    application.post(
+      "/api/flight/:fid/flight-leg",
       AuthMiddleware.getVerifier("administrator"),
-      flightController.deleteById.bind(flightController)
+      flightLegController.add.bind(flightLegController)
+    );
+
+    application.get(
+      "/api/flight/:fid/flight-leg/:flid",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      flightLegController.getFlightLegById.bind(flightLegController)
+    );
+
+    application.put(
+      "/api/flight/:fid/flight-leg/:flid",
+      AuthMiddleware.getVerifier("administrator"),
+      flightLegController.editById.bind(flightLegController)
+    );
+
+    application.delete(
+      "/api/flight/:fid/flight-leg/:flid",
+      AuthMiddleware.getVerifier("administrator"),
+      flightLegController.deleteById.bind(flightLegController)
     );
   }
 }
