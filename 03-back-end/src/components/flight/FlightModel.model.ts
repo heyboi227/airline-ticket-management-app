@@ -6,5 +6,4 @@ export default class FlightModel implements IModel {
   flightFareCode: string;
 
   flightLegs?: FlightLegModel[];
-  bags: any;
 }
