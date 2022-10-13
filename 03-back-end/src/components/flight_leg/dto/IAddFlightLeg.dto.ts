@@ -31,21 +31,18 @@ export interface IAddFlightLeg extends IServiceData {
   aircraft_id: number;
 }
 
-export interface IFlightFlightLeg extends IServiceData {
-  flight_id: number;
-  flight_leg_id: number;
-}
-
 export interface IFlightLegBag extends IServiceData {
   flight_leg_id: number;
   bag_id: number;
   price: number;
+  is_active?: number;
 }
 
 export interface IFlightLegTravelClass extends IServiceData {
   flight_leg_id: number;
   travel_class_id: number;
   price: number;
+  is_active?: number;
 }
 
 const AddFlightLegValidator = ajv.compile({
