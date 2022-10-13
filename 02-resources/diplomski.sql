@@ -96,12 +96,12 @@ CREATE TABLE IF NOT EXISTS `airport` (
   CONSTRAINT `fk_airport_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.airport: ~2 rows (approximately)
+-- Dumping data for table diplomski_app.airport: ~3 rows (approximately)
 DELETE FROM `airport`;
 INSERT INTO `airport` (`airport_id`, `airport_code`, `name`, `city`, `country_id`) VALUES
 	(1, 'BEG', 'Nikola Tesla', 'Belgrade', 153),
 	(2, 'VIE', 'Vienna', 'Vienna', 10),
-	(3, 'LHR', 'Heathrow', 'London', 185);
+	(3, 'LHR', 'London Heathrow', 'London', 185);
 
 -- Dumping structure for table diplomski_app.bag
 DROP TABLE IF EXISTS `bag`;
@@ -341,7 +341,7 @@ CREATE TABLE IF NOT EXISTS `document` (
   CONSTRAINT `fk_document_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.document: ~0 rows (approximately)
+-- Dumping data for table diplomski_app.document: ~1 rows (approximately)
 DELETE FROM `document`;
 
 -- Dumping structure for table diplomski_app.flight
@@ -355,51 +355,33 @@ CREATE TABLE IF NOT EXISTS `flight` (
 
 -- Dumping data for table diplomski_app.flight: ~0 rows (approximately)
 DELETE FROM `flight`;
-INSERT INTO `flight` (`flight_id`, `flight_fare_code`) VALUES
-	(1, 'SDG49G');
-
--- Dumping structure for table diplomski_app.flight_flight_leg
-DROP TABLE IF EXISTS `flight_flight_leg`;
-CREATE TABLE IF NOT EXISTS `flight_flight_leg` (
-  `flight_flight_leg_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_id` int(10) unsigned NOT NULL,
-  `flight_leg_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`flight_flight_leg_id`),
-  UNIQUE KEY `uq_flight_flight_leg_flight_id_flight_leg_id` (`flight_id`,`flight_leg_id`),
-  KEY `fk_flight_flight_leg_flight_leg_id` (`flight_leg_id`) USING BTREE,
-  CONSTRAINT `fk_flight_flight_leg_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table diplomski_app.flight_flight_leg: ~0 rows (approximately)
-DELETE FROM `flight_flight_leg`;
-INSERT INTO `flight_flight_leg` (`flight_flight_leg_id`, `flight_id`, `flight_leg_id`) VALUES
-	(1, 1, 1);
 
 -- Dumping structure for table diplomski_app.flight_leg
 DROP TABLE IF EXISTS `flight_leg`;
 CREATE TABLE IF NOT EXISTS `flight_leg` (
   `flight_leg_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `flight_code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `flight_id` int(10) unsigned NOT NULL,
   `origin_airport_id` int(10) unsigned NOT NULL,
   `destination_airport_id` int(10) unsigned NOT NULL,
   `departure_date_and_time` datetime NOT NULL,
   `arrival_date_and_time` datetime NOT NULL,
   `aircraft_id` int(10) unsigned NOT NULL,
+  `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`flight_leg_id`) USING BTREE,
   UNIQUE KEY `uq_flight_flight_code` (`flight_code`),
   KEY `fk_flight_origin_airport_id` (`origin_airport_id`) USING BTREE,
   KEY `fk_flight_destination_airport_id` (`destination_airport_id`) USING BTREE,
   KEY `fk_flight_aircraft_id` (`aircraft_id`) USING BTREE,
+  KEY `fk_flight_leg_flight_id` (`flight_id`),
   CONSTRAINT `fk_flight_leg_aircraft_id` FOREIGN KEY (`aircraft_id`) REFERENCES `aircraft` (`aircraft_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_flight_leg_destination_airport_id` FOREIGN KEY (`destination_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_leg_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_flight_leg_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table diplomski_app.flight_leg: ~0 rows (approximately)
 DELETE FROM `flight_leg`;
-INSERT INTO `flight_leg` (`flight_leg_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`) VALUES
-	(1, 'SA100', 1, 2, '2022-09-30 08:50:00', '2022-09-30 10:00:00', 3);
 
 -- Dumping structure for table diplomski_app.flight_leg_bag
 DROP TABLE IF EXISTS `flight_leg_bag`;
@@ -407,7 +389,8 @@ CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
   `flight_bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `flight_leg_id` int(10) unsigned NOT NULL,
   `bag_id` int(10) unsigned NOT NULL,
-  `price` decimal(10,0) unsigned NOT NULL,
+  `price` decimal(10,2) unsigned NOT NULL,
+  `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`flight_bag_id`),
   UNIQUE KEY `uq_flight_bag_id_flight_id_bag_id` (`flight_leg_id`,`bag_id`) USING BTREE,
   KEY `fk_flight_leg_bag_id` (`bag_id`) USING BTREE,
@@ -415,11 +398,8 @@ CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
   CONSTRAINT `fk_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_bag: ~2 rows (approximately)
+-- Dumping data for table diplomski_app.flight_leg_bag: ~0 rows (approximately)
 DELETE FROM `flight_leg_bag`;
-INSERT INTO `flight_leg_bag` (`flight_bag_id`, `flight_leg_id`, `bag_id`, `price`) VALUES
-	(1, 1, 1, 0),
-	(2, 1, 2, 0);
 
 -- Dumping structure for table diplomski_app.flight_leg_travel_class
 DROP TABLE IF EXISTS `flight_leg_travel_class`;
@@ -428,18 +408,16 @@ CREATE TABLE IF NOT EXISTS `flight_leg_travel_class` (
   `flight_leg_id` int(10) unsigned NOT NULL,
   `travel_class_id` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
+  `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
   PRIMARY KEY (`flight_leg_travel_class_id`) USING BTREE,
-  UNIQUE KEY `uq_flight_leg_cabin_flight_leg_id_cabin_id` (`flight_leg_id`,`travel_class_id`) USING BTREE,
-  KEY `fk_flight_leg_cabin_id` (`travel_class_id`) USING BTREE,
+  UNIQUE KEY `uq_flight_leg_travel_class_flight_leg_id_travel_class_id` (`flight_leg_id`,`travel_class_id`) USING BTREE,
+  KEY `fk_flight_leg_travel_class_travel_class_id` (`travel_class_id`) USING BTREE,
   CONSTRAINT `fk_flight_leg_travel_class_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_flight_leg_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_travel_class: ~1 rows (approximately)
+-- Dumping data for table diplomski_app.flight_leg_travel_class: ~0 rows (approximately)
 DELETE FROM `flight_leg_travel_class`;
-INSERT INTO `flight_leg_travel_class` (`flight_leg_travel_class_id`, `flight_leg_id`, `travel_class_id`, `price`) VALUES
-	(1, 1, 4, 12000.00),
-	(3, 1, 2, 30000.00);
 
 -- Dumping structure for table diplomski_app.photo
 DROP TABLE IF EXISTS `photo`;
