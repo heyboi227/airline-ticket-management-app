@@ -6,11 +6,13 @@ import { IAddDocument } from "./dto/IAddDocument.dto";
 export interface IDocumentAdapterOptions extends IAdapterOptions {
   showCountry: boolean;
   showUser: boolean;
+  loadPhotos: boolean;
 }
 
 export const DefaultDocumentAdapterOptions: IDocumentAdapterOptions = {
   showCountry: true,
   showUser: true,
+  loadPhotos: true,
 };
 
 export default class DocumentService extends BaseService<
@@ -47,14 +49,17 @@ export default class DocumentService extends BaseService<
       });
     }
 
+    if (options.loadPhotos) {
+      document.photos = await this.services.photo.getAllByDocumentId(
+        document.documentId
+      );
+    }
+
     return document;
   }
 
   public async add(data: IAddDocument): Promise<DocumentModel> {
-    return this.baseAdd(data, {
-      showCountry: true,
-      showUser: true,
-    });
+    return this.baseAdd(data, DefaultDocumentAdapterOptions);
   }
 
   public async deleteById(documentId: number) {
@@ -65,10 +70,11 @@ export default class DocumentService extends BaseService<
     documentNumber: string
   ): Promise<DocumentModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("document_number", documentNumber, {
-        showCountry: false,
-        showUser: false,
-      })
+      this.getAllByFieldNameAndValue(
+        "document_number",
+        documentNumber,
+        DefaultDocumentAdapterOptions
+      )
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

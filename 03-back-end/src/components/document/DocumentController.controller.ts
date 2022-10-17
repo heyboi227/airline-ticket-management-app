@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
 import PhotoModel from "../photo/PhotoModel.model";
-import { basename, extname } from "path";
+import { basename, dirname, extname } from "path";
 import { UploadedFile } from "express-fileupload";
 import { mkdirSync, readFileSync, unlinkSync } from "fs";
 import sharp = require("sharp");
@@ -124,10 +124,10 @@ export default class DocumentController extends BaseController {
     this.services.document
       .startTransaction()
       .then(() => {
-        return this.services.document.getById(documentId, {
-          showCountry: false,
-          showUser: false,
-        });
+        return this.services.document.getById(
+          documentId,
+          DefaultDocumentAdapterOptions
+        );
       })
       .then((result) => {
         if (result === null) {
@@ -152,7 +152,7 @@ export default class DocumentController extends BaseController {
       });
   }
 
-  async uploadPhoto(req: Request, res: Response) {
+  uploadPhoto(req: Request, res: Response) {
     const documentId: number = +req.params?.did;
 
     this.services.document
@@ -328,5 +328,49 @@ export default class DocumentController extends BaseController {
           resizeOptions.prefix +
           filename
       );
+  }
+
+  deletePhoto(req: Request, res: Response) {
+    const documentId: number = +req.params?.did;
+    const photoId: number = +req.params?.pid;
+
+    this.services.document
+      .getById(documentId, DefaultDocumentAdapterOptions)
+      .then((document) => {
+        if (document === null)
+          throw { status: 404, message: "Document not found!" };
+        return document;
+      })
+      .then((document) => {
+        const photo = document.photos?.find(
+          (photo) => photo.photoId === photoId
+        );
+        if (!photo)
+          throw { status: 404, message: "Photo not found in this document!" };
+        return photo;
+      })
+      .then(async (photo) => {
+        await this.services.photo.deleteById(photo.photoId);
+        return photo;
+      })
+      .then((photo) => {
+        const directoryPart =
+          DevConfig.server.static.path + "/" + dirname(photo.filePath);
+        const fileName = basename(photo.filePath);
+
+        for (let resize of DevConfig.fileUploads.photos.resize) {
+          const filePath = directoryPart + "/" + resize.prefix + fileName;
+          unlinkSync(filePath);
+        }
+
+        unlinkSync(DevConfig.server.static.path + "/" + photo.filePath);
+
+        res.send("Deleted!");
+      })
+      .catch((error) => {
+        res
+          .status(error?.status ?? 500)
+          .send(error?.message ?? "Server side error!");
+      });
   }
 }

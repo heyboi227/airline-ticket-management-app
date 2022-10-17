@@ -1,5 +1,6 @@
 import IModel from "../../common/IModel.interface";
 import CountryModel from "../country/CountryModel.model";
+import PhotoModel from "../photo/PhotoModel.model";
 import UserModel from "../user/UserModel.model";
 
 export default class DocumentModel implements IModel {
@@ -9,6 +10,7 @@ export default class DocumentModel implements IModel {
   documentNumber: string;
   userId: number;
 
-  country?: CountryModel;
-  user?: UserModel;
+  country?: CountryModel = null;
+  user?: UserModel = null;
+  photos?: PhotoModel[] = [];
 }
