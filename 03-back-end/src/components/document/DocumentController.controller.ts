@@ -2,6 +2,16 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
+import PhotoModel from "../photo/PhotoModel.model";
+import { basename, extname } from "path";
+import { UploadedFile } from "express-fileupload";
+import { mkdirSync, readFileSync, unlinkSync } from "fs";
+import sharp = require("sharp");
+import IConfig, { IResize } from "../../common/IConfig.interface";
+import { DevConfig } from "../../configs";
+import filetype from "magic-bytes.js";
+import sizeOf from "image-size";
+import * as uuid from "uuid";
 
 export default class DocumentController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -140,5 +150,183 @@ export default class DocumentController extends BaseController {
           res.status(error?.status ?? 500).send(error?.message);
         }, 300);
       });
+  }
+
+  async uploadPhoto(req: Request, res: Response) {
+    const documentId: number = +req.params?.did;
+
+    this.services.document
+      .getById(documentId, DefaultDocumentAdapterOptions)
+      .then((result) => {
+        if (result === null)
+          throw {
+            code: 404,
+            message: "Document not found!",
+          };
+
+        return this.doFileUpload(req);
+      })
+      .then(async (uploadedFiles) => {
+        const photos: PhotoModel[] = [];
+
+        for (let singleFile of uploadedFiles) {
+          const filename = basename(singleFile);
+
+          const photo = await this.services.photo.add({
+            name: filename,
+            file_path: singleFile,
+            document_id: documentId,
+          });
+
+          if (photo === null) {
+            throw {
+              code: 500,
+              message: "Failed to add this photo into the database!",
+            };
+          }
+
+          photos.push(photo);
+        }
+
+        res.send(photos);
+      })
+      .catch((error) => {
+        res.status(error?.code).send(error?.message);
+      });
+  }
+
+  private async doFileUpload(req: Request): Promise<string[] | null> {
+    const config: IConfig = DevConfig;
+
+    if (!req.files || Object.keys(req.files).length === 0)
+      throw {
+        code: 400,
+        message: "No file were uploaded!",
+      };
+
+    const fileFieldNames = Object.keys(req.files);
+
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1 + "").padStart(2, "0");
+
+    const uploadDestinationRoot = config.server.static.path + "/";
+    const destinationDirectory =
+      config.fileUploads.destinationDirectoryRoot + year + "/" + month + "/";
+
+    mkdirSync(uploadDestinationRoot + destinationDirectory, {
+      recursive: true,
+      mode: "755",
+    });
+
+    const uploadedFiles = [];
+
+    for (let fileFieldName of fileFieldNames) {
+      const file = req.files[fileFieldName] as UploadedFile;
+
+      const type = filetype(readFileSync(file.tempFilePath))[0]?.typename;
+
+      if (!config.fileUploads.photos.allowedTypes.includes(type)) {
+        unlinkSync(file.tempFilePath);
+        throw {
+          code: 415,
+          message: `File ${fileFieldName} - type is not supported!`,
+        };
+      }
+
+      file.name = file.name.toLocaleLowerCase();
+
+      const declaredExtension = extname(file.name);
+
+      if (
+        !config.fileUploads.photos.allowedExtensions.includes(declaredExtension)
+      ) {
+        unlinkSync(file.tempFilePath);
+        throw {
+          code: 415,
+          message: `File ${fileFieldName} - extension is not supported!`,
+        };
+      }
+
+      const size = sizeOf(file.tempFilePath);
+
+      if (
+        size.width < config.fileUploads.photos.width.min ||
+        size.width > config.fileUploads.photos.width.max
+      ) {
+        unlinkSync(file.tempFilePath);
+        throw {
+          code: 415,
+          message: `File ${fileFieldName} - image width is not supported!`,
+        };
+      }
+
+      if (
+        size.height < config.fileUploads.photos.height.min ||
+        size.height > config.fileUploads.photos.height.max
+      ) {
+        unlinkSync(file.tempFilePath);
+        throw {
+          code: 415,
+          message: `File ${fileFieldName} - image height is not supported!`,
+        };
+      }
+
+      const fileNameRandomPart = uuid.v4();
+
+      const fileDestinationPath =
+        uploadDestinationRoot +
+        destinationDirectory +
+        fileNameRandomPart +
+        "-" +
+        file.name;
+
+      file.mv(fileDestinationPath, async (error) => {
+        if (error) {
+          throw {
+            code: 500,
+            message: `File ${fileFieldName} - could not be saved on the server!`,
+          };
+        }
+
+        for (let resizeOptions of config.fileUploads.photos.resize) {
+          await this.createResizedPhotos(
+            destinationDirectory,
+            fileNameRandomPart + "-" + file.name,
+            resizeOptions
+          );
+        }
+      });
+
+      uploadedFiles.push(
+        destinationDirectory + fileNameRandomPart + "-" + file.name
+      );
+    }
+
+    return uploadedFiles;
+  }
+
+  private async createResizedPhotos(
+    directory: string,
+    filename: string,
+    resizeOptions: IResize
+  ) {
+    const config: IConfig = DevConfig;
+
+    await sharp(config.server.static.path + "/" + directory + filename)
+      .resize({
+        width: resizeOptions.width,
+        height: resizeOptions.height,
+        fit: resizeOptions.fit,
+        background: resizeOptions.defaultBackground,
+        withoutEnlargement: true,
+      })
+      .toFile(
+        config.server.static.path +
+          "/" +
+          directory +
+          resizeOptions.prefix +
+          filename
+      );
   }
 }
