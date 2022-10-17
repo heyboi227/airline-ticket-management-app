@@ -423,6 +423,7 @@ DELETE FROM `flight_leg_travel_class`;
 DROP TABLE IF EXISTS `photo`;
 CREATE TABLE IF NOT EXISTS `photo` (
   `photo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `file_path` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `document_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`photo_id`),
