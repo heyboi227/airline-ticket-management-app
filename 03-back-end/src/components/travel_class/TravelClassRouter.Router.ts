@@ -1,10 +1,10 @@
-import IRouter from "../../common/IRouter.interface";
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
-import TravelClassController from "./TravelClassController.controller";
+import IRouter from "../../common/IRouter.interface";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import TravelClassController from "./TravelClassController.controller";
 
-export default class TravelClassRouter implements IRouter {
+class TravelClassRouter implements IRouter {
   public setupRoutes(
     application: express.Application,
     resources: IApplicationResources
@@ -17,5 +17,25 @@ export default class TravelClassRouter implements IRouter {
       AuthMiddleware.getVerifier("administrator", "user"),
       travelClassController.getAll.bind(travelClassController)
     );
+
+    application.get(
+      "/api/travel-class/:id",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      travelClassController.getById.bind(travelClassController)
+    );
+
+    application.post(
+      "/api/travel-class",
+      AuthMiddleware.getVerifier("administrator"),
+      travelClassController.add.bind(travelClassController)
+    );
+    
+    application.put(
+      "/api/travel-class/:id",
+      AuthMiddleware.getVerifier("administrator"),
+      travelClassController.editById.bind(travelClassController)
+    );
   }
 }
+
+export default TravelClassRouter;

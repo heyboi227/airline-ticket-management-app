@@ -57,7 +57,7 @@ export default class TravelClassController extends BaseController {
         if (result === null) {
           throw {
             status: 400,
-            message: "Bad travelClass data given!",
+            message: "Bad travel class data given!",
           };
         }
 
@@ -87,7 +87,7 @@ export default class TravelClassController extends BaseController {
         if (result === null) {
           throw {
             status: 404,
-            message: "TravelClass not found!",
+            message: "Travel class not found!",
           };
         }
       })

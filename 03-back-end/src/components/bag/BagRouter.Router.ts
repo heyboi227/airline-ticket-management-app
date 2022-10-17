@@ -1,10 +1,10 @@
-import IRouter from "../../common/IRouter.interface";
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
-import BagController from "./BagController.controller";
+import IRouter from "../../common/IRouter.interface";
 import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import BagController from "./BagController.controller";
 
-export default class BagRouter implements IRouter {
+class BagRouter implements IRouter {
   public setupRoutes(
     application: express.Application,
     resources: IApplicationResources
@@ -16,5 +16,25 @@ export default class BagRouter implements IRouter {
       AuthMiddleware.getVerifier("administrator", "user"),
       bagController.getAll.bind(bagController)
     );
+
+    application.get(
+      "/api/bag/:bid",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      bagController.getById.bind(bagController)
+    );
+
+    application.post(
+      "/api/bag",
+      AuthMiddleware.getVerifier("administrator"),
+      bagController.add.bind(bagController)
+    );
+
+    application.put(
+      "/api/bag/:bid",
+      AuthMiddleware.getVerifier("administrator"),
+      bagController.editById.bind(bagController)
+    );
   }
 }
+
+export default BagRouter;

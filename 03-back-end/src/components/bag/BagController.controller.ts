@@ -16,7 +16,7 @@ export default class BagController extends BaseController {
   }
 
   getById(req: Request, res: Response) {
-    const bagId: number = +req.params?.id;
+    const bagId: number = +req.params?.bid;
 
     this.services.bag
       .getById(bagId, {})
@@ -70,7 +70,7 @@ export default class BagController extends BaseController {
   }
 
   editById(req: Request, res: Response) {
-    const bagId: number = +req.params?.id;
+    const bagId: number = +req.params?.bid;
     const data = req.body as IEditBagDto;
 
     if (!EditBagValidator(data)) {
