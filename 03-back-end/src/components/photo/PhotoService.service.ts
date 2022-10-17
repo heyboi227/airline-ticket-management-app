@@ -21,6 +21,7 @@ export default class PhotoService extends BaseService<
       const photo = new PhotoModel();
 
       photo.photoId = +data?.photo_id;
+      photo.name = data?.name;
       photo.filePath = data?.file_path;
 
       resolve(photo);
