@@ -24,6 +24,7 @@ export interface IAddFlightLegDto {
 
 export interface IAddFlightLeg extends IServiceData {
   flight_code: string;
+  flight_id: number;
   origin_airport_id: number;
   destination_airport_id: number;
   departure_date_and_time: string;

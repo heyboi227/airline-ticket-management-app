@@ -32,12 +32,6 @@ export const DefaultFlightLegAdapterOptions: IFlightLegAdapterOptions = {
   hideInactiveTravelClasses: true,
 };
 
-interface FlightFlightLegInterface {
-  flight_flight_leg_id: number;
-  flight_id: number;
-  flight_leg_id: number;
-}
-
 export default class FlightLegService extends BaseService<
   FlightLegModel,
   IFlightLegAdapterOptions
@@ -156,25 +150,20 @@ export default class FlightLegService extends BaseService<
     options: IFlightLegAdapterOptions = DefaultFlightLegAdapterOptions
   ): Promise<FlightLegModel[]> {
     return new Promise((resolve, reject) => {
-      this.getAllFromTableByFieldNameAndValue<FlightFlightLegInterface>(
-        "flight_flight_leg",
+      this.getAllByFieldNameAndValue(
         "flight_id",
-        flightId
+        flightId,
+        DefaultFlightLegAdapterOptions
       )
-        .then(async (result) => {
-          const flightLegIds = result.map((ffl) => ffl.flight_leg_id);
-
-          const flightLegs: FlightLegModel[] = [];
-
-          for (let flightLegId of flightLegIds) {
-            const flightLeg = await this.getById(flightLegId, options);
-            flightLegs.push(flightLeg);
+        .then((result) => {
+          if (result.length === 0) {
+            return resolve([]);
           }
 
-          resolve(flightLegs);
+          resolve(result);
         })
         .catch((error) => {
-          reject(error);
+          reject(error?.message);
         });
     });
   }

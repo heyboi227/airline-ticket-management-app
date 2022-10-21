@@ -136,6 +136,7 @@ export default class FlightLegController extends BaseController {
           departure_date_and_time: data.departureDateAndTime,
           arrival_date_and_time: data.arrivalDateAndTime,
           aircraft_id: data.aircraftId,
+          flight_id: flightId,
         });
       })
       .then((newFlightLeg) => {

@@ -54,7 +54,7 @@ export default class FlightService extends BaseService<
   ): Promise<FlightModel | null> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue(
-        "flightFareCode",
+        "flight_fare_code",
         flightFareCode,
         DefaultFlightAdapterOptions
       )
