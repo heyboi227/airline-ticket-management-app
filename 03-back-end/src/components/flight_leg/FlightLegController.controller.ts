@@ -11,14 +11,13 @@ import {
   IEditFlightLegDto,
 } from "./dto/IEditFlightLeg.dto";
 import { DefaultFlightLegAdapterOptions } from "./FlightLegService.service";
-import { DefaultFlightAdapterOptions } from "../flight/FlightService.service";
 
 export default class FlightLegController extends BaseController {
   async getAllFlightLegsByFlightId(req: Request, res: Response) {
     const flightId: number = +req.params?.fid;
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((result) => {
         if (result === null) {
           return res.status(404).send("Flight not found!");
@@ -43,7 +42,7 @@ export default class FlightLegController extends BaseController {
     const flightLegId: number = +req.params?.flid;
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((result) => {
         if (result === null) {
           return res.status(404).send("Flight not found!");
@@ -82,7 +81,7 @@ export default class FlightLegController extends BaseController {
     }
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((resultFlight) => {
         if (resultFlight === null) {
           throw {
@@ -131,12 +130,12 @@ export default class FlightLegController extends BaseController {
       .then(() => {
         return this.services.flightLeg.add({
           flight_code: data.flightCode,
+          flight_id: flightId,
           origin_airport_id: data.originAirportId,
           destination_airport_id: data.destinationAirportId,
           departure_date_and_time: data.departureDateAndTime,
           arrival_date_and_time: data.arrivalDateAndTime,
           aircraft_id: data.aircraftId,
-          flight_id: flightId,
         });
       })
       .then((newFlightLeg) => {
@@ -202,7 +201,7 @@ export default class FlightLegController extends BaseController {
     }
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((result) => {
         if (result === null) {
           throw {
@@ -442,7 +441,7 @@ export default class FlightLegController extends BaseController {
     const flightLegId: number = +req.params?.flid;
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((result) => {
         if (result === null)
           throw { status: 404, message: "Flight not found!" };

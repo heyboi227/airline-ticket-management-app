@@ -8,7 +8,6 @@ import {
 } from "./dto/IAddFlightLeg.dto";
 import { IEditFlightLeg } from "./dto/IEditFlightLeg.dto";
 import { DefaultAirportAdapterOptions } from "../airport/AirportService.service";
-import { DefaultFlightAdapterOptions } from "../flight/FlightService.service";
 
 export interface IFlightLegAdapterOptions extends IAdapterOptions {
   showFlight: boolean;
@@ -48,16 +47,18 @@ export default class FlightLegService extends BaseService<
 
     flightLeg.flightLegId = +data?.flight_leg_id;
     flightLeg.flightCode = data?.flight_code;
+    flightLeg.flightId = +data?.flight_id;
     flightLeg.originAirportId = +data?.origin_airport_id;
     flightLeg.destinationAirportId = +data?.destination_airport_id;
     flightLeg.departureDateAndTime = data?.departure_date_and_time;
     flightLeg.arrivalDateAndTime = data?.arrival_date_and_time;
     flightLeg.aircraftId = +data?.aircraft_id;
+    flightLeg.isActive = +data?.is_active === 1;
 
     if (options.showFlight) {
       flightLeg.flight = await this.services.flight.getById(
         flightLeg.flightId,
-        DefaultFlightAdapterOptions
+        {}
       );
     }
 
