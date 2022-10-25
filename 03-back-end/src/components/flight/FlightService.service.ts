@@ -4,13 +4,7 @@ import FlightModel from "./FlightModel.model";
 import { IAddFlight } from "./dto/IAddFlight.dto";
 import { IEditFlight } from "./dto/IEditFlight.dto";
 
-export interface IFlightAdapterOptions extends IAdapterOptions {
-  showFlightLegs: boolean;
-}
-
-export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
-  showFlightLegs: true,
-};
+export interface IFlightAdapterOptions extends IAdapterOptions {}
 
 export default class FlightService extends BaseService<
   FlightModel,
@@ -29,24 +23,18 @@ export default class FlightService extends BaseService<
     flight.flightId = +data?.flight_id;
     flight.flightFareCode = data?.flight_fare_code;
 
-    if (options.showFlightLegs) {
-      flight.flightLegs = await this.services.flightLeg.getAllByFlightId(
-        flight.flightId
-      );
-    }
-
     return flight;
   }
 
   public async add(data: IAddFlight): Promise<FlightModel> {
-    return this.baseAdd(data, DefaultFlightAdapterOptions);
+    return this.baseAdd(data, {});
   }
 
   public async editById(
     flightId: number,
     data: IEditFlight
   ): Promise<FlightModel> {
-    return this.baseEditById(flightId, data, DefaultFlightAdapterOptions);
+    return this.baseEditById(flightId, data, {});
   }
 
   public async getByFlightFareCode(
@@ -56,7 +44,7 @@ export default class FlightService extends BaseService<
       this.getAllByFieldNameAndValue(
         "flight_fare_code",
         flightFareCode,
-        DefaultFlightAdapterOptions
+        {}
       )
         .then((result) => {
           if (result.length === 0) {
