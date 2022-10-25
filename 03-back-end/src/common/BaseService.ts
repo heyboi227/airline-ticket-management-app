@@ -8,7 +8,7 @@ import IServiceData from "./IServiceData.interface";
 
 export default abstract class BaseService<
   ReturnModel extends IModel,
-  AdaterOptions extends IAdapterOptions
+  AdapterOptions extends IAdapterOptions
 > {
   private database: mysql2.Connection;
   private serviceInstances: IServices;
@@ -42,10 +42,10 @@ export default abstract class BaseService<
 
   protected abstract adaptToModel(
     data: any,
-    options: AdaterOptions
+    options: AdapterOptions
   ): Promise<ReturnModel>;
 
-  public getAll(options: AdaterOptions): Promise<ReturnModel[]> {
+  public getAll(options: AdapterOptions): Promise<ReturnModel[]> {
     const tableName = this.tableName();
 
     return new Promise<ReturnModel[]>((resolve, reject) => {
@@ -74,7 +74,7 @@ export default abstract class BaseService<
 
   public getById(
     id: number,
-    options: AdaterOptions
+    options: AdapterOptions
   ): Promise<ReturnModel | null> {
     const tableName = this.tableName();
 
@@ -103,7 +103,7 @@ export default abstract class BaseService<
   protected async getAllByFieldNameAndValue(
     fieldName: string,
     value: any,
-    options: AdaterOptions
+    options: AdapterOptions
   ): Promise<ReturnModel[]> {
     const tableName = this.tableName();
 
@@ -162,7 +162,7 @@ export default abstract class BaseService<
 
   protected async baseAdd(
     data: IServiceData,
-    options: AdaterOptions
+    options: AdapterOptions
   ): Promise<ReturnModel> {
     const tableName = this.tableName();
 
@@ -205,7 +205,7 @@ export default abstract class BaseService<
   protected async baseEditById(
     id: number,
     data: IServiceData,
-    options: AdaterOptions
+    options: AdapterOptions
   ): Promise<ReturnModel> {
     const tableName = this.tableName();
 
