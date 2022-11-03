@@ -120,8 +120,29 @@ export default class FlightLegService extends BaseService<
     return this.baseEditById(flightLegId, data, DefaultFlightLegAdapterOptions);
   }
 
-  public async deleteById(flightLegId: number) {
-    return this.baseDeleteById(flightLegId);
+  public async deleteById(flightLegId: number): Promise<true> {
+    return new Promise((resolve) => {
+      this.deleteAllFlightLegBagsByFlightLegId(flightLegId)
+        .then(() =>
+          this.deleteAllFlightLegTravelClassesByFlightLegId(flightLegId)
+        )
+        .then(() => this.getById(flightLegId, DefaultFlightLegAdapterOptions))
+        .then((flightLeg) => {
+          if (flightLeg === null)
+            throw { status: 404, message: "Flight leg not found!" };
+        })
+        .then(async () => {
+          await this.baseDeleteById(flightLegId);
+        })
+        .then(() => {
+          resolve(true);
+        })
+        .catch((error) => {
+          throw {
+            message: error?.message ?? "Could not delete this flight leg!",
+          };
+        });
+    });
   }
 
   public async getByFlightCode(
@@ -315,6 +336,43 @@ export default class FlightLegService extends BaseService<
         })
         .catch((error) => {
           reject(error);
+        });
+    });
+  }
+
+  private async deleteAllFlightLegBagsByFlightLegId(
+    flightLegId: number
+  ): Promise<true> {
+    return new Promise((resolve) => {
+      const sql = `DELETE FROM flight_leg_bag WHERE flight_leg_id = ?`;
+      this.db
+        .execute(sql, [flightLegId])
+        .then(() => {
+          resolve(true);
+        })
+        .catch((error) => {
+          throw {
+            message: error?.message ?? "Could not delete flight leg bags!",
+          };
+        });
+    });
+  }
+
+  private async deleteAllFlightLegTravelClassesByFlightLegId(
+    flightLegId: number
+  ): Promise<true> {
+    return new Promise((resolve) => {
+      const sql = `DELETE FROM flight_leg_travel_class WHERE flight_leg_id = ?`;
+      this.db
+        .execute(sql, [flightLegId])
+        .then(() => {
+          resolve(true);
+        })
+        .catch((error) => {
+          throw {
+            message:
+              error?.message ?? "Could not delete flight leg travel classes!",
+          };
         });
     });
   }
