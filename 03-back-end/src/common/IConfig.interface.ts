@@ -66,7 +66,7 @@ interface IConfig {
   fileUploads: {
     maxFiles: number;
     maxFileSize: number;
-    temporaryFileDirecotry: string;
+    temporaryFileDirectory: string;
     destinationDirectoryRoot: string;
     photos: {
       allowedTypes: string[];

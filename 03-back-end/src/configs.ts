@@ -53,7 +53,7 @@ const DevConfig: IConfig = {
   fileUploads: {
     maxFiles: 5,
     maxFileSize: 5 * 1024 * 1024, // 5MB
-    temporaryFileDirecotry: "../temp/",
+    temporaryFileDirectory: "../temp/",
     destinationDirectoryRoot: "uploads/",
     photos: {
       allowedTypes: ["png", "jpg"],

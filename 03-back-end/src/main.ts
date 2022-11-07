@@ -123,7 +123,7 @@ async function main() {
       abortOnLimit: true,
 
       useTempFiles: true,
-      tempFileDir: config.fileUploads.temporaryFileDirecotry,
+      tempFileDir: config.fileUploads.temporaryFileDirectory,
       createParentPath: true,
       safeFileNames: true,
       preserveExtension: true,
