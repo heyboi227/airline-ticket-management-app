@@ -6,11 +6,11 @@
 version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/03-back-end" # Location of package manifests
+    directory: "/back-end" # Location of package manifests
     schedule:
       interval: "daily"
       
   - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/04-front-end" # Location of package manifests
+    directory: "/front-end" # Location of package manifests
     schedule:
       interval: "daily"
