@@ -42,17 +42,5 @@ export default class DocumentRouter implements IRouter {
       AuthMiddleware.getVerifier("user"),
       documentController.deleteById.bind(documentController)
     );
-
-    application.post(
-      "/api/document/:did/photo",
-      AuthMiddleware.getVerifier("administrator"),
-      documentController.uploadPhoto.bind(documentController)
-    );
-
-    application.delete(
-      "/api/document/:did/photo/:pid",
-      AuthMiddleware.getVerifier("administrator"),
-      documentController.deletePhoto.bind(documentController)
-    );
   }
 }

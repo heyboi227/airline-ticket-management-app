@@ -50,40 +50,6 @@ const DevConfig: IConfig = {
     new TravelClassRouter(),
     new UserRouter(),
   ],
-  fileUploads: {
-    maxFiles: 5,
-    maxFileSize: 5 * 1024 * 1024, // 5MB
-    temporaryFileDirectory: "../temp/",
-    destinationDirectoryRoot: "uploads/",
-    photos: {
-      allowedTypes: ["png", "jpg"],
-      allowedExtensions: [".png", ".jpg"],
-      width: {
-        min: 320,
-        max: 1920,
-      },
-      height: {
-        min: 240,
-        max: 1080,
-      },
-      resize: [
-        {
-          prefix: "small-",
-          width: 320,
-          height: 240,
-          fit: "cover",
-          defaultBackground: { r: 0, g: 0, b: 0, alpha: 1 },
-        },
-        {
-          prefix: "medium-",
-          width: 640,
-          height: 480,
-          fit: "cover",
-          defaultBackground: { r: 0, g: 0, b: 0, alpha: 1 },
-        },
-      ],
-    },
-  },
   mail: {
     host: "smtp.gmail.com",
     port: 587,

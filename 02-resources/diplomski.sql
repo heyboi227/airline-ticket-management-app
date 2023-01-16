@@ -2,7 +2,7 @@
 -- Host:                         127.0.0.1
 -- Server version:               10.6.7-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.1.0.6537
+-- HeidiSQL Version:             12.3.0.6589
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `administrator` (
   UNIQUE KEY `uq_administrator_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.administrator: ~1 rows (approximately)
+-- Dumping data for table diplomski_app.administrator: ~0 rows (approximately)
 DELETE FROM `administrator`;
 INSERT INTO `administrator` (`administrator_id`, `username`, `password_hash`, `created_at`, `is_active`) VALUES
 	(1, 'administrator', '$2b$10$IMzeaW3XruiyZRs1jRK9NuN4b1JknWpYMf0ADWid.EOKCdh1TYVH.', '2022-08-12 09:51:57', 1);
@@ -112,7 +112,7 @@ CREATE TABLE IF NOT EXISTS `bag` (
   UNIQUE KEY `uq_bag_type` (`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.bag: ~2 rows (approximately)
+-- Dumping data for table diplomski_app.bag: ~3 rows (approximately)
 DELETE FROM `bag`;
 INSERT INTO `bag` (`bag_id`, `name`) VALUES
 	(1, 'Cabin bag'),
@@ -343,6 +343,8 @@ CREATE TABLE IF NOT EXISTS `document` (
 
 -- Dumping data for table diplomski_app.document: ~0 rows (approximately)
 DELETE FROM `document`;
+INSERT INTO `document` (`document_id`, `country_id`, `type`, `document_number`, `user_id`) VALUES
+	(4, 153, 'National ID', '007430880', 3);
 
 -- Dumping structure for table diplomski_app.flight
 DROP TABLE IF EXISTS `flight`;
@@ -353,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `flight` (
   UNIQUE KEY `uq_flight_flight_fare_code` (`flight_fare_code`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight: ~1 rows (approximately)
+-- Dumping data for table diplomski_app.flight: ~2 rows (approximately)
 DELETE FROM `flight`;
 INSERT INTO `flight` (`flight_id`, `flight_fare_code`) VALUES
 	(1, 'F35920G'),
@@ -386,8 +388,7 @@ CREATE TABLE IF NOT EXISTS `flight_leg` (
 -- Dumping data for table diplomski_app.flight_leg: ~2 rows (approximately)
 DELETE FROM `flight_leg`;
 INSERT INTO `flight_leg` (`flight_leg_id`, `flight_code`, `flight_id`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`, `is_active`) VALUES
-	(1, 'JU900', 1, 1, 3, '2022-10-22 14:30:00', '2022-10-22 16:25:00', 4, 1),
-	(2, 'JU120', 2, 1, 2, '2022-10-26 16:00:00', '2022-10-26 17:15:00', 3, 1);
+	(1, 'JU900', 1, 1, 3, '2022-10-22 14:30:00', '2022-10-22 16:25:00', 4, 0);
 
 -- Dumping structure for table diplomski_app.flight_leg_bag
 DROP TABLE IF EXISTS `flight_leg_bag`;
@@ -404,13 +405,11 @@ CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
   CONSTRAINT `fk_flight_leg_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_bag: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.flight_leg_bag: ~2 rows (approximately)
 DELETE FROM `flight_leg_bag`;
 INSERT INTO `flight_leg_bag` (`flight_leg_bag_id`, `flight_leg_id`, `bag_id`, `price`, `is_active`) VALUES
 	(1, 1, 1, 12000.00, 1),
-	(2, 1, 2, 25000.00, 1),
-	(3, 2, 1, 10000.00, 1),
-	(4, 2, 2, 22000.00, 1);
+	(2, 1, 2, 25000.00, 1);
 
 -- Dumping structure for table diplomski_app.flight_leg_travel_class
 DROP TABLE IF EXISTS `flight_leg_travel_class`;
@@ -427,29 +426,11 @@ CREATE TABLE IF NOT EXISTS `flight_leg_travel_class` (
   CONSTRAINT `fk_flight_leg_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_travel_class: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.flight_leg_travel_class: ~2 rows (approximately)
 DELETE FROM `flight_leg_travel_class`;
 INSERT INTO `flight_leg_travel_class` (`flight_leg_travel_class_id`, `flight_leg_id`, `travel_class_id`, `price`, `is_active`) VALUES
 	(1, 1, 4, 10000.00, 1),
-	(2, 1, 2, 35000.00, 1),
-	(3, 2, 4, 7000.00, 1),
-	(4, 2, 2, 20000.00, 1);
-
--- Dumping structure for table diplomski_app.photo
-DROP TABLE IF EXISTS `photo`;
-CREATE TABLE IF NOT EXISTS `photo` (
-  `photo_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `file_path` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `document_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`photo_id`),
-  UNIQUE KEY `uq_photo_file_path` (`file_path`) USING HASH,
-  KEY `fk_photo_document_id` (`document_id`),
-  CONSTRAINT `fk_photo_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table diplomski_app.photo: ~0 rows (approximately)
-DELETE FROM `photo`;
+	(2, 1, 2, 35000.00, 1);
 
 -- Dumping structure for table diplomski_app.ticket
 DROP TABLE IF EXISTS `ticket`;
@@ -474,6 +455,8 @@ CREATE TABLE IF NOT EXISTS `ticket` (
 
 -- Dumping data for table diplomski_app.ticket: ~0 rows (approximately)
 DELETE FROM `ticket`;
+INSERT INTO `ticket` (`ticket_id`, `ticket_number`, `ticket_holder_name`, `document_id`, `price`, `user_id`, `flight_id`, `seat_number`) VALUES
+	(1, '241242', 'Milos Jeknic', 4, 22000.00, 3, 1, '22F');
 
 -- Dumping structure for table diplomski_app.travel_class
 DROP TABLE IF EXISTS `travel_class`;
@@ -484,7 +467,7 @@ CREATE TABLE IF NOT EXISTS `travel_class` (
   UNIQUE KEY `uq_cabin_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.travel_class: ~6 rows (approximately)
+-- Dumping data for table diplomski_app.travel_class: ~7 rows (approximately)
 DELETE FROM `travel_class`;
 INSERT INTO `travel_class` (`travel_class_id`, `name`) VALUES
 	(5, 'Basic economy class'),

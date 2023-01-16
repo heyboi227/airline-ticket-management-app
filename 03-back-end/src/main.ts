@@ -4,7 +4,6 @@ import IConfig from "./common/IConfig.interface";
 import { DevConfig } from "./configs";
 import IApplicationResources from "./common/IApplicationResources.interface";
 import * as mysql2 from "mysql2/promise";
-import fileUpload = require("express-fileupload");
 import AddressService from "./components/user/AddressService.service";
 import AdministratorService from "./components/administrator/AdministratorService.service";
 import UserService from "./components/user/UserService.service";
@@ -17,7 +16,6 @@ import AirportService from "./components/airport/AirportService.service";
 import DocumentService from "./components/document/DocumentService.service";
 import TicketService from "./components/ticket/TicketService.service";
 import FlightLegService from "./components/flight_leg/FlightLegService.service";
-import PhotoService from "./components/photo/PhotoService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -99,7 +97,6 @@ async function main() {
   applicationResources.services.flightLeg = new FlightLegService(
     applicationResources
   );
-  applicationResources.services.photo = new PhotoService(applicationResources);
   applicationResources.services.ticket = new TicketService(
     applicationResources
   );
@@ -113,22 +110,6 @@ async function main() {
   application.use(cors());
 
   application.use(express.urlencoded({ extended: true }));
-
-  application.use(
-    fileUpload({
-      limits: {
-        files: config.fileUploads.maxFiles,
-        fileSize: config.fileUploads.maxFileSize,
-      },
-      abortOnLimit: true,
-
-      useTempFiles: true,
-      tempFileDir: config.fileUploads.temporaryFileDirectory,
-      createParentPath: true,
-      safeFileNames: true,
-      preserveExtension: true,
-    })
-  );
 
   application.use(express.json());
 

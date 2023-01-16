@@ -1,19 +1,6 @@
 import IRouter from "./IRouter.interface";
 import { Algorithm } from "jsonwebtoken";
 
-export interface IResize {
-  prefix: string;
-  width: number;
-  height: number;
-  fit: "contain" | "cover";
-  defaultBackground: {
-    r: number;
-    g: number;
-    b: number;
-    alpha: number;
-  };
-}
-
 export interface IMailConfiguration {
   host: string;
   port: number;
@@ -63,25 +50,6 @@ interface IConfig {
     supportBigNumbers: boolean;
   };
   routers: IRouter[];
-  fileUploads: {
-    maxFiles: number;
-    maxFileSize: number;
-    temporaryFileDirectory: string;
-    destinationDirectoryRoot: string;
-    photos: {
-      allowedTypes: string[];
-      allowedExtensions: string[];
-      width: {
-        min: number;
-        max: number;
-      };
-      height: {
-        min: number;
-        max: number;
-      };
-      resize: IResize[];
-    };
-  };
   mail: IMailConfiguration;
   auth: {
     user: IAuthTokenOptions;

@@ -6,13 +6,11 @@ import { IAddDocument } from "./dto/IAddDocument.dto";
 export interface IDocumentAdapterOptions extends IAdapterOptions {
   showCountry: boolean;
   showUser: boolean;
-  loadPhotos: boolean;
 }
 
 export const DefaultDocumentAdapterOptions: IDocumentAdapterOptions = {
   showCountry: true,
   showUser: true,
-  loadPhotos: true,
 };
 
 export default class DocumentService extends BaseService<
@@ -47,12 +45,6 @@ export default class DocumentService extends BaseService<
         removeActivationCode: true,
         removePassword: true,
       });
-    }
-
-    if (options.loadPhotos) {
-      document.photos = await this.services.photo.getAllByDocumentId(
-        document.documentId
-      );
     }
 
     return document;
