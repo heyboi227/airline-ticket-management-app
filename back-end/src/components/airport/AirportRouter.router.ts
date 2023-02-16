@@ -2,7 +2,7 @@ import IRouter from "../../common/IRouter.interface";
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
 import AirportController from "./AirportController.controller";
-import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import AuthMiddleware from "../../middleware/AuthMiddleware";
 
 export default class AirportRouter implements IRouter {
   public setupRoutes(

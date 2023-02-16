@@ -1,7 +1,7 @@
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
 import IRouter from "../../common/IRouter.interface";
-import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import AuthMiddleware from "../../middleware/AuthMiddleware";
 import AdministratorController from "./AdministratorController.controller";
 
 export default class AdministratorRouter implements IRouter {

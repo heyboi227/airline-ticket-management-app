@@ -5,7 +5,7 @@ import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import ITokenData from "./dto/ITokenData";
 import { DevConfig } from "../../configs";
-import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import AuthMiddleware from "../../middleware/AuthMiddleware";
 import { IUserLoginDto } from "./dto/IUserLogin.dto";
 import { DefaultAdministratorAdapterOptions } from "../administrator/AdministratorService.service";
 

@@ -2,7 +2,7 @@ import IRouter from "../../common/IRouter.interface";
 import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
 import FlightController from "./FlightController.controller";
-import AuthMiddleware from "../../middlewares/AuthMiddleware";
+import AuthMiddleware from "../../middleware/AuthMiddleware";
 import FlightLegController from "../flight_leg/FlightLegController.controller";
 
 export default class FlightRouter implements IRouter {
