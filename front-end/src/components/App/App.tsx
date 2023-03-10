@@ -1,7 +1,6 @@
-import React from "react";
 import { Container } from "react-bootstrap";
 import ContactPage from "../Pages/ContactPage/ContactPage";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Menu from "../Menu/Menu";
 import UserLoginPage from "../User/UserLoginPage/UserLoginPage";
 import AdministratorLoginPage from "../Administrator/AdministratorLoginPage/AdministratorLoginPage";
@@ -15,11 +14,10 @@ import HomePage from "../Home/HomePage";
 import UserPasswordResetPage from "../User/UserPasswordResetPage/UserPasswordResetPage";
 import UserDeactivatePage from "../User/UserDeactivatePage/UserDeactivatePage";
 
-function Application() {
-  const path = useLocation();
+function App() {
   return (
     <Container className="mt-4">
-      {path.pathname === "/quiz" ? null : <Menu />}
+      <Menu />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<ContactPage />} />
@@ -55,4 +53,4 @@ function Application() {
   );
 }
 
-export default Application;
+export default App;
