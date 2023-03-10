@@ -65,7 +65,6 @@ async function main() {
       document: null,
       flight: null,
       flightLeg: null,
-      photo: null,
       ticket: null,
       travelClass: null,
       user: null,
