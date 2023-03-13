@@ -5,7 +5,7 @@ import AppStore from "../../../stores/AppStore";
 import { motion } from "framer-motion";
 
 export default function UserLoginPage() {
-  const [username, setUsername] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
 
@@ -13,7 +13,7 @@ export default function UserLoginPage() {
 
   const doLogin = () => {
     api("post", "/api/auth/user/login", "user", {
-      username,
+      email,
       password,
     })
       .then((res) => {
@@ -39,13 +39,13 @@ export default function UserLoginPage() {
         AppStore.dispatch({
           type: "auth.update",
           key: "identity",
-          value: username,
+          value: email,
         });
         AppStore.dispatch({ type: "auth.update", key: "id", value: +data?.id });
         AppStore.dispatch({
           type: "auth.update",
           key: "role",
-          value: "activeUser",
+          value: "user",
         });
 
         navigate("/", {
@@ -82,39 +82,35 @@ export default function UserLoginPage() {
     >
       <div className="col col-xs-12 col-md-6 offset-md-3">
         <h1 className="h5 mb-3">Log into your user account</h1>
-
         <div className="form-group mb-3">
           <div className="input-group">
             <input
               className="form-control"
               type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
         </div>
-
         <div className="form-group mb-3">
           <div className="input-group">
             <input
               className="form-control"
               type="password"
-              placeholder="Enter your password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
         </div>
-
         <div className="form-group mb-3">
           <button className="btn btn-primary px-5" onClick={() => doLogin()}>
             Log in
           </button>
         </div>
-
-        <Link to="/auth/user/forgot-password">Forgot your password?</Link>
-
+        <span className="text-primary">Forgot your password?</span>&nbsp;
+        <Link to="/auth/user/forgot-password">Click here.</Link>
         {error && <p className="alert alert-danger">{error}</p>}
       </div>
     </motion.div>
