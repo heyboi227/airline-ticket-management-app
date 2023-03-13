@@ -17,41 +17,52 @@ interface IInputData {
 }
 
 export default function UserDetailsEditor(props: IUserDetailsEditorProperties) {
-  const [username, setUsername] = useState<IInputData>({
-    value: props.user.username,
+  const [forename, setForename] = useState<IInputData>({
+    value: props.user.forename,
     isValid: true,
   });
+  const [surname, setSurname] = useState<IInputData>({
+    value: props.user.surname,
+    isValid: true,
+  });
+
   const [error, setError] = useState<string>("");
   const [message, setMessage] = useState<string>("");
 
   function reset() {
-    setUsername({
-      value: props.user.username,
+    setForename({
+      value: props.user.forename,
+      isValid: true,
+    });
+
+    setSurname({
+      value: props.user.surname,
       isValid: true,
     });
   }
 
-  function usernameChanged(e: React.ChangeEvent<HTMLInputElement>) {
-    setUsername({
+  function forenameChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    setForename({
       value: e.target.value,
       isValid: true,
     });
+  }
 
-    if (!e.target.value.trim().match(/^[a-z-]{5,64}$/)) {
-      setUsername({
-        value: e.target.value,
-        isValid: false,
-      });
-    }
+  function surnameChanged(e: React.ChangeEvent<HTMLInputElement>) {
+    setSurname({
+      value: e.target.value,
+      isValid: true,
+    });
   }
 
   function doSaveDetails() {
-    if (!username.isValid) {
+    if (!forename.isValid || !surname.isValid) {
       return;
     }
 
     api("put", "/api/user/" + props.user.userId, "user", {
-      username: username.value,
+      forename: forename.value,
+      surname: surname.value,
     })
       .then((res) => {
         if (res.status !== "ok") {
@@ -67,7 +78,7 @@ export default function UserDetailsEditor(props: IUserDetailsEditorProperties) {
         AppStore.dispatch({
           type: "auth.update",
           key: "identity",
-          value: user.username,
+          value: user.email,
         });
 
         setMessage("New user data saved!");
@@ -106,15 +117,29 @@ export default function UserDetailsEditor(props: IUserDetailsEditorProperties) {
 
         <div className="card-text">
           <div className="form-group mb-3">
-            <label>Username</label>
+            <label>First name</label>
             <div className="input-group">
               <input
                 className={
-                  "form-control" + (!username.isValid ? " is-invalid" : "")
+                  "form-control" + (!forename.isValid ? " is-invalid" : "")
                 }
                 maxLength={32}
-                value={username.value}
-                onChange={(e) => usernameChanged(e)}
+                value={forename.value}
+                onChange={(e) => forenameChanged(e)}
+              />
+            </div>
+          </div>
+
+          <div className="form-group mb-3">
+            <label>Last name</label>
+            <div className="input-group">
+              <input
+                className={
+                  "form-control" + (!surname.isValid ? " is-invalid" : "")
+                }
+                maxLength={32}
+                value={surname.value}
+                onChange={(e) => surnameChanged(e)}
               />
             </div>
           </div>
