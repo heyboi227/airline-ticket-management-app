@@ -12,7 +12,7 @@ export default function UserDeactivatePage() {
     api(
       "put",
       "/api/user/deactivate/" + AppStore.getState().auth.id,
-      "activeUser"
+      "user"
     )
       .then((res) => {
         if (res.status !== "ok") {

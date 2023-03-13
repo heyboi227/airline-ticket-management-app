@@ -11,11 +11,7 @@ export default function UserProfile() {
   const [user, setUser] = useState<IUser>();
 
   function loadUserData() {
-    if (AppStore.getState().auth.role !== "activeUser") {
-      return;
-    }
-
-    api("get", "/api/user/" + AppStore.getState().auth.id, "activeUser")
+    api("get", "/api/user/" + AppStore.getState().auth.id, "user")
       .then((res) => {
         if (res.status !== "ok") {
           throw new Error(
@@ -33,7 +29,7 @@ export default function UserProfile() {
 
   useEffect(loadUserData, []);
 
-  if (AppStore.getState().auth.role !== "activeUser") {
+  if (AppStore.getState().auth.role !== "user") {
     return null;
   }
 

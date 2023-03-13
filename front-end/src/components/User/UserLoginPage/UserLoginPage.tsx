@@ -12,7 +12,7 @@ export default function UserLoginPage() {
   const navigate = useNavigate();
 
   const doLogin = () => {
-    api("post", "/api/auth/active-user/login", "activeUser", {
+    api("post", "/api/auth/user/login", "user", {
       username,
       password,
     })

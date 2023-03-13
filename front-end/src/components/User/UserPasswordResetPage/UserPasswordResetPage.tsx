@@ -8,7 +8,7 @@ export default function UserPasswordResetPage() {
   const [sent, setSent] = useState<boolean>(false);
 
   const doSendPasswordResetLink = () => {
-    api("post", "/api/user/reset-password", "activeUser", {
+    api("post", "/api/user/reset-password", "user", {
       email,
     })
       .then((res) => {

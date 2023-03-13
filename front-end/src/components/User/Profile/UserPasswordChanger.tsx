@@ -84,7 +84,7 @@ export default function UserPasswordChanger(
       return;
     }
 
-    api("put", "/api/user/" + props.user.userId, "activeUser", {
+    api("put", "/api/user/" + props.user.userId, "user", {
       password: newPassword.value,
     })
       .then((res) => {
