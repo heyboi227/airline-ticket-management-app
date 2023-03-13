@@ -4,27 +4,23 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import { motion } from "framer-motion";
-import AppStore from "../../../stores/AppStore";
 
 export default function UserRegisterPage() {
-  const [username, setUsername] = useState<string>(
-    AppStore.getState().auth.identity
-  );
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [forename, setForename] = useState<string>("");
+  const [surname, setSurname] = useState<string>("");
+
   const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
 
-  if (AppStore.getState().auth.role !== "user") {
-    return null;
-  }
-
   const doRegister = () => {
-    api("put", "/api/user/" + AppStore.getState().auth.id, "user", {
-      username,
+    api("post", "/api/user/register", "user", {
       email,
       password,
+      forename,
+      surname,
     })
       .then((res) => {
         if (res.status !== "ok") {
@@ -75,19 +71,7 @@ export default function UserRegisterPage() {
             <input
               className="form-control"
               type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Enter your email"
+              placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -99,9 +83,33 @@ export default function UserRegisterPage() {
             <input
               className="form-control"
               type="password"
-              placeholder="Enter your password"
+              placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="form-group mb-3">
+          <div className="input-group">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Forename"
+              value={forename}
+              onChange={(e) => setForename(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="form-group mb-3">
+          <div className="input-group">
+            <input
+              className="form-control"
+              type="text"
+              placeholder="Surname"
+              value={surname}
+              onChange={(e) => setSurname(e.target.value)}
             />
           </div>
         </div>
