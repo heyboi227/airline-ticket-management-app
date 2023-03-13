@@ -3,7 +3,6 @@ import MenuAdministrator from "./MenuAdministrator";
 import MenuUser from "./MenuUser";
 import MenuVisitor from "./MenuVisitor";
 import AppStore from "../../stores/AppStore";
-import React from "react";
 
 export default function Menu() {
   const [role, setRole] = useState<
