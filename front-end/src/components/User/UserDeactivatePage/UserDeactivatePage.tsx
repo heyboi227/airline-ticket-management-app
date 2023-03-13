@@ -9,11 +9,7 @@ export default function UserDeactivatePage() {
   const [error, setError] = useState<string>("");
 
   const doDeactivateAccount = () => {
-    api(
-      "put",
-      "/api/user/deactivate/" + AppStore.getState().auth.id,
-      "user"
-    )
+    api("put", "/api/user/deactivate/" + AppStore.getState().auth.id, "user")
       .then((res) => {
         if (res.status !== "ok") {
           throw new Error(
@@ -60,8 +56,11 @@ export default function UserDeactivatePage() {
           <h1>Are you sure you want to deactivate your account?</h1>
           <div className="d-flex flex-column justify-content-center align-items-center mt-3">
             <p>
-              You will not be able to play the quiz, or reactivate the account
-              again without contacting the system administrator.
+              An account is needed for booking the tickets. All your data will
+              be removed, which includes personal information, saved flights,
+              your booking history and other. If you have still decided to
+              proceed, the account could be reactivated by contacting our
+              support team.
             </p>
 
             <div className="form-group mb-3">
