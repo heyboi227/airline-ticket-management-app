@@ -5,9 +5,9 @@ import MenuVisitor from "./MenuVisitor";
 import AppStore from "../../stores/AppStore";
 
 export default function Menu() {
-  const [role, setRole] = useState<
-    "visitor" | "user" | "activeUser" | "administrator"
-  >(AppStore.getState().auth.role);
+  const [role, setRole] = useState<"visitor" | "user" | "administrator">(
+    AppStore.getState().auth.role
+  );
 
   AppStore.subscribe(() => {
     setRole(AppStore.getState().auth.role);
@@ -15,8 +15,8 @@ export default function Menu() {
 
   return (
     <>
-      {(role === "visitor" || role === "user") && <MenuVisitor />}
-      {role === "activeUser" && <MenuUser />}
+      {role === "visitor" && <MenuVisitor />}
+      {role === "user" && <MenuUser />}
       {role === "administrator" && <MenuAdministrator />}
     </>
   );
