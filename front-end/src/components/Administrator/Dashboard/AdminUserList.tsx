@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
-import "./AdminUserList.sass";
 import IUser from "../../../models/IUser.model";
 
 interface IAdminUserRowProperties {
@@ -28,10 +27,15 @@ export default function AdminUserList() {
   function AdminUserRow(props: IAdminUserRowProperties) {
     const [editPasswordVisible, setEditPasswordVisible] =
       useState<boolean>(false);
-    const [editUsernameVisible, setEditUsernameVisible] =
+    const [editForenameVisible, setEditForenameVisible] =
       useState<boolean>(false);
+    const [editSurnameVisible, setEditSurnameVisible] =
+      useState<boolean>(false);
+
     const [newPassword, setNewPassword] = useState<string>("");
-    const [newUsername, setNewUsername] = useState<string>(props.user.username);
+
+    const [newForename, setNewForename] = useState<string>(props.user.forename);
+    const [newSurname, setNewSurname] = useState<string>(props.user.surname);
 
     const activeSideClass = props.user.isActive ? " btn-primary" : " btn-light";
     const inactiveSideClass = !props.user.isActive
@@ -62,9 +66,21 @@ export default function AdminUserList() {
       });
     }
 
-    function doEditUsername() {
+    function doEditForename() {
       api("put", "/api/user/" + props.user.userId, "administrator", {
-        username: newUsername,
+        forename: newForename,
+      }).then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        loadUsers();
+      });
+    }
+
+    function doEditSurname() {
+      api("put", "/api/user/" + props.user.userId, "administrator", {
+        surname: newSurname,
       }).then((res) => {
         if (res.status === "error") {
           return setErrorMessage(res.data + "");
@@ -80,34 +96,34 @@ export default function AdminUserList() {
           <td>{props.user.userId}</td>
           <td>{props.user.email}</td>
           <td>
-            {!editUsernameVisible && (
+            {!editForenameVisible && (
               <div className="row">
-                <span className="col col-9">{props.user.username}</span>
-                <div className="col col-3">
+                <span className="col col-4">{props.user.forename}</span>
+                <div className="col col-4">
                   <button
                     className="btn btn-primary btn-sm"
-                    onClick={() => setEditUsernameVisible(true)}
+                    onClick={() => setEditForenameVisible(true)}
                   >
                     Edit
                   </button>
                 </div>
               </div>
             )}
-            {editUsernameVisible && (
+            {editForenameVisible && (
               <div>
                 <div className="form-group mb-3">
                   <input
                     type="text"
                     className="form-control form-control-sm"
-                    value={newUsername}
-                    onChange={(e) => setNewUsername(e.target.value)}
+                    value={newForename}
+                    onChange={(e) => setNewForename(e.target.value)}
                   />
                 </div>
 
-                {newUsername !== props.user.username && (
+                {newForename !== props.user.forename && (
                   <button
                     className="btn btn-sm btn-primary"
-                    onClick={() => doEditUsername()}
+                    onClick={() => doEditForename()}
                   >
                     Edit
                   </button>
@@ -116,8 +132,54 @@ export default function AdminUserList() {
                 <button
                   className="btn btn-sm btn-danger"
                   onClick={() => {
-                    setNewUsername(props.user.username);
-                    setEditUsernameVisible(false);
+                    setNewForename(props.user.forename);
+                    setEditForenameVisible(false);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </td>
+          <td>
+            {!editSurnameVisible && (
+              <div className="row">
+                <span className="col col-4">{props.user.surname}</span>
+                <div className="col col-4">
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={() => setEditSurnameVisible(true)}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            )}
+            {editSurnameVisible && (
+              <div>
+                <div className="form-group mb-3">
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    value={newSurname}
+                    onChange={(e) => setNewSurname(e.target.value)}
+                  />
+                </div>
+
+                {newSurname !== props.user.forename && (
+                  <button
+                    className="btn btn-sm btn-primary"
+                    onClick={() => doEditSurname()}
+                  >
+                    Edit
+                  </button>
+                )}
+
+                <button
+                  className="btn btn-sm btn-danger"
+                  onClick={() => {
+                    setNewSurname(props.user.forename);
+                    setEditSurnameVisible(false);
                   }}
                 >
                   Cancel
@@ -191,7 +253,8 @@ export default function AdminUserList() {
             <tr>
               <th>ID</th>
               <th>Email</th>
-              <th>Username</th>
+              <th>First name</th>
+              <th>Last name</th>
               <th>Status</th>
               <th>Options</th>
             </tr>
