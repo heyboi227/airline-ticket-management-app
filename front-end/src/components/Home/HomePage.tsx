@@ -1,9 +1,6 @@
-import Logo from "../../static/img/logo.png";
-
 export default function HomePage() {
   return (
     <div className="d-flex flex-column justify-content-center align-items-center">
-      <img src={Logo} alt="Flagalica logo" width={200} />
       <div className="d-flex flex-column justify-content-center align-items-center mt-5">
         <h1>Welcome to Flagalica!</h1>
         <div className="d-flex flex-column justify-content-center align-items-center mt-3">
