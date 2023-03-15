@@ -1,0 +1,11 @@
+@font-face {
+  font-family: "Hammersmith One Regular";
+  src: url("../static/fonts/Hammersmith One Regular.ttf");
+}
+
+$primary: #0718c4;
+body {
+  font-family: "Hammersmith One Regular", sans-serif !important;
+}
+
+@import "../../node_modules/bootstrap/scss/bootstrap.scss";
