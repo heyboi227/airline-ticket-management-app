@@ -1,25 +1,14 @@
 import { useState } from "react";
+import Logo from "../../static/png/logo-no-background.png";
 import { Link, useNavigate } from "react-router-dom";
-import SubmitUsernameAction from "../../helpers/SubmitUsernameAction";
 import AppStore from "../../stores/AppStore";
-import { api } from "../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faContactCard,
-  faListAlt,
-  faUser,
-  faWindowClose,
-} from "@fortawesome/free-regular-svg-icons";
-import React from "react";
+import { faWindowClose } from "@fortawesome/free-regular-svg-icons";
 
 export default function MenuVisitor() {
   const [role, setRole] = useState<
     "visitor" | "user" | "activeUser" | "administrator"
   >(AppStore.getState().auth.role);
-  const [username, setUsername] = useState<string>("");
-  const [showUsernameSubmitDialog, setShowUsernameSubmitDialog] =
-    useState<boolean>(false);
-  const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
 
@@ -32,73 +21,10 @@ export default function MenuVisitor() {
     setRole(AppStore.getState().auth.role);
   });
 
-  const doAddUser = () => {
-    api("post", "/api/user", "user", { username })
-      .then((res) => {
-        if (res.status !== "ok") {
-          throw new Error(
-            "Could not add your account. Reason: " + JSON.stringify(res.data)
-          );
-        }
-      })
-      .then(() => {
-        api("post", "/api/auth/user/login", "user", { username })
-          .then((res) => {
-            if (res.status !== "ok") {
-              throw new Error(
-                "Could not login. Reason: " + JSON.stringify(res.data)
-              );
-            }
-
-            return res.data;
-          })
-          .then((data) => {
-            AppStore.dispatch({
-              type: "auth.update",
-              key: "authToken",
-              value: data?.authToken,
-            });
-            AppStore.dispatch({
-              type: "auth.update",
-              key: "refreshToken",
-              value: data?.refreshToken,
-            });
-            AppStore.dispatch({
-              type: "auth.update",
-              key: "identity",
-              value: username,
-            });
-            AppStore.dispatch({
-              type: "auth.update",
-              key: "id",
-              value: +data?.id,
-            });
-            AppStore.dispatch({
-              type: "auth.update",
-              key: "role",
-              value: "user",
-            });
-            window.location.reload();
-          });
-      })
-      .then(() => {
-        navigate("/quiz", {
-          replace: true,
-        });
-      })
-      .catch((error) => {
-        setError(error?.message ?? "Could not add your account.");
-
-        setTimeout(() => {
-          setError("");
-        }, 3500);
-      });
-  };
-
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <nav className="navbar navbar-expand-lg navbar-light bg-primary mb-4">
       <Link className="navbar-brand" to="/">
-        Home page
+        <img src={Logo} alt="The logo of Air Soko" width="150"></img>
       </Link>
 
       {role === "user" && (
@@ -119,47 +45,29 @@ export default function MenuVisitor() {
         <span className="navbar-toggler-icon"></span>
       </button>
 
-      <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div
+        className="collapse navbar-collapse d-flex justify-content-end"
+        id="navbarNavAltMarkup"
+      >
         <div className="navbar-nav">
+          <Link className="nav-item nav-link text-light" to="/auth/user/login">
+            Login
+          </Link>
+
           <Link
-            className="nav-item nav-link"
-            to="#"
-            onClick={() => setShowUsernameSubmitDialog(true)}
+            className="nav-item nav-link text-light"
+            to="/auth/user/register"
           >
-            <FontAwesomeIcon icon={faListAlt} /> Play!
+            Register
           </Link>
 
-          {showUsernameSubmitDialog && (
-            <SubmitUsernameAction
-              title="Enter your username"
-              message="Please enter your username in order to start playing."
-              username={username}
-              setUsername={setUsername}
-              onSubmit={() => {
-                setShowUsernameSubmitDialog(false);
-                doAddUser();
-              }}
-              onCancel={() => setShowUsernameSubmitDialog(false)}
-            />
-          )}
-
-          <Link className="nav-item nav-link" to="/auth/user/login">
-            <FontAwesomeIcon icon={faUser} /> User login
-          </Link>
-
-          {role === "user" && (
-            <Link className="nav-item nav-link" to="/auth/user/register">
-              <FontAwesomeIcon icon={faUser} /> Register an account
-            </Link>
-          )}
-
-          <Link className="nav-item nav-link" to="/auth/administrator/login">
+          {/* <Link className="nav-item nav-link" to="/auth/administrator/login">
             <FontAwesomeIcon icon={faUser} /> Admin login
           </Link>
 
           <Link className="nav-item nav-link" to="/contact">
             <FontAwesomeIcon icon={faContactCard} /> Contact
-          </Link>
+          </Link> */}
 
           {role === "user" && (
             <div
@@ -172,7 +80,6 @@ export default function MenuVisitor() {
           )}
         </div>
       </div>
-      {error && <p className="alert alert-danger">{error}</p>}
     </nav>
   );
 }
