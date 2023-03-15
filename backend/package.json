@@ -1,6 +1,6 @@
 {
-  "name": "airline-ticket-management-app-back-end",
-  "version": "0.0.1",
+  "name": "airline-ticket-management-app-backend",
+  "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
   "scripts": {
