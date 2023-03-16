@@ -22,7 +22,7 @@ export default function MenuVisitor() {
   });
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-primary mb-4">
+    <nav className="navbar navbar-expand-lg navbar-light bg-primary px-2">
       <Link className="navbar-brand" to="/">
         <img src={Logo} alt="The logo of Air Soko" width="150"></img>
       </Link>
