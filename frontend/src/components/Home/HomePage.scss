@@ -1,0 +1,24 @@
+.landing-page-header {
+  height: 30vw;
+  background-image: url("../../static/place-flying-sunset-sky.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.intro-text {
+  color: white;
+  position: relative;
+  top: 12vw;
+  background-color: rgba($color: #000000, $alpha: 0.5);
+  padding: 1.5vw;
+  border-radius: 15px;
+}
+
+.intro-text h1 {
+  font-size: 3vw;
+}
+
+.intro-text h2 {
+  font-size: 1.5vw;
+}
