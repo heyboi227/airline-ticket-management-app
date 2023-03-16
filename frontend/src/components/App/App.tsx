@@ -13,6 +13,7 @@ import UserProfile from "../User/Profile/UserProfile";
 import HomePage from "../Home/HomePage";
 import UserPasswordResetPage from "../User/UserPasswordResetPage/UserPasswordResetPage";
 import UserDeactivatePage from "../User/UserDeactivatePage/UserDeactivatePage";
+import Footer from "../Footer/Footer";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
 
         <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />
       </Routes>
+      <Footer />
     </Container>
   );
 }
