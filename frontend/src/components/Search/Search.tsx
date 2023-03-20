@@ -45,7 +45,10 @@ export default function Search() {
   return (
     <div className="container pt-5 pb-5 d-flex justify-content-center align-items-center search">
       <div className="col-8 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
-        <div className="row form-group mt-3 mb-3 text-white w-50">
+        <div
+          className="row form-group mt-3 mb-3 text-white"
+          style={{ width: "fit-content" }}
+        >
           <div className="col">
             <div className="form-check">
               <input
