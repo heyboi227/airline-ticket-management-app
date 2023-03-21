@@ -5,10 +5,10 @@ interface DateInputProps {
   id: string;
   placeholder: string;
   value: string | undefined;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
 }
 
-function DateInput({ id, placeholder, value, onChange }: DateInputProps) {
+function DateInput({ id, placeholder, value, handleChange }: DateInputProps) {
   const [inputType, setInputType] = useState<string>("text");
 
   const handleFocus = () => {
@@ -24,7 +24,7 @@ function DateInput({ id, placeholder, value, onChange }: DateInputProps) {
       placeholder={placeholder}
       className="form-control"
       type={inputType}
-      onChange={onChange}
+      onChange={handleChange}
       onFocus={handleFocus}
       onBlur={handleBlur}
       id={id}
@@ -108,10 +108,12 @@ export default function Search() {
             <div className="form-group mt-3 mb-3">
               <div className="input-group">
                 <DateInput
-                  id={"departure"}
-                  placeholder={"Departure date"}
+                  id="departure"
+                  placeholder="Departure date"
                   value={departureDate?.toDateString()}
-                  onChange={(e) => setDepartureDate(new Date(e.target.value))}
+                  handleChange={(e) =>
+                    setDepartureDate(new Date(e.target.value))
+                  }
                 ></DateInput>
               </div>
             </div>
@@ -119,10 +121,12 @@ export default function Search() {
               <div className="form-group mb-3">
                 <div className="input-group">
                   <DateInput
-                    id={"return"}
-                    placeholder={"Return date"}
+                    id="return"
+                    placeholder="Return date"
                     value={returnDate?.toDateString()}
-                    onChange={(e) => setReturnDate(new Date(e.target.value))}
+                    handleChange={(e) =>
+                      setReturnDate(new Date(e.target.value))
+                    }
                   ></DateInput>
                 </div>
               </div>
