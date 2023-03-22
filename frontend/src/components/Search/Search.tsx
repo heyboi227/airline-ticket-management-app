@@ -60,9 +60,15 @@ function AirportInput({ id, placeholder }: InputProps) {
               <li
                 key={result.airportId}
                 className="list-group-item"
-                onClick={(e) => setQuery(e.currentTarget.innerText)}
+                onClick={() =>
+                  setQuery(
+                    `${result.city}, ${result.country?.name} (${result.airportCode})`
+                  )
+                }
               >
-                {result.name} ({result.airportCode})
+                {result.city}, {result.country?.name} ({result.airportCode})
+                <br />
+                <small>{result.name}</small>
               </li>
             ))}
           </ul>
