@@ -128,6 +128,19 @@ export default class AirportController extends BaseController {
       });
   }
 
+  getAllBySearchString(req: Request, res: Response) {
+    const searchString: string = req.params?.sstring;
+
+    this.services.airport
+      .getAllBySearchString(searchString)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((error) => {
+        res.status(500).send(error?.message);
+      });
+  }
+
   add(req: Request, res: Response) {
     const body = req.body as IAddAirportDto;
 

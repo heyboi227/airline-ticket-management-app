@@ -49,6 +49,11 @@ export default class AirportRouter implements IRouter {
       airportController.getAllByCountryId.bind(airportController)
     );
 
+    application.get(
+      "/api/airport/search/:sstring",
+      airportController.getAllBySearchString.bind(airportController)
+    );
+
     application.post(
       "/api/airport",
       AuthMiddleware.getVerifier("administrator"),

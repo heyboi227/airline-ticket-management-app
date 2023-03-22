@@ -3,6 +3,7 @@ import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import AirportModel from "./AirportModel.model";
 import { IAddAirport } from "./dto/IAddAirport.dto";
 import { IEditAirport } from "./dto/IEditAirport.dto";
+import * as mysql2 from "mysql2/promise";
 
 export interface IAirportAdapterOptions extends IAdapterOptions {
   showCountry: boolean;
@@ -127,6 +128,35 @@ export default class AirportService extends BaseService<
         })
         .catch((error) => {
           reject(error?.message);
+        });
+    });
+  }
+
+  public async getAllBySearchString(
+    searchString: string
+  ): Promise<AirportModel[]> {
+    return new Promise<AirportModel[]>((resolve, reject) => {
+      const sql: string = `SELECT * FROM \`airport\` WHERE \`name\` LIKE '%${searchString}%' OR \`airport_code\` LIKE '%${searchString}%' OR \`city\` LIKE '%${searchString}%';`;
+
+      this.db
+        .execute(sql, [searchString])
+        .then(async ([rows]) => {
+          if (rows === undefined) {
+            return resolve([]);
+          }
+
+          const items: AirportModel[] = [];
+
+          for (const row of rows as mysql2.RowDataPacket[]) {
+            items.push(
+              await this.adaptToModel(row, DefaultAirportAdapterOptions)
+            );
+          }
+
+          resolve(items);
+        })
+        .catch((error) => {
+          reject(error);
         });
     });
   }

@@ -1,14 +1,78 @@
 import "./Search.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { api } from "../../api/api";
+import Config from "../../config";
+import { debounce } from "lodash";
+import AirportModel from "../../../../backend/src/components/airport/AirportModel.model";
 
-interface DateInputProps {
+interface InputProps {
   id: string;
   placeholder: string;
+}
+
+interface DateInputProps {
   value: string | undefined;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
 }
 
-function DateInput({ id, placeholder, value, handleChange }: DateInputProps) {
+type CombinedProps = InputProps & DateInputProps;
+
+function AirportInput({ id, placeholder }: InputProps) {
+  const [query, setQuery] = useState<string>("");
+  const [results, setResults] = useState<AirportModel[]>([]);
+
+  const fetchResults = async (searchQuery: string) => {
+    const response = await api(
+      "get",
+      Config.API_PATH + `/api/airport/search/${searchQuery}`,
+      "user",
+      false
+    );
+    setResults(response.data);
+  };
+
+  const debouncedFetchResults = debounce(fetchResults, 300);
+
+  useEffect(() => {
+    if (query) {
+      debouncedFetchResults(query);
+    } else {
+      setResults([]);
+    }
+  }, [query]);
+
+  return (
+    <>
+      <div className="input-group">
+        <input
+          placeholder={placeholder}
+          className="form-control"
+          type="text"
+          onChange={(e) => setQuery(e.target.value)}
+          id={id}
+          value={query}
+        />
+      </div>
+      <div style={{ position: "absolute", zIndex: 2 }}>
+        {results.length > 0 && (
+          <ul className="list-group">
+            {results.map((result) => (
+              <li
+                key={result.airportId}
+                className="list-group-item"
+                onClick={(e) => setQuery(e.currentTarget.innerText)}
+              >
+                {result.name} ({result.airportCode})
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  );
+}
+
+function DateInput({ id, placeholder, value, handleChange }: CombinedProps) {
   const [inputType, setInputType] = useState<string>("text");
 
   const handleFocus = () => {
@@ -34,9 +98,6 @@ function DateInput({ id, placeholder, value, handleChange }: DateInputProps) {
 }
 
 export default function Search() {
-  const [originAirport, setOriginAirport] = useState<string>();
-  const [destinationAirport, setDestinationAirport] = useState<string>();
-
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
 
@@ -82,26 +143,13 @@ export default function Search() {
         <div className="row">
           <div className="col">
             <div className="form-group mt-3 mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Origin airport"
-                  value={originAirport}
-                  onChange={(e) => setOriginAirport(e.target.value)}
-                />
-              </div>
+              <AirportInput id="origin" placeholder="Origin airport" />
             </div>
             <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Destination airport"
-                  value={destinationAirport}
-                  onChange={(e) => setDestinationAirport(e.target.value)}
-                />
-              </div>
+              <AirportInput
+                id="destination"
+                placeholder="Destination airport"
+              />
             </div>
           </div>
           <div className="col">
