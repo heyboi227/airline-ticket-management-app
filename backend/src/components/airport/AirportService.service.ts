@@ -137,7 +137,7 @@ export default class AirportService extends BaseService<
   ): Promise<AirportModel[]> {
     return new Promise<AirportModel[]>((resolve, reject) => {
       const sql: string =
-        "SELECT * FROM `airport` WHERE `name` LIKE '%?%' OR `airport_code` LIKE '%?%' OR `city` LIKE '%?%';";
+        "SELECT * FROM `airport` WHERE CONCAT_WS('|', `name`, `airport_code`, `city`) LIKE CONCAT('%', ?, '%');";
 
       this.db
         .execute(sql, [searchString])
