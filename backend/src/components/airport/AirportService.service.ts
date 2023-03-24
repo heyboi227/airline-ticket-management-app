@@ -136,7 +136,8 @@ export default class AirportService extends BaseService<
     searchString: string
   ): Promise<AirportModel[]> {
     return new Promise<AirportModel[]>((resolve, reject) => {
-      const sql: string = `SELECT * FROM \`airport\` WHERE \`name\` LIKE '%${searchString}%' OR \`airport_code\` LIKE '%${searchString}%' OR \`city\` LIKE '%${searchString}%';`;
+      const sql: string =
+        "SELECT * FROM `airport` WHERE `name` LIKE '%?%' OR `airport_code` LIKE '%?%' OR `city` LIKE '%?';";
 
       this.db
         .execute(sql, [searchString])
