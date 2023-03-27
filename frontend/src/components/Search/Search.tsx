@@ -10,14 +10,21 @@ interface InputProps {
   placeholder: string;
 }
 
-interface DateInputProps {
-  value: string | undefined;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => any;
+interface AirportInputProps {
+  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 }
 
-type CombinedProps = InputProps & DateInputProps;
+interface DateInputProps {
+  value: string | undefined;
+  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}
 
-function AirportInput({ id, placeholder }: InputProps) {
+type CombinedAirportProps = InputProps & AirportInputProps;
+type CombinedDateProps = InputProps & DateInputProps;
+
+function AirportInput({ id, placeholder, handleBlur }: CombinedAirportProps) {
+  const [airportCode, setAirportCode] = useState<string>("");
+
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<AirportModel[]>([]);
 
@@ -48,7 +55,9 @@ function AirportInput({ id, placeholder }: InputProps) {
           placeholder={placeholder}
           className="form-control"
           type="text"
+          name={airportCode}
           onChange={(e) => setQuery(e.target.value)}
+          onBlur={handleBlur}
           id={id}
           value={query}
         />
@@ -60,11 +69,12 @@ function AirportInput({ id, placeholder }: InputProps) {
               <li
                 key={result.airportId}
                 className="list-group-item"
-                onClick={() =>
+                onClick={() => {
                   setQuery(
                     `${result.city}, ${result.country?.name} (${result.airportCode})`
-                  )
-                }
+                  );
+                  setAirportCode(result.airportCode);
+                }}
               >
                 {result.city}, {result.country?.name} ({result.airportCode})
                 <br />
@@ -78,7 +88,12 @@ function AirportInput({ id, placeholder }: InputProps) {
   );
 }
 
-function DateInput({ id, placeholder, value, handleChange }: CombinedProps) {
+function DateInput({
+  id,
+  placeholder,
+  value,
+  handleChange,
+}: CombinedDateProps) {
   const [inputType, setInputType] = useState<string>("text");
 
   const handleFocus = () => {
@@ -104,6 +119,10 @@ function DateInput({ id, placeholder, value, handleChange }: CombinedProps) {
 }
 
 export default function Search() {
+  const [originAirportCode, setOriginAirportCode] = useState<string>("");
+  const [destinationAirportCode, setDestinationAirportCode] =
+    useState<string>("");
+
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
 
@@ -149,12 +168,17 @@ export default function Search() {
         <div className="row">
           <div className="col">
             <div className="form-group mt-3 mb-3">
-              <AirportInput id="origin" placeholder="Origin airport" />
+              <AirportInput
+                id="origin"
+                placeholder="Origin airport"
+                handleBlur={(e) => setOriginAirportCode(e.target.name)}
+              />
             </div>
             <div className="form-group mb-3">
               <AirportInput
                 id="destination"
                 placeholder="Destination airport"
+                handleBlur={(e) => setDestinationAirportCode(e.target.name)}
               />
             </div>
           </div>
