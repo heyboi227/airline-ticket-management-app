@@ -8,9 +8,9 @@ import {
 } from "./dto/IAddFlightLeg.dto";
 import { IEditFlightLeg } from "./dto/IEditFlightLeg.dto";
 import { DefaultAirportAdapterOptions } from "../airport/AirportService.service";
+import { IFlightFlightLeg } from "../flight/FlightModel.model";
 
 export interface IFlightLegAdapterOptions extends IAdapterOptions {
-  showFlight: boolean;
   showOriginAirport: boolean;
   showDestinationAirport: boolean;
   showAircraft: boolean;
@@ -21,7 +21,6 @@ export interface IFlightLegAdapterOptions extends IAdapterOptions {
 }
 
 export const DefaultFlightLegAdapterOptions: IFlightLegAdapterOptions = {
-  showFlight: true,
   showOriginAirport: true,
   showDestinationAirport: true,
   showAircraft: true,
@@ -47,20 +46,11 @@ export default class FlightLegService extends BaseService<
 
     flightLeg.flightLegId = +data?.flight_leg_id;
     flightLeg.flightCode = data?.flight_code;
-    flightLeg.flightId = +data?.flight_id;
     flightLeg.originAirportId = +data?.origin_airport_id;
     flightLeg.destinationAirportId = +data?.destination_airport_id;
     flightLeg.departureDateAndTime = data?.departure_date_and_time;
     flightLeg.arrivalDateAndTime = data?.arrival_date_and_time;
     flightLeg.aircraftId = +data?.aircraft_id;
-    flightLeg.isActive = +data?.is_active === 1;
-
-    if (options.showFlight) {
-      flightLeg.flight = await this.services.flight.getById(
-        flightLeg.flightId,
-        {}
-      );
-    }
 
     if (options.showOriginAirport) {
       flightLeg.originAirport = await this.services.airport.getById(
@@ -167,25 +157,74 @@ export default class FlightLegService extends BaseService<
     });
   }
 
-  public async getAllByFlightId(
-    flightId: number,
-    options: IFlightLegAdapterOptions = DefaultFlightLegAdapterOptions
-  ): Promise<FlightLegModel[]> {
+  public async getAllByFlightId(flightId: number): Promise<IFlightFlightLeg[]> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "flight_id",
-        flightId,
-        DefaultFlightLegAdapterOptions
-      )
-        .then((result) => {
+      this.getAllFromTableByFieldNameAndValue<{
+        flight_flight_leg_id: number;
+        flight_id: number;
+        flight_leg_id: number;
+        is_active: number;
+      }>("flight_flight_leg", "flight_id", flightId)
+        .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
           }
 
-          resolve(result);
+          const flightLegs: IFlightFlightLeg[] = await Promise.all(
+            result.map(async (row) => {
+              const flightLeg = await this.getById(
+                row.flight_leg_id,
+                DefaultFlightLegAdapterOptions
+              );
+
+              return {
+                flightLeg,
+                isActive: row.is_active === 1,
+              };
+            })
+          );
+
+          resolve(flightLegs);
         })
         .catch((error) => {
-          reject(error?.message);
+          reject(error);
+        });
+    });
+  }
+
+  public async getAllByFlightLegId(
+    flightLegId: number
+  ): Promise<IFlightFlightLeg[]> {
+    return new Promise((resolve, reject) => {
+      this.getAllFromTableByFieldNameAndValue<{
+        flight_flight_leg_id: number;
+        flight_id: number;
+        flight_leg_id: number;
+        is_active: number;
+      }>("flight_flight_leg", "flight_leg_id", flightLegId)
+        .then(async (result) => {
+          if (result.length === 0) {
+            return resolve([]);
+          }
+
+          const flightLegs: IFlightFlightLeg[] = await Promise.all(
+            result.map(async (row) => {
+              const flightLeg = await this.getById(
+                row.flight_leg_id,
+                DefaultFlightLegAdapterOptions
+              );
+
+              return {
+                flightLeg,
+                isActive: row.is_active === 1,
+              };
+            })
+          );
+
+          resolve(flightLegs);
+        })
+        .catch((error) => {
+          reject(error);
         });
     });
   }
@@ -372,6 +411,68 @@ export default class FlightLegService extends BaseService<
           throw {
             message:
               error?.message ?? "Could not delete flight leg travel classes!",
+          };
+        });
+    });
+  }
+
+  public async showFlightFlightLeg(
+    flightId: number,
+    flightLegId: number
+  ): Promise<true> {
+    return new Promise((resolve) => {
+      const sql =
+        "UPDATE flight_flight_leg SET is_active = 1 WHERE flight_id = ? AND flight_leg_id = ?;";
+
+      this.db
+        .execute(sql, [flightId, flightLegId])
+        .then((result) => {
+          const info: any = result;
+
+          if (+info[0]?.affectedRows === 1) {
+            return resolve(true);
+          }
+
+          throw {
+            status: 500,
+            message: "Could not show this flight flight leg record!",
+          };
+        })
+        .catch((error) => {
+          throw {
+            status: 500,
+            message: error?.message,
+          };
+        });
+    });
+  }
+
+  public async hideFlightFlightLeg(
+    flightId: number,
+    flightLegId: number
+  ): Promise<true> {
+    return new Promise((resolve) => {
+      const sql =
+        "UPDATE flight_flight_leg SET is_active = 0 WHERE flight_id = ? AND flight_leg_id = ?;";
+
+      this.db
+        .execute(sql, [flightId, flightLegId])
+        .then((result) => {
+          const info: any = result;
+
+          if (+info[0]?.affectedRows === 1) {
+            return resolve(true);
+          }
+
+          throw {
+            status: 500,
+            message: "Could not hide this flight flight leg record!",
+          };
+        })
+        .catch((error) => {
+          throw {
+            status: 500,
+            message: error?.message,
           };
         });
     });

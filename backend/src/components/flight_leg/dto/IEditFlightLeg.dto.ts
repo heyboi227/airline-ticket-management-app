@@ -20,7 +20,6 @@ export interface IEditFlightLegDto {
     travelClassId: number;
     price: number;
   }[];
-  isActive: boolean;
 }
 
 export interface IEditFlightLeg extends IServiceData {
@@ -30,7 +29,6 @@ export interface IEditFlightLeg extends IServiceData {
   departure_date_and_time: string;
   arrival_date_and_time: string;
   aircraft_id: number;
-  is_active: number;
 }
 
 const EditFlightLegValidator = ajv.compile({

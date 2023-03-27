@@ -20,15 +20,12 @@ export interface IFlightLegTravelClass {
 export default class FlightLegModel implements IModel {
   flightLegId: number;
   flightCode: string;
-  flightId: number;
   originAirportId: number;
   destinationAirportId: number;
   departureDateAndTime: string;
   arrivalDateAndTime: string;
   aircraftId: number;
-  isActive: boolean;
 
-  flight?: FlightModel = null;
   bags?: IFlightLegBag[] = [];
   travelClasses?: IFlightLegTravelClass[] = [];
   originAirport?: AirportModel = null;

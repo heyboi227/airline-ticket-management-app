@@ -3,6 +3,7 @@ import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import TicketModel from "./TicketModel.model";
 import { IAddTicket } from "./dto/IAddTicket.dto";
 import { DefaultDocumentAdapterOptions } from "../document/DocumentService.service";
+import { DefaultFlightAdapterOptions } from "../flight/FlightService.service";
 
 export interface ITicketAdapterOptions extends IAdapterOptions {
   showDocument: boolean;
@@ -54,7 +55,10 @@ export default class TicketService extends BaseService<
     }
 
     if (options.showFlight) {
-      ticket.flight = await this.services.flight.getById(ticket.flightId, {});
+      ticket.flight = await this.services.flight.getById(
+        ticket.flightId,
+        DefaultFlightAdapterOptions
+      );
     }
 
     return ticket;
