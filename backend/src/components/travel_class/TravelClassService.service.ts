@@ -43,7 +43,7 @@ export default class TravelClassService extends BaseService<
             return resolve([]);
           }
 
-          const flightLegs: IFlightLegTravelClass[] = await Promise.all(
+          const travelClasses: IFlightLegTravelClass[] = await Promise.all(
             result.map(async (row) => {
               const travelClass = await this.getById(row.travel_class_id, {});
 
@@ -58,7 +58,7 @@ export default class TravelClassService extends BaseService<
             })
           );
 
-          resolve(flightLegs);
+          resolve(travelClasses);
         })
         .catch((error) => {
           reject(error);
@@ -82,7 +82,7 @@ export default class TravelClassService extends BaseService<
             return resolve([]);
           }
 
-          const flightLegs: IFlightLegTravelClass[] = await Promise.all(
+          const travelClasses: IFlightLegTravelClass[] = await Promise.all(
             result.map(async (row) => {
               const travelClass = await this.getById(row.travel_class_id, {});
 
@@ -97,7 +97,7 @@ export default class TravelClassService extends BaseService<
             })
           );
 
-          resolve(flightLegs);
+          resolve(travelClasses);
         })
         .catch((error) => {
           reject(error);

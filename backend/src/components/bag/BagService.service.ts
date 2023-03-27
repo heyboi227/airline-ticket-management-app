@@ -43,7 +43,7 @@ export default class BagService extends BaseService<
             return resolve([]);
           }
 
-          const flightLegs: IFlightLegBag[] = await Promise.all(
+          const bags: IFlightLegBag[] = await Promise.all(
             result.map(async (row) => {
               const bag = await this.getById(row.bag_id, {});
 
@@ -58,7 +58,7 @@ export default class BagService extends BaseService<
             })
           );
 
-          resolve(flightLegs);
+          resolve(bags);
         })
         .catch((error) => {
           reject(error);
@@ -80,7 +80,7 @@ export default class BagService extends BaseService<
             return resolve([]);
           }
 
-          const flightLegs: IFlightLegBag[] = await Promise.all(
+          const bags: IFlightLegBag[] = await Promise.all(
             result.map(async (row) => {
               const bag = await this.getById(row.bag_id, {});
 
@@ -95,7 +95,7 @@ export default class BagService extends BaseService<
             })
           );
 
-          resolve(flightLegs);
+          resolve(bags);
         })
         .catch((error) => {
           reject(error);
