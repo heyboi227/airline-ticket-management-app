@@ -1,0 +1,1742 @@
+{
+	"info": {
+		"_postman_id": "c323631b-c5ba-4078-b6ff-21f79c25b3a8",
+		"name": "Diplomski app",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Administrator",
+			"item": [
+				{
+					"name": "Get all administrators",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single administrator",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"administrator\",\r\n    \"password\": \"Admin password 123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single administrator",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single administrator (password only)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"Admin password edited 123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single administrator (is active only)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"isActive\": false\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Aircraft",
+			"item": [
+				{
+					"name": "Get all aircraft",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single aircraft",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft/3",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all aircraft by type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft/type/Narrow-body",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft",
+								"type",
+								"Narrow-body"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single aircraft by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft/name/Boeing 737-800",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft",
+								"name",
+								"Boeing 737-800"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single aircraft",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"Wide-body\",\r\n    \"name\": \"Airbus A380\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single aircraft",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": \"Narrow-body\",\r\n    \"name\": \"Airbus A319-191\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft/2",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single aircraft",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/aircraft/2",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"aircraft",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Airport",
+			"item": [
+				{
+					"name": "Get all airports",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single airport",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single airport by code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/code/VIE",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"code",
+								"VIE"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single airport by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/name/Heathrow",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"name",
+								"Heathrow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all airports by city",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/city/Belgrade",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"city",
+								"Belgrade"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all airports by country id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/country/153",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"country",
+								"153"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all airports by name search string",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/search/beg",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"search",
+								"beg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single airport",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"airportCode\": \"TIV\",\r\n    \"name\": \"Tivat\",\r\n    \"city\": \"Tivat\",\r\n    \"countryId\": 115\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/airport",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single airport",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"airportCode\": \"LHR\",\r\n    \"name\": \"London Heathrow\",\r\n    \"city\": \"London\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/3",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single airport",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/airport/4",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"airport",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"milosjeknic1@gmail.com\",\r\n    \"password\": \"SomePassword123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_PATH}}/api/auth/user/login",
+									"host": [
+										"{{API_PATH}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"user",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh auth token",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlkIjoyLCJpZGVudGl0eSI6Ik1pbG9zIEpla25pYyIsImlhdCI6MTY2MDM4MDg1OSwiZXhwIjoxNjYyOTcyODU5LCJpc3MiOiJTaW5naWR1bnVtIFVuaXZlcnNpdHkifQ.Ax8HwGauXegSCUjhZoDQMfvvjYKFskIhKcC4pHMsa6SNNvr2tEJMcSdf88RtKt2wjj_ktbDTv30KhQibmbHG1dKQa-wdTulEzm2W7tbthr0_9w4W_qltEoaZKttyZo59yRbVIVc05sh3Xr2lhZCG54VVhfFp1drUMoFSqSfG2EhgsrNv6d5_TO1xGKHmd235twYJ3d0_pr9CiDT_xGEbN0gq09YT8e7QQB9_8cu84NZKcSm7358lqN8r0p6KTdoKcUM7Mm-TTXcAoxN6RP3yPNghrJGuASRsKO9gsJ5fphTcuIvu02SN8rZKmRUObPaoXQFfWg1PyIw7NRCDyGDerQ",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{API_PATH}}/api/auth/user/refresh",
+									"host": [
+										"{{API_PATH}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"user",
+										"refresh"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Administrator",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"administrator\",\r\n    \"password\": \"Admin password edited 123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_PATH}}/api/auth/administrator/login",
+									"host": [
+										"{{API_PATH}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"administrator",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh auth token",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2NjAzODI5NTAsImV4cCI6MTY2Mjk3NDk1MCwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.BzYO80yl7Q8NS4pOC9fS-tq8cjmoNfm86nkA5gIjNLnFVhAl0ZCftxtsu1Ah4dOEU1fcxLfoLiBpEVHq1QfiwP2r65voQ6iTHxaX_lMPKa_WDisQpBvbprdUKo8PCgutCfNypr8MWuO5wqGLTPrDjccOkP9kq01RCap0ZBQOr6gh5jjWnVhDVs4BLWQb1WSDdOSWJ7m09slunThR1c8pbdMsxXNiPN1ASyqNEp3PmiECkeZdLYg7xlrPArWyR-Rq0x89KhAGVsss8rq_6n8_8f6auQoxgRrmPzJl4cASylC6c9s4nP9qNAX197av02hZi3rJzDR95SvlWLEuNlvd-w",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{API_PATH}}/api/auth/administrator/refresh",
+									"host": [
+										"{{API_PATH}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"administrator",
+										"refresh"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Bag",
+			"item": [
+				{
+					"name": "Get all bags",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/bag",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"bag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single bag",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/bag/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"bag",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single bag",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Special bag\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/bag",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"bag"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single bag",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Extra special bag\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/bag/3",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"bag",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Country",
+			"item": [
+				{
+					"name": "Get all countries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/country",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single country",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/country/27",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country",
+								"27"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single country by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/country/name/United Kingdom",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country",
+								"name",
+								"United Kingdom"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single country",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Liberland\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/country",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single country",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Republic of Liberland\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/country/195",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country",
+								"195"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single country",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/country/195",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"country",
+								"195"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Document",
+			"item": [
+				{
+					"name": "Get all documents",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/document",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single document",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/document/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single document by document number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/document/number/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"number",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single document",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"countryId\": 153,\r\n    \"type\": \"National ID\",\r\n    \"documentNumber\": \"007430880\",\r\n    \"userId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/document",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single document",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"countryId\": 153,\r\n    \"type\": \"Passport\",\r\n    \"documentNumber\": \"111122233\",\r\n    \"userId\": 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/document/3",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight",
+			"item": [
+				{
+					"name": "Get all flights",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/flight",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single flight",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/flight/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single flight by fare code",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/flight/fare-code/f35920g",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight",
+								"fare-code",
+								"f35920g"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single flight",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightFareCode\": \"zdgGZZET\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single flight",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightFareCode\": \"F35920GH\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight/3",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Flight leg",
+			"item": [
+				{
+					"name": "Get all flight legs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/flight-leg",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight-leg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all flight legs by flight id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/flight-leg/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight-leg",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single flight leg",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightCode\": \"JU1254\",\r\n    \"originAirportId\": 3,\r\n    \"destinationAirportId\": 1,\r\n    \"departureDateAndTime\": \"2023-04-01 14:00:00\",\r\n    \"arrivalDateAndTime\": \"2023-04-01 18:10:00\",\r\n    \"aircraftId\": 2,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 14000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 26000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 11000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 32000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight-leg",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight-leg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single flight leg",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 12000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 25000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight-leg/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight-leg",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Photo",
+			"item": [
+				{
+					"name": "Upload document photos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file1",
+									"type": "file",
+									"src": "/C:/Users/milos/Downloads/lk.jpg"
+								},
+								{
+									"key": "file2",
+									"type": "file",
+									"src": "/C:/Users/milos/Downloads/lk2.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/document/3/photo",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"3",
+								"photo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a single photo",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/document/3/photo/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"3",
+								"photo",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ticket",
+			"item": [
+				{
+					"name": "Get a single ticket",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single ticket by ticket number",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket/number/36236236",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket",
+								"number",
+								"36236236"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tickets by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket/user/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket",
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all tickets by flight id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket/flight/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket",
+								"flight",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single ticket",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ticketNumber\": \"241242\",\r\n    \"ticketHolderName\": \"Milos Jeknic\",\r\n    \"documentId\": 4,\r\n    \"price\": 22000,\r\n    \"userId\": 3,\r\n    \"flightId\": 1,\r\n    \"seatNumber\": \"22F\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Travel Class",
+			"item": [
+				{
+					"name": "Get all travel classes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/travel-class",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"travel-class"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single travel class",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/travel-class/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"travel-class",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a single travel class",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Premium extra business class\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/travel-class",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"travel-class"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single travel class",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Premium business class\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/travel-class/6",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"travel-class",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get all users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/user",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/user/2",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register an account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"milosjeknic@hotmail.rs\",\r\n    \"password\": \"The password is 12345\",\r\n    \"forename\": \"Milos\",\r\n    \"surname\": \"Jeknic\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/user/register",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"The password is 123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/user/2",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Activate an account",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/user/activate/951da806-6021-4714-ad9a-4ec175425bf9",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"activate",
+								"951da806-6021-4714-ad9a-4ec175425bf9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Request a password reset code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"milosjeknic@hotmail.rs\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/user/reset-password",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset the password",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/user/reset/8c361eef-18b1-4072-9c20-c4b0377cd3c8-0cfaefbd-4ccc-4a11-bcc3-193de5d00301",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"reset",
+								"8c361eef-18b1-4072-9c20-c4b0377cd3c8-0cfaefbd-4ccc-4a11-bcc3-193de5d00301"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add a new address",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"streetAndNumber\": \"Bulevar Arsenija Carnojevica 182\",\r\n    \"zipCode\": 11070,\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/user/address",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit a single address",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"streetAndNumber\": \"Resavska 12\",\r\n    \"zipCode\": 11000,\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/user/address/4",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"user",
+								"address",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{ADMIN_AUTH_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "API_PATH",
+			"value": "http://localhost:10000",
+			"type": "default"
+		},
+		{
+			"key": "USER_AUTH_TOKEN",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlkIjoyLCJpZGVudGl0eSI6Ik1pbG9zIEpla25pYyIsImlhdCI6MTY2MDM4MTA4MywiZXhwIjoxNjYwNDY3NDgzLCJpc3MiOiJTaW5naWR1bnVtIFVuaXZlcnNpdHkifQ.CyMuNMbJxdFAXML3x2neU5zmAOAljJV_FBUD-MnCyk0f03qKHCx_2PHNDsrxc5aEUmlea9U8Wj6Uhfveeu8vHeXM1PdwzjZ5GFJ7qsafNmvQix9bLzkvUcgun1eSm5Wq6-hF4XLtihIinoiqNLlXEF0RZttqirRTrjOe2RP6i0IN8m6IDYps7CbzRcB_TsdQiD_RCrv6wd6Ssk8NuxBfM2GsXTiuT70pX-7spR7N74QO2nPv1TzSQgoSvo9M4S6ZiTgXV2mlM_U9DsfnI3MyG2_m1OG4jFb0tPxku67RYZrgU1IlWRRE0y7h13R6UkbPv7nt3WvWsLuluLXigiVc1Q",
+			"type": "default"
+		},
+		{
+			"key": "ADMIN_AUTH_TOKEN",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2NjUwNzQxMjksImV4cCI6MTY2NTE2MDUyOSwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.ByLIBNijwW6jM6S7GNoZt2Wd8YaQciDCu8I2bAqEzkn4mdgGhTDBc-qcTtPEi2wjvd29jjJTKtuPSTL6sz57O3socORgpeeQxZ0Sk2Cmb90e1mKMiUKIu2mD28NQzoq3_iCnNxca6Qu-6XQTDnMf8mEDkIUtdh0wrAfrwgozHfSQiJJl-7YmR8BE90gMgi14m9eBJsJL9uLzdpZqbXBPL97hivIGj0zIcX5EkZXMdkc3Z1da0UZ4msrYSLMDExykpLRPfI8aBvu0zNNM-JSrjvTXTynqsQnifg07Os9dTimuSo0iPhjfWfTDc3ZLboKc6ylty6lc79lnYzLUU6trYA",
+			"type": "default"
+		}
+	]
+}
