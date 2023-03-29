@@ -29,6 +29,7 @@ export interface IEditFlightLeg extends IServiceData {
   departure_date_and_time: string;
   arrival_date_and_time: string;
   aircraft_id: number;
+  flight_id: number;
 }
 
 const EditFlightLegValidator = ajv.compile({

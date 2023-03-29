@@ -13,7 +13,6 @@ import DocumentRouter from "./components/document/DocumentRouter.Router";
 import FlightRouter from "./components/flight/FlightRouter.Router";
 import BagRouter from "./components/bag/BagRouter.Router";
 import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
-import FlightLegRouter from "./components/flight_leg/FlightLegRouter.router";
 
 const DevConfig: IConfig = {
   server: {
@@ -47,7 +46,6 @@ const DevConfig: IConfig = {
     new CountryRouter(),
     new DocumentRouter(),
     new FlightRouter(),
-    new FlightLegRouter(),
     new TicketRouter(),
     new TravelClassRouter(),
     new UserRouter(),

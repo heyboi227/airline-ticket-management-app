@@ -25,10 +25,13 @@ export default class FlightLegModel implements IModel {
   departureDateAndTime: string;
   arrivalDateAndTime: string;
   aircraftId: number;
+  flightId: number;
 
   bags?: IFlightLegBag[] = [];
   travelClasses?: IFlightLegTravelClass[] = [];
   originAirport?: AirportModel = null;
   destinationAirport?: AirportModel = null;
   aircraft?: AircraftModel = null;
+  flight?: FlightModel = null;
+  photos: any;
 }

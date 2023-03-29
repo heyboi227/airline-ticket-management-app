@@ -13,6 +13,7 @@ export interface IAddFlightLegDto {
   arrivalDateAndTime: string;
   aircraftId: number;
   bags: {
+    kcal: any;
     bagId: number;
     price: number;
   }[];
@@ -29,6 +30,7 @@ export interface IAddFlightLeg extends IServiceData {
   departure_date_and_time: string;
   arrival_date_and_time: string;
   aircraft_id: number;
+  flight_id: number;
 }
 
 export interface IFlightLegBag extends IServiceData {

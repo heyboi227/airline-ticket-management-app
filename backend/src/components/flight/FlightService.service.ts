@@ -4,15 +4,7 @@ import FlightModel from "./FlightModel.model";
 import { IAddFlight, IFlightFlightLeg } from "./dto/IAddFlight.dto";
 import { IEditFlight } from "./dto/IEditFlight.dto";
 
-export interface IFlightAdapterOptions extends IAdapterOptions {
-  loadFlightLegs: boolean;
-  hideInactiveFlightLegs: boolean;
-}
-
-export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
-  loadFlightLegs: true,
-  hideInactiveFlightLegs: true,
-};
+export interface IFlightAdapterOptions extends IAdapterOptions {}
 export default class FlightService extends BaseService<
   FlightModel,
   IFlightAdapterOptions
@@ -30,41 +22,25 @@ export default class FlightService extends BaseService<
     flight.flightId = +data?.flight_id;
     flight.flightFareCode = data?.flight_fare_code;
 
-    if (options.loadFlightLegs) {
-      flight.flightLegs = await this.services.flightLeg.getAllByFlightId(
-        flight.flightId
-      );
-
-      if (options.hideInactiveFlightLegs) {
-        flight.flightLegs = flight.flightLegs.filter(
-          (flightLegInfo) => flightLegInfo.isActive
-        );
-      }
-    }
-
     return flight;
   }
 
   public async add(data: IAddFlight): Promise<FlightModel> {
-    return this.baseAdd(data, DefaultFlightAdapterOptions);
+    return this.baseAdd(data, {});
   }
 
   public async editById(
     flightId: number,
     data: IEditFlight
   ): Promise<FlightModel> {
-    return this.baseEditById(flightId, data, DefaultFlightAdapterOptions);
+    return this.baseEditById(flightId, data, {});
   }
 
   public async getByFlightFareCode(
     flightFareCode: string
   ): Promise<FlightModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "flight_fare_code",
-        flightFareCode,
-        DefaultFlightAdapterOptions
-      )
+      this.getAllByFieldNameAndValue("flight_fare_code", flightFareCode, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);
@@ -88,6 +64,23 @@ export default class FlightService extends BaseService<
         .then(async (result) => {
           const info: any = result;
           resolve(+info[0]?.insertId);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  async deleteFlightFlightLeg(data: IFlightFlightLeg): Promise<number> {
+    return new Promise((resolve, reject) => {
+      const sql: string =
+        "DELETE FROM flight_flight_leg WHERE flight_id = ? AND flight_flight_leg = ?;";
+
+      this.db
+        .execute(sql, [data.flight_id, data.flight_leg_id])
+        .then(async (result) => {
+          const info: any = result;
+          resolve(+info[0]?.affectedRows);
         })
         .catch((error) => {
           reject(error);

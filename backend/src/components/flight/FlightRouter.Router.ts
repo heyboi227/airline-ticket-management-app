@@ -47,6 +47,12 @@ export default class FlightRouter implements IRouter {
       flightController.editById.bind(flightController)
     );
 
+    application.get(
+      "/api/flight/:fid/flight-leg",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      flightLegController.getAllFlightLegsByFlightId.bind(flightLegController)
+    );
+
     application.post(
       "/api/flight/:fid/flight-leg",
       AuthMiddleware.getVerifier("administrator"),
@@ -56,7 +62,13 @@ export default class FlightRouter implements IRouter {
     application.put(
       "/api/flight/:fid/flight-leg/:flid",
       AuthMiddleware.getVerifier("administrator"),
-      flightLegController.editById.bind(flightLegController)
+      flightLegController.edit.bind(flightLegController)
+    );
+
+    application.delete(
+      "/api/flight/:fid/flight-leg/:flid",
+      AuthMiddleware.getVerifier("administrator"),
+      flightLegController.delete.bind(flightLegController)
     );
   }
 }

@@ -2,12 +2,11 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddFlightValidator, IAddFlightDto } from "./dto/IAddFlight.dto";
 import { EditFlightValidator, IEditFlightDto } from "./dto/IEditFlight.dto";
-import { DefaultFlightAdapterOptions } from "./FlightService.service";
 
 export default class FlightController extends BaseController {
   getAll(_req: Request, res: Response) {
     this.services.flight
-      .getAll(DefaultFlightAdapterOptions)
+      .getAll({})
       .then((result) => {
         res.send(result);
       })
@@ -22,7 +21,7 @@ export default class FlightController extends BaseController {
     const flightId: number = +req.params?.fid;
 
     this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
+      .getById(flightId, {})
       .then((result) => {
         if (result === null) {
           throw {

@@ -1,32 +1,33 @@
 import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import FlightLegModel from "./FlightLegModel.model";
+import { DefaultAirportAdapterOptions } from "../airport/AirportService.service";
 import {
   IAddFlightLeg,
   IFlightLegBag,
   IFlightLegTravelClass,
 } from "./dto/IAddFlightLeg.dto";
 import { IEditFlightLeg } from "./dto/IEditFlightLeg.dto";
-import { DefaultAirportAdapterOptions } from "../airport/AirportService.service";
-import { IFlightFlightLeg } from "../flight/FlightModel.model";
 
 export interface IFlightLegAdapterOptions extends IAdapterOptions {
-  showOriginAirport: boolean;
-  showDestinationAirport: boolean;
-  showAircraft: boolean;
+  loadOriginAirport: boolean;
+  loadDestinationAirport: boolean;
+  loadAircraft: boolean;
+  loadFlight: boolean;
   loadBags: boolean;
-  loadTravelClasses: boolean;
   hideInactiveBags: boolean;
+  loadTravelClasses: boolean;
   hideInactiveTravelClasses: boolean;
 }
 
 export const DefaultFlightLegAdapterOptions: IFlightLegAdapterOptions = {
-  showOriginAirport: true,
-  showDestinationAirport: true,
-  showAircraft: true,
-  loadBags: true,
-  loadTravelClasses: true,
+  loadOriginAirport: false,
+  loadDestinationAirport: false,
+  loadAircraft: false,
+  loadFlight: false,
+  loadBags: false,
   hideInactiveBags: true,
+  loadTravelClasses: false,
   hideInactiveTravelClasses: true,
 };
 
@@ -34,265 +35,101 @@ export default class FlightLegService extends BaseService<
   FlightLegModel,
   IFlightLegAdapterOptions
 > {
+  addFlightLegIngredient(arg0: { flightLeg_id: any; ingredient_id: any }) {
+    throw new Error("Method not implemented.");
+  }
+  deleteFlightLegIngredient(arg0: { flightLeg_id: any; ingredient_id: any }) {
+    throw new Error("Method not implemented.");
+  }
   tableName(): string {
     return "flight_leg";
   }
 
-  protected async adaptToModel(
+  protected adaptToModel(
     data: any,
     options: IFlightLegAdapterOptions
   ): Promise<FlightLegModel> {
-    const flightLeg = new FlightLegModel();
+    return new Promise(async (resolve) => {
+      const flightLeg = new FlightLegModel();
 
-    flightLeg.flightLegId = +data?.flight_leg_id;
-    flightLeg.flightCode = data?.flight_code;
-    flightLeg.originAirportId = +data?.origin_airport_id;
-    flightLeg.destinationAirportId = +data?.destination_airport_id;
-    flightLeg.departureDateAndTime = data?.departure_date_and_time;
-    flightLeg.arrivalDateAndTime = data?.arrival_date_and_time;
-    flightLeg.aircraftId = +data?.aircraft_id;
+      flightLeg.flightLegId = +data?.flight_leg_id;
+      flightLeg.flightCode = data?.flight_code;
+      flightLeg.originAirportId = +data?.origin_airport_id;
+      flightLeg.destinationAirportId = +data?.destination_airport_id;
+      flightLeg.departureDateAndTime = data?.departure_date_and_time;
+      flightLeg.arrivalDateAndTime = data?.arrival_date_and_time;
+      flightLeg.aircraftId = +data?.aircraft_id;
+      flightLeg.flightId = +data?.flight_id;
 
-    if (options.showOriginAirport) {
-      flightLeg.originAirport = await this.services.airport.getById(
-        flightLeg.originAirportId,
-        DefaultAirportAdapterOptions
-      );
-    }
-
-    if (options.showDestinationAirport) {
-      flightLeg.destinationAirport = await this.services.airport.getById(
-        flightLeg.destinationAirportId,
-        DefaultAirportAdapterOptions
-      );
-    }
-
-    if (options.showAircraft) {
-      flightLeg.aircraft = await this.services.aircraft.getById(
-        flightLeg.aircraftId,
-        {}
-      );
-    }
-
-    if (options.loadBags) {
-      flightLeg.bags = await this.services.bag.getAllByFlightLegId(
-        flightLeg.flightLegId
-      );
-
-      if (options.hideInactiveBags) {
-        flightLeg.bags = flightLeg.bags.filter((bagInfo) => bagInfo.isActive);
+      if (options.loadOriginAirport) {
+        flightLeg.originAirport = await this.services.airport.getById(
+          flightLeg.originAirportId,
+          DefaultAirportAdapterOptions
+        );
       }
-    }
 
-    if (options.loadTravelClasses) {
-      flightLeg.travelClasses =
-        await this.services.travelClass.getAllByFlightLegId(
+      if (options.loadDestinationAirport) {
+        flightLeg.destinationAirport = await this.services.airport.getById(
+          flightLeg.destinationAirportId,
+          DefaultAirportAdapterOptions
+        );
+      }
+
+      if (options.loadAircraft) {
+        flightLeg.aircraft = await this.services.aircraft.getById(
+          flightLeg.aircraftId,
+          {}
+        );
+      }
+
+      if (options.loadFlight) {
+        flightLeg.flight = await this.services.flight.getById(
+          flightLeg.flightId,
+          {}
+        );
+      }
+
+      if (options.loadBags) {
+        flightLeg.bags = await this.services.bag.getAllByFlightLegId(
           flightLeg.flightLegId
         );
 
-      if (options.hideInactiveTravelClasses) {
-        flightLeg.travelClasses = flightLeg.travelClasses.filter(
-          (travelClassInfo) => travelClassInfo.isActive
-        );
+        if (options.hideInactiveBags) {
+          flightLeg.bags = flightLeg.bags.filter((bagInfo) => bagInfo.isActive);
+        }
       }
-    }
 
-    return flightLeg;
+      if (options.loadTravelClasses) {
+        flightLeg.travelClasses =
+          await this.services.travelClass.getAllByFlightLegId(
+            flightLeg.flightLegId
+          );
+
+        if (options.hideInactiveTravelClasses) {
+          flightLeg.travelClasses = flightLeg.travelClasses.filter(
+            (travelClassInfo) => travelClassInfo.isActive
+          );
+        }
+      }
+
+      resolve(flightLeg);
+    });
   }
 
-  public async add(data: IAddFlightLeg): Promise<FlightLegModel> {
+  async getAllByFlightId(flightId: number, options: IFlightLegAdapterOptions) {
+    return this.getAllByFieldNameAndValue("flight_id", flightId, options);
+  }
+
+  async add(data: IAddFlightLeg): Promise<FlightLegModel> {
     return this.baseAdd(data, DefaultFlightLegAdapterOptions);
   }
 
-  public async editById(
+  async edit(
     flightLegId: number,
-    data: IEditFlightLeg
+    data: IEditFlightLeg,
+    options: IFlightLegAdapterOptions
   ): Promise<FlightLegModel> {
-    return this.baseEditById(flightLegId, data, DefaultFlightLegAdapterOptions);
-  }
-
-  public async deleteById(flightLegId: number): Promise<true> {
-    return new Promise((resolve) => {
-      this.deleteAllFlightLegBagsByFlightLegId(flightLegId)
-        .then(() =>
-          this.deleteAllFlightLegTravelClassesByFlightLegId(flightLegId)
-        )
-        .then(() => this.getById(flightLegId, DefaultFlightLegAdapterOptions))
-        .then((flightLeg) => {
-          if (flightLeg === null)
-            throw { status: 404, message: "Flight leg not found!" };
-        })
-        .then(async () => {
-          await this.baseDeleteById(flightLegId);
-        })
-        .then(() => {
-          resolve(true);
-        })
-        .catch((error) => {
-          throw {
-            message: error?.message ?? "Could not delete this flight leg!",
-          };
-        });
-    });
-  }
-
-  public async getByFlightCode(
-    flightCode: string
-  ): Promise<FlightLegModel | null> {
-    return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "flight_code",
-        flightCode,
-        DefaultFlightLegAdapterOptions
-      )
-        .then((result) => {
-          if (result.length === 0) {
-            return resolve(null);
-          }
-
-          resolve(result[0]);
-        })
-        .catch((error) => {
-          reject(error?.message);
-        });
-    });
-  }
-
-  public async getAllByFlightId(flightId: number): Promise<IFlightFlightLeg[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllFromTableByFieldNameAndValue<{
-        flight_flight_leg_id: number;
-        flight_id: number;
-        flight_leg_id: number;
-        is_active: number;
-      }>("flight_flight_leg", "flight_id", flightId)
-        .then(async (result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          const flightLegs: IFlightFlightLeg[] = await Promise.all(
-            result.map(async (row) => {
-              const flightLeg = await this.getById(
-                row.flight_leg_id,
-                DefaultFlightLegAdapterOptions
-              );
-
-              return {
-                flightLeg,
-                isActive: row.is_active === 1,
-              };
-            })
-          );
-
-          resolve(flightLegs);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
-  public async getAllByFlightLegId(
-    flightLegId: number
-  ): Promise<IFlightFlightLeg[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllFromTableByFieldNameAndValue<{
-        flight_flight_leg_id: number;
-        flight_id: number;
-        flight_leg_id: number;
-        is_active: number;
-      }>("flight_flight_leg", "flight_leg_id", flightLegId)
-        .then(async (result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          const flightLegs: IFlightFlightLeg[] = await Promise.all(
-            result.map(async (row) => {
-              const flightLeg = await this.getById(
-                row.flight_leg_id,
-                DefaultFlightLegAdapterOptions
-              );
-
-              return {
-                flightLeg,
-                isActive: row.is_active === 1,
-              };
-            })
-          );
-
-          resolve(flightLegs);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
-  public async getAllByOriginAirportId(
-    originAirportId: number
-  ): Promise<FlightLegModel[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "origin_airport_id",
-        originAirportId,
-        DefaultFlightLegAdapterOptions
-      )
-        .then((result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          resolve(result);
-        })
-        .catch((error) => {
-          reject(error?.message);
-        });
-    });
-  }
-
-  public async getAllByDestinationAirportId(
-    destinationAirportId: number
-  ): Promise<FlightLegModel[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "destination_airport_id",
-        destinationAirportId,
-        DefaultFlightLegAdapterOptions
-      )
-        .then((result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          resolve(result);
-        })
-        .catch((error) => {
-          reject(error?.message);
-        });
-    });
-  }
-
-  public async getAllByAircraftId(
-    aircraftId: number
-  ): Promise<FlightLegModel[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue(
-        "aircraft_id",
-        aircraftId,
-        DefaultFlightLegAdapterOptions
-      )
-        .then((result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          resolve(result);
-        })
-        .catch((error) => {
-          reject(error?.message);
-        });
-    });
+    return this.baseEditById(flightLegId, data, options);
   }
 
   async addFlightLegBag(data: IFlightLegBag): Promise<number> {
@@ -379,11 +216,36 @@ export default class FlightLegService extends BaseService<
     });
   }
 
+  async deleteById(flightLegId: number): Promise<true> {
+    return new Promise((resolve) => {
+      this.deleteAllFlightLegBagsByFlightLegId(flightLegId)
+        .then(() =>
+          this.deleteAllFlightLegTravelClassesByFlightLegId(flightLegId)
+        )
+        .then(() => this.getById(flightLegId, DefaultFlightLegAdapterOptions))
+        .then((flightLeg) => {
+          if (flightLeg === null)
+            throw { status: 404, message: "Flight leg not found!" };
+        })
+        .then(async () => {
+          await this.baseDeleteById(flightLegId);
+        })
+        .then(() => {
+          resolve(true);
+        })
+        .catch((error) => {
+          throw {
+            message: error?.message ?? "Could not delete this flight leg!",
+          };
+        });
+    });
+  }
+
   private async deleteAllFlightLegBagsByFlightLegId(
     flightLegId: number
   ): Promise<true> {
     return new Promise((resolve) => {
-      const sql = `DELETE FROM flight_leg_bag WHERE flight_leg_id = ?`;
+      const sql = `DELETE FROM flight_leg_bag WHERE flight_leg_id = ?;`;
       this.db
         .execute(sql, [flightLegId])
         .then(() => {
@@ -401,7 +263,7 @@ export default class FlightLegService extends BaseService<
     flightLegId: number
   ): Promise<true> {
     return new Promise((resolve) => {
-      const sql = `DELETE FROM flight_leg_travel_class WHERE flight_leg_id = ?`;
+      const sql = `DELETE FROM flight_leg_travel_class WHERE flight_leg_id = ?;`;
       this.db
         .execute(sql, [flightLegId])
         .then(() => {
@@ -411,68 +273,6 @@ export default class FlightLegService extends BaseService<
           throw {
             message:
               error?.message ?? "Could not delete flight leg travel classes!",
-          };
-        });
-    });
-  }
-
-  public async showFlightFlightLeg(
-    flightId: number,
-    flightLegId: number
-  ): Promise<true> {
-    return new Promise((resolve) => {
-      const sql =
-        "UPDATE flight_flight_leg SET is_active = 1 WHERE flight_id = ? AND flight_leg_id = ?;";
-
-      this.db
-        .execute(sql, [flightId, flightLegId])
-        .then((result) => {
-          const info: any = result;
-
-          if (+info[0]?.affectedRows === 1) {
-            return resolve(true);
-          }
-
-          throw {
-            status: 500,
-            message: "Could not show this flight flight leg record!",
-          };
-        })
-        .catch((error) => {
-          throw {
-            status: 500,
-            message: error?.message,
-          };
-        });
-    });
-  }
-
-  public async hideFlightFlightLeg(
-    flightId: number,
-    flightLegId: number
-  ): Promise<true> {
-    return new Promise((resolve) => {
-      const sql =
-        "UPDATE flight_flight_leg SET is_active = 0 WHERE flight_id = ? AND flight_leg_id = ?;";
-
-      this.db
-        .execute(sql, [flightId, flightLegId])
-        .then((result) => {
-          const info: any = result;
-
-          if (+info[0]?.affectedRows === 1) {
-            return resolve(true);
-          }
-
-          throw {
-            status: 500,
-            message: "Could not hide this flight flight leg record!",
-          };
-        })
-        .catch((error) => {
-          throw {
-            status: 500,
-            message: error?.message,
           };
         });
     });
