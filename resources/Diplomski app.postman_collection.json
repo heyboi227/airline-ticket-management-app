@@ -1099,29 +1099,6 @@
 						}
 					},
 					"response": []
-				}
-			]
-		},
-		{
-			"name": "Flight leg",
-			"item": [
-				{
-					"name": "Get all flight legs",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_PATH}}/api/flight-leg",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"flight-leg"
-							]
-						}
-					},
-					"response": []
 				},
 				{
 					"name": "Get all flight legs by flight id",
@@ -1129,14 +1106,15 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/flight-leg/1",
+							"raw": "{{API_PATH}}/api/flight/1/flight-leg",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
-								"flight-leg",
-								"1"
+								"flight",
+								"1",
+								"flight-leg"
 							]
 						}
 					},
@@ -1157,12 +1135,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/flight-leg",
+							"raw": "{{API_PATH}}/api/flight/1/flight-leg",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
+								"flight",
+								"1",
 								"flight-leg"
 							]
 						}
@@ -1184,75 +1164,46 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/flight-leg/1",
+							"raw": "{{API_PATH}}/api/flight/1/flight-leg/4",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
+								"flight",
+								"1",
 								"flight-leg",
-								"1"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Photo",
-			"item": [
-				{
-					"name": "Upload document photos",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file1",
-									"type": "file",
-									"src": "/C:/Users/milos/Downloads/lk.jpg"
-								},
-								{
-									"key": "file2",
-									"type": "file",
-									"src": "/C:/Users/milos/Downloads/lk2.jpg"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/document/3/photo",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"document",
-								"3",
-								"photo"
+								"4"
 							]
 						}
 					},
 					"response": []
 				},
 				{
-					"name": "Delete a single photo",
+					"name": "Delete a single flight leg",
 					"request": {
 						"method": "DELETE",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 12000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 25000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "{{API_PATH}}/api/document/3/photo/1",
+							"raw": "{{API_PATH}}/api/flight/1/flight-leg/3",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
-								"document",
-								"3",
-								"photo",
-								"1"
+								"flight",
+								"1",
+								"flight-leg",
+								"3"
 							]
 						}
 					},
