@@ -11,7 +11,7 @@ interface InputProps {
 }
 
 interface AirportInputProps {
-  handleBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
+  onValueChange: (value: string) => void;
 }
 
 interface DateInputProps {
@@ -22,9 +22,11 @@ interface DateInputProps {
 type CombinedAirportProps = InputProps & AirportInputProps;
 type CombinedDateProps = InputProps & DateInputProps;
 
-function AirportInput({ id, placeholder, handleBlur }: CombinedAirportProps) {
-  const [airportCode, setAirportCode] = useState<string>("");
-
+function AirportInput({
+  id,
+  placeholder,
+  onValueChange,
+}: CombinedAirportProps) {
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<AirportModel[]>([]);
 
@@ -48,6 +50,20 @@ function AirportInput({ id, placeholder, handleBlur }: CombinedAirportProps) {
     }
   }, [query]);
 
+  const handleClick = (result: AirportModel) => {
+    setQuery(
+      result.city +
+        ", " +
+        result.country?.name +
+        " (" +
+        result.airportCode +
+        ")"
+    );
+
+    const code = result.airportCode;
+    onValueChange(code);
+  };
+
   return (
     <>
       <div className="input-group">
@@ -55,9 +71,9 @@ function AirportInput({ id, placeholder, handleBlur }: CombinedAirportProps) {
           placeholder={placeholder}
           className="form-control"
           type="text"
-          name={airportCode}
-          onChange={(e) => setQuery(e.target.value)}
-          onBlur={handleBlur}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
           id={id}
           value={query}
         />
@@ -69,12 +85,7 @@ function AirportInput({ id, placeholder, handleBlur }: CombinedAirportProps) {
               <li
                 key={result.airportId}
                 className="list-group-item"
-                onClick={() => {
-                  setQuery(
-                    `${result.city}, ${result.country?.name} (${result.airportCode})`
-                  );
-                  setAirportCode(result.airportCode);
-                }}
+                onClick={() => handleClick(result)}
               >
                 {result.city}, {result.country?.name} ({result.airportCode})
                 <br />
@@ -123,10 +134,29 @@ export default function Search() {
   const [destinationAirportCode, setDestinationAirportCode] =
     useState<string>("");
 
+  const handleOriginAirportCodeChange = (newOriginAirportCode: string) => {
+    setOriginAirportCode(newOriginAirportCode);
+  };
+
+  const handleDestinationAirportCodeChange = (
+    newDestinationAirportCode: string
+  ) => {
+    setDestinationAirportCode(newDestinationAirportCode);
+  };
+
   const [departureDate, setDepartureDate] = useState<Date>();
   const [returnDate, setReturnDate] = useState<Date>();
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
+
+  const doSearch = () => {
+    console.log({
+      originAirportCode,
+      destinationAirportCode,
+      departureDate,
+      returnDate,
+    });
+  };
 
   return (
     <div className="container pt-5 pb-5 d-flex justify-content-center align-items-center search">
@@ -171,14 +201,14 @@ export default function Search() {
               <AirportInput
                 id="origin"
                 placeholder="Origin airport"
-                handleBlur={(e) => setOriginAirportCode(e.target.name)}
+                onValueChange={handleOriginAirportCodeChange}
               />
             </div>
             <div className="form-group mb-3">
               <AirportInput
                 id="destination"
                 placeholder="Destination airport"
-                handleBlur={(e) => setDestinationAirportCode(e.target.name)}
+                onValueChange={handleDestinationAirportCodeChange}
               />
             </div>
           </div>
@@ -216,6 +246,7 @@ export default function Search() {
             type="button"
             className="btn btn-primary position-absolute"
             style={{ right: "5%" }}
+            onClick={() => doSearch()}
           >
             Search
           </button>
