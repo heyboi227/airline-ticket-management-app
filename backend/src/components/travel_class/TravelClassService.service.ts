@@ -1,6 +1,6 @@
 import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
-import { IFlightLegTravelClass } from "../flight_leg/FlightLegModel.model";
+import { IFlightTravelClass } from "../flight/FlightModel.model";
 import IAddTravelClass from "./dto/IAddTravelClass.dto";
 import IEditTravelClass from "./dto/IEditTravelClass.dto";
 import TravelClassModel from "./TravelClassModel.model";
@@ -27,23 +27,23 @@ export default class TravelClassService extends BaseService<
     return travelClass;
   }
 
-  public async getAllByFlightLegId(
-    flightLegId: number
-  ): Promise<IFlightLegTravelClass[]> {
+  public async getAllByFlightId(
+    flightId: number
+  ): Promise<IFlightTravelClass[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
-        flight_leg_travel_class_id: number;
-        flight_leg_id: number;
+        flight_travel_class_id: number;
+        flight_id: number;
         travel_class_id: number;
         price: number;
         is_active: number;
-      }>("flight_leg_travel_class", "flight_leg_id", flightLegId)
+      }>("flight_travel_class", "flight_id", flightId)
         .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
           }
 
-          const travelClasses: IFlightLegTravelClass[] = await Promise.all(
+          const travelClasses: IFlightTravelClass[] = await Promise.all(
             result.map(async (row) => {
               const travelClass = await this.getById(row.travel_class_id, {});
 
@@ -68,21 +68,21 @@ export default class TravelClassService extends BaseService<
 
   public async getAllByTravelClassId(
     travelClassId: number
-  ): Promise<IFlightLegTravelClass[]> {
+  ): Promise<IFlightTravelClass[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
-        flight_leg_travel_class_id: number;
-        flight_leg_id: number;
+        flight_travel_class_id: number;
+        flight_id: number;
         travel_class_id: number;
         price: number;
         is_active: number;
-      }>("flight_leg_travel_class", "travel_class_id", travelClassId)
+      }>("flight_travel_class", "travel_class_id", travelClassId)
         .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
           }
 
-          const travelClasses: IFlightLegTravelClass[] = await Promise.all(
+          const travelClasses: IFlightTravelClass[] = await Promise.all(
             result.map(async (row) => {
               const travelClass = await this.getById(row.travel_class_id, {});
 
@@ -105,16 +105,16 @@ export default class TravelClassService extends BaseService<
     });
   }
 
-  public async hideFlightLegTravelClass(
-    flightLegId: number,
+  public async hideFlightTravelClass(
+    flightId: number,
     travelClassId: number
   ): Promise<true> {
     return new Promise((resolve) => {
       const sql =
-        "UPDATE flight_leg_travel_class SET is_active = 0 WHERE flight_leg_id = ? AND travel_class_id = ?;";
+        "UPDATE flight_travel_class SET is_active = 0 WHERE flight_id = ? AND travel_class_id = ?;";
 
       this.db
-        .execute(sql, [flightLegId, travelClassId])
+        .execute(sql, [flightId, travelClassId])
         .then((result) => {
           const info: any = result;
 
@@ -124,7 +124,7 @@ export default class TravelClassService extends BaseService<
 
           throw {
             status: 500,
-            message: "Could not hide this flight leg travel class record!",
+            message: "Could not hide this flight travel class record!",
           };
         })
         .catch((error) => {
@@ -136,16 +136,16 @@ export default class TravelClassService extends BaseService<
     });
   }
 
-  public async showFlightLegTravelClass(
-    flightLegId: number,
+  public async showFlightTravelClass(
+    flightId: number,
     travelClassId: number
   ): Promise<true> {
     return new Promise((resolve) => {
       const sql =
-        "UPDATE flight_leg_travel_class SET is_active = 1 WHERE flight_leg_id = ? AND travel_class_id = ?;";
+        "UPDATE flight_travel_class SET is_active = 1 WHERE flight_id = ? AND travel_class_id = ?;";
 
       this.db
-        .execute(sql, [flightLegId, travelClassId])
+        .execute(sql, [flightId, travelClassId])
         .then((result) => {
           const info: any = result;
 
@@ -155,7 +155,7 @@ export default class TravelClassService extends BaseService<
 
           throw {
             status: 500,
-            message: "Could not show this flight leg travel class record!",
+            message: "Could not show this flight travel class record!",
           };
         })
         .catch((error) => {

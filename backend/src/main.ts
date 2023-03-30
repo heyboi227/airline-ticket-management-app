@@ -15,7 +15,6 @@ import FlightService from "./components/flight/FlightService.service";
 import AirportService from "./components/airport/AirportService.service";
 import DocumentService from "./components/document/DocumentService.service";
 import TicketService from "./components/ticket/TicketService.service";
-import FlightLegService from "./components/flight_leg/FlightLegService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -64,7 +63,6 @@ async function main() {
       country: null,
       document: null,
       flight: null,
-      flightLeg: null,
       ticket: null,
       travelClass: null,
       user: null,
@@ -91,9 +89,6 @@ async function main() {
     applicationResources
   );
   applicationResources.services.flight = new FlightService(
-    applicationResources
-  );
-  applicationResources.services.flightLeg = new FlightLegService(
     applicationResources
   );
   applicationResources.services.ticket = new TicketService(

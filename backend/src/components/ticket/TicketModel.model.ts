@@ -11,6 +11,7 @@ export default class TicketModel implements IModel {
   price: number;
   userId: number;
   flightId: number;
+  flightFareCode: string;
   seatNumber: string;
 
   document?: DocumentModel;

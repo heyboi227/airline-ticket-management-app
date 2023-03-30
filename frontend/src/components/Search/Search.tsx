@@ -4,6 +4,7 @@ import { api } from "../../api/api";
 import Config from "../../config";
 import { debounce } from "lodash";
 import AirportModel from "../../../../backend/src/components/airport/AirportModel.model";
+import { convertIsoToMySqlDateTime } from "../../helpers/helpers";
 
 interface InputProps {
   id: string;
@@ -11,7 +12,7 @@ interface InputProps {
 }
 
 interface AirportInputProps {
-  onValueChange: (value: string) => void;
+  onValueChange: (value: number) => void;
 }
 
 interface DateInputProps {
@@ -60,8 +61,8 @@ function AirportInput({
         ")"
     );
 
-    const code = result.airportCode;
-    onValueChange(code);
+    const airportId = result.airportId;
+    onValueChange(airportId);
   };
 
   return (
@@ -130,32 +131,57 @@ function DateInput({
 }
 
 export default function Search() {
-  const [originAirportCode, setOriginAirportCode] = useState<string>("");
-  const [destinationAirportCode, setDestinationAirportCode] =
-    useState<string>("");
+  const [originAirportId, setOriginAirportId] = useState<number>(0);
+  const [destinationAirportId, setDestinationAirportId] = useState<number>(0);
 
-  const handleOriginAirportCodeChange = (newOriginAirportCode: string) => {
-    setOriginAirportCode(newOriginAirportCode);
+  const handleOriginAirportIdChange = (newOriginAirportId: number) => {
+    setOriginAirportId(newOriginAirportId);
   };
 
-  const handleDestinationAirportCodeChange = (
-    newDestinationAirportCode: string
+  const handleDestinationAirportIdChange = (
+    newDestinationAirportId: number
   ) => {
-    setDestinationAirportCode(newDestinationAirportCode);
+    setDestinationAirportId(newDestinationAirportId);
   };
 
-  const [departureDate, setDepartureDate] = useState<Date>();
-  const [returnDate, setReturnDate] = useState<Date>();
+  const [departureDateAndTime, setDepartureDateAndTime] = useState<string>("");
+  const [arrivalDateAndTime, setArrivalDateAndTime] = useState<string>("");
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
 
+  const [error, setError] = useState<string>("");
+
   const doSearch = () => {
     console.log({
-      originAirportCode,
-      destinationAirportCode,
-      departureDate,
-      returnDate,
+      originAirportId,
+      destinationAirportId,
+      departureDateAndTime,
+      arrivalDateAndTime,
     });
+    api("post", "/api/flight/search", "user", {
+      originAirportId,
+      destinationAirportId,
+      departureDateAndTime,
+      arrivalDateAndTime,
+    })
+      .then((res) => {
+        if (res.status !== "ok") {
+          throw new Error(
+            "Search could not be performed. Reason: " + JSON.stringify(res.data)
+          );
+        }
+        return res;
+      })
+      .then((res) => {
+        console.log(JSON.stringify(res.data));
+      })
+      .catch((error) => {
+        setError(error?.message ?? "Could not perform the search.");
+
+        setTimeout(() => {
+          setError("");
+        }, 3500);
+      });
   };
 
   return (
@@ -201,14 +227,14 @@ export default function Search() {
               <AirportInput
                 id="origin"
                 placeholder="Origin airport"
-                onValueChange={handleOriginAirportCodeChange}
+                onValueChange={handleOriginAirportIdChange}
               />
             </div>
             <div className="form-group mb-3">
               <AirportInput
                 id="destination"
                 placeholder="Destination airport"
-                onValueChange={handleDestinationAirportCodeChange}
+                onValueChange={handleDestinationAirportIdChange}
               />
             </div>
           </div>
@@ -218,9 +244,13 @@ export default function Search() {
                 <DateInput
                   id="departure"
                   placeholder="Departure date"
-                  value={departureDate?.toDateString()}
+                  value={departureDateAndTime}
                   handleChange={(e) =>
-                    setDepartureDate(new Date(e.target.value))
+                    setDepartureDateAndTime(
+                      convertIsoToMySqlDateTime(
+                        new Date(e.target.value).toISOString()
+                      )
+                    )
                   }
                 ></DateInput>
               </div>
@@ -231,9 +261,13 @@ export default function Search() {
                   <DateInput
                     id="return"
                     placeholder="Return date"
-                    value={returnDate?.toDateString()}
+                    value={arrivalDateAndTime}
                     handleChange={(e) =>
-                      setReturnDate(new Date(e.target.value))
+                      setArrivalDateAndTime(
+                        convertIsoToMySqlDateTime(
+                          new Date(e.target.value).toISOString()
+                        )
+                      )
                     }
                   ></DateInput>
                 </div>

@@ -10,7 +10,6 @@ import FlightService from "../components/flight/FlightService.service";
 import AddressService from "../components/user/AddressService.service";
 import UserService from "../components/user/UserService.service";
 import TicketService from "../components/ticket/TicketService.service";
-import FlightLegService from "../components/flight_leg/FlightLegService.service";
 
 export interface IServices {
   address: AddressService;
@@ -21,7 +20,6 @@ export interface IServices {
   country: CountryService;
   document: DocumentService;
   flight: FlightService;
-  flightLeg: FlightLegService;
   ticket: TicketService;
   travelClass: TravelClassService;
   user: UserService;

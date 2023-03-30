@@ -350,85 +350,66 @@ INSERT INTO `document` (`document_id`, `country_id`, `type`, `document_number`, 
 DROP TABLE IF EXISTS `flight`;
 CREATE TABLE IF NOT EXISTS `flight` (
   `flight_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_fare_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`flight_id`),
-  UNIQUE KEY `uq_flight_flight_fare_code` (`flight_fare_code`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table diplomski_app.flight: ~3 rows (approximately)
-DELETE FROM `flight`;
-INSERT INTO `flight` (`flight_id`, `flight_fare_code`) VALUES
-	(1, 'F35920G'),
-	(2, 'SSERSDY'),
-	(3, 'zdgGZZET');
-
--- Dumping structure for table diplomski_app.flight_leg
-DROP TABLE IF EXISTS `flight_leg`;
-CREATE TABLE IF NOT EXISTS `flight_leg` (
-  `flight_leg_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `flight_code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   `origin_airport_id` int(10) unsigned NOT NULL,
   `destination_airport_id` int(10) unsigned NOT NULL,
   `departure_date_and_time` datetime NOT NULL,
   `arrival_date_and_time` datetime NOT NULL,
   `aircraft_id` int(10) unsigned NOT NULL,
-  `flight_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`flight_leg_id`) USING BTREE,
+  PRIMARY KEY (`flight_id`) USING BTREE,
   UNIQUE KEY `uq_flight_flight_code` (`flight_code`),
   KEY `fk_flight_origin_airport_id` (`origin_airport_id`) USING BTREE,
   KEY `fk_flight_destination_airport_id` (`destination_airport_id`) USING BTREE,
   KEY `fk_flight_aircraft_id` (`aircraft_id`) USING BTREE,
-  KEY `fk_flight_leg_flight_id` (`flight_id`),
-  CONSTRAINT `fk_flight_leg_aircraft_id` FOREIGN KEY (`aircraft_id`) REFERENCES `aircraft` (`aircraft_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_destination_airport_id` FOREIGN KEY (`destination_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_flight_aircraft_id` FOREIGN KEY (`aircraft_id`) REFERENCES `aircraft` (`aircraft_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_destination_airport_id` FOREIGN KEY (`destination_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg: ~1 rows (approximately)
-DELETE FROM `flight_leg`;
-INSERT INTO `flight_leg` (`flight_leg_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`, `flight_id`) VALUES
-	(4, 'JU900', 1, 3, '2022-10-22 14:30:00', '2022-10-22 16:25:00', 4, 1);
+-- Dumping data for table diplomski_app.flight: ~1 rows (approximately)
+DELETE FROM `flight`;
+INSERT INTO `flight` (`flight_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`) VALUES
+	(4, 'JU900', 1, 3, '2022-10-22 14:30:00', '2022-10-22 16:25:00', 4);
 
--- Dumping structure for table diplomski_app.flight_leg_bag
-DROP TABLE IF EXISTS `flight_leg_bag`;
-CREATE TABLE IF NOT EXISTS `flight_leg_bag` (
-  `flight_leg_bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_leg_id` int(10) unsigned NOT NULL,
+-- Dumping structure for table diplomski_app.flight_bag
+DROP TABLE IF EXISTS `flight_bag`;
+CREATE TABLE IF NOT EXISTS `flight_bag` (
+  `flight_bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `flight_id` int(10) unsigned NOT NULL,
   `bag_id` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
   `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
-  PRIMARY KEY (`flight_leg_bag_id`) USING BTREE,
-  UNIQUE KEY `uq_flight_leg_bag_flight_leg_id_bag_id` (`flight_leg_id`,`bag_id`),
-  KEY `fk_flight_leg_bag_bag_id` (`bag_id`),
-  CONSTRAINT `fk_flight_leg_bag_bag_id` FOREIGN KEY (`bag_id`) REFERENCES `bag` (`bag_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_bag_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE
+  PRIMARY KEY (`flight_bag_id`) USING BTREE,
+  UNIQUE KEY `uq_flight_bag_flight_id_bag_id` (`flight_id`,`bag_id`) USING BTREE,
+  KEY `fk_flight_bag_bag_id` (`bag_id`),
+  CONSTRAINT `fk_flight_bag_bag_id` FOREIGN KEY (`bag_id`) REFERENCES `bag` (`bag_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_bag_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_bag: ~2 rows (approximately)
-DELETE FROM `flight_leg_bag`;
-INSERT INTO `flight_leg_bag` (`flight_leg_bag_id`, `flight_leg_id`, `bag_id`, `price`, `is_active`) VALUES
+-- Dumping data for table diplomski_app.flight_bag: ~2 rows (approximately)
+DELETE FROM `flight_bag`;
+INSERT INTO `flight_bag` (`flight_bag_id`, `flight_id`, `bag_id`, `price`, `is_active`) VALUES
 	(16, 4, 1, 12000.00, 1),
 	(17, 4, 2, 25000.00, 1);
 
--- Dumping structure for table diplomski_app.flight_leg_travel_class
-DROP TABLE IF EXISTS `flight_leg_travel_class`;
-CREATE TABLE IF NOT EXISTS `flight_leg_travel_class` (
-  `flight_leg_travel_class_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_leg_id` int(10) unsigned NOT NULL,
+-- Dumping structure for table diplomski_app.flight_travel_class
+DROP TABLE IF EXISTS `flight_travel_class`;
+CREATE TABLE IF NOT EXISTS `flight_travel_class` (
+  `flight_travel_class_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `flight_id` int(10) unsigned NOT NULL,
   `travel_class_id` int(10) unsigned NOT NULL,
   `price` decimal(10,2) unsigned NOT NULL,
   `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
-  PRIMARY KEY (`flight_leg_travel_class_id`) USING BTREE,
-  UNIQUE KEY `uq_flight_leg_travel_class_flight_leg_id_travel_class_id` (`flight_leg_id`,`travel_class_id`),
-  KEY `fk_flight_leg_travel_class_travel_class_id` (`travel_class_id`),
-  CONSTRAINT `fk_flight_leg_travel_class_flight_leg_id` FOREIGN KEY (`flight_leg_id`) REFERENCES `flight_leg` (`flight_leg_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_leg_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
+  PRIMARY KEY (`flight_travel_class_id`) USING BTREE,
+  UNIQUE KEY `uq_flight_travel_class_flight_id_travel_class_id` (`flight_id`,`travel_class_id`) USING BTREE,
+  KEY `fk_flight_travel_class_travel_class_id` (`travel_class_id`) USING BTREE,
+  CONSTRAINT `fk_flight_travel_class_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_flight_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_leg_travel_class: ~0 rows (approximately)
-DELETE FROM `flight_leg_travel_class`;
-INSERT INTO `flight_leg_travel_class` (`flight_leg_travel_class_id`, `flight_leg_id`, `travel_class_id`, `price`, `is_active`) VALUES
+-- Dumping data for table diplomski_app.flight_travel_class: ~2 rows (approximately)
+DELETE FROM `flight_travel_class`;
+INSERT INTO `flight_travel_class` (`flight_travel_class_id`, `flight_id`, `travel_class_id`, `price`, `is_active`) VALUES
 	(13, 4, 4, 10000.00, 1),
 	(14, 4, 2, 35000.00, 1);
 
@@ -442,10 +423,12 @@ CREATE TABLE IF NOT EXISTS `ticket` (
   `price` decimal(10,2) unsigned NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   `flight_id` int(10) unsigned NOT NULL,
+  `flight_fare_code` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `seat_number` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ticket_id`) USING BTREE,
   UNIQUE KEY `uq_ticket_ticket_number` (`ticket_number`),
   UNIQUE KEY `uq_ticket_flight_id_seat_number` (`flight_id`,`seat_number`),
+  UNIQUE KEY `uq_ticket_flight_fare_code` (`flight_fare_code`),
   KEY `fk_ticket_document_id` (`document_id`) USING BTREE,
   KEY `fk_ticket_user_id` (`user_id`) USING BTREE,
   CONSTRAINT `fk_ticket_document_id` FOREIGN KEY (`document_id`) REFERENCES `document` (`document_id`) ON UPDATE CASCADE,
@@ -455,8 +438,8 @@ CREATE TABLE IF NOT EXISTS `ticket` (
 
 -- Dumping data for table diplomski_app.ticket: ~0 rows (approximately)
 DELETE FROM `ticket`;
-INSERT INTO `ticket` (`ticket_id`, `ticket_number`, `ticket_holder_name`, `document_id`, `price`, `user_id`, `flight_id`, `seat_number`) VALUES
-	(1, '241242', 'Milos Jeknic', 4, 22000.00, 3, 1, '22F');
+INSERT INTO `ticket` (`ticket_id`, `ticket_number`, `ticket_holder_name`, `document_id`, `price`, `user_id`, `flight_id`, `flight_fare_code`, `seat_number`) VALUES
+	(1, '241242', 'Milos Jeknic', 4, 22000.00, 3, 1, '', '22F');
 
 -- Dumping structure for table diplomski_app.travel_class
 DROP TABLE IF EXISTS `travel_class`;
@@ -503,11 +486,11 @@ INSERT INTO `user` (`user_id`, `forename`, `surname`, `email`, `password_hash`, 
 	(3, 'Milos', 'Jeknic', 'milosjeknic@hotmail.rs', '$2b$10$J1UH0xCp0x83keaLA74O..UkSrQTabxK.ccgcB/73NyaphUt29WhW', 1, '2022-08-13 09:03:58', '2022-08-13 09:21:19', NULL, NULL),
 	(12, 'Miloš', 'Jeknić', 'milosjeknic1@gmail.com', '$2b$10$vFYyA6OzT6PdsMOnDCpS/OlqC02smtyk9eMBCJVA95FG9qEMRkzLS', 1, '2023-03-13 11:41:18', '2023-03-13 12:54:29', NULL, NULL);
 
--- Dumping structure for trigger diplomski_app.bi_flight_leg
-DROP TRIGGER IF EXISTS `bi_flight_leg`;
+-- Dumping structure for trigger diplomski_app.bi_flight
+DROP TRIGGER IF EXISTS `bi_flight`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
-CREATE TRIGGER `bi_flight_leg` BEFORE INSERT ON `flight_leg` FOR EACH ROW BEGIN
+CREATE TRIGGER `bi_flight` BEFORE INSERT ON `flight` FOR EACH ROW BEGIN
 	IF NEW.arrival_date_and_time <= NEW.departure_date_and_time THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Arrival date must be later than the departure one!';
 	END IF;

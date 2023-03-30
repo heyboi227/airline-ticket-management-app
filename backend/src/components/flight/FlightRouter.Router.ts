@@ -3,7 +3,6 @@ import * as express from "express";
 import IApplicationResources from "../../common/IApplicationResources.interface";
 import FlightController from "./FlightController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
-import FlightLegController from "../flight_leg/FlightLegController.controller";
 
 export default class FlightRouter implements IRouter {
   public setupRoutes(
@@ -11,9 +10,6 @@ export default class FlightRouter implements IRouter {
     resources: IApplicationResources
   ) {
     const flightController: FlightController = new FlightController(
-      resources.services
-    );
-    const flightLegController: FlightLegController = new FlightLegController(
       resources.services
     );
 
@@ -30,9 +26,15 @@ export default class FlightRouter implements IRouter {
     );
 
     application.get(
-      "/api/flight/fare-code/:fcode",
+      "/api/flight/code/:fcode",
       AuthMiddleware.getVerifier("administrator", "user"),
-      flightController.getByFlightFareCode.bind(flightController)
+      flightController.getByFlightCode.bind(flightController)
+    );
+
+    application.post(
+      "/api/flight/search",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      flightController.getAllBySearchQuery.bind(flightController)
     );
 
     application.post(
@@ -44,31 +46,13 @@ export default class FlightRouter implements IRouter {
     application.put(
       "/api/flight/:fid",
       AuthMiddleware.getVerifier("administrator"),
-      flightController.editById.bind(flightController)
-    );
-
-    application.get(
-      "/api/flight/:fid/flight-leg",
-      AuthMiddleware.getVerifier("administrator", "user"),
-      flightLegController.getAllFlightLegsByFlightId.bind(flightLegController)
-    );
-
-    application.post(
-      "/api/flight/:fid/flight-leg",
-      AuthMiddleware.getVerifier("administrator"),
-      flightLegController.add.bind(flightLegController)
-    );
-
-    application.put(
-      "/api/flight/:fid/flight-leg/:flid",
-      AuthMiddleware.getVerifier("administrator"),
-      flightLegController.edit.bind(flightLegController)
+      flightController.edit.bind(flightController)
     );
 
     application.delete(
-      "/api/flight/:fid/flight-leg/:flid",
+      "/api/flight/:fid",
       AuthMiddleware.getVerifier("administrator"),
-      flightLegController.delete.bind(flightLegController)
+      flightController.delete.bind(flightController)
     );
   }
 }

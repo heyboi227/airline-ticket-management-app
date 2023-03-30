@@ -1,6 +1,6 @@
 import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
-import { IFlightLegBag } from "../flight_leg/FlightLegModel.model";
+import { IFlightBag } from "../flight/FlightModel.model";
 import BagModel from "./BagModel.model";
 import IAddBag from "./dto/IAddBag.dto";
 import IEditBag from "./dto/IEditBag.dto";
@@ -27,23 +27,21 @@ export default class BagService extends BaseService<
     return bag;
   }
 
-  public async getAllByFlightLegId(
-    flightLegId: number
-  ): Promise<IFlightLegBag[]> {
+  public async getAllByFlightId(flightId: number): Promise<IFlightBag[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
-        flight_leg_bag_id: number;
-        flight_leg_id: number;
+        flight_bag_id: number;
+        flight_id: number;
         bag_id: number;
         price: number;
         is_active: number;
-      }>("flight_leg_bag", "flight_leg_id", flightLegId)
+      }>("flight_bag", "flight_id", flightId)
         .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
           }
 
-          const bags: IFlightLegBag[] = await Promise.all(
+          const bags: IFlightBag[] = await Promise.all(
             result.map(async (row) => {
               const bag = await this.getById(row.bag_id, {});
 
@@ -66,21 +64,21 @@ export default class BagService extends BaseService<
     });
   }
 
-  public async getAllByBagId(bagId: number): Promise<IFlightLegBag[]> {
+  public async getAllByBagId(bagId: number): Promise<IFlightBag[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
-        flight_leg_bag_id: number;
-        flight_leg_id: number;
+        flight_bag_id: number;
+        flight_id: number;
         bag_id: number;
         price: number;
         is_active: number;
-      }>("flight_leg_bag", "bag_id", bagId)
+      }>("flight_bag", "bag_id", bagId)
         .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
           }
 
-          const bags: IFlightLegBag[] = await Promise.all(
+          const bags: IFlightBag[] = await Promise.all(
             result.map(async (row) => {
               const bag = await this.getById(row.bag_id, {});
 
@@ -103,16 +101,13 @@ export default class BagService extends BaseService<
     });
   }
 
-  public async hideFlightLegBag(
-    flightLegId: number,
-    bagId: number
-  ): Promise<true> {
+  public async hideFlightBag(flightId: number, bagId: number): Promise<true> {
     return new Promise((resolve) => {
       const sql =
-        "UPDATE flight_leg_bag SET is_active = 0 WHERE flight_leg_id = ? AND bag_id = ?;";
+        "UPDATE flight_bag SET is_active = 0 WHERE flight_id = ? AND bag_id = ?;";
 
       this.db
-        .execute(sql, [flightLegId, bagId])
+        .execute(sql, [flightId, bagId])
         .then((result) => {
           const info: any = result;
 
@@ -122,7 +117,7 @@ export default class BagService extends BaseService<
 
           throw {
             status: 500,
-            message: "Could not hide this flight leg bag record!",
+            message: "Could not hide this flight bag record!",
           };
         })
         .catch((error) => {
@@ -134,16 +129,13 @@ export default class BagService extends BaseService<
     });
   }
 
-  public async showFlightLegBag(
-    flightLegId: number,
-    bagId: number
-  ): Promise<true> {
+  public async showFlightBag(flightId: number, bagId: number): Promise<true> {
     return new Promise((resolve) => {
       const sql =
-        "UPDATE flight_leg_bag SET is_active = 1 WHERE flight_leg_id = ? AND bag_id = ?;";
+        "UPDATE flight_bag SET is_active = 1 WHERE flight_id = ? AND bag_id = ?;";
 
       this.db
-        .execute(sql, [flightLegId, bagId])
+        .execute(sql, [flightId, bagId])
         .then((result) => {
           const info: any = result;
 
@@ -153,7 +145,7 @@ export default class BagService extends BaseService<
 
           throw {
             status: 500,
-            message: "Could not show this flight leg bag record!",
+            message: "Could not show this flight bag record!",
           };
         })
         .catch((error) => {
