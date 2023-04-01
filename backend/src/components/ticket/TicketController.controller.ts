@@ -127,6 +127,7 @@ export default class TicketController extends BaseController {
           price: body.price,
           user_id: body.userId,
           flight_id: body.flightId,
+          flight_fare_code: body.flightFareCode,
           seat_number: body.seatNumber,
         });
       })
