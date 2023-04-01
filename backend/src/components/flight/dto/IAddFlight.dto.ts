@@ -27,7 +27,7 @@ export interface IFlightSearchDto {
   originAirportId: number;
   destinationAirportId: number;
   departureDateAndTime: string;
-  arrivalDateAndTime: string;
+  returnDateAndTime: string;
 }
 
 export interface IAddFlight extends IServiceData {
@@ -43,7 +43,7 @@ export interface IFlightSearch extends IServiceData {
   origin_airport_id: number;
   destination_airport_id: number;
   departure_date_and_time: string;
-  arrival_date_and_time: string;
+  return_date_and_time: string;
 }
 
 export interface IFlightBag extends IServiceData {

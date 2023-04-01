@@ -69,14 +69,13 @@ export default class FlightController extends BaseController {
 
   getAllBySearchQuery(req: Request, res: Response) {
     const searchData = req.body as IFlightSearchDto;
-    console.log(searchData);
 
     this.services.flight
       .getAllBySearchQuery({
         origin_airport_id: searchData.originAirportId,
         destination_airport_id: searchData.destinationAirportId,
         departure_date_and_time: searchData.departureDateAndTime,
-        arrival_date_and_time: searchData.arrivalDateAndTime,
+        return_date_and_time: searchData.returnDateAndTime,
       })
       .then((result) => {
         res.send(result);
@@ -223,43 +222,34 @@ export default class FlightController extends BaseController {
       })
       .then(async (result) => {
         const currentBagIds = result.bags?.map((bagInfo) => bagInfo.bag.bagId);
-        console.log("Current bag IDs: " + currentBagIds);
 
         const currentVisibleBagIds = result.bags
           ?.filter((bagInfo) => bagInfo.isActive)
           .map((bagInfo) => bagInfo.bag.bagId);
-        console.log("Current visible bag IDs: " + currentVisibleBagIds);
 
         const currentInvisibleBagIds = result.bags
           ?.filter((bagInfo) => !bagInfo.isActive)
           .map((bagInfo) => bagInfo.bag.bagId);
-        console.log("Current invisible bag IDs: " + currentInvisibleBagIds);
 
         const newBagIds = data.bags?.map((bag) => bag.bagId);
-        console.log("New bag IDs: " + newBagIds);
 
         const bagIdsToHide = currentVisibleBagIds.filter(
           (id) => !newBagIds.includes(id)
         );
-        console.log("Bag IDs to hide: " + bagIdsToHide);
 
         const bagIdsToShow = currentInvisibleBagIds.filter((id) =>
           newBagIds.includes(id)
         );
-        console.log("Bag IDs to show: " + bagIdsToShow);
 
         const bagIdsToAdd = newBagIds.filter(
           (id) => !currentBagIds.includes(id)
         );
-        console.log("Bag IDs to add: " + bagIdsToAdd);
 
         const bagIdsUnion = [...new Set([...newBagIds, ...bagIdsToShow])];
-        console.log("Bag IDs: " + bagIdsUnion);
 
         const bagIdsToEdit = bagIdsUnion.filter(
           (id) => !bagIdsToAdd.includes(id)
         );
-        console.log("Bag IDs to edit: " + bagIdsToEdit);
 
         for (let id of bagIdsToHide) {
           await this.services.bag.hideFlightBag(result.flightId, id);

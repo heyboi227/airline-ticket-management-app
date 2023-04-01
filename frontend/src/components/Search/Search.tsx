@@ -145,24 +145,18 @@ export default function Search() {
   };
 
   const [departureDateAndTime, setDepartureDateAndTime] = useState<string>("");
-  const [arrivalDateAndTime, setArrivalDateAndTime] = useState<string>("");
+  const [returnDateAndTime, setReturnDateAndTime] = useState<string>("");
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
 
   const [error, setError] = useState<string>("");
 
   const doSearch = () => {
-    console.log({
-      originAirportId,
-      destinationAirportId,
-      departureDateAndTime,
-      arrivalDateAndTime,
-    });
     api("post", "/api/flight/search", "user", {
       originAirportId,
       destinationAirportId,
       departureDateAndTime,
-      arrivalDateAndTime,
+      returnDateAndTime,
     })
       .then((res) => {
         if (res.status !== "ok") {
@@ -261,9 +255,9 @@ export default function Search() {
                   <DateInput
                     id="return"
                     placeholder="Return date"
-                    value={arrivalDateAndTime}
+                    value={returnDateAndTime}
                     handleChange={(e) =>
-                      setArrivalDateAndTime(
+                      setReturnDateAndTime(
                         convertIsoToMySqlDateTime(
                           new Date(e.target.value).toISOString()
                         )
