@@ -1,5 +1,6 @@
 import "./Search.scss";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
 import { debounce } from "lodash";
@@ -151,6 +152,8 @@ export default function Search() {
 
   const [error, setError] = useState<string>("");
 
+  const navigate = useNavigate();
+
   const doSearch = () => {
     api("post", "/api/flight/search", "user", {
       originAirportId,
@@ -167,7 +170,10 @@ export default function Search() {
         return res;
       })
       .then((res) => {
-        console.log(JSON.stringify(res.data));
+        navigate("/search/flights", {
+          replace: true,
+          state: res.data,
+        });
       })
       .catch((error) => {
         setError(error?.message ?? "Could not perform the search.");

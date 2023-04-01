@@ -14,6 +14,7 @@ import HomePage from "../Home/HomePage";
 import UserPasswordResetPage from "../User/UserPasswordResetPage/UserPasswordResetPage";
 import UserDeactivatePage from "../User/UserDeactivatePage/UserDeactivatePage";
 import Footer from "../Footer/Footer";
+import Flights from "../Flights/Flights";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<ContactPage />} />
+
+        <Route path="/search/flights" element={<Flights />} />
 
         <Route
           path="/auth/administrator/login"
