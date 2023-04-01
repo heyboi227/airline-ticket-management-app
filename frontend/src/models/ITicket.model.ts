@@ -10,6 +10,7 @@ export default interface ITicket {
   price: number;
   userId: number;
   flightId: number;
+  flightFareCode: string;
   seatNumber: string;
 
   document?: IDocument;
