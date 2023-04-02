@@ -14,7 +14,7 @@ import HomePage from "../Home/HomePage";
 import UserPasswordResetPage from "../User/UserPasswordResetPage/UserPasswordResetPage";
 import UserDeactivatePage from "../User/UserDeactivatePage/UserDeactivatePage";
 import Footer from "../Footer/Footer";
-import Flights from "../Flights/Flights";
+import FlightsPage from "../Pages/FlightsPage/FlightsPage";
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/contact" element={<ContactPage />} />
 
-        <Route path="/search/flights" element={<Flights />} />
+        <Route path="/search/flights" element={<FlightsPage />} />
 
         <Route
           path="/auth/administrator/login"
