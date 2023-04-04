@@ -49,8 +49,12 @@ export default class FlightService extends BaseService<
       flight.flightCode = data?.flight_code;
       flight.originAirportId = +data?.origin_airport_id;
       flight.destinationAirportId = +data?.destination_airport_id;
-      flight.departureDateAndTime = data?.departure_date_and_time;
-      flight.arrivalDateAndTime = data?.arrival_date_and_time;
+      flight.departureDateAndTime = data?.departure_date_and_time_str
+        ? data?.departure_date_and_time_str
+        : data?.departure_date_and_time;
+      flight.arrivalDateAndTime = data?.arrival_date_and_time_str
+        ? data?.arrival_date_and_time_str
+        : data?.arrival_date_and_time;
       flight.aircraftId = +data?.aircraft_id;
       flight.flightId = +data?.flight_id;
 
@@ -137,7 +141,7 @@ export default class FlightService extends BaseService<
   ): Promise<FlightModel[]> {
     return new Promise<FlightModel[]>((resolve, reject) => {
       const sql: string =
-        "SELECT f1.* FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ? UNION ALL SELECT f2.* FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ?;";
+        "SELECT f1.*, CAST(f1.departure_date_and_time AS CHAR) AS departure_date_and_time_str, CAST(f1.arrival_date_and_time AS CHAR) AS arrival_date_and_time_str FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ? UNION ALL SELECT f2.*, CAST(f2.departure_date_and_time AS CHAR) AS departure_date_and_time_str, CAST(f2.arrival_date_and_time AS CHAR) AS arrival_date_and_time_str FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ?;";
       const values = [
         data.origin_airport_id,
         data.destination_airport_id,

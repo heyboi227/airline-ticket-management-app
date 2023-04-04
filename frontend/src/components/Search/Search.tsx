@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
 import { debounce } from "lodash";
-import AirportModel from "../../../../backend/src/components/airport/AirportModel.model";
 import { convertIsoToMySqlDateTime } from "../../helpers/helpers";
+import IAirport from "../../models/IAirport.model";
 
 interface InputProps {
   id: string;
@@ -30,7 +30,7 @@ function AirportInput({
   onValueChange,
 }: CombinedAirportProps) {
   const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<AirportModel[]>([]);
+  const [results, setResults] = useState<IAirport[]>([]);
 
   const fetchResults = async (searchQuery: string) => {
     const response = await api(
@@ -52,7 +52,7 @@ function AirportInput({
     }
   }, [query]);
 
-  const handleClick = (result: AirportModel) => {
+  const handleClick = (result: IAirport) => {
     setQuery(
       result.city +
         ", " +
@@ -244,12 +244,12 @@ export default function Search() {
                 <DateInput
                   id="departure"
                   placeholder="Departure date"
-                  value={departureDateAndTime}
+                  value={departureDateAndTime.substring(0, 10)}
                   handleChange={(e) =>
                     setDepartureDateAndTime(
                       convertIsoToMySqlDateTime(
                         new Date(e.target.value).toISOString()
-                      )
+                      ).substring(0, 10)
                     )
                   }
                 ></DateInput>
@@ -261,12 +261,12 @@ export default function Search() {
                   <DateInput
                     id="return"
                     placeholder="Return date"
-                    value={returnDateAndTime}
+                    value={returnDateAndTime.substring(0, 10)}
                     handleChange={(e) =>
                       setReturnDateAndTime(
                         convertIsoToMySqlDateTime(
                           new Date(e.target.value).toISOString()
-                        )
+                        ).substring(0, 10)
                       )
                     }
                   ></DateInput>
