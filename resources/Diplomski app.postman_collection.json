@@ -1007,6 +1007,34 @@
 					"response": []
 				},
 				{
+					"name": "Get all flights by search query",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2023-04-01\",\r\n    \"returnDateAndTime\": \"2023-04-01\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight/search",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Get a single flight",
 					"request": {
 						"method": "GET",
@@ -1026,20 +1054,20 @@
 					"response": []
 				},
 				{
-					"name": "Get a single flight by fare code",
+					"name": "Get a single flight by flight code",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/flight/fare-code/f35920g",
+							"raw": "{{API_PATH}}/api/flight/code/ju900",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"flight",
-								"fare-code",
-								"f35920g"
+								"code",
+								"ju900"
 							]
 						}
 					},
@@ -1052,7 +1080,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"flightFareCode\": \"zdgGZZET\"\r\n}",
+							"raw": "{\r\n    \"flightCode\": \"AS301\",\r\n    \"originAirportId\": 10,\r\n    \"destinationAirportId\": 1,\r\n    \"departureDateAndTime\": \"2023-04-05 20:45:00\",\r\n    \"arrivalDateAndTime\": \"2023-04-06 05:35:00\",\r\n    \"aircraftId\": 1,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 0.01\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 0.01\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 25424.24\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 44123.15\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1079,7 +1107,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"flightFareCode\": \"F35920GH\"\r\n}",
+							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 12000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 25000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1101,86 +1129,7 @@
 					"response": []
 				},
 				{
-					"name": "Get all flight legs by flight id",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_PATH}}/api/flight/1/flight-leg",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"flight",
-								"1",
-								"flight-leg"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Add a single flight leg",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"flightCode\": \"JU1254\",\r\n    \"originAirportId\": 3,\r\n    \"destinationAirportId\": 1,\r\n    \"departureDateAndTime\": \"2023-04-01 14:00:00\",\r\n    \"arrivalDateAndTime\": \"2023-04-01 18:10:00\",\r\n    \"aircraftId\": 2,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 14000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 26000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 11000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 32000\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/flight/1/flight-leg",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"flight",
-								"1",
-								"flight-leg"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit a single flight leg",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 12000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 25000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/flight/1/flight-leg/4",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"flight",
-								"1",
-								"flight-leg",
-								"4"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Delete a single flight leg",
+					"name": "Delete a single flight",
 					"request": {
 						"method": "DELETE",
 						"header": [],
@@ -1194,16 +1143,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/flight/1/flight-leg/3",
+							"raw": "{{API_PATH}}/api/flight/4",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"flight",
-								"1",
-								"flight-leg",
-								"3"
+								"4"
 							]
 						}
 					},

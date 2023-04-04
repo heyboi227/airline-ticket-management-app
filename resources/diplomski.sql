@@ -90,18 +90,20 @@ CREATE TABLE IF NOT EXISTS `airport` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `city` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `country_id` int(10) unsigned NOT NULL,
+  `time_zone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`airport_id`),
   UNIQUE KEY `uq_airport_airport_code` (`airport_code`),
   KEY `fk_airport_country_id` (`country_id`),
   CONSTRAINT `fk_airport_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.airport: ~3 rows (approximately)
+-- Dumping data for table diplomski_app.airport: ~4 rows (approximately)
 DELETE FROM `airport`;
-INSERT INTO `airport` (`airport_id`, `airport_code`, `name`, `city`, `country_id`) VALUES
-	(1, 'BEG', 'Nikola Tesla', 'Belgrade', 153),
-	(2, 'VIE', 'Vienna', 'Vienna', 10),
-	(3, 'LHR', 'London Heathrow', 'London', 185);
+INSERT INTO `airport` (`airport_id`, `airport_code`, `name`, `city`, `country_id`, `time_zone`) VALUES
+	(1, 'BEG', 'Nikola Tesla', 'Belgrade', 153, 'Europe/Belgrade'),
+	(2, 'VIE', 'Vienna International', 'Vienna', 10, 'Europe/Vienna'),
+	(3, 'LHR', 'Heathrow', 'London', 185, 'Europe/London'),
+	(10, 'JFK', 'John F. Kennedy International', 'New York', 186, 'America/New_York');
 
 -- Dumping structure for table diplomski_app.bag
 DROP TABLE IF EXISTS `bag`;
@@ -366,10 +368,13 @@ CREATE TABLE IF NOT EXISTS `flight` (
   CONSTRAINT `fk_flight_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight: ~1 rows (approximately)
+-- Dumping data for table diplomski_app.flight: ~4 rows (approximately)
 DELETE FROM `flight`;
 INSERT INTO `flight` (`flight_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`) VALUES
-	(4, 'JU900', 1, 3, '2022-10-22 14:30:00', '2022-10-22 16:25:00', 4);
+	(1, 'AS100', 1, 3, '2023-04-01 15:00:00', '2023-04-01 18:00:00', 2),
+	(2, 'AS101', 3, 1, '2023-04-01 19:10:00', '2023-04-01 22:50:00', 2),
+	(4, 'AS300', 1, 10, '2023-04-05 10:35:00', '2023-04-05 20:35:00', 1),
+	(5, 'AS301', 10, 1, '2023-04-05 21:40:00', '2023-04-06 06:30:00', 1);
 
 -- Dumping structure for table diplomski_app.flight_bag
 DROP TABLE IF EXISTS `flight_bag`;
@@ -386,11 +391,13 @@ CREATE TABLE IF NOT EXISTS `flight_bag` (
   CONSTRAINT `fk_flight_bag_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_bag: ~2 rows (approximately)
+-- Dumping data for table diplomski_app.flight_bag: ~4 rows (approximately)
 DELETE FROM `flight_bag`;
 INSERT INTO `flight_bag` (`flight_bag_id`, `flight_id`, `bag_id`, `price`, `is_active`) VALUES
-	(16, 4, 1, 12000.00, 1),
-	(17, 4, 2, 25000.00, 1);
+	(1, 1, 1, 14000.00, 1),
+	(2, 1, 2, 26000.00, 1),
+	(3, 2, 1, 14000.00, 1),
+	(4, 2, 2, 26000.00, 1);
 
 -- Dumping structure for table diplomski_app.flight_travel_class
 DROP TABLE IF EXISTS `flight_travel_class`;
@@ -407,11 +414,13 @@ CREATE TABLE IF NOT EXISTS `flight_travel_class` (
   CONSTRAINT `fk_flight_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_travel_class: ~2 rows (approximately)
+-- Dumping data for table diplomski_app.flight_travel_class: ~4 rows (approximately)
 DELETE FROM `flight_travel_class`;
 INSERT INTO `flight_travel_class` (`flight_travel_class_id`, `flight_id`, `travel_class_id`, `price`, `is_active`) VALUES
-	(13, 4, 4, 10000.00, 1),
-	(14, 4, 2, 35000.00, 1);
+	(1, 1, 4, 11000.00, 1),
+	(2, 1, 2, 32000.00, 1),
+	(3, 2, 4, 11000.00, 1),
+	(4, 2, 2, 32000.00, 1);
 
 -- Dumping structure for table diplomski_app.ticket
 DROP TABLE IF EXISTS `ticket`;
