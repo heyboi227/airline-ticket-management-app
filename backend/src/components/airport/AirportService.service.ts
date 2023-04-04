@@ -32,6 +32,7 @@ export default class AirportService extends BaseService<
     airport.name = data?.name;
     airport.city = data?.city;
     airport.countryId = +data?.country_id;
+    airport.timeZone = data?.time_zone;
 
     if (options.showCountry) {
       airport.country = await this.services.country.getById(

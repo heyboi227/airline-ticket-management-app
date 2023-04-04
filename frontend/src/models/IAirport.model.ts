@@ -6,6 +6,7 @@ export default interface IAirport {
   name: string;
   city: string;
   countryId: number;
+  timeZone: string;
 
   country?: ICountry;
 }

@@ -7,6 +7,7 @@ export default class AirportModel implements IModel {
   name: string;
   city: string;
   countryId: number;
+  timeZone: string;
 
   country?: CountryModel;
 }
