@@ -36,10 +36,9 @@ export function formatTime(date: Date, timeZone: string): string {
   return timeFormatter.format(date);
 }
 
-export function formatTimeAndCheckForDayDifference(
+export function checkForDayDifference(
   departureDate: Date,
-  arrivalDate: Date,
-  timeZone: string
+  arrivalDate: Date
 ): string {
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
   const departureDateWithoutTime = new Date(
@@ -58,17 +57,7 @@ export function formatTimeAndCheckForDayDifference(
       millisecondsPerDay
   );
 
-  const timeFormatter = new Intl.DateTimeFormat("sr-RS", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: false,
-    timeZone: timeZone,
-  });
-
-  return (
-    timeFormatter.format(arrivalDate) +
-    (daysDifference > 0 ? " +" + daysDifference : "")
-  );
+  return daysDifference > 0 ? " +" + daysDifference : "";
 }
 
 export function subtractTime(
