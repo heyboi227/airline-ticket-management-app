@@ -15,7 +15,6 @@ export interface IFlightAdapterOptions extends IAdapterOptions {
   loadOriginAirport: boolean;
   loadDestinationAirport: boolean;
   loadAircraft: boolean;
-  loadBags: boolean;
   hideInactiveBags: boolean;
   loadTravelClasses: boolean;
   hideInactiveTravelClasses: boolean;
@@ -25,7 +24,6 @@ export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
   loadOriginAirport: true,
   loadDestinationAirport: true,
   loadAircraft: true,
-  loadBags: true,
   hideInactiveBags: true,
   loadTravelClasses: true,
   hideInactiveTravelClasses: true,
@@ -77,14 +75,6 @@ export default class FlightService extends BaseService<
           flight.aircraftId,
           {}
         );
-      }
-
-      if (options.loadBags) {
-        flight.bags = await this.services.bag.getAllByFlightId(flight.flightId);
-
-        if (options.hideInactiveBags) {
-          flight.bags = flight.bags.filter((bagInfo) => bagInfo.isActive);
-        }
       }
 
       if (options.loadTravelClasses) {

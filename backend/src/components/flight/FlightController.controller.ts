@@ -221,69 +221,6 @@ export default class FlightController extends BaseController {
         return result;
       })
       .then(async (result) => {
-        const currentBagIds = result.bags?.map((bagInfo) => bagInfo.bag.bagId);
-
-        const currentVisibleBagIds = result.bags
-          ?.filter((bagInfo) => bagInfo.isActive)
-          .map((bagInfo) => bagInfo.bag.bagId);
-
-        const currentInvisibleBagIds = result.bags
-          ?.filter((bagInfo) => !bagInfo.isActive)
-          .map((bagInfo) => bagInfo.bag.bagId);
-
-        const newBagIds = data.bags?.map((bag) => bag.bagId);
-
-        const bagIdsToHide = currentVisibleBagIds.filter(
-          (id) => !newBagIds.includes(id)
-        );
-
-        const bagIdsToShow = currentInvisibleBagIds.filter((id) =>
-          newBagIds.includes(id)
-        );
-
-        const bagIdsToAdd = newBagIds.filter(
-          (id) => !currentBagIds.includes(id)
-        );
-
-        const bagIdsUnion = [...new Set([...newBagIds, ...bagIdsToShow])];
-
-        const bagIdsToEdit = bagIdsUnion.filter(
-          (id) => !bagIdsToAdd.includes(id)
-        );
-
-        for (let id of bagIdsToHide) {
-          await this.services.bag.hideFlightBag(result.flightId, id);
-        }
-
-        for (let id of bagIdsToShow) {
-          await this.services.bag.showFlightBag(result.flightId, id);
-        }
-
-        for (let id of bagIdsToAdd) {
-          const bag = data.bags?.find((bag) => bag.bagId === id);
-
-          if (!bag) continue;
-
-          await this.services.flight.addFlightBag({
-            flight_id: result.flightId,
-            bag_id: id,
-            price: bag.price,
-            is_active: 1,
-          });
-        }
-
-        for (let id of bagIdsToEdit) {
-          const bag = data.bags?.find((bag) => bag.bagId === id);
-
-          if (!bag) continue;
-
-          await this.services.flight.editFlightBag({
-            flight_id: result.flightId,
-            bag_id: id,
-            price: bag.price,
-          });
-        }
-
         const currentTravelClassIds = result.travelClasses?.map(
           (travelClassInfo) => travelClassInfo.travelClass.travelClassId
         );

@@ -105,21 +105,6 @@ INSERT INTO `airport` (`airport_id`, `airport_code`, `name`, `city`, `country_id
 	(3, 'LHR', 'Heathrow', 'London', 185, 'Europe/London'),
 	(10, 'JFK', 'John F. Kennedy International', 'New York', 186, 'America/New_York');
 
--- Dumping structure for table diplomski_app.bag
-DROP TABLE IF EXISTS `bag`;
-CREATE TABLE IF NOT EXISTS `bag` (
-  `bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`bag_id`),
-  UNIQUE KEY `uq_bag_type` (`name`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table diplomski_app.bag: ~3 rows (approximately)
-DELETE FROM `bag`;
-INSERT INTO `bag` (`bag_id`, `name`) VALUES
-	(1, 'Cabin bag'),
-	(2, 'Checked bag');
-
 -- Dumping structure for table diplomski_app.country
 DROP TABLE IF EXISTS `country`;
 CREATE TABLE IF NOT EXISTS `country` (
@@ -372,32 +357,9 @@ CREATE TABLE IF NOT EXISTS `flight` (
 DELETE FROM `flight`;
 INSERT INTO `flight` (`flight_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`) VALUES
 	(1, 'AS100', 1, 3, '2023-04-01 15:00:00', '2023-04-01 18:00:00', 2),
-	(2, 'AS101', 3, 1, '2023-04-01 19:10:00', '2023-04-01 22:50:00', 2),
-	(4, 'AS300', 1, 10, '2023-04-05 10:35:00', '2023-04-05 20:35:00', 1),
-	(5, 'AS301', 10, 1, '2023-04-05 21:40:00', '2023-04-06 06:30:00', 1);
-
--- Dumping structure for table diplomski_app.flight_bag
-DROP TABLE IF EXISTS `flight_bag`;
-CREATE TABLE IF NOT EXISTS `flight_bag` (
-  `flight_bag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `flight_id` int(10) unsigned NOT NULL,
-  `bag_id` int(10) unsigned NOT NULL,
-  `price` decimal(10,2) unsigned NOT NULL,
-  `is_active` tinyint(1) unsigned NOT NULL DEFAULT 1,
-  PRIMARY KEY (`flight_bag_id`) USING BTREE,
-  UNIQUE KEY `uq_flight_bag_flight_id_bag_id` (`flight_id`,`bag_id`) USING BTREE,
-  KEY `fk_flight_bag_bag_id` (`bag_id`),
-  CONSTRAINT `fk_flight_bag_bag_id` FOREIGN KEY (`bag_id`) REFERENCES `bag` (`bag_id`) ON UPDATE CASCADE,
-  CONSTRAINT `fk_flight_bag_flight_id` FOREIGN KEY (`flight_id`) REFERENCES `flight` (`flight_id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- Dumping data for table diplomski_app.flight_bag: ~4 rows (approximately)
-DELETE FROM `flight_bag`;
-INSERT INTO `flight_bag` (`flight_bag_id`, `flight_id`, `bag_id`, `price`, `is_active`) VALUES
-	(1, 1, 1, 14000.00, 1),
-	(2, 1, 2, 26000.00, 1),
-	(3, 2, 1, 14000.00, 1),
-	(4, 2, 2, 26000.00, 1);
+	(2, 'AS101', 3, 1, '2023-04-01 19:10:00', '2023-04-01 21:50:00', 2),
+	(6, 'AS300', 1, 10, '2023-04-05 08:30:00', '2023-04-05 18:30:00', 1),
+	(7, 'AS301', 10, 1, '2023-04-05 20:45:00', '2023-04-06 05:35:00', 1);
 
 -- Dumping structure for table diplomski_app.flight_travel_class
 DROP TABLE IF EXISTS `flight_travel_class`;
@@ -414,13 +376,17 @@ CREATE TABLE IF NOT EXISTS `flight_travel_class` (
   CONSTRAINT `fk_flight_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_travel_class: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.flight_travel_class: ~8 rows (approximately)
 DELETE FROM `flight_travel_class`;
 INSERT INTO `flight_travel_class` (`flight_travel_class_id`, `flight_id`, `travel_class_id`, `price`, `is_active`) VALUES
 	(1, 1, 4, 11000.00, 1),
 	(2, 1, 2, 32000.00, 1),
 	(3, 2, 4, 11000.00, 1),
-	(4, 2, 2, 32000.00, 1);
+	(4, 2, 2, 32000.00, 1),
+	(5, 6, 4, 26874.00, 1),
+	(6, 6, 2, 47835.72, 1),
+	(7, 7, 4, 25424.24, 1),
+	(8, 7, 2, 44123.15, 1);
 
 -- Dumping structure for table diplomski_app.ticket
 DROP TABLE IF EXISTS `ticket`;
@@ -455,19 +421,19 @@ DROP TABLE IF EXISTS `travel_class`;
 CREATE TABLE IF NOT EXISTS `travel_class` (
   `travel_class_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `subname` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`travel_class_id`) USING BTREE,
-  UNIQUE KEY `uq_cabin_name` (`name`)
+  UNIQUE KEY `uq_travel_class_subname` (`subname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.travel_class: ~7 rows (approximately)
+-- Dumping data for table diplomski_app.travel_class: ~5 rows (approximately)
 DELETE FROM `travel_class`;
-INSERT INTO `travel_class` (`travel_class_id`, `name`) VALUES
-	(5, 'Basic economy class'),
-	(2, 'Business class'),
-	(4, 'Economy class'),
-	(1, 'First class'),
-	(6, 'Premium business class'),
-	(3, 'Premium economy class');
+INSERT INTO `travel_class` (`travel_class_id`, `name`, `subname`) VALUES
+	(1, 'Economy', 'Basic Economy'),
+	(2, 'Economy', 'Economy'),
+	(3, 'Economy', 'Economy+'),
+	(4, 'Economy', 'Economy++'),
+	(5, 'Business', 'Business');
 
 -- Dumping structure for table diplomski_app.user
 DROP TABLE IF EXISTS `user`;

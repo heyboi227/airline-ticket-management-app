@@ -9,7 +9,6 @@ import AdministratorService from "./components/administrator/AdministratorServic
 import UserService from "./components/user/UserService.service";
 import CountryService from "./components/country/CountryService.service";
 import AircraftService from "./components/aircraft/AircraftService.service";
-import BagService from "./components/bag/BagService.service";
 import TravelClassService from "./components/travel_class/TravelClassService.service";
 import FlightService from "./components/flight/FlightService.service";
 import AirportService from "./components/airport/AirportService.service";
@@ -81,7 +80,6 @@ async function main() {
   applicationResources.services.airport = new AirportService(
     applicationResources
   );
-  applicationResources.services.bag = new BagService(applicationResources);
   applicationResources.services.country = new CountryService(
     applicationResources
   );
