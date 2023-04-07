@@ -23,6 +23,7 @@ export default class TravelClassService extends BaseService<
 
     travelClass.travelClassId = +data?.travel_class_id;
     travelClass.name = data?.name;
+    travelClass.subname = data?.subname;
 
     return travelClass;
   }
@@ -51,6 +52,7 @@ export default class TravelClassService extends BaseService<
                 travelClass: {
                   travelClassId: row.travel_class_id,
                   name: travelClass.name,
+                  subname: travelClass.subname,
                 },
                 price: row.price,
                 isActive: row.is_active === 1,
@@ -90,6 +92,7 @@ export default class TravelClassService extends BaseService<
                 travelClass: {
                   travelClassId: row.travel_class_id,
                   name: travelClass.name,
+                  subname: travelClass.subname,
                 },
                 price: row.price,
                 isActive: row.is_active === 1,

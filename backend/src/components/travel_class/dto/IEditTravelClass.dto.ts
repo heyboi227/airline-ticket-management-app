@@ -5,10 +5,12 @@ const ajv = new Ajv();
 
 export default interface IEditTravelClass extends IServiceData {
   name: string;
+  subname: string;
 }
 
 interface IEditTravelClassDto {
   name: string;
+  subname: string;
 }
 
 const EditTravelClassValidator = ajv.compile({
@@ -19,8 +21,13 @@ const EditTravelClassValidator = ajv.compile({
       minLength: 2,
       maxLength: 64,
     },
+    subname: {
+      type: "string",
+      minLength: 2,
+      maxLength: 64,
+    },
   },
-  required: ["name"],
+  required: ["name", "subname"],
   additionalProperties: false,
 });
 
