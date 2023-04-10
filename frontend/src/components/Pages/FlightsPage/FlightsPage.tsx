@@ -1,3 +1,4 @@
+import "./FlightsPage.scss";
 import { useLocation } from "react-router-dom";
 import IFlight from "../../../models/IFlight.model";
 import {
@@ -11,10 +12,24 @@ import Config from "../../../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareDown } from "@fortawesome/free-regular-svg-icons";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface IFlightRowProps {
   flight: IFlight;
 }
+
+interface IClassPricesProps {
+  travelClassName: string;
+  flight: IFlight;
+  visibility: boolean;
+}
+
+interface IClassPricesDrawerToggleProps {
+  handleToggle: () => void;
+}
+
+type IClassPricesDrawerProps = IClassPricesProps &
+  IClassPricesDrawerToggleProps;
 
 export default function FlightsPage() {
   const location = useLocation();
@@ -325,17 +340,198 @@ export default function FlightsPage() {
     },
   ];
 
+  function ClassPricesDrawer({
+    travelClassName,
+    flight,
+    visibility,
+    handleToggle,
+  }: IClassPricesDrawerProps) {
+    const [isOpenPricesHovered, setIsOpenPricesHovered] =
+      useState<boolean>(false);
+
+    const handleMouseEnter = () => {
+      setIsOpenPricesHovered(true);
+    };
+
+    const handleMouseLeave = () => {
+      setIsOpenPricesHovered(false);
+    };
+
+    return (
+      <>
+        <div className="card" style={{ width: "18rem" }}>
+          <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
+            <h2 className="card-title">{travelClassName}</h2>
+            <p className="card-text">
+              From{" "}
+              <span style={{ fontSize: "1.5vw" }}>
+                {flight.travelClasses
+                  ?.filter((travelClass) =>
+                    travelClass.travelClass.name.includes(travelClassName)
+                  )
+                  .map((travelClass) => travelClass.price)
+                  .reduce((smallestPrice, currentPrice) => {
+                    return currentPrice < smallestPrice
+                      ? currentPrice
+                      : smallestPrice;
+                  })}{" "}
+                RSD
+              </span>
+            </p>
+          </div>
+          <div
+            className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
+              isOpenPricesHovered ? "hover-background" : ""
+            }`}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={handleToggle}
+          >
+            <FontAwesomeIcon
+              icon={faCaretSquareDown}
+              style={{ fontSize: "2vw" }}
+            />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  const ClassPrices = ({
+    travelClassName,
+    flight,
+    visibility,
+  }: IClassPricesProps) => {
+    const renderTextForSubTravelClasses = (subTravelClass: string) => {
+      switch (subTravelClass) {
+        case "Basic Economy":
+          return (
+            <div>
+              <p>Standard pitch reclination</p>
+              <p>Complimentary beverage service, meal available for purchase</p>
+              <p>
+                Overhead bin space available on first-come, first-served basis
+              </p>
+              <p>
+                A piece of carry-on baggage included, checked baggage is
+                available for a fee
+              </p>
+              <p>A fee for seat selection and priority boarding</p>
+            </div>
+          );
+        case "Economy":
+          return (
+            <div>
+              <p>Increased seat pitch reclination</p>
+              <p>
+                Complimentary in-flight entertainment (subject for availability)
+              </p>
+              <p>Complimentary meal and beverage service</p>
+              <p>One free checked bag included</p>
+              <p>Free seat selection</p>
+            </div>
+          );
+        case "Economy+":
+          return (
+            <div>
+              <p>Extra legroom</p>
+              <p>Dedicated overhead bin space</p>
+              <p>Upgraded meal services and free alcoholic beverages</p>
+              <p>Two free checked bags included</p>
+              <p>Free seat selection</p>
+            </div>
+          );
+        case "Business":
+          return (
+            <div>
+              <p>
+                Fully-flat seats, or spacious recliners with ample legroom,
+                based on availability
+              </p>
+              <p>Priority check-in, boarding and baggage handling</p>
+              <p>
+                Access to exclusive airport or our personalized{" "}
+                <strong>SokoRest&trade;</strong> lounges
+              </p>
+              <p>
+                Personalized in-flight service, including gourmet meals, premium
+                beverages, wide selection of in-flight entertainment
+              </p>
+              <p>Two free checked bags included</p>
+              <p>Priority seat selection</p>
+            </div>
+          );
+        default:
+          return "";
+      }
+    };
+
+    return (
+      <AnimatePresence>
+        {visibility && (
+          <motion.div
+            className="d-flex g-3 flex-row justify-content-center align-items-center"
+            initial={{
+              position: "relative",
+              top: 20,
+              scale: 0.95,
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              top: 0,
+              scale: 1,
+              opacity: 1,
+              height: "auto",
+            }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            {flight.travelClasses
+              ?.filter((travelClass) =>
+                travelClass.travelClass.name.includes(travelClassName)
+              )
+              .map((travelClass) => (
+                <div
+                  className="card"
+                  style={{ width: "25rem", height: "30vw" }}
+                  key={travelClass.travelClass.travelClassId}
+                >
+                  <div
+                    className="card-body mt-3 d-flex flex-column justify-content-start align-items-center"
+                    style={{ position: "relative" }}
+                  >
+                    <h2 className="card-title">
+                      {travelClass.travelClass.subname}
+                    </h2>
+                    <div className="card-text">
+                      {renderTextForSubTravelClasses(
+                        travelClass.travelClass.subname
+                      )}
+                      <h1 style={{ position: "absolute", bottom: 0 }}>
+                        {travelClass.price} RSD
+                      </h1>
+                    </div>
+                  </div>
+                  <div
+                    className="card-footer text-bg-primary d-flex justify-content-center"
+                    onClick={() => {}}
+                  >
+                    Select
+                  </div>
+                </div>
+              ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    );
+  };
+
   function FlightRow(props: IFlightRowProps) {
     const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
     const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
-
-    const handleToggle = (travelClassName: string) => {
-      if (travelClassName.toLowerCase().includes("economy")) {
-        setIsEconomyVisible(!isEconomyVisible);
-      } else {
-        setIsBusinessVisible(!isBusinessVisible);
-      }
-    };
 
     return (
       <>
@@ -409,169 +605,29 @@ export default function FlightsPage() {
             </div>
             <span>{props.flight.aircraft?.name}</span>
           </div>
-          <div className="card" style={{ width: "18rem" }}>
-            <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-              <h2 className="card-title">Economy</h2>
-              <p className="card-text">
-                From{" "}
-                <span style={{ fontSize: "1.5vw" }}>
-                  {props.flight.travelClasses
-                    ?.filter((travelClass) =>
-                      travelClass.travelClass.name
-                        .toLowerCase()
-                        .includes("economy")
-                    )
-                    .map((travelClass) => travelClass.price)
-                    .reduce((smallestPrice, currentPrice) => {
-                      return currentPrice < smallestPrice
-                        ? currentPrice
-                        : smallestPrice;
-                    })}{" "}
-                  RSD
-                </span>
-              </p>
-            </div>
-            <div
-              className="card-footer text-bg-primary d-flex justify-content-center"
-              onClick={() =>
-                handleToggle(
-                  props.flight.travelClasses!.filter((travelClass) =>
-                    travelClass.travelClass.name
-                      .toLowerCase()
-                      .includes("economy")
-                  )[0].travelClass.name
-                )
-              }
-            >
-              <FontAwesomeIcon
-                icon={faCaretSquareDown}
-                style={{ fontSize: "2vw" }}
-              />
-            </div>
-          </div>
-          <div className="card" style={{ width: "18rem" }}>
-            <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-              <h2 className="card-title">Business</h2>
-              <p className="card-text">
-                From{" "}
-                <span style={{ fontSize: "1.5vw" }}>
-                  {props.flight.travelClasses
-                    ?.filter((travelClass) =>
-                      travelClass.travelClass.name
-                        .toLowerCase()
-                        .includes("business")
-                    )
-                    .map((travelClass) => travelClass.price)
-                    .reduce((smallestPrice, currentPrice) => {
-                      return currentPrice < smallestPrice
-                        ? currentPrice
-                        : smallestPrice;
-                    })}{" "}
-                  RSD
-                </span>
-              </p>
-            </div>
-            <div
-              className="card-footer text-bg-primary d-flex justify-content-center"
-              onClick={() =>
-                handleToggle(
-                  props.flight.travelClasses!.filter((travelClass) =>
-                    travelClass.travelClass.name
-                      .toLowerCase()
-                      .includes("business")
-                  )[0].travelClass.name
-                )
-              }
-            >
-              <FontAwesomeIcon
-                icon={faCaretSquareDown}
-                style={{ fontSize: "2vw" }}
-              />
-            </div>
-          </div>
+          <ClassPricesDrawer
+            travelClassName={"Economy"}
+            flight={props.flight}
+            visibility={isEconomyVisible}
+            handleToggle={() => setIsEconomyVisible(!isEconomyVisible)}
+          />
+          <ClassPricesDrawer
+            travelClassName={"Business"}
+            flight={props.flight}
+            visibility={isBusinessVisible}
+            handleToggle={() => setIsBusinessVisible(!isBusinessVisible)}
+          />
         </div>
-        <div>
-          {isEconomyVisible && (
-            <div className="d-flex g-3 flex-row justify-content-center align-items-center">
-              {props.flight.travelClasses
-                ?.filter((travelClass) =>
-                  travelClass.travelClass.name.toLowerCase().includes("economy")
-                )
-                .map((travelClass) => (
-                  <div className="card" style={{ width: "18rem" }}>
-                    <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-                      <h2 className="card-title">
-                        {travelClass.travelClass.subname}
-                      </h2>
-                      <p className="card-text">
-                        <ul className="list-group">
-                          <li className="list-group-item">1</li>
-                          <li className="list-group-item">2</li>
-                          <li className="list-group-item">3</li>
-                          <li className="list-group-item">4</li>
-                        </ul>
-                      </p>
-                    </div>
-                    <div
-                      className="card-footer text-bg-primary d-flex justify-content-center"
-                      onClick={() =>
-                        handleToggle(
-                          props.flight.travelClasses!.filter((travelClass) =>
-                            travelClass.travelClass.name
-                              .toLowerCase()
-                              .includes("business")
-                          )[0].travelClass.name
-                        )
-                      }
-                    >
-                      Select
-                    </div>
-                  </div>
-                ))}
-            </div>
-          )}
-          {isBusinessVisible && (
-            <div className="d-flex g-3 flex-row justify-content-center align-items-center">
-              {props.flight.travelClasses
-                ?.filter((travelClass) =>
-                  travelClass.travelClass.name
-                    .toLowerCase()
-                    .includes("business")
-                )
-                .map((travelClass) => (
-                  <div className="card" style={{ width: "18rem" }}>
-                    <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-                      <h2 className="card-title">
-                        {travelClass.travelClass.subname}
-                      </h2>
-                      <p className="card-text">
-                        <ul className="list-group">
-                          <li className="list-group-item">1</li>
-                          <li className="list-group-item">2</li>
-                          <li className="list-group-item">3</li>
-                          <li className="list-group-item">4</li>
-                        </ul>
-                      </p>
-                    </div>
-                    <div
-                      className="card-footer text-bg-primary d-flex justify-content-center"
-                      onClick={() =>
-                        handleToggle(
-                          props.flight.travelClasses!.filter((travelClass) =>
-                            travelClass.travelClass.name
-                              .toLowerCase()
-                              .includes("business")
-                          )[0].travelClass.name
-                        )
-                      }
-                    >
-                      Select
-                    </div>
-                  </div>
-                ))}
-            </div>
-          )}
-        </div>
+        <ClassPrices
+          travelClassName={"Economy"}
+          flight={props.flight}
+          visibility={isEconomyVisible}
+        />
+        <ClassPrices
+          travelClassName={"Business"}
+          flight={props.flight}
+          visibility={isBusinessVisible}
+        />
       </>
     );
   }

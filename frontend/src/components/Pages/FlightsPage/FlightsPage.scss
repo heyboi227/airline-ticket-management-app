@@ -1,0 +1,14 @@
+.open-prices {
+  background-color: var(--primary);
+  transition: background-color 0.3s ease;
+}
+
+.open-prices.hover-background {
+  background-color: #8b92e1 !important;
+  cursor: pointer;
+}
+
+.card-text > div > p {
+  font-size: 1vw;
+  line-height: 1.2;
+}
