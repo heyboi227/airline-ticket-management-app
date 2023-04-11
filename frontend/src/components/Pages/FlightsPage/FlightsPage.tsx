@@ -13,6 +13,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareDown } from "@fortawesome/free-regular-svg-icons";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { Container, Tab, Tabs } from "react-bootstrap";
 
 interface IFlightRowProps {
   flight: IFlight;
@@ -24,12 +25,15 @@ interface IClassPricesProps {
   visibility: boolean;
 }
 
-interface IClassPricesDrawerToggleProps {
+interface IClassPricesDrawerProps {
+  travelClassName: string;
+  flight: IFlight;
   handleToggle: () => void;
 }
 
-type IClassPricesDrawerProps = IClassPricesProps &
-  IClassPricesDrawerToggleProps;
+interface TabTitleProps {
+  title: string;
+}
 
 export default function FlightsPage() {
   const location = useLocation();
@@ -340,10 +344,52 @@ export default function FlightsPage() {
     },
   ];
 
+  const [activeTab, setActiveTab] = useState<string>("currentDate");
+
+  const generateDateRange = (): Date[] => {
+    const dates = [];
+    const currentDate = new Date();
+    for (let i = -3; i <= 3; i++) {
+      const date = new Date(currentDate);
+      date.setDate(date.getDate() + i);
+      dates.push(date);
+    }
+    return dates;
+  };
+
+  const formatDate = (date: Date): string => {
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )}-${String(date.getDate()).padStart(2, "0")}`;
+  };
+
+  const getMinimalPrice = (): number => {
+    return 100;
+  };
+
+  const handleTabSelect = (key: string | null) => {
+    if (key) {
+      setActiveTab(key);
+    }
+  };
+
+  const currentDate = new Date();
+  const dateRange = generateDateRange();
+
+  const TabTitle = ({ title }: TabTitleProps) => {
+    return (
+      <div
+        style={{ whiteSpace: "pre-wrap", lineHeight: "1.2", width: "100px" }}
+      >
+        {title}
+      </div>
+    );
+  };
+
   function ClassPricesDrawer({
     travelClassName,
     flight,
-    visibility,
     handleToggle,
   }: IClassPricesDrawerProps) {
     const [isOpenPricesHovered, setIsOpenPricesHovered] =
@@ -608,13 +654,11 @@ export default function FlightsPage() {
           <ClassPricesDrawer
             travelClassName={"Economy"}
             flight={props.flight}
-            visibility={isEconomyVisible}
             handleToggle={() => setIsEconomyVisible(!isEconomyVisible)}
           />
           <ClassPricesDrawer
             travelClassName={"Business"}
             flight={props.flight}
-            visibility={isBusinessVisible}
             handleToggle={() => setIsBusinessVisible(!isBusinessVisible)}
           />
         </div>
@@ -633,82 +677,31 @@ export default function FlightsPage() {
   }
 
   return (
-    <div>
-      <ul className="nav nav-tabs justify-content-center">
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-02"))}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-03"))}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-04"))}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link active" aria-current="page" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date())}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-06"))}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-07"))}
-          </a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" href="#">
-            {new Intl.DateTimeFormat("en-GB", {
-              weekday: "short",
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-            }).format(new Date("2023-04-08"))}
-          </a>
-        </li>
-      </ul>
-      {testFlightData.map((flight) => (
-        <FlightRow key={"flight" + flight.flightId} flight={flight} />
-      ))}
-    </div>
+    <Container>
+      <Tabs activeKey={activeTab} onSelect={handleTabSelect}>
+        {dateRange.map((date) => {
+          const formattedDate = formatDate(date);
+          const minimalPrice = getMinimalPrice();
+          const isDisabled = date < currentDate;
+
+          return (
+            <Tab
+              key={formattedDate}
+              eventKey={formattedDate}
+              title={
+                <TabTitle
+                  title={`${formattedDate} ${minimalPrice} RSD`}
+                ></TabTitle>
+              }
+              disabled={isDisabled}
+            >
+              {testFlightData.map((flight) => (
+                <FlightRow flight={flight} key={flight.flightId} />
+              ))}
+            </Tab>
+          );
+        })}
+      </Tabs>
+    </Container>
   );
 }
