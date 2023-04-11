@@ -80,7 +80,7 @@ export default function UserLoginPage() {
         duration: 0.75,
       }}
     >
-      <div className="col col-xs-12 col-md-6 offset-md-3">
+      <div className="col col-xs-12 col-md-6 offset-md-3 p-5">
         <h1 className="h5 mb-3">Log into your user account</h1>
         <div className="form-group mb-3">
           <div className="input-group">
@@ -109,7 +109,7 @@ export default function UserLoginPage() {
             Log in
           </button>
         </div>
-        <span className="text-primary">Forgot your password?</span>&nbsp;
+        <span>Forgot your password?</span>&nbsp;
         <Link to="/auth/user/forgot-password">Click here.</Link>
         {error && <p className="alert alert-danger">{error}</p>}
       </div>

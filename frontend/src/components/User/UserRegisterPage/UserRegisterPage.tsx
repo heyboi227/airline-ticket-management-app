@@ -63,7 +63,7 @@ export default function UserRegisterPage() {
         duration: 0.75,
       }}
     >
-      <div className="col col-xs-12 col-md-6 offset-md-3">
+      <div className="col col-xs-12 col-md-6 offset-md-3 p-5">
         <h1 className="h5 mb-3">Register your account</h1>
 
         <div className="form-group mb-3">
