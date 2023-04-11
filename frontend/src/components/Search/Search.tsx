@@ -172,7 +172,7 @@ export default function Search() {
       .then((res) => {
         navigate("/search/flights", {
           replace: true,
-          state: res.data,
+          state: [departureDateAndTime, res.data],
         });
       })
       .catch((error) => {
