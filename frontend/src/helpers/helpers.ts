@@ -37,20 +37,23 @@ export function formatTime(date: Date, timeZone: string): string {
 }
 
 export function checkForDayDifference(
-  departureDate: Date,
-  arrivalDate: Date
+  departureDateAndTime: Date,
+  arrivalDateAndTime: Date,
+  departureTimeZone: string,
+  arrivalTimeZone: string
 ): string {
   const millisecondsPerDay = 1000 * 60 * 60 * 24;
-  const departureDateWithoutTime = new Date(
-    departureDate.getFullYear(),
-    departureDate.getMonth(),
-    departureDate.getDate()
-  );
-  const arrivalDateWithoutTime = new Date(
-    arrivalDate.getFullYear(),
-    arrivalDate.getMonth(),
-    arrivalDate.getDate()
-  );
+
+  const localDepartureDateAndTime = Intl.DateTimeFormat("en-US", {
+    timeZone: departureTimeZone,
+  }).format(departureDateAndTime);
+
+  const localArrivalDateAndTime = Intl.DateTimeFormat("en-US", {
+    timeZone: arrivalTimeZone,
+  }).format(arrivalDateAndTime);
+
+  const departureDateWithoutTime = new Date(localDepartureDateAndTime);
+  const arrivalDateWithoutTime = new Date(localArrivalDateAndTime);
 
   const daysDifference = Math.round(
     (arrivalDateWithoutTime.valueOf() - departureDateWithoutTime.valueOf()) /

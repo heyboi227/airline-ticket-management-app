@@ -37,318 +37,13 @@ interface TabTitleProps {
 
 export default function FlightsPage() {
   const location = useLocation();
-  const testFlightData: IFlight[] = [
-    {
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 1,
-            name: "Economy",
-            subname: "Basic Economy",
-          },
-          price: 8500.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 2,
-            name: "Economy",
-            subname: "Economy",
-          },
-          price: 11000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 3,
-            name: "Economy",
-            subname: "Economy+",
-          },
-          price: 24000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 5,
-            name: "Business",
-            subname: "Business",
-          },
-          price: 65000.0,
-          isActive: true,
-        },
-      ],
-      originAirport: {
-        airportId: 1,
-        airportCode: "BEG",
-        name: "Nikola Tesla",
-        city: "Belgrade",
-        countryId: 153,
-        timeZone: "Europe/Belgrade",
-        country: {
-          countryId: 153,
-          name: "Serbia",
-        },
-      },
-      destinationAirport: {
-        airportId: 3,
-        airportCode: "LHR",
-        name: "Heathrow",
-        city: "London",
-        countryId: 185,
-        timeZone: "Europe/London",
-        country: {
-          countryId: 185,
-          name: "United Kingdom",
-        },
-      },
-      aircraft: {
-        aircraftId: 2,
-        type: "Narrow-body",
-        name: "Airbus A319-100",
-      },
-      flightId: 1,
-      flightCode: "AS100",
-      originAirportId: 1,
-      destinationAirportId: 3,
-      departureDateAndTime: "2023-04-01T14:00:00.000Z",
-      arrivalDateAndTime: "2023-04-01T17:00:00.000Z",
-      aircraftId: 2,
-    },
-    {
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 1,
-            name: "Economy",
-            subname: "Basic Economy",
-          },
-          price: 8500.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 2,
-            name: "Economy",
-            subname: "Economy",
-          },
-          price: 11000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 3,
-            name: "Economy",
-            subname: "Economy+",
-          },
-          price: 24000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 5,
-            name: "Business",
-            subname: "Business",
-          },
-          price: 65000.0,
-          isActive: true,
-        },
-      ],
-      originAirport: {
-        airportId: 3,
-        airportCode: "LHR",
-        name: "Heathrow",
-        city: "London",
-        countryId: 185,
-        timeZone: "Europe/London",
-        country: {
-          countryId: 185,
-          name: "United Kingdom",
-        },
-      },
-      destinationAirport: {
-        airportId: 1,
-        airportCode: "BEG",
-        name: "Nikola Tesla",
-        city: "Belgrade",
-        countryId: 153,
-        timeZone: "Europe/Belgrade",
-        country: {
-          countryId: 153,
-          name: "Serbia",
-        },
-      },
-      aircraft: {
-        aircraftId: 2,
-        type: "Narrow-body",
-        name: "Airbus A319-100",
-      },
-      flightId: 2,
-      flightCode: "AS101",
-      originAirportId: 3,
-      destinationAirportId: 1,
-      departureDateAndTime: "2023-04-01T18:10:00.000Z",
-      arrivalDateAndTime: "2023-04-01T20:50:00.000Z",
-      aircraftId: 2,
-    },
-    {
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 1,
-            name: "Economy",
-            subname: "Basic Economy",
-          },
-          price: 8500.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 2,
-            name: "Economy",
-            subname: "Economy",
-          },
-          price: 11000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 3,
-            name: "Economy",
-            subname: "Economy+",
-          },
-          price: 24000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 5,
-            name: "Business",
-            subname: "Business",
-          },
-          price: 65000.0,
-          isActive: true,
-        },
-      ],
-      originAirport: {
-        airportId: 1,
-        airportCode: "BEG",
-        name: "Nikola Tesla",
-        city: "Belgrade",
-        countryId: 153,
-        timeZone: "Europe/Belgrade",
-        country: {
-          countryId: 153,
-          name: "Serbia",
-        },
-      },
-      destinationAirport: {
-        airportId: 10,
-        airportCode: "JFK",
-        name: "John F. Kennedy International",
-        city: "New York",
-        countryId: 186,
-        timeZone: "America/New_York",
-        country: {
-          countryId: 186,
-          name: "United States of America",
-        },
-      },
-      aircraft: {
-        aircraftId: 1,
-        type: "Wide-body",
-        name: "Boeing 777-300",
-      },
-      flightId: 6,
-      flightCode: "AS300",
-      originAirportId: 1,
-      destinationAirportId: 10,
-      departureDateAndTime: "2023-04-05T07:30:00.000Z",
-      arrivalDateAndTime: "2023-04-05T17:30:00.000Z",
-      aircraftId: 1,
-    },
-    {
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 1,
-            name: "Economy",
-            subname: "Basic Economy",
-          },
-          price: 8500.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 2,
-            name: "Economy",
-            subname: "Economy",
-          },
-          price: 11000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 3,
-            name: "Economy",
-            subname: "Economy+",
-          },
-          price: 24000.0,
-          isActive: true,
-        },
-        {
-          travelClass: {
-            travelClassId: 5,
-            name: "Business",
-            subname: "Business",
-          },
-          price: 65000.0,
-          isActive: true,
-        },
-      ],
-      originAirport: {
-        airportId: 10,
-        airportCode: "JFK",
-        name: "John F. Kennedy International",
-        city: "New York",
-        countryId: 186,
-        timeZone: "America/New_York",
-        country: {
-          countryId: 186,
-          name: "United States of America",
-        },
-      },
-      destinationAirport: {
-        airportId: 1,
-        airportCode: "BEG",
-        name: "Nikola Tesla",
-        city: "Belgrade",
-        countryId: 153,
-        timeZone: "Europe/Belgrade",
-        country: {
-          countryId: 153,
-          name: "Serbia",
-        },
-      },
-      aircraft: {
-        aircraftId: 1,
-        type: "Wide-body",
-        name: "Boeing 777-300",
-      },
-      flightId: 7,
-      flightCode: "AS301",
-      originAirportId: 10,
-      destinationAirportId: 1,
-      departureDateAndTime: "2023-04-05T19:45:00.000Z",
-      arrivalDateAndTime: "2023-04-06T04:35:00.000Z",
-      aircraftId: 1,
-    },
-  ];
+  const flightData: IFlight[] = location.state[1] || [];
 
   const [activeTab, setActiveTab] = useState<string>("currentDate");
 
   const generateDateRange = (): Date[] => {
     const dates = [];
-    const currentDate = new Date();
+    const currentDate = new Date(location.state[0]);
     for (let i = -3; i <= 3; i++) {
       const date = new Date(currentDate);
       date.setDate(date.getDate() + i);
@@ -374,7 +69,7 @@ export default function FlightsPage() {
     }
   };
 
-  const currentDate = new Date();
+  const currentDate = new Date(location.state[0]);
   const dateRange = generateDateRange();
 
   const TabTitle = ({ title }: TabTitleProps) => {
@@ -416,7 +111,7 @@ export default function FlightsPage() {
                     travelClass.travelClass.name.includes(travelClassName)
                   )
                   .map((travelClass) => travelClass.price)
-                  .reduce((smallestPrice, currentPrice) => {
+                  .reduce((smallestPrice: number, currentPrice: number) => {
                     return currentPrice < smallestPrice
                       ? currentPrice
                       : smallestPrice;
@@ -630,7 +325,9 @@ export default function FlightsPage() {
                   <small>
                     {checkForDayDifference(
                       new Date(props.flight.departureDateAndTime),
-                      new Date(props.flight.arrivalDateAndTime)
+                      new Date(props.flight.arrivalDateAndTime),
+                      props.flight.originAirport?.timeZone!,
+                      props.flight.destinationAirport?.timeZone!
                     )}
                   </small>
                 </div>
@@ -695,7 +392,7 @@ export default function FlightsPage() {
               }
               disabled={isDisabled}
             >
-              {testFlightData.map((flight) => (
+              {flightData.map((flight) => (
                 <FlightRow flight={flight} key={flight.flightId} />
               ))}
             </Tab>
