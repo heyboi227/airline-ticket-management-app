@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
 import { debounce } from "lodash";
-import { convertIsoToMySqlDateTime } from "../../helpers/helpers";
 import IAirport from "../../models/IAirport.model";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import srLatn from "date-fns/locale/sr-Latn";
 
 interface InputProps {
   id: string;
@@ -17,12 +20,10 @@ interface AirportInputProps {
 }
 
 interface DateInputProps {
-  value: string | undefined;
-  handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (date: Date | null) => void;
 }
 
 type CombinedAirportProps = InputProps & AirportInputProps;
-type CombinedDateProps = InputProps & DateInputProps;
 
 function AirportInput({
   id,
@@ -78,6 +79,7 @@ function AirportInput({
           }}
           id={id}
           value={query}
+          style={{ height: "56px" }}
         />
       </div>
       <div style={{ position: "absolute", zIndex: 2 }}>
@@ -101,33 +103,23 @@ function AirportInput({
   );
 }
 
-function DateInput({
-  id,
-  placeholder,
-  value,
-  handleChange,
-}: CombinedDateProps) {
-  const [inputType, setInputType] = useState<string>("text");
+function DateInput({ onChange }: DateInputProps) {
+  const [value, setValue] = useState<Date | null>(null);
 
-  const handleFocus = () => {
-    setInputType("date");
-  };
-
-  const handleBlur = () => {
-    setInputType("text");
+  const handleChange = (newValue: Date | null) => {
+    setValue(newValue);
+    onChange(newValue);
   };
 
   return (
-    <input
-      placeholder={placeholder}
-      className="form-control"
-      type={inputType}
-      onChange={handleChange}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      id={id}
-      value={value}
-    />
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={srLatn}>
+      <DatePicker
+        label="Choose a date"
+        value={value}
+        onChange={handleChange}
+        className="form-control"
+      ></DatePicker>
+    </LocalizationProvider>
   );
 }
 
@@ -143,6 +135,10 @@ export default function Search() {
     newDestinationAirportId: number
   ) => {
     setDestinationAirportId(newDestinationAirportId);
+  };
+
+  const handleDateChange = (date: Date | null) => {
+    console.log("Selected date: ", date);
   };
 
   const [departureDateAndTime, setDepartureDateAndTime] = useState<string>("");
@@ -241,35 +237,13 @@ export default function Search() {
           <div className="col">
             <div className="form-group mt-3 mb-3">
               <div className="input-group">
-                <DateInput
-                  id="departure"
-                  placeholder="Departure date"
-                  value={departureDateAndTime.substring(0, 10)}
-                  handleChange={(e) =>
-                    setDepartureDateAndTime(
-                      convertIsoToMySqlDateTime(
-                        new Date(e.target.value).toISOString()
-                      ).substring(0, 10)
-                    )
-                  }
-                ></DateInput>
+                <DateInput onChange={handleDateChange}></DateInput>
               </div>
             </div>
             {isRoundtrip && (
               <div className="form-group mb-3">
                 <div className="input-group">
-                  <DateInput
-                    id="return"
-                    placeholder="Return date"
-                    value={returnDateAndTime.substring(0, 10)}
-                    handleChange={(e) =>
-                      setReturnDateAndTime(
-                        convertIsoToMySqlDateTime(
-                          new Date(e.target.value).toISOString()
-                        ).substring(0, 10)
-                      )
-                    }
-                  ></DateInput>
+                  <DateInput onChange={handleDateChange}></DateInput>
                 </div>
               </div>
             )}
