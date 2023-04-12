@@ -344,7 +344,6 @@ CREATE TABLE IF NOT EXISTS `flight` (
   `arrival_date_and_time` datetime NOT NULL,
   `aircraft_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`flight_id`) USING BTREE,
-  UNIQUE KEY `uq_flight_flight_code` (`flight_code`),
   KEY `fk_flight_origin_airport_id` (`origin_airport_id`) USING BTREE,
   KEY `fk_flight_destination_airport_id` (`destination_airport_id`) USING BTREE,
   KEY `fk_flight_aircraft_id` (`aircraft_id`) USING BTREE,
@@ -376,17 +375,19 @@ CREATE TABLE IF NOT EXISTS `flight_travel_class` (
   CONSTRAINT `fk_flight_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_travel_class: ~8 rows (approximately)
+-- Dumping data for table diplomski_app.flight_travel_class: ~10 rows (approximately)
 DELETE FROM `flight_travel_class`;
 INSERT INTO `flight_travel_class` (`flight_travel_class_id`, `flight_id`, `travel_class_id`, `price`, `is_active`) VALUES
-	(1, 1, 4, 11000.00, 1),
+	(1, 1, 3, 11000.00, 1),
 	(2, 1, 2, 32000.00, 1),
-	(3, 2, 4, 11000.00, 1),
+	(3, 2, 3, 11000.00, 1),
 	(4, 2, 2, 32000.00, 1),
-	(5, 6, 4, 26874.00, 1),
+	(5, 6, 3, 26874.00, 1),
 	(6, 6, 2, 47835.72, 1),
-	(7, 7, 4, 25424.24, 1),
-	(8, 7, 2, 44123.15, 1);
+	(7, 7, 3, 25424.24, 1),
+	(8, 7, 2, 44123.15, 1),
+	(9, 6, 5, 63233.52, 1),
+	(10, 7, 5, 61262.23, 1);
 
 -- Dumping structure for table diplomski_app.ticket
 DROP TABLE IF EXISTS `ticket`;
@@ -426,13 +427,12 @@ CREATE TABLE IF NOT EXISTS `travel_class` (
   UNIQUE KEY `uq_travel_class_subname` (`subname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.travel_class: ~5 rows (approximately)
+-- Dumping data for table diplomski_app.travel_class: ~4 rows (approximately)
 DELETE FROM `travel_class`;
 INSERT INTO `travel_class` (`travel_class_id`, `name`, `subname`) VALUES
 	(1, 'Economy', 'Basic Economy'),
 	(2, 'Economy', 'Economy'),
 	(3, 'Economy', 'Economy+'),
-	(4, 'Economy', 'Economy++'),
 	(5, 'Business', 'Business');
 
 -- Dumping structure for table diplomski_app.user
@@ -468,6 +468,26 @@ DELIMITER //
 CREATE TRIGGER `bi_flight` BEFORE INSERT ON `flight` FOR EACH ROW BEGIN
 	IF NEW.arrival_date_and_time <= NEW.departure_date_and_time THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Arrival date must be later than the departure one!';
+	END IF;
+	
+	IF NEW.departure_date_and_time <= NOW() THEN
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = 'The departure date of a flight cannot be set in the past!';
+	END IF;
+END//
+DELIMITER ;
+SET SQL_MODE=@OLDTMP_SQL_MODE;
+
+-- Dumping structure for trigger diplomski_app.bu_flight
+DROP TRIGGER IF EXISTS `bu_flight`;
+SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
+DELIMITER //
+CREATE TRIGGER `bu_flight` BEFORE UPDATE ON `flight` FOR EACH ROW BEGIN
+	IF NEW.arrival_date_and_time <= NEW.departure_date_and_time THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Arrival date must be later than the departure one!';
+	END IF;
+	
+	IF NEW.departure_date_and_time <= NOW() THEN
+		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = 'The departure date of a flight cannot be set in the past!';
 	END IF;
 END//
 DELIMITER ;
