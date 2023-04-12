@@ -11,7 +11,7 @@ import DashedArrow from "../../Shapes/DashedArrow/DashedArrow";
 import Config from "../../../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareDown } from "@fortawesome/free-regular-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Container, Tab, Tabs } from "react-bootstrap";
 
@@ -37,9 +37,28 @@ interface TabTitleProps {
 
 export default function FlightsPage() {
   const location = useLocation();
-  const flightData: IFlight[] = location.state[1] || [];
+  const [flightData, setFlightData] = useState<IFlight[]>(
+    location.state[1] || []
+  );
 
-  const [activeTab, setActiveTab] = useState<string>("currentDate");
+  const [chosenDate, setChosenDate] = useState<Date>(
+    new Date(location.state[0])
+  );
+
+  const handleChosenDateChange = (date: Date) => {
+    setChosenDate(date);
+  };
+
+  useEffect(() => {
+    if (chosenDate) {
+      const formattedDate = formatDate(chosenDate);
+      setActiveTab(formattedDate);
+    }
+  }, [chosenDate]);
+
+  const [activeTab, setActiveTab] = useState<string>(
+    chosenDate.toLocaleDateString("en-US")
+  );
 
   const generateDateRange = (): Date[] => {
     const dates = [];
@@ -63,13 +82,10 @@ export default function FlightsPage() {
     return 100;
   };
 
-  const handleTabSelect = (key: string | null) => {
-    if (key) {
-      setActiveTab(key);
-    }
+  const handleTabSelect = (date: Date) => {
+    handleChosenDateChange(date);
   };
 
-  const currentDate = new Date(location.state[0]);
   const dateRange = generateDateRange();
 
   const TabTitle = ({ title }: TabTitleProps) => {
@@ -375,11 +391,11 @@ export default function FlightsPage() {
 
   return (
     <Container>
-      <Tabs activeKey={activeTab} onSelect={handleTabSelect}>
+      <Tabs activeKey={activeTab} onSelect={() => handleTabSelect(chosenDate)}>
         {dateRange.map((date) => {
           const formattedDate = formatDate(date);
           const minimalPrice = getMinimalPrice();
-          const isDisabled = date < currentDate;
+          const isDisabled = date < chosenDate;
 
           return (
             <Tab
