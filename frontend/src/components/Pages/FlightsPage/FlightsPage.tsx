@@ -14,6 +14,8 @@ import { faCaretSquareDown } from "@fortawesome/free-regular-svg-icons";
 import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Container, Tab, Tabs } from "react-bootstrap";
+import { api } from "../../../api/api";
+import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 
 interface IFlightRowProps {
   flight: IFlight;
@@ -38,11 +40,22 @@ interface TabTitleProps {
 export default function FlightsPage() {
   const location = useLocation();
   const [flightData, setFlightData] = useState<IFlight[]>(
-    location.state[1] || []
+    location.state[4] || []
   );
 
+  const [error, setError] = useState<string>("");
+  const [chooseFlightText, setChooseFlightText] = useState<string>(
+    "Choose your departure flight"
+  );
+
+  const [flightDirection, setFlightDirection] = useState<string>("departure");
+
+  const changeFlightDirection = (newDirection: string) => {
+    setFlightDirection(newDirection);
+  };
+
   const [chosenDate, setChosenDate] = useState<Date>(
-    new Date(location.state[0])
+    new Date(location.state[2])
   );
 
   const handleChosenDateChange = (date: Date) => {
@@ -62,7 +75,7 @@ export default function FlightsPage() {
 
   const generateDateRange = (): Date[] => {
     const dates = [];
-    const currentDate = new Date(location.state[0]);
+    const currentDate = chosenDate;
     for (let i = -3; i <= 3; i++) {
       const date = new Date(currentDate);
       date.setDate(date.getDate() + i);
@@ -78,9 +91,7 @@ export default function FlightsPage() {
     )}-${String(date.getDate()).padStart(2, "0")}`;
   };
 
-  const getMinimalPrice = (): number => {
-    return 100;
-  };
+  const [minimalPrices, setMinimalPrices] = useState<number[]>([]);
 
   const handleTabSelect = (date: Date) => {
     handleChosenDateChange(date);
@@ -88,14 +99,121 @@ export default function FlightsPage() {
 
   const dateRange = generateDateRange();
 
+  const getMinimalPrice = async (
+    directionDateAndTime: string,
+    flightDirection: string
+  ): Promise<number> => {
+    console.log(flightDirection);
+    try {
+      const res = await api(
+        "post",
+        `/api/flight/search/${flightDirection}`,
+        "user",
+        {
+          originAirportId:
+            flightDirection === "departure"
+              ? location.state[0]
+              : location.state[1],
+          destinationAirportId:
+            flightDirection === "departure"
+              ? location.state[1]
+              : location.state[0],
+          ...(flightDirection === "departure"
+            ? { departureDateAndTime: directionDateAndTime }
+            : { returnDateAndTime: directionDateAndTime }),
+        }
+      );
+
+      if (res.status !== "ok") {
+        throw new Error(
+          "Prices could not be obtained. Reason: " + JSON.stringify(res.data)
+        );
+      }
+
+      const flights = res.data as IFlight[];
+
+      if (flights.length === 0) {
+        return 0;
+      }
+
+      const lowestPrice = flights.reduce((minPrice, flight) => {
+        const minPriceInFlight = flight.travelClasses?.reduce(
+          (minClassPrice, travelClass) => {
+            return Math.min(minClassPrice, travelClass.price);
+          },
+          Infinity
+        );
+        return Math.min(minPrice, minPriceInFlight!);
+      }, Infinity);
+
+      return lowestPrice;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message ?? "Could not perform the search.");
+      } else {
+        setError("Could not perform the search.");
+      }
+
+      setTimeout(() => {
+        setError("");
+      }, 3500);
+
+      return -1;
+    }
+  };
+
+  useEffect(() => {
+    async function fetchMinimalPrices() {
+      console.log(dateRange);
+      const pricesPromises = dateRange.map((date) =>
+        getMinimalPrice(convertDateToMySqlDateTime(date), flightDirection)
+      );
+      const prices = await Promise.all(pricesPromises);
+      setMinimalPrices(prices);
+    }
+
+    fetchMinimalPrices();
+  }, [chosenDate, flightDirection]);
+
   const TabTitle = ({ title }: TabTitleProps) => {
     return (
       <div
-        style={{ whiteSpace: "pre-wrap", lineHeight: "1.2", width: "100px" }}
+        style={{
+          whiteSpace: "pre-wrap",
+          lineHeight: "1.2",
+          width: "107px",
+        }}
       >
         {title}
       </div>
     );
+  };
+
+  const doSearchArrival = (returnDate: Date) => {
+    setChooseFlightText("Choose your return date");
+
+    api("post", "/api/flight/search/return", "user", {
+      originAirportId: location.state[1],
+      destinationAirportId: location.state[0],
+      returnDateAndTime: convertDateToMySqlDateTime(returnDate),
+    })
+      .then((res) => {
+        if (res.status !== "ok") {
+          throw new Error(
+            "Search could not be performed. Reason: " + JSON.stringify(res.data)
+          );
+        }
+
+        setFlightDirection("return");
+        setFlightData(res.data);
+      })
+      .catch((error) => {
+        setError(error?.message ?? "Could not perform the search.");
+
+        setTimeout(() => {
+          setError("");
+        }, 3500);
+      });
   };
 
   function ClassPricesDrawer({
@@ -274,7 +392,10 @@ export default function FlightsPage() {
                   </div>
                   <div
                     className="card-footer text-bg-primary d-flex justify-content-center"
-                    onClick={() => {}}
+                    onClick={() => {
+                      changeFlightDirection("return");
+                      doSearchArrival(new Date(location.state[3]));
+                    }}
                   >
                     Select
                   </div>
@@ -391,10 +512,15 @@ export default function FlightsPage() {
 
   return (
     <Container>
-      <Tabs activeKey={activeTab} onSelect={() => handleTabSelect(chosenDate)}>
-        {dateRange.map((date) => {
+      <Tabs
+        activeKey={activeTab}
+        className="d-flex flex-row justify-content-center align-items-center"
+        onSelect={() => handleTabSelect(chosenDate)}
+      >
+        {dateRange.map((date, index) => {
           const formattedDate = formatDate(date);
-          const minimalPrice = getMinimalPrice();
+          const minimalPrice =
+            minimalPrices[index] === Infinity ? 0 : minimalPrices[index];
           const isDisabled = date < chosenDate;
 
           return (
@@ -408,6 +534,9 @@ export default function FlightsPage() {
               }
               disabled={isDisabled}
             >
+              <div className="d-flex flex-row justify-content-center align-items-center mt-5">
+                <h2>{chooseFlightText}</h2>
+              </div>
               {flightData.map((flight) => (
                 <FlightRow flight={flight} key={flight.flightId} />
               ))}

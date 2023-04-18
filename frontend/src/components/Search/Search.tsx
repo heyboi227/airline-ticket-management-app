@@ -159,8 +159,7 @@ export default function Search() {
 
   const navigate = useNavigate();
 
-  const doSearch = () => {
-    console.log(departureDate);
+  const doSearchDeparture = () => {
     api("post", "/api/flight/search/departure", "user", {
       originAirportId,
       destinationAirportId,
@@ -177,7 +176,13 @@ export default function Search() {
       .then((res) => {
         navigate("/search/flights", {
           replace: true,
-          state: [departureDate, res.data],
+          state: [
+            originAirportId,
+            destinationAirportId,
+            departureDate,
+            returnDate,
+            res.data,
+          ],
         });
       })
       .catch((error) => {
@@ -269,7 +274,7 @@ export default function Search() {
             type="button"
             className="btn btn-primary position-absolute"
             style={{ right: "5%" }}
-            onClick={() => doSearch()}
+            onClick={() => doSearchDeparture()}
           >
             Search
           </button>
