@@ -9,6 +9,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import srLatn from "date-fns/locale/sr-Latn";
+import { convertDateToMySqlDateTime } from "../../helpers/helpers";
 
 interface InputProps {
   id: string;
@@ -20,7 +21,8 @@ interface AirportInputProps {
 }
 
 interface DateInputProps {
-  onChange: (date: Date | null) => void;
+  label: string;
+  onDateChange: (date: Date | null) => void;
 }
 
 type CombinedAirportProps = InputProps & AirportInputProps;
@@ -79,7 +81,6 @@ function AirportInput({
           }}
           id={id}
           value={query}
-          style={{ height: "56px" }}
         />
       </div>
       <div style={{ position: "absolute", zIndex: 2 }}>
@@ -103,18 +104,18 @@ function AirportInput({
   );
 }
 
-function DateInput({ onChange }: DateInputProps) {
+function DateInput({ label, onDateChange }: DateInputProps) {
   const [value, setValue] = useState<Date | null>(null);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
-    onChange(newValue);
+    onDateChange(newValue);
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={srLatn}>
       <DatePicker
-        label="Choose a date"
+        label={label}
         value={value}
         onChange={handleChange}
         className="form-control"
@@ -127,6 +128,9 @@ export default function Search() {
   const [originAirportId, setOriginAirportId] = useState<number>(0);
   const [destinationAirportId, setDestinationAirportId] = useState<number>(0);
 
+  const [departureDate, setDepartureDate] = useState<string>("");
+  const [returnDate, setReturnDate] = useState<string>("");
+
   const handleOriginAirportIdChange = (newOriginAirportId: number) => {
     setOriginAirportId(newOriginAirportId);
   };
@@ -137,12 +141,17 @@ export default function Search() {
     setDestinationAirportId(newDestinationAirportId);
   };
 
-  const handleDateChange = (date: Date | null) => {
-    console.log("Selected date: ", date);
+  const handleDepartureDateChange = (date: Date | null) => {
+    if (date) {
+      setDepartureDate(convertDateToMySqlDateTime(date));
+    }
   };
 
-  const [departureDateAndTime, setDepartureDateAndTime] = useState<string>("");
-  const [returnDateAndTime, setReturnDateAndTime] = useState<string>("");
+  const handleReturnDateChange = (date: Date | null) => {
+    if (date) {
+      setReturnDate(convertDateToMySqlDateTime(date));
+    }
+  };
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
 
@@ -151,11 +160,11 @@ export default function Search() {
   const navigate = useNavigate();
 
   const doSearch = () => {
-    api("post", "/api/flight/search", "user", {
+    console.log(departureDate);
+    api("post", "/api/flight/search/departure", "user", {
       originAirportId,
       destinationAirportId,
-      departureDateAndTime,
-      returnDateAndTime,
+      departureDateAndTime: departureDate,
     })
       .then((res) => {
         if (res.status !== "ok") {
@@ -168,7 +177,7 @@ export default function Search() {
       .then((res) => {
         navigate("/search/flights", {
           replace: true,
-          state: [departureDateAndTime, res.data],
+          state: [departureDate, res.data],
         });
       })
       .catch((error) => {
@@ -237,13 +246,19 @@ export default function Search() {
           <div className="col">
             <div className="form-group mt-3 mb-3">
               <div className="input-group">
-                <DateInput onChange={handleDateChange}></DateInput>
+                <DateInput
+                  onDateChange={handleDepartureDateChange}
+                  label="Choose a departure date"
+                ></DateInput>
               </div>
             </div>
             {isRoundtrip && (
               <div className="form-group mb-3">
                 <div className="input-group">
-                  <DateInput onChange={handleDateChange}></DateInput>
+                  <DateInput
+                    onDateChange={handleReturnDateChange}
+                    label="Choose a return date"
+                  ></DateInput>
                 </div>
               </div>
             )}

@@ -7,10 +7,24 @@ export function getYear(): number {
   return new Date().getFullYear();
 }
 
-export function convertIsoToMySqlDateTime(isoDateString: string): string {
-  const date = new Date(isoDateString);
-  const formattedDate = date.toISOString().slice(0, 19).replace("T", " ");
-  return formattedDate;
+export function convertDateToMySqlDateTime(date: Date): string {
+  function pad(number: number): string {
+    return number < 10 ? "0" + number : number.toString();
+  }
+
+  const year = date.getFullYear();
+  const month = pad(date.getMonth() + 1);
+  const day = pad(date.getDate());
+  const hours = pad(date.getHours());
+  const minutes = pad(date.getMinutes());
+  const seconds = pad(date.getSeconds());
+
+  const timezoneOffset = date.getTimezoneOffset();
+  const offsetSign = timezoneOffset > 0 ? "-" : "+";
+  const offsetHours = pad(Math.abs(Math.floor(timezoneOffset / 60)));
+  const offsetMinutes = pad(Math.abs(Math.floor(timezoneOffset % 60)));
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
 }
 
 function stringToTime(time: string, baseDate: Date): Date {
@@ -36,6 +50,14 @@ export function formatTime(date: Date, timeZone: string): string {
   return timeFormatter.format(date);
 }
 
+/**
+ * This function determines the day difference between a flight's departure and arrival dates and times.
+ * @param departureDateAndTime Indicates the flight's departure date and time.
+ * @param arrivalDateAndTime Indicates the flight's arrival date and time.
+ * @param departureTimeZone Indicates the local time zone of the departure airport.
+ * @param arrivalTimeZone Indicates the local time zone of the arrival airport.
+ * @returns The number of how many days later does the flight arrive at the destination. Will not show if the difference is 0.
+ */
 export function checkForDayDifference(
   departureDateAndTime: Date,
   arrivalDateAndTime: Date,
