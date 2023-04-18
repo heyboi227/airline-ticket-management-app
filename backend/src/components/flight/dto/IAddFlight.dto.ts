@@ -23,10 +23,15 @@ export interface IAddFlightDto {
   }[];
 }
 
-export interface IFlightSearchDto {
+export interface IFlightDepartureSearchDto {
   originAirportId: number;
   destinationAirportId: number;
   departureDateAndTime: string;
+}
+
+export interface IFlightReturnSearchDto {
+  originAirportId: number;
+  destinationAirportId: number;
   returnDateAndTime: string;
 }
 
@@ -39,10 +44,15 @@ export interface IAddFlight extends IServiceData {
   aircraft_id: number;
 }
 
-export interface IFlightSearch extends IServiceData {
+export interface IDepartureFlightSearch extends IServiceData {
   origin_airport_id: number;
   destination_airport_id: number;
   departure_date_and_time: string;
+}
+
+export interface IReturnFlightSearch extends IServiceData {
+  origin_airport_id: number;
+  destination_airport_id: number;
   return_date_and_time: string;
 }
 

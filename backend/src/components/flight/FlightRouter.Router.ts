@@ -32,9 +32,15 @@ export default class FlightRouter implements IRouter {
     );
 
     application.post(
-      "/api/flight/search",
+      "/api/flight/search/departure",
       AuthMiddleware.getVerifier("administrator", "user"),
-      flightController.getAllBySearchQuery.bind(flightController)
+      flightController.getAllByDepartureDateSearchQuery.bind(flightController)
+    );
+
+    application.post(
+      "/api/flight/search/return",
+      AuthMiddleware.getVerifier("administrator", "user"),
+      flightController.getAllByReturnDateSearchQuery.bind(flightController)
     );
 
     application.post(

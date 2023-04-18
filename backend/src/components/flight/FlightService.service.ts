@@ -5,8 +5,9 @@ import FlightModel from "./FlightModel.model";
 import {
   IAddFlight,
   IFlightBag,
-  IFlightSearch,
+  IDepartureFlightSearch,
   IFlightTravelClass,
+  IReturnFlightSearch,
 } from "./dto/IAddFlight.dto";
 import { IEditFlight } from "./dto/IEditFlight.dto";
 import * as mysql2 from "mysql2/promise";
@@ -126,20 +127,50 @@ export default class FlightService extends BaseService<
     });
   }
 
-  public async getAllBySearchQuery(
-    data: IFlightSearch
+  public async getAllByDepartureDateSearchQuery(
+    data: IDepartureFlightSearch
   ): Promise<FlightModel[]> {
     return new Promise<FlightModel[]>((resolve, reject) => {
       const sql: string =
-        "SELECT f1.*, CAST(f1.departure_date_and_time AS CHAR) AS departure_date_and_time_str, CAST(f1.arrival_date_and_time AS CHAR) AS arrival_date_and_time_str FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ? UNION ALL SELECT f2.*, CAST(f2.departure_date_and_time AS CHAR) AS departure_date_and_time_str, CAST(f2.arrival_date_and_time AS CHAR) AS arrival_date_and_time_str FROM flight f1 JOIN flight f2 ON f1.origin_airport_id = f2.destination_airport_id AND f1.destination_airport_id = f2.origin_airport_id AND f1.arrival_date_and_time < f2.departure_date_and_time WHERE f1.origin_airport_id = ? AND f1.destination_airport_id = ? AND DATE(f1.departure_date_and_time) = ? AND DATE(f2.departure_date_and_time) = ?;";
+        "SELECT * from `flight` where `origin_airport_id` = ? AND `destination_airport_id` = ? AND DATE(`departure_date_and_time`) = ?;";
       const values = [
         data.origin_airport_id,
         data.destination_airport_id,
         data.departure_date_and_time,
-        data.return_date_and_time,
+      ];
+
+      this.db
+        .execute(sql, values)
+        .then(async ([rows]) => {
+          if (rows === undefined) {
+            return resolve([]);
+          }
+
+          const items: FlightModel[] = [];
+
+          for (const row of rows as mysql2.RowDataPacket[]) {
+            items.push(
+              await this.adaptToModel(row, DefaultFlightAdapterOptions)
+            );
+          }
+
+          resolve(items);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  }
+
+  public async getAllByReturnDateSearchQuery(
+    data: IReturnFlightSearch
+  ): Promise<FlightModel[]> {
+    return new Promise<FlightModel[]>((resolve, reject) => {
+      const sql: string =
+        "SELECT * from `flight` where `origin_airport_id` = ? AND `destination_airport_id` = ? AND DATE(`departure_date_and_time`) = ?;";
+      const values = [
         data.origin_airport_id,
         data.destination_airport_id,
-        data.departure_date_and_time,
         data.return_date_and_time,
       ];
 
