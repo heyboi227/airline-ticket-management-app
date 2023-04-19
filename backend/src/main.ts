@@ -124,6 +124,28 @@ async function main() {
     res.sendStatus(404);
   });
 
+  async function updateFlightStatus() {
+    try {
+      const currentDate = new Date().toISOString().slice(0, 10);
+
+      const query =
+        "UPDATE `flight_travel_class` SET `is_active` = 0 WHERE `flight_id` IN (SELECT `flight_id` FROM `flight` WHERE `departure_date_and_time` < ? OR `arrival_date_and_time` < ?);";
+
+      await db.execute(query, [currentDate, currentDate]);
+
+      console.log(`Flights updated on ${currentDate}`);
+      await db.end();
+    } catch (error) {
+      console.error("Error updating flights:", error);
+    }
+  }
+
+  function scheduleUpdate() {
+    updateFlightStatus();
+  }
+
+  scheduleUpdate();
+
   application.listen(config.server.port);
 }
 
