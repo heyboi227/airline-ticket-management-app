@@ -109,22 +109,8 @@ export default class FlightController extends BaseController {
       return res.status(400).send(AddFlightValidator.errors);
     }
 
-    this.services.bag
+    this.services.travelClass
       .getAll({})
-      .then((bags) => {
-        const availableBagIds: number[] = bags.map((bag) => bag.bagId);
-
-        for (let givenBagInformation of data.bags) {
-          if (!availableBagIds.includes(givenBagInformation.bagId)) {
-            throw {
-              status: 404,
-              message: `Bag with ID ${givenBagInformation.bagId} not found!`,
-            };
-          }
-        }
-
-        return this.services.travelClass.getAll({});
-      })
       .then((travelClasses) => {
         const availableTravelClassIds: number[] = travelClasses.map(
           (travelClass) => travelClass.travelClassId
@@ -157,25 +143,6 @@ export default class FlightController extends BaseController {
           arrival_date_and_time: data.arrivalDateAndTime,
           aircraft_id: data.aircraftId,
         });
-      })
-      .then((newFlight) => {
-        for (let givenBagInformation of data.bags) {
-          this.services.flight
-            .addFlightBag({
-              flight_id: newFlight.flightId,
-              bag_id: givenBagInformation.bagId,
-              price: givenBagInformation.price,
-              is_active: 1,
-            })
-            .catch((error) => {
-              throw {
-                status: 500,
-                message: error?.message,
-              };
-            });
-        }
-
-        return newFlight;
       })
       .then((newFlight) => {
         for (let givenTravelClassInformation of data.travelClasses) {

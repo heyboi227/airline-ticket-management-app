@@ -4,7 +4,6 @@ import { DefaultAirportAdapterOptions } from "../airport/AirportService.service"
 import FlightModel from "./FlightModel.model";
 import {
   IAddFlight,
-  IFlightBag,
   IDepartureFlightSearch,
   IFlightTravelClass,
   IReturnFlightSearch,
@@ -16,7 +15,6 @@ export interface IFlightAdapterOptions extends IAdapterOptions {
   loadOriginAirport: boolean;
   loadDestinationAirport: boolean;
   loadAircraft: boolean;
-  hideInactiveBags: boolean;
   loadTravelClasses: boolean;
   hideInactiveTravelClasses: boolean;
 }
@@ -25,7 +23,6 @@ export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
   loadOriginAirport: true,
   loadDestinationAirport: true,
   loadAircraft: true,
-  hideInactiveBags: true,
   loadTravelClasses: true,
   hideInactiveTravelClasses: true,
 };
@@ -197,48 +194,6 @@ export default class FlightService extends BaseService<
     });
   }
 
-  async addFlightBag(data: IFlightBag): Promise<number> {
-    return new Promise((resolve, reject) => {
-      const sql: string =
-        "INSERT flight_bag SET flight_id = ?, bag_id = ?, price = ?;";
-
-      this.db
-        .execute(sql, [data.flight_id, data.bag_id, data.price])
-        .then(async (result) => {
-          const info: any = result;
-          resolve(+info[0]?.insertId);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
-  async editFlightBag(data: IFlightBag): Promise<true> {
-    return new Promise((resolve, reject) => {
-      const sql: string =
-        "UPDATE flight_bag SET price = ? WHERE flight_id = ? AND bag_id = ?;";
-
-      this.db
-        .execute(sql, [data.price, data.flight_id, data.bag_id])
-        .then((result) => {
-          const info: any = result;
-
-          if (+info[0]?.affectedRows === 1) {
-            return resolve(true);
-          }
-
-          throw {
-            status: 500,
-            message: "Could not edit this flight bag record!",
-          };
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
   async addFlightTravelClass(data: IFlightTravelClass): Promise<number> {
     return new Promise((resolve, reject) => {
       const sql: string =
@@ -283,8 +238,7 @@ export default class FlightService extends BaseService<
 
   async deleteById(flightId: number): Promise<true> {
     return new Promise((resolve) => {
-      this.deleteAllFlightBagsByFlightId(flightId)
-        .then(() => this.deleteAllFlightTravelClassesByFlightId(flightId))
+      this.deleteAllFlightTravelClassesByFlightId(flightId)
         .then(() => this.getById(flightId, DefaultFlightAdapterOptions))
         .then((flight) => {
           if (flight === null)
@@ -299,22 +253,6 @@ export default class FlightService extends BaseService<
         .catch((error) => {
           throw {
             message: error?.message ?? "Could not delete this flight!",
-          };
-        });
-    });
-  }
-
-  private async deleteAllFlightBagsByFlightId(flightId: number): Promise<true> {
-    return new Promise((resolve) => {
-      const sql = `DELETE FROM flight_bag WHERE flight_id = ?;`;
-      this.db
-        .execute(sql, [flightId])
-        .then(() => {
-          resolve(true);
-        })
-        .catch((error) => {
-          throw {
-            message: error?.message ?? "Could not delete flight bags!",
           };
         });
     });

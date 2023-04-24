@@ -12,10 +12,6 @@ export interface IEditFlightDto {
   departureDateAndTime: string;
   arrivalDateAndTime: string;
   aircraftId: number;
-  bags: {
-    bagId: number;
-    price: number;
-  }[];
   travelClasses: {
     travelClassId: number;
     price: number;
@@ -54,26 +50,6 @@ const EditFlightValidator = ajv.compile({
     aircraftId: {
       type: "number",
     },
-    bags: {
-      type: "array",
-      minItems: 1,
-      uniqueItems: true,
-      items: {
-        type: "object",
-        properties: {
-          bagId: {
-            type: "number",
-          },
-          price: {
-            type: "number",
-            multipleOf: 0.01,
-            minimum: 0.01,
-          },
-        },
-        required: ["bagId", "price"],
-        additionalProperties: false,
-      },
-    },
     travelClasses: {
       type: "array",
       minItems: 1,
@@ -102,7 +78,6 @@ const EditFlightValidator = ajv.compile({
     "departureDateAndTime",
     "arrivalDateAndTime",
     "aircraftId",
-    "bags",
     "travelClasses",
   ],
   additionalProperties: false,

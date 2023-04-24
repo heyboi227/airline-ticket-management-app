@@ -58,7 +58,6 @@ async function main() {
       administrator: null,
       aircraft: null,
       airport: null,
-      bag: null,
       country: null,
       document: null,
       flight: null,
@@ -134,7 +133,6 @@ async function main() {
       await db.execute(query, [currentDate, currentDate]);
 
       console.log(`Flights updated on ${currentDate}`);
-      await db.end();
     } catch (error) {
       console.error("Error updating flights:", error);
     }

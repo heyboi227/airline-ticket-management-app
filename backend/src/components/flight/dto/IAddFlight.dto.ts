@@ -12,11 +12,6 @@ export interface IAddFlightDto {
   departureDateAndTime: string;
   arrivalDateAndTime: string;
   aircraftId: number;
-  bags: {
-    kcal: any;
-    bagId: number;
-    price: number;
-  }[];
   travelClasses: {
     travelClassId: number;
     price: number;
@@ -56,13 +51,6 @@ export interface IReturnFlightSearch extends IServiceData {
   return_date_and_time: string;
 }
 
-export interface IFlightBag extends IServiceData {
-  flight_id: number;
-  bag_id: number;
-  price: number;
-  is_active?: number;
-}
-
 export interface IFlightTravelClass extends IServiceData {
   flight_id: number;
   travel_class_id: number;
@@ -93,26 +81,6 @@ const AddFlightValidator = ajv.compile({
     aircraftId: {
       type: "number",
     },
-    bags: {
-      type: "array",
-      minItems: 1,
-      uniqueItems: true,
-      items: {
-        type: "object",
-        properties: {
-          bagId: {
-            type: "number",
-          },
-          price: {
-            type: "number",
-            multipleOf: 0.01,
-            minimum: 0.01,
-          },
-        },
-        required: ["bagId", "price"],
-        additionalProperties: false,
-      },
-    },
     travelClasses: {
       type: "array",
       minItems: 1,
@@ -141,7 +109,6 @@ const AddFlightValidator = ajv.compile({
     "departureDateAndTime",
     "arrivalDateAndTime",
     "aircraftId",
-    "bags",
     "travelClasses",
   ],
   additionalProperties: false,
