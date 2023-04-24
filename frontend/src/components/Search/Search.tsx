@@ -119,6 +119,7 @@ function DateInput({ label, onDateChange }: DateInputProps) {
         value={value}
         onChange={handleChange}
         className="form-control"
+        disablePast={true}
       ></DatePicker>
     </LocalizationProvider>
   );

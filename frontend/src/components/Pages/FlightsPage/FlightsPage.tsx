@@ -43,6 +43,8 @@ export default function FlightsPage() {
     location.state[4] || []
   );
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [error, setError] = useState<string>("");
   const [chooseFlightText, setChooseFlightText] = useState<string>(
     "Choose your departure flight"
@@ -69,11 +71,9 @@ export default function FlightsPage() {
     }
   }, [chosenDate]);
 
-  const [activeTab, setActiveTab] = useState<string>(
-    chosenDate.toLocaleDateString("en-US")
-  );
+  const [dateRange, setDateRange] = useState<Date[]>([]);
 
-  const generateDateRange = (): Date[] => {
+  useEffect(() => {
     const dates = [];
     const currentDate = chosenDate;
     for (let i = -3; i <= 3; i++) {
@@ -81,8 +81,127 @@ export default function FlightsPage() {
       date.setDate(date.getDate() + i);
       dates.push(date);
     }
-    return dates;
-  };
+    setDateRange(dates);
+  }, [chosenDate]);
+
+  useEffect(() => {
+    async function fetchData() {
+      setIsLoading(true);
+      const flightDataResponse = await api(
+        "post",
+        "/api/flight/search/departure",
+        "user",
+        {
+          originAirportId: location.state[0],
+          destinationAirportId: location.state[1],
+          departureDateAndTime: convertDateToMySqlDateTime(chosenDate).slice(
+            0,
+            10
+          ),
+        }
+      );
+
+      if (flightDataResponse.status !== "ok") {
+        throw new Error(
+          "Could not fetch the flights. Reason: " +
+            JSON.stringify(flightDataResponse.data)
+        );
+      }
+
+      setFlightData(flightDataResponse.data);
+      setIsLoading(false);
+    }
+
+    fetchData().catch((error) => {
+      setError(error?.message ?? "Could not fetch the flights.");
+
+      setTimeout(() => {
+        setError("");
+      }, 3500);
+    });
+
+    const getMinimalPrice = async (
+      directionDateAndTime: string,
+      flightDirection: string
+    ): Promise<number> => {
+      try {
+        const res = await api(
+          "post",
+          `/api/flight/search/${flightDirection}`,
+          "user",
+          {
+            originAirportId:
+              flightDirection === "departure"
+                ? location.state[0]
+                : location.state[1],
+            destinationAirportId:
+              flightDirection === "departure"
+                ? location.state[1]
+                : location.state[0],
+            ...(flightDirection === "departure"
+              ? {
+                  departureDateAndTime: convertDateToMySqlDateTime(
+                    new Date(directionDateAndTime)
+                  ).slice(0, 10),
+                }
+              : {
+                  returnDateAndTime: convertDateToMySqlDateTime(
+                    new Date(directionDateAndTime)
+                  ).slice(0, 10),
+                }),
+          }
+        );
+
+        if (res.status !== "ok") {
+          throw new Error(
+            "Prices could not be obtained. Reason: " + JSON.stringify(res.data)
+          );
+        }
+
+        const flights = res.data as IFlight[];
+
+        if (flights.length === 0) {
+          return 0;
+        }
+
+        const lowestPrice = flights.reduce((minPrice, flight) => {
+          const minPriceInFlight = flight.travelClasses?.reduce(
+            (minClassPrice, travelClass) => {
+              return Math.min(minClassPrice, travelClass.price);
+            },
+            Infinity
+          );
+          return Math.min(minPrice, minPriceInFlight!);
+        }, Infinity);
+
+        return lowestPrice;
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          setError(error.message ?? "Could not perform the search.");
+        } else {
+          setError("Could not perform the search.");
+        }
+
+        setTimeout(() => {
+          setError("");
+        }, 3500);
+
+        return -1;
+      }
+    };
+
+    async function updateMinimalPrices() {
+      const pricesPromises = dateRange.map((date) =>
+        getMinimalPrice(convertDateToMySqlDateTime(date), flightDirection)
+      );
+      const prices = await Promise.all(pricesPromises);
+      setMinimalPrices(prices);
+    }
+
+    updateMinimalPrices();
+  }, [chosenDate, dateRange, flightDirection, location.state]);
+
+  const [activeTab, setActiveTab] = useState<string>("currentDate");
 
   const formatDate = (date: Date): string => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -93,87 +212,13 @@ export default function FlightsPage() {
 
   const [minimalPrices, setMinimalPrices] = useState<number[]>([]);
 
-  const handleTabSelect = (date: Date) => {
-    handleChosenDateChange(date);
-  };
-
-  const dateRange = generateDateRange();
-
-  const getMinimalPrice = async (
-    directionDateAndTime: string,
-    flightDirection: string
-  ): Promise<number> => {
-    console.log(flightDirection);
-    try {
-      const res = await api(
-        "post",
-        `/api/flight/search/${flightDirection}`,
-        "user",
-        {
-          originAirportId:
-            flightDirection === "departure"
-              ? location.state[0]
-              : location.state[1],
-          destinationAirportId:
-            flightDirection === "departure"
-              ? location.state[1]
-              : location.state[0],
-          ...(flightDirection === "departure"
-            ? { departureDateAndTime: directionDateAndTime }
-            : { returnDateAndTime: directionDateAndTime }),
-        }
-      );
-
-      if (res.status !== "ok") {
-        throw new Error(
-          "Prices could not be obtained. Reason: " + JSON.stringify(res.data)
-        );
-      }
-
-      const flights = res.data as IFlight[];
-
-      if (flights.length === 0) {
-        return 0;
-      }
-
-      const lowestPrice = flights.reduce((minPrice, flight) => {
-        const minPriceInFlight = flight.travelClasses?.reduce(
-          (minClassPrice, travelClass) => {
-            return Math.min(minClassPrice, travelClass.price);
-          },
-          Infinity
-        );
-        return Math.min(minPrice, minPriceInFlight!);
-      }, Infinity);
-
-      return lowestPrice;
-    } catch (error: unknown) {
-      if (error instanceof Error) {
-        setError(error.message ?? "Could not perform the search.");
-      } else {
-        setError("Could not perform the search.");
-      }
-
-      setTimeout(() => {
-        setError("");
-      }, 3500);
-
-      return -1;
+  const handleTabSelect = (key: string | null) => {
+    if (key) {
+      setActiveTab(key);
     }
   };
 
-  useEffect(() => {
-    async function fetchMinimalPrices() {
-      console.log(dateRange);
-      const pricesPromises = dateRange.map((date) =>
-        getMinimalPrice(convertDateToMySqlDateTime(date), flightDirection)
-      );
-      const prices = await Promise.all(pricesPromises);
-      setMinimalPrices(prices);
-    }
-
-    fetchMinimalPrices();
-  }, [chosenDate, flightDirection]);
+  const currentDate = new Date();
 
   const TabTitle = ({ title }: TabTitleProps) => {
     return (
@@ -190,12 +235,13 @@ export default function FlightsPage() {
   };
 
   const doSearchArrival = (returnDate: Date) => {
+    setIsLoading(true);
     setChooseFlightText("Choose your return date");
 
     api("post", "/api/flight/search/return", "user", {
       originAirportId: location.state[1],
       destinationAirportId: location.state[0],
-      returnDateAndTime: convertDateToMySqlDateTime(returnDate),
+      returnDateAndTime: convertDateToMySqlDateTime(returnDate).slice(0, 10),
     })
       .then((res) => {
         if (res.status !== "ok") {
@@ -206,6 +252,7 @@ export default function FlightsPage() {
 
         setFlightDirection("return");
         setFlightData(res.data);
+        setIsLoading(false);
       })
       .catch((error) => {
         setError(error?.message ?? "Could not perform the search.");
@@ -249,7 +296,7 @@ export default function FlightsPage() {
                     return currentPrice < smallestPrice
                       ? currentPrice
                       : smallestPrice;
-                  })}{" "}
+                  }, Infinity)}{" "}
                 RSD
               </span>
             </p>
@@ -515,13 +562,15 @@ export default function FlightsPage() {
       <Tabs
         activeKey={activeTab}
         className="d-flex flex-row justify-content-center align-items-center"
-        onSelect={() => handleTabSelect(chosenDate)}
+        onSelect={(key) => {
+          handleTabSelect(key);
+          if (key) handleChosenDateChange(new Date(key));
+        }}
       >
         {dateRange.map((date, index) => {
           const formattedDate = formatDate(date);
-          const minimalPrice =
-            minimalPrices[index] === Infinity ? 0 : minimalPrices[index];
-          const isDisabled = date < chosenDate;
+          const minimalPrice = minimalPrices[index];
+          const isDisabled = date < currentDate;
 
           return (
             <Tab
@@ -535,7 +584,16 @@ export default function FlightsPage() {
               disabled={isDisabled}
             >
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
-                <h2>{chooseFlightText}</h2>
+                {isLoading && <h2>Loading...</h2>}
+                {!isLoading && flightData.length === 0 && (
+                  <h2>
+                    There are no flights for the specified {flightDirection}{" "}
+                    date. Please choose another one.
+                  </h2>
+                )}
+                {!isLoading && flightData.length !== 0 && (
+                  <h2>{chooseFlightText}</h2>
+                )}
               </div>
               {flightData.map((flight) => (
                 <FlightRow flight={flight} key={flight.flightId} />
