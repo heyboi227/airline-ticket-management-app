@@ -1,9 +1,11 @@
-.open-prices {
+.open-prices,
+.select-price {
   background-color: var(--primary);
   transition: background-color 0.3s ease;
 }
 
-.open-prices.hover-background {
+.open-prices.hover-background,
+.select-price.hover-background {
   background-color: #8b92e1 !important;
   cursor: pointer;
 }

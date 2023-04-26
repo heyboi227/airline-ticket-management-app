@@ -160,7 +160,12 @@ export default function FlightsPage() {
 
         const flights = res.data as IFlight[];
 
-        if (flights.length === 0) {
+        if (
+          flights.length === 0 ||
+          flights.every((flight) =>
+            flight.travelClasses?.every((travelClass) => !travelClass.isActive)
+          )
+        ) {
           return 0;
         }
 
@@ -324,6 +329,18 @@ export default function FlightsPage() {
     flight,
     visibility,
   }: IClassPricesProps) => {
+    const [selectPriceHoveredIndex, setSelectPriceHoveredIndex] = useState<
+      number | null
+    >(null);
+
+    const handleMouseEnter = (index: number) => {
+      setSelectPriceHoveredIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+      setSelectPriceHoveredIndex(null);
+    };
+
     const renderTextForSubTravelClasses = (subTravelClass: string) => {
       switch (subTravelClass) {
         case "Basic Economy":
@@ -415,7 +432,7 @@ export default function FlightsPage() {
               ?.filter((travelClass) =>
                 travelClass.travelClass.name.includes(travelClassName)
               )
-              .map((travelClass) => (
+              .map((travelClass, index) => (
                 <div
                   className="card"
                   style={{ width: "25rem", height: "30vw" }}
@@ -438,11 +455,17 @@ export default function FlightsPage() {
                     </div>
                   </div>
                   <div
-                    className="card-footer text-bg-primary d-flex justify-content-center"
+                    className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
+                      selectPriceHoveredIndex === index
+                        ? "hover-background"
+                        : ""
+                    }`}
                     onClick={() => {
                       changeFlightDirection("return");
                       doSearchArrival(new Date(location.state[3]));
                     }}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
                   >
                     Select
                   </div>
