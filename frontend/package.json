@@ -10,7 +10,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.4.0",
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "@mui/lab": "^5.0.0-alpha.127",
+    "@mui/lab": "^5.0.0-alpha.128",
     "@mui/material": "^5.12.1",
     "@mui/x-date-pickers": "^6.2.1",
     "@reduxjs/toolkit": "^1.9.5",
