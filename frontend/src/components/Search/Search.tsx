@@ -164,7 +164,7 @@ export default function Search() {
     api("post", "/api/flight/search/departure", "user", {
       originAirportId,
       destinationAirportId,
-      departureDateAndTime: departureDate,
+      departureDate: departureDate,
     })
       .then((res) => {
         if (res.status !== "ok") {

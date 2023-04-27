@@ -21,13 +21,13 @@ export interface IAddFlightDto {
 export interface IFlightDepartureSearchDto {
   originAirportId: number;
   destinationAirportId: number;
-  departureDateAndTime: string;
+  departureDate: string;
 }
 
 export interface IFlightReturnSearchDto {
   originAirportId: number;
   destinationAirportId: number;
-  returnDateAndTime: string;
+  returnDate: string;
 }
 
 export interface IAddFlight extends IServiceData {
@@ -42,13 +42,13 @@ export interface IAddFlight extends IServiceData {
 export interface IDepartureFlightSearch extends IServiceData {
   origin_airport_id: number;
   destination_airport_id: number;
-  departure_date_and_time: string;
+  departure_date: string;
 }
 
 export interface IReturnFlightSearch extends IServiceData {
   origin_airport_id: number;
   destination_airport_id: number;
-  return_date_and_time: string;
+  return_date: string;
 }
 
 export interface IFlightTravelClass extends IServiceData {

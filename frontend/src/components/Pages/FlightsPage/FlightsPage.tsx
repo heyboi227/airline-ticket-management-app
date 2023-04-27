@@ -85,19 +85,32 @@ export default function FlightsPage() {
   }, [chosenDate]);
 
   useEffect(() => {
-    async function fetchData() {
+    async function fetchData(directionDate: string) {
       setIsLoading(true);
       const flightDataResponse = await api(
         "post",
-        "/api/flight/search/departure",
+        `/api/flight/search/${flightDirection}`,
         "user",
         {
-          originAirportId: location.state[0],
-          destinationAirportId: location.state[1],
-          departureDateAndTime: convertDateToMySqlDateTime(chosenDate).slice(
-            0,
-            10
-          ),
+          originAirportId:
+            flightDirection === "departure"
+              ? location.state[0]
+              : location.state[1],
+          destinationAirportId:
+            flightDirection === "departure"
+              ? location.state[1]
+              : location.state[0],
+          ...(flightDirection === "departure"
+            ? {
+                departureDate: convertDateToMySqlDateTime(
+                  new Date(directionDate)
+                ).slice(0, 10),
+              }
+            : {
+                returnDate: convertDateToMySqlDateTime(
+                  new Date(directionDate)
+                ).slice(0, 10),
+              }),
         }
       );
 
@@ -112,16 +125,18 @@ export default function FlightsPage() {
       setIsLoading(false);
     }
 
-    fetchData().catch((error) => {
+    fetchData(chosenDate.toDateString()).catch((error) => {
       setError(error?.message ?? "Could not fetch the flights.");
 
       setTimeout(() => {
         setError("");
       }, 3500);
     });
+  }, [chosenDate, flightDirection, location.state]);
 
+  useEffect(() => {
     const getMinimalPrice = async (
-      directionDateAndTime: string,
+      directionDate: string,
       flightDirection: string
     ): Promise<number> => {
       try {
@@ -140,13 +155,13 @@ export default function FlightsPage() {
                 : location.state[0],
             ...(flightDirection === "departure"
               ? {
-                  departureDateAndTime: convertDateToMySqlDateTime(
-                    new Date(directionDateAndTime)
+                  departureDate: convertDateToMySqlDateTime(
+                    new Date(directionDate)
                   ).slice(0, 10),
                 }
               : {
-                  returnDateAndTime: convertDateToMySqlDateTime(
-                    new Date(directionDateAndTime)
+                  returnDate: convertDateToMySqlDateTime(
+                    new Date(directionDate)
                   ).slice(0, 10),
                 }),
           }
@@ -237,35 +252,6 @@ export default function FlightsPage() {
         {title}
       </div>
     );
-  };
-
-  const doSearchArrival = (returnDate: Date) => {
-    setIsLoading(true);
-    setChooseFlightText("Choose your return date");
-
-    api("post", "/api/flight/search/return", "user", {
-      originAirportId: location.state[1],
-      destinationAirportId: location.state[0],
-      returnDateAndTime: convertDateToMySqlDateTime(returnDate).slice(0, 10),
-    })
-      .then((res) => {
-        if (res.status !== "ok") {
-          throw new Error(
-            "Search could not be performed. Reason: " + JSON.stringify(res.data)
-          );
-        }
-
-        setFlightDirection("return");
-        setFlightData(res.data);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setError(error?.message ?? "Could not perform the search.");
-
-        setTimeout(() => {
-          setError("");
-        }, 3500);
-      });
   };
 
   function ClassPricesDrawer({
@@ -462,7 +448,7 @@ export default function FlightsPage() {
                     }`}
                     onClick={() => {
                       changeFlightDirection("return");
-                      doSearchArrival(new Date(location.state[3]));
+                      setChooseFlightText("Choose your return flight");
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
@@ -607,6 +593,7 @@ export default function FlightsPage() {
               disabled={isDisabled}
             >
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
+                {error && <h2 className="text-bg-warning">{error}</h2>}
                 {isLoading && <h2>Loading...</h2>}
                 {!isLoading && flightData.length === 0 && (
                   <h2>

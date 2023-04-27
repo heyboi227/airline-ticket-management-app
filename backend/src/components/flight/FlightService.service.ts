@@ -133,7 +133,7 @@ export default class FlightService extends BaseService<
       const values = [
         data.origin_airport_id,
         data.destination_airport_id,
-        data.departure_date_and_time,
+        data.departure_date,
       ];
 
       this.db
@@ -168,7 +168,7 @@ export default class FlightService extends BaseService<
       const values = [
         data.origin_airport_id,
         data.destination_airport_id,
-        data.return_date_and_time,
+        data.return_date,
       ];
 
       this.db

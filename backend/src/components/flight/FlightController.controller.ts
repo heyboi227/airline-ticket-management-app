@@ -75,7 +75,7 @@ export default class FlightController extends BaseController {
       .getAllByDepartureDateSearchQuery({
         origin_airport_id: searchData.originAirportId,
         destination_airport_id: searchData.destinationAirportId,
-        departure_date_and_time: searchData.departureDateAndTime,
+        departure_date: searchData.departureDate,
       })
       .then((result) => {
         res.send(result);
@@ -92,7 +92,7 @@ export default class FlightController extends BaseController {
       .getAllByReturnDateSearchQuery({
         origin_airport_id: searchData.originAirportId,
         destination_airport_id: searchData.destinationAirportId,
-        return_date_and_time: searchData.returnDateAndTime,
+        return_date: searchData.returnDate,
       })
       .then((result) => {
         res.send(result);
