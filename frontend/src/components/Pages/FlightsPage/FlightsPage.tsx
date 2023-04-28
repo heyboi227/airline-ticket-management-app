@@ -16,6 +16,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Container, Tab, Tabs } from "react-bootstrap";
 import { api } from "../../../api/api";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
+import { Circles } from "react-loader-spinner";
 
 interface IFlightRowProps {
   flight: IFlight;
@@ -122,7 +123,7 @@ export default function FlightsPage() {
       }
 
       setFlightData(flightDataResponse.data);
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 3000);
     }
 
     fetchData(chosenDate.toDateString()).catch((error) => {
@@ -594,7 +595,6 @@ export default function FlightsPage() {
             >
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
                 {error && <h2 className="text-bg-warning">{error}</h2>}
-                {isLoading && <h2>Loading...</h2>}
                 {!isLoading && flightData.length === 0 && (
                   <h2>
                     There are no flights for the specified {flightDirection}{" "}
@@ -605,9 +605,15 @@ export default function FlightsPage() {
                   <h2>{chooseFlightText}</h2>
                 )}
               </div>
-              {flightData.map((flight) => (
-                <FlightRow flight={flight} key={flight.flightId} />
-              ))}
+              {isLoading ? (
+                <div className="d-flex justify-content-center align-items-center mb-5">
+                  <Circles color="#0718c4" height={40} width={40} />
+                </div>
+              ) : (
+                flightData.map((flight) => (
+                  <FlightRow flight={flight} key={flight.flightId} />
+                ))
+              )}
             </Tab>
           );
         })}
