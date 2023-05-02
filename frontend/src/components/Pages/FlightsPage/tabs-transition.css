@@ -1,0 +1,3 @@
+.tab-pane.fade {
+  transition: height 0.3 ease-in-out;
+}

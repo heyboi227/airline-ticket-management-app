@@ -17,8 +17,17 @@ import { Container, Tab, Tabs } from "react-bootstrap";
 import { api } from "../../../api/api";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import { Circles } from "react-loader-spinner";
+import "./transitions.css";
+import "./tabs-transition.css";
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 interface IFlightRowProps {
+  flight: IFlight;
+  handleToggleEconomy: () => void;
+  handleToggleBusiness: () => void;
+}
+
+interface IFlightRowWithPricesProps {
   flight: IFlight;
 }
 
@@ -45,6 +54,11 @@ export default function FlightsPage() {
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingStyle, setLoadingStyle] = useState<Object>({ opacity: 1 });
+  const [contentStyle, setContentStyle] = useState<Object>({});
+
+  const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
+  const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
   const [chooseFlightText, setChooseFlightText] = useState<string>(
@@ -123,7 +137,15 @@ export default function FlightsPage() {
       }
 
       setFlightData(flightDataResponse.data);
-      setTimeout(() => setIsLoading(false), 3000);
+
+      if (flightDataResponse.data.length !== 0) {
+        setTimeout(() => {
+          setLoadingStyle({ opacity: 0 });
+          setTimeout(() => setIsLoading(false), 300);
+        }, 3000);
+      } else {
+        setIsLoading(false);
+      }
     }
 
     fetchData(chosenDate.toDateString()).catch((error) => {
@@ -134,6 +156,23 @@ export default function FlightsPage() {
       }, 3500);
     });
   }, [chosenDate, flightDirection, location.state]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setContentStyle({
+        opacity: 0,
+        transform: "translateY(-10px)",
+        height: "auto",
+      });
+      setTimeout(() => {
+        setContentStyle({
+          opacity: 1,
+          transform: "translateY(0)",
+          height: "max-content",
+        });
+      }, 100);
+    }
+  }, [isLoading]);
 
   useEffect(() => {
     const getMinimalPrice = async (
@@ -393,81 +432,82 @@ export default function FlightsPage() {
     };
 
     return (
-      <AnimatePresence>
-        {visibility && (
-          <motion.div
-            className="d-flex g-3 flex-row justify-content-center align-items-center"
-            initial={{
-              position: "relative",
-              top: 20,
-              scale: 0.95,
-              height: 0,
-              opacity: 0,
-            }}
-            animate={{
-              top: 0,
-              scale: 1,
-              opacity: 1,
-              height: "auto",
-            }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{
-              duration: 0.3,
-            }}
-          >
-            {flight.travelClasses
-              ?.filter((travelClass) =>
-                travelClass.travelClass.name.includes(travelClassName)
-              )
-              .map((travelClass, index) => (
-                <div
-                  className="card"
-                  style={{ width: "25rem", height: "30vw" }}
-                  key={travelClass.travelClass.travelClassId}
-                >
+      <div
+        className={visibility ? "class-prices-visible" : "class-prices-hidden"}
+      >
+        <AnimatePresence>
+          {visibility && (
+            <motion.div
+              className="d-flex g-3 flex-row justify-content-center align-items-center"
+              initial={{
+                position: "relative",
+                top: 20,
+                scale: 0.95,
+                height: 0,
+                opacity: 0,
+              }}
+              animate={{
+                top: 0,
+                scale: 1,
+                opacity: 1,
+                height: "auto",
+              }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{
+                duration: 0.3,
+              }}
+            >
+              {flight.travelClasses
+                ?.filter((travelClass) =>
+                  travelClass.travelClass.name.includes(travelClassName)
+                )
+                .map((travelClass, index) => (
                   <div
-                    className="card-body mt-3 d-flex flex-column justify-content-start align-items-center"
-                    style={{ position: "relative" }}
+                    className="card"
+                    style={{ width: "25rem", height: "30vw" }}
+                    key={travelClass.travelClass.travelClassId}
                   >
-                    <h2 className="card-title">
-                      {travelClass.travelClass.subname}
-                    </h2>
-                    <div className="card-text">
-                      {renderTextForSubTravelClasses(
-                        travelClass.travelClass.subname
-                      )}
-                      <h1 style={{ position: "absolute", bottom: 0 }}>
-                        {travelClass.price} RSD
-                      </h1>
+                    <div
+                      className="card-body mt-3 d-flex flex-column justify-content-start align-items-center"
+                      style={{ position: "relative" }}
+                    >
+                      <h2 className="card-title">
+                        {travelClass.travelClass.subname}
+                      </h2>
+                      <div className="card-text">
+                        {renderTextForSubTravelClasses(
+                          travelClass.travelClass.subname
+                        )}
+                        <h1 style={{ position: "absolute", bottom: 0 }}>
+                          {travelClass.price} RSD
+                        </h1>
+                      </div>
+                    </div>
+                    <div
+                      className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
+                        selectPriceHoveredIndex === index
+                          ? "hover-background"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        changeFlightDirection("return");
+                        setChooseFlightText("Choose your return flight");
+                      }}
+                      onMouseEnter={() => handleMouseEnter(index)}
+                      onMouseLeave={handleMouseLeave}
+                    >
+                      Select
                     </div>
                   </div>
-                  <div
-                    className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
-                      selectPriceHoveredIndex === index
-                        ? "hover-background"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      changeFlightDirection("return");
-                      setChooseFlightText("Choose your return flight");
-                    }}
-                    onMouseEnter={() => handleMouseEnter(index)}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    Select
-                  </div>
-                </div>
-              ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+                ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     );
   };
 
   function FlightRow(props: IFlightRowProps) {
-    const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
-    const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
-
     return (
       <>
         <div className="container-fluid d-flex flex-row my-5">
@@ -545,24 +585,46 @@ export default function FlightsPage() {
           <ClassPricesDrawer
             travelClassName={"Economy"}
             flight={props.flight}
-            handleToggle={() => setIsEconomyVisible(!isEconomyVisible)}
+            handleToggle={props.handleToggleEconomy}
           />
           <ClassPricesDrawer
             travelClassName={"Business"}
             flight={props.flight}
-            handleToggle={() => setIsBusinessVisible(!isBusinessVisible)}
+            handleToggle={props.handleToggleBusiness}
           />
         </div>
-        <ClassPrices
-          travelClassName={"Economy"}
+      </>
+    );
+  }
+
+  function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
+    return (
+      <>
+        <FlightRow
           flight={props.flight}
-          visibility={isEconomyVisible}
+          handleToggleEconomy={() => setIsEconomyVisible(!isEconomyVisible)}
+          handleToggleBusiness={() => setIsBusinessVisible(!isBusinessVisible)}
         />
-        <ClassPrices
-          travelClassName={"Business"}
-          flight={props.flight}
-          visibility={isBusinessVisible}
-        />
+        <TransitionGroup component={null}>
+          {isEconomyVisible && (
+            <CSSTransition classNames={"row-transition"} timeout={300}>
+              <ClassPrices
+                travelClassName="Economy"
+                flight={props.flight}
+                visibility={isEconomyVisible}
+              />
+            </CSSTransition>
+          )}
+          {isBusinessVisible && (
+            <CSSTransition classNames={"row-transition"} timeout={300}>
+              <ClassPrices
+                travelClassName="Business"
+                flight={props.flight}
+                visibility={isBusinessVisible}
+              />
+            </CSSTransition>
+          )}
+        </TransitionGroup>
       </>
     );
   }
@@ -596,23 +658,36 @@ export default function FlightsPage() {
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
                 {error && <h2 className="text-bg-warning">{error}</h2>}
                 {!isLoading && flightData.length === 0 && (
-                  <h2>
+                  <h2 className="fade" style={contentStyle}>
                     There are no flights for the specified {flightDirection}{" "}
                     date. Please choose another one.
                   </h2>
                 )}
                 {!isLoading && flightData.length !== 0 && (
-                  <h2>{chooseFlightText}</h2>
+                  <h2 className="fade" style={contentStyle}>
+                    {chooseFlightText}
+                  </h2>
                 )}
               </div>
-              {isLoading ? (
-                <div className="d-flex justify-content-center align-items-center mb-5">
+              {isLoading && (
+                <div
+                  className="fade d-flex justify-content-center align-items-center mb-5"
+                  style={loadingStyle}
+                >
                   <Circles color="#0718c4" height={40} width={40} />
                 </div>
-              ) : (
-                flightData.map((flight) => (
-                  <FlightRow flight={flight} key={flight.flightId} />
-                ))
+              )}
+              {!isLoading && (
+                <div className="fade" style={contentStyle}>
+                  <>
+                    {flightData.map((flight) => (
+                      <FlightRowWithPrices
+                        flight={flight}
+                        key={flight.flightId}
+                      />
+                    ))}
+                  </>
+                </div>
               )}
             </Tab>
           );
