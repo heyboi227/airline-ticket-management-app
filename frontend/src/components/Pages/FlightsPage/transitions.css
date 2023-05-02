@@ -10,14 +10,14 @@
 
 .row-transition-enter-active {
   opacity: 1;
-  max-height: 1000px; /* adjust this value to accommodate the max height of your content */
+  max-height: 1000px;
   transition: opacity 300ms, max-height 300ms;
   overflow: hidden;
 }
 
 .row-transition-exit {
   opacity: 1;
-  max-height: 1000px; /* adjust this value to accommodate the max height of your content */
+  max-height: 1000px;
   overflow: hidden;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .class-prices-visible {
-  max-height: 1000px; /* adjust this value to accommodate the max height of your content */
+  max-height: 1000px;
   overflow: hidden;
 }
 

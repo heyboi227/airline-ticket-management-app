@@ -5,17 +5,17 @@ import {
   checkForDayDifference,
   formatTime,
   subtractTime,
+  convertDateToMySqlDateTime,
 } from "../../../helpers/helpers";
 import smallLogo from "../../../static/air-soko-logo-small.png";
 import DashedArrow from "../../Shapes/DashedArrow/DashedArrow";
 import Config from "../../../config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretSquareDown } from "@fortawesome/free-regular-svg-icons";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Container, Tab, Tabs } from "react-bootstrap";
 import { api } from "../../../api/api";
-import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import { Circles } from "react-loader-spinner";
 import "./transitions.css";
 import "./tabs-transition.css";
@@ -29,12 +29,16 @@ interface IFlightRowProps {
 
 interface IFlightRowWithPricesProps {
   flight: IFlight;
+  setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
+  setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface IClassPricesProps {
   travelClassName: string;
   flight: IFlight;
   visibility: boolean;
+  setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
+  setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface IClassPricesDrawerProps {
@@ -47,29 +51,377 @@ interface TabTitleProps {
   title: string;
 }
 
+const TabTitle = ({ title }: TabTitleProps) => {
+  return (
+    <div
+      style={{
+        whiteSpace: "pre-wrap",
+        lineHeight: "1.2",
+        width: "107px",
+      }}
+    >
+      {title}
+    </div>
+  );
+};
+
+function ClassPricesDrawer(props: IClassPricesDrawerProps) {
+  const [isOpenPricesHovered, setIsOpenPricesHovered] =
+    useState<boolean>(false);
+
+  const handleMouseEnter = () => {
+    setIsOpenPricesHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsOpenPricesHovered(false);
+  };
+
+  return (
+    <>
+      <div className="card" style={{ width: "18rem" }}>
+        <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
+          <h2 className="card-title">{props.travelClassName}</h2>
+          <p className="card-text">
+            From{" "}
+            <span style={{ fontSize: "1.5vw" }}>
+              {props.flight.travelClasses
+                ?.filter((travelClass) =>
+                  travelClass.travelClass.name.includes(props.travelClassName)
+                )
+                .map((travelClass) => travelClass.price)
+                .reduce((smallestPrice: number, currentPrice: number) => {
+                  return currentPrice < smallestPrice
+                    ? currentPrice
+                    : smallestPrice;
+                }, Infinity)}{" "}
+              RSD
+            </span>
+          </p>
+        </div>
+        <div
+          className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
+            isOpenPricesHovered ? "hover-background" : ""
+          }`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={props.handleToggle}
+        >
+          <FontAwesomeIcon
+            icon={faCaretSquareDown}
+            style={{ fontSize: "2vw" }}
+          />
+        </div>
+      </div>
+    </>
+  );
+}
+
+const ClassPrices = (props: IClassPricesProps) => {
+  const [selectPriceHoveredIndex, setSelectPriceHoveredIndex] = useState<
+    number | null
+  >(null);
+
+  const handleMouseEnter = (index: number) => {
+    setSelectPriceHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setSelectPriceHoveredIndex(null);
+  };
+
+  const changeFlightDirection = (newDirection: string) => {
+    props.setFlightDirection(newDirection);
+  };
+
+  const renderTextForSubTravelClasses = (subTravelClass: string) => {
+    switch (subTravelClass) {
+      case "Basic Economy":
+        return (
+          <div>
+            <p>Standard pitch reclination</p>
+            <p>Complimentary beverage service, meal available for purchase</p>
+            <p>
+              Overhead bin space available on first-come, first-served basis
+            </p>
+            <p>
+              A piece of carry-on baggage included, checked baggage is available
+              for a fee
+            </p>
+            <p>A fee for seat selection and priority boarding</p>
+          </div>
+        );
+      case "Economy":
+        return (
+          <div>
+            <p>Increased seat pitch reclination</p>
+            <p>
+              Complimentary in-flight entertainment (subject for availability)
+            </p>
+            <p>Complimentary meal and beverage service</p>
+            <p>One free checked bag included</p>
+            <p>Free seat selection</p>
+          </div>
+        );
+      case "Economy+":
+        return (
+          <div>
+            <p>Extra legroom</p>
+            <p>Dedicated overhead bin space</p>
+            <p>Upgraded meal services and free alcoholic beverages</p>
+            <p>Two free checked bags included</p>
+            <p>Free seat selection</p>
+          </div>
+        );
+      case "Business":
+        return (
+          <div>
+            <p>
+              Fully-flat seats, or spacious recliners with ample legroom, based
+              on availability
+            </p>
+            <p>Priority check-in, boarding and baggage handling</p>
+            <p>
+              Access to exclusive airport or our personalized{" "}
+              <strong>SokoRest&trade;</strong> lounges
+            </p>
+            <p>
+              Personalized in-flight service, including gourmet meals, premium
+              beverages, wide selection of in-flight entertainment
+            </p>
+            <p>Two free checked bags included</p>
+            <p>Priority seat selection</p>
+          </div>
+        );
+      default:
+        return "";
+    }
+  };
+
+  return (
+    <div
+      className={
+        props.visibility ? "class-prices-visible" : "class-prices-hidden"
+      }
+    >
+      <AnimatePresence>
+        {props.visibility && (
+          <motion.div
+            className="d-flex g-3 flex-row justify-content-center align-items-center"
+            initial={{
+              position: "relative",
+              top: 20,
+              scale: 0.95,
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              top: 0,
+              scale: 1,
+              opacity: 1,
+              height: "auto",
+            }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{
+              duration: 0.3,
+            }}
+          >
+            {props.flight.travelClasses
+              ?.filter((travelClass) =>
+                travelClass.travelClass.name.includes(props.travelClassName)
+              )
+              .map((travelClass, index) => (
+                <div
+                  className="card"
+                  style={{ width: "25rem", height: "30vw" }}
+                  key={travelClass.travelClass.travelClassId}
+                >
+                  <div
+                    className="card-body mt-3 d-flex flex-column justify-content-start align-items-center"
+                    style={{ position: "relative" }}
+                  >
+                    <h2 className="card-title">
+                      {travelClass.travelClass.subname}
+                    </h2>
+                    <div className="card-text">
+                      {renderTextForSubTravelClasses(
+                        travelClass.travelClass.subname
+                      )}
+                      <h1 style={{ position: "absolute", bottom: 0 }}>
+                        {travelClass.price} RSD
+                      </h1>
+                    </div>
+                  </div>
+                  <div
+                    className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
+                      selectPriceHoveredIndex === index
+                        ? "hover-background"
+                        : ""
+                    }`}
+                    onClick={() => {
+                      changeFlightDirection("return");
+                      props.setChooseFlightText("Choose your return flight");
+                    }}
+                    onMouseEnter={() => handleMouseEnter(index)}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    Select
+                  </div>
+                </div>
+              ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+function FlightRow(props: IFlightRowProps) {
+  return (
+    <>
+      <div className="container-fluid d-flex flex-row my-5">
+        <div className="card p-3 w-50 p-3">
+          <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
+            <div
+              className="d-flex flex-column justify-content-center align-items-start"
+              style={{ width: "10vw" }}
+            >
+              <span>Departure</span>
+              <h3>
+                {formatTime(
+                  new Date(props.flight.departureDateAndTime),
+                  props.flight.originAirport?.timeZone!
+                )}
+              </h3>
+              <h5>{props.flight.originAirport?.airportCode}</h5>
+            </div>
+            <div className="d-flex flex-column align-items-center mt-3">
+              <DashedArrow />
+              <p>
+                Duration:{" "}
+                {subtractTime(
+                  formatTime(
+                    new Date(props.flight.departureDateAndTime),
+                    Config.LOCAL_TIME_ZONE
+                  ),
+                  formatTime(
+                    new Date(props.flight.arrivalDateAndTime),
+                    Config.LOCAL_TIME_ZONE
+                  ),
+                  new Date(props.flight.departureDateAndTime),
+                  new Date(props.flight.arrivalDateAndTime)
+                )}
+              </p>
+            </div>
+            <div
+              className="d-flex flex-column justify-content-center align-items-end"
+              style={{ width: "10vw" }}
+            >
+              <span>Arrival</span>
+              <div className="d-flex flex-row justify-content-center align-items-center">
+                <h3>
+                  {formatTime(
+                    new Date(props.flight.arrivalDateAndTime),
+                    props.flight.destinationAirport?.timeZone!
+                  )}
+                </h3>
+                <small>
+                  {checkForDayDifference(
+                    new Date(props.flight.departureDateAndTime),
+                    new Date(props.flight.arrivalDateAndTime),
+                    props.flight.originAirport?.timeZone!,
+                    props.flight.destinationAirport?.timeZone!
+                  )}
+                </small>
+              </div>
+              <h5>{props.flight.destinationAirport?.airportCode}</h5>
+            </div>
+          </div>
+          <div
+            className="d-flex flex-row justify-content-start align-items-center"
+            style={{ width: "10vw" }}
+          >
+            <img
+              src={smallLogo}
+              alt="The logo of Air Soko, without the fontface"
+              style={{ width: "2vw", borderRadius: "15px" }}
+              className="me-2"
+            />
+            <span>{props.flight.flightCode}</span>
+          </div>
+          <span>{props.flight.aircraft?.name}</span>
+        </div>
+        <ClassPricesDrawer
+          travelClassName={"Economy"}
+          flight={props.flight}
+          handleToggle={props.handleToggleEconomy}
+        />
+        <ClassPricesDrawer
+          travelClassName={"Business"}
+          flight={props.flight}
+          handleToggle={props.handleToggleBusiness}
+        />
+      </div>
+    </>
+  );
+}
+
+function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
+  const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
+  const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
+
+  return (
+    <>
+      <FlightRow
+        flight={props.flight}
+        handleToggleEconomy={() => setIsEconomyVisible(!isEconomyVisible)}
+        handleToggleBusiness={() => setIsBusinessVisible(!isBusinessVisible)}
+      />
+      <TransitionGroup component={null}>
+        {isEconomyVisible && (
+          <CSSTransition classNames={"row-transition"} timeout={300}>
+            <ClassPrices
+              travelClassName="Economy"
+              flight={props.flight}
+              visibility={isEconomyVisible}
+              setFlightDirection={props.setFlightDirection}
+              setChooseFlightText={props.setChooseFlightText}
+            />
+          </CSSTransition>
+        )}
+        {isBusinessVisible && (
+          <CSSTransition classNames={"row-transition"} timeout={300}>
+            <ClassPrices
+              travelClassName="Business"
+              flight={props.flight}
+              visibility={isBusinessVisible}
+              setFlightDirection={props.setFlightDirection}
+              setChooseFlightText={props.setChooseFlightText}
+            />
+          </CSSTransition>
+        )}
+      </TransitionGroup>
+    </>
+  );
+}
+
 export default function FlightsPage() {
   const location = useLocation();
   const [flightData, setFlightData] = useState<IFlight[]>(
     location.state[4] || []
   );
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [loadingStyle, setLoadingStyle] = useState<Object>({ opacity: 1 });
-  const [contentStyle, setContentStyle] = useState<Object>({});
+  const [flightDirection, setFlightDirection] = useState<string>("departure");
 
-  const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
-  const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
-
-  const [error, setError] = useState<string>("");
   const [chooseFlightText, setChooseFlightText] = useState<string>(
     "Choose your departure flight"
   );
 
-  const [flightDirection, setFlightDirection] = useState<string>("departure");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loadingStyle, setLoadingStyle] = useState<Object>({ opacity: 1 });
+  const [contentStyle, setContentStyle] = useState<Object>({});
 
-  const changeFlightDirection = (newDirection: string) => {
-    setFlightDirection(newDirection);
-  };
+  const [error, setError] = useState<string>("");
 
   const [chosenDate, setChosenDate] = useState<Date>(
     new Date(location.state[2])
@@ -172,7 +524,54 @@ export default function FlightsPage() {
         });
       }, 100);
     }
+
+    if (isLoading) {
+      setLoadingStyle({
+        opacity: 1,
+      });
+    }
   }, [isLoading]);
+
+  const buildApiRequestData = (
+    flightDirection: string,
+    locationState: any,
+    directionDate: string
+  ) => ({
+    originAirportId:
+      flightDirection === "departure" ? locationState[0] : locationState[1],
+    destinationAirportId:
+      flightDirection === "departure" ? locationState[1] : locationState[0],
+    ...(flightDirection === "departure"
+      ? {
+          departureDate: convertDateToMySqlDateTime(
+            new Date(directionDate)
+          ).slice(0, 10),
+        }
+      : {
+          returnDate: convertDateToMySqlDateTime(new Date(directionDate)).slice(
+            0,
+            10
+          ),
+        }),
+  });
+
+  const findLowestPriceInFlight = (flight: IFlight) => {
+    const minPriceInFlight = flight.travelClasses?.reduce(
+      (minClassPrice, travelClass) => {
+        return Math.min(minClassPrice, travelClass.price);
+      },
+      Infinity
+    );
+    return minPriceInFlight;
+  };
+
+  const findLowestPrice = (flights: IFlight[]) => {
+    const lowestPrice = flights.reduce((minPrice, flight) => {
+      return Math.min(minPrice, findLowestPriceInFlight(flight)!);
+    }, Infinity);
+
+    return lowestPrice;
+  };
 
   useEffect(() => {
     const getMinimalPrice = async (
@@ -184,32 +583,12 @@ export default function FlightsPage() {
           "post",
           `/api/flight/search/${flightDirection}`,
           "user",
-          {
-            originAirportId:
-              flightDirection === "departure"
-                ? location.state[0]
-                : location.state[1],
-            destinationAirportId:
-              flightDirection === "departure"
-                ? location.state[1]
-                : location.state[0],
-            ...(flightDirection === "departure"
-              ? {
-                  departureDate: convertDateToMySqlDateTime(
-                    new Date(directionDate)
-                  ).slice(0, 10),
-                }
-              : {
-                  returnDate: convertDateToMySqlDateTime(
-                    new Date(directionDate)
-                  ).slice(0, 10),
-                }),
-          }
+          buildApiRequestData(flightDirection, location.state, directionDate)
         );
 
         if (res.status !== "ok") {
           throw new Error(
-            "Prices could not be obtained. Reason: " + JSON.stringify(res.data)
+            "Prices could not be obtained: Reason: " + JSON.stringify(res.data)
           );
         }
 
@@ -224,27 +603,17 @@ export default function FlightsPage() {
           return 0;
         }
 
-        const lowestPrice = flights.reduce((minPrice, flight) => {
-          const minPriceInFlight = flight.travelClasses?.reduce(
-            (minClassPrice, travelClass) => {
-              return Math.min(minClassPrice, travelClass.price);
-            },
-            Infinity
-          );
-          return Math.min(minPrice, minPriceInFlight!);
-        }, Infinity);
-
-        return lowestPrice;
+        return findLowestPrice(flights);
       } catch (error: unknown) {
         if (error instanceof Error) {
-          setError(error.message ?? "Could not perform the search.");
+          setError(error.message ?? "Could not retrieve the prices.");
         } else {
-          setError("Could not perform the search.");
+          setError("Could not retrieve the prices.");
         }
 
         setTimeout(() => {
           setError("");
-        }, 3500);
+        }, 35000);
 
         return -1;
       }
@@ -279,355 +648,6 @@ export default function FlightsPage() {
   };
 
   const currentDate = new Date();
-
-  const TabTitle = ({ title }: TabTitleProps) => {
-    return (
-      <div
-        style={{
-          whiteSpace: "pre-wrap",
-          lineHeight: "1.2",
-          width: "107px",
-        }}
-      >
-        {title}
-      </div>
-    );
-  };
-
-  function ClassPricesDrawer({
-    travelClassName,
-    flight,
-    handleToggle,
-  }: IClassPricesDrawerProps) {
-    const [isOpenPricesHovered, setIsOpenPricesHovered] =
-      useState<boolean>(false);
-
-    const handleMouseEnter = () => {
-      setIsOpenPricesHovered(true);
-    };
-
-    const handleMouseLeave = () => {
-      setIsOpenPricesHovered(false);
-    };
-
-    return (
-      <>
-        <div className="card" style={{ width: "18rem" }}>
-          <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-            <h2 className="card-title">{travelClassName}</h2>
-            <p className="card-text">
-              From{" "}
-              <span style={{ fontSize: "1.5vw" }}>
-                {flight.travelClasses
-                  ?.filter((travelClass) =>
-                    travelClass.travelClass.name.includes(travelClassName)
-                  )
-                  .map((travelClass) => travelClass.price)
-                  .reduce((smallestPrice: number, currentPrice: number) => {
-                    return currentPrice < smallestPrice
-                      ? currentPrice
-                      : smallestPrice;
-                  }, Infinity)}{" "}
-                RSD
-              </span>
-            </p>
-          </div>
-          <div
-            className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
-              isOpenPricesHovered ? "hover-background" : ""
-            }`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleToggle}
-          >
-            <FontAwesomeIcon
-              icon={faCaretSquareDown}
-              style={{ fontSize: "2vw" }}
-            />
-          </div>
-        </div>
-      </>
-    );
-  }
-
-  const ClassPrices = ({
-    travelClassName,
-    flight,
-    visibility,
-  }: IClassPricesProps) => {
-    const [selectPriceHoveredIndex, setSelectPriceHoveredIndex] = useState<
-      number | null
-    >(null);
-
-    const handleMouseEnter = (index: number) => {
-      setSelectPriceHoveredIndex(index);
-    };
-
-    const handleMouseLeave = () => {
-      setSelectPriceHoveredIndex(null);
-    };
-
-    const renderTextForSubTravelClasses = (subTravelClass: string) => {
-      switch (subTravelClass) {
-        case "Basic Economy":
-          return (
-            <div>
-              <p>Standard pitch reclination</p>
-              <p>Complimentary beverage service, meal available for purchase</p>
-              <p>
-                Overhead bin space available on first-come, first-served basis
-              </p>
-              <p>
-                A piece of carry-on baggage included, checked baggage is
-                available for a fee
-              </p>
-              <p>A fee for seat selection and priority boarding</p>
-            </div>
-          );
-        case "Economy":
-          return (
-            <div>
-              <p>Increased seat pitch reclination</p>
-              <p>
-                Complimentary in-flight entertainment (subject for availability)
-              </p>
-              <p>Complimentary meal and beverage service</p>
-              <p>One free checked bag included</p>
-              <p>Free seat selection</p>
-            </div>
-          );
-        case "Economy+":
-          return (
-            <div>
-              <p>Extra legroom</p>
-              <p>Dedicated overhead bin space</p>
-              <p>Upgraded meal services and free alcoholic beverages</p>
-              <p>Two free checked bags included</p>
-              <p>Free seat selection</p>
-            </div>
-          );
-        case "Business":
-          return (
-            <div>
-              <p>
-                Fully-flat seats, or spacious recliners with ample legroom,
-                based on availability
-              </p>
-              <p>Priority check-in, boarding and baggage handling</p>
-              <p>
-                Access to exclusive airport or our personalized{" "}
-                <strong>SokoRest&trade;</strong> lounges
-              </p>
-              <p>
-                Personalized in-flight service, including gourmet meals, premium
-                beverages, wide selection of in-flight entertainment
-              </p>
-              <p>Two free checked bags included</p>
-              <p>Priority seat selection</p>
-            </div>
-          );
-        default:
-          return "";
-      }
-    };
-
-    return (
-      <div
-        className={visibility ? "class-prices-visible" : "class-prices-hidden"}
-      >
-        <AnimatePresence>
-          {visibility && (
-            <motion.div
-              className="d-flex g-3 flex-row justify-content-center align-items-center"
-              initial={{
-                position: "relative",
-                top: 20,
-                scale: 0.95,
-                height: 0,
-                opacity: 0,
-              }}
-              animate={{
-                top: 0,
-                scale: 1,
-                opacity: 1,
-                height: "auto",
-              }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{
-                duration: 0.3,
-              }}
-            >
-              {flight.travelClasses
-                ?.filter((travelClass) =>
-                  travelClass.travelClass.name.includes(travelClassName)
-                )
-                .map((travelClass, index) => (
-                  <div
-                    className="card"
-                    style={{ width: "25rem", height: "30vw" }}
-                    key={travelClass.travelClass.travelClassId}
-                  >
-                    <div
-                      className="card-body mt-3 d-flex flex-column justify-content-start align-items-center"
-                      style={{ position: "relative" }}
-                    >
-                      <h2 className="card-title">
-                        {travelClass.travelClass.subname}
-                      </h2>
-                      <div className="card-text">
-                        {renderTextForSubTravelClasses(
-                          travelClass.travelClass.subname
-                        )}
-                        <h1 style={{ position: "absolute", bottom: 0 }}>
-                          {travelClass.price} RSD
-                        </h1>
-                      </div>
-                    </div>
-                    <div
-                      className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
-                        selectPriceHoveredIndex === index
-                          ? "hover-background"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        changeFlightDirection("return");
-                        setChooseFlightText("Choose your return flight");
-                      }}
-                      onMouseEnter={() => handleMouseEnter(index)}
-                      onMouseLeave={handleMouseLeave}
-                    >
-                      Select
-                    </div>
-                  </div>
-                ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  };
-
-  function FlightRow(props: IFlightRowProps) {
-    return (
-      <>
-        <div className="container-fluid d-flex flex-row my-5">
-          <div className="card p-3 w-50 p-3">
-            <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
-              <div
-                className="d-flex flex-column justify-content-center align-items-start"
-                style={{ width: "10vw" }}
-              >
-                <span>Departure</span>
-                <h3>
-                  {formatTime(
-                    new Date(props.flight.departureDateAndTime),
-                    props.flight.originAirport?.timeZone!
-                  )}
-                </h3>
-                <h5>{props.flight.originAirport?.airportCode}</h5>
-              </div>
-              <div className="d-flex flex-column align-items-center mt-3">
-                <DashedArrow />
-                <p>
-                  Duration:{" "}
-                  {subtractTime(
-                    formatTime(
-                      new Date(props.flight.departureDateAndTime),
-                      Config.LOCAL_TIME_ZONE
-                    ),
-                    formatTime(
-                      new Date(props.flight.arrivalDateAndTime),
-                      Config.LOCAL_TIME_ZONE
-                    ),
-                    new Date(props.flight.departureDateAndTime),
-                    new Date(props.flight.arrivalDateAndTime)
-                  )}
-                </p>
-              </div>
-              <div
-                className="d-flex flex-column justify-content-center align-items-end"
-                style={{ width: "10vw" }}
-              >
-                <span>Arrival</span>
-                <div className="d-flex flex-row justify-content-center align-items-center">
-                  <h3>
-                    {formatTime(
-                      new Date(props.flight.arrivalDateAndTime),
-                      props.flight.destinationAirport?.timeZone!
-                    )}
-                  </h3>
-                  <small>
-                    {checkForDayDifference(
-                      new Date(props.flight.departureDateAndTime),
-                      new Date(props.flight.arrivalDateAndTime),
-                      props.flight.originAirport?.timeZone!,
-                      props.flight.destinationAirport?.timeZone!
-                    )}
-                  </small>
-                </div>
-                <h5>{props.flight.destinationAirport?.airportCode}</h5>
-              </div>
-            </div>
-            <div
-              className="d-flex flex-row justify-content-start align-items-center"
-              style={{ width: "10vw" }}
-            >
-              <img
-                src={smallLogo}
-                alt="The logo of Air Soko, without the fontface"
-                style={{ width: "2vw", borderRadius: "15px" }}
-                className="me-2"
-              />
-              <span>{props.flight.flightCode}</span>
-            </div>
-            <span>{props.flight.aircraft?.name}</span>
-          </div>
-          <ClassPricesDrawer
-            travelClassName={"Economy"}
-            flight={props.flight}
-            handleToggle={props.handleToggleEconomy}
-          />
-          <ClassPricesDrawer
-            travelClassName={"Business"}
-            flight={props.flight}
-            handleToggle={props.handleToggleBusiness}
-          />
-        </div>
-      </>
-    );
-  }
-
-  function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
-    return (
-      <>
-        <FlightRow
-          flight={props.flight}
-          handleToggleEconomy={() => setIsEconomyVisible(!isEconomyVisible)}
-          handleToggleBusiness={() => setIsBusinessVisible(!isBusinessVisible)}
-        />
-        <TransitionGroup component={null}>
-          {isEconomyVisible && (
-            <CSSTransition classNames={"row-transition"} timeout={300}>
-              <ClassPrices
-                travelClassName="Economy"
-                flight={props.flight}
-                visibility={isEconomyVisible}
-              />
-            </CSSTransition>
-          )}
-          {isBusinessVisible && (
-            <CSSTransition classNames={"row-transition"} timeout={300}>
-              <ClassPrices
-                travelClassName="Business"
-                flight={props.flight}
-                visibility={isBusinessVisible}
-              />
-            </CSSTransition>
-          )}
-        </TransitionGroup>
-      </>
-    );
-  }
 
   return (
     <Container>
@@ -684,6 +704,8 @@ export default function FlightsPage() {
                       <FlightRowWithPrices
                         flight={flight}
                         key={flight.flightId}
+                        setFlightDirection={setFlightDirection}
+                        setChooseFlightText={setChooseFlightText}
                       />
                     ))}
                   </>
