@@ -51,7 +51,7 @@ interface TabTitleProps {
   title: string;
 }
 
-const TabTitle = ({ title }: TabTitleProps) => {
+const TabTitle = (props: TabTitleProps) => {
   return (
     <div
       style={{
@@ -60,7 +60,7 @@ const TabTitle = ({ title }: TabTitleProps) => {
         width: "107px",
       }}
     >
-      {title}
+      {props.title}
     </div>
   );
 };
