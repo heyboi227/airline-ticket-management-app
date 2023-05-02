@@ -9,12 +9,12 @@ export default function AdminDashboard() {
         <div className="card">
           <div className="card-body">
             <div className="card-title">
-              <h2 className="h5">Questions</h2>
+              <h2 className="h5">Airports</h2>
             </div>
             <div className="card-text d-grid gap-3">
               <Link
                 className="btn btn-primary"
-                to="/admin/dashboard/question/list"
+                to="/admin/dashboard/airport/list"
               >
                 List all
               </Link>
@@ -27,14 +27,14 @@ export default function AdminDashboard() {
         <div className="card">
           <div className="card-body">
             <div className="card-title">
-              <h2 className="h5">Answers</h2>
+              <h2 className="h5">Flights</h2>
             </div>
             <div className="card-text d-grid gap-3">
               <Link
                 className="btn btn-primary"
-                to="/admin/dashboard/answer/list"
+                to="/admin/dashboard/flight/list"
               >
-                List answers
+                List all
               </Link>
             </div>
           </div>

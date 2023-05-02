@@ -7,6 +7,118 @@ import "./AdminAdministratorList.sass";
 
 interface IAdminAdministratorRowProperties {
   administrator: IAdministrator;
+  loadAdministrators: () => void;
+  setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
+function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
+  const [editPasswordVisible, setEditPasswordVisible] =
+    useState<boolean>(false);
+  const [newPassword, setNewPassword] = useState<string>("");
+
+  const activeSideClass = props.administrator.isActive
+    ? " btn-primary"
+    : " btn-light";
+  const inactiveSideClass = !props.administrator.isActive
+    ? " btn-primary"
+    : " btn-light";
+
+  function doToggleAdministratorActiveState() {
+    api(
+      "put",
+      "/api/administrator/" + props.administrator.administratorId,
+      "administrator",
+      {
+        isActive: !props.administrator.isActive,
+      }
+    ).then((res) => {
+      if (res.status === "error") {
+        return props.setErrorMessage(res.data + "");
+      }
+
+      props.loadAdministrators();
+    });
+  }
+
+  function doChangePassword() {
+    api(
+      "put",
+      "/api/administrator/" + props.administrator.administratorId,
+      "administrator",
+      {
+        password: newPassword,
+      }
+    ).then((res) => {
+      if (res.status === "error") {
+        return props.setErrorMessage(res.data + "");
+      }
+
+      props.loadAdministrators();
+    });
+  }
+
+  function changePassword(e: React.ChangeEvent<HTMLInputElement>) {
+    setNewPassword(e.target.value);
+  }
+
+  return (
+    <tr>
+      <td>{props.administrator.administratorId}</td>
+      <td>{props.administrator.username}</td>
+      <td>
+        <div
+          className="btn-group"
+          onClick={() => {
+            doToggleAdministratorActiveState();
+          }}
+        >
+          <div className={"btn btn-sm" + activeSideClass}>
+            <FontAwesomeIcon icon={faSquareCheck} />
+          </div>
+          <div className={"btn btn-sm" + inactiveSideClass}>
+            <FontAwesomeIcon icon={faSquare} />
+          </div>
+        </div>
+      </td>
+      <td>
+        {!editPasswordVisible && (
+          <button
+            className="btn btn-primary btn-sm"
+            onClick={() => {
+              setEditPasswordVisible(true);
+            }}
+          >
+            Change password
+          </button>
+        )}
+        {editPasswordVisible && (
+          <div className="input-group">
+            <input
+              type="password"
+              className="form-control form-control-sm"
+              value={newPassword}
+              onChange={(e) => changePassword(e)}
+            />
+            <button
+              className="btn btn-success btn-sm"
+              onClick={() => doChangePassword()}
+            >
+              Save
+            </button>
+            <button
+              className="btn btn-danger btn-sm"
+              onClick={() => {
+                setEditPasswordVisible(false);
+                setNewPassword("");
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+      </td>
+    </tr>
+  );
 }
 
 export default function AdminAdministratorList() {
@@ -24,116 +136,6 @@ export default function AdminAdministratorList() {
   }
 
   useEffect(loadAdministrators, []);
-
-  function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
-    const [editPasswordVisible, setEditPasswordVisible] =
-      useState<boolean>(false);
-    const [newPassword, setNewPassword] = useState<string>("");
-
-    const activeSideClass = props.administrator.isActive
-      ? " btn-primary"
-      : " btn-light";
-    const inactiveSideClass = !props.administrator.isActive
-      ? " btn-primary"
-      : " btn-light";
-
-    function doToggleAdministratorActiveState() {
-      api(
-        "put",
-        "/api/administrator/" + props.administrator.administratorId,
-        "administrator",
-        {
-          isActive: !props.administrator.isActive,
-        }
-      ).then((res) => {
-        if (res.status === "error") {
-          return setErrorMessage(res.data + "");
-        }
-
-        loadAdministrators();
-      });
-    }
-
-    function doChangePassword() {
-      api(
-        "put",
-        "/api/administrator/" + props.administrator.administratorId,
-        "administrator",
-        {
-          password: newPassword,
-        }
-      ).then((res) => {
-        if (res.status === "error") {
-          return setErrorMessage(res.data + "");
-        }
-
-        loadAdministrators();
-      });
-    }
-
-    function changePassword(e: React.ChangeEvent<HTMLInputElement>) {
-      setNewPassword(e.target.value);
-    }
-
-    return (
-      <tr>
-        <td>{props.administrator.administratorId}</td>
-        <td>{props.administrator.username}</td>
-        <td>
-          <div
-            className="btn-group"
-            onClick={() => {
-              doToggleAdministratorActiveState();
-            }}
-          >
-            <div className={"btn btn-sm" + activeSideClass}>
-              <FontAwesomeIcon icon={faSquareCheck} />
-            </div>
-            <div className={"btn btn-sm" + inactiveSideClass}>
-              <FontAwesomeIcon icon={faSquare} />
-            </div>
-          </div>
-        </td>
-        <td>
-          {!editPasswordVisible && (
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={() => {
-                setEditPasswordVisible(true);
-              }}
-            >
-              Change password
-            </button>
-          )}
-          {editPasswordVisible && (
-            <div className="input-group">
-              <input
-                type="password"
-                className="form-control form-control-sm"
-                value={newPassword}
-                onChange={(e) => changePassword(e)}
-              />
-              <button
-                className="btn btn-success btn-sm"
-                onClick={() => doChangePassword()}
-              >
-                Save
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => {
-                  setEditPasswordVisible(false);
-                  setNewPassword("");
-                }}
-              >
-                Cancel
-              </button>
-            </div>
-          )}
-        </td>
-      </tr>
-    );
-  }
 
   return (
     <div>
@@ -153,6 +155,8 @@ export default function AdminAdministratorList() {
               <AdminAdministratorRow
                 key={"administrator" + admin.administratorId}
                 administrator={admin}
+                loadAdministrators={loadAdministrators}
+                setErrorMessage={setErrorMessage}
               />
             ))}
           </tbody>
