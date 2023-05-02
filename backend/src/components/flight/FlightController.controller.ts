@@ -9,6 +9,14 @@ import {
 import { EditFlightValidator, IEditFlightDto } from "./dto/IEditFlight.dto";
 import { DefaultFlightAdapterOptions } from "./FlightService.service";
 import FlightModel from "./FlightModel.model";
+import StatusError from "../../common/StatusError";
+
+type TravelClassIds = {
+  toHide: number[];
+  toShow: number[];
+  toAdd: number[];
+  toEdit: number[];
+};
 
 export default class FlightController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -31,10 +39,7 @@ export default class FlightController extends BaseController {
       .getById(flightId, DefaultFlightAdapterOptions)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The flight is not found!",
-          };
+          throw new StatusError(404, "The flight is not found!");
         }
 
         res.send(result);
@@ -53,10 +58,7 @@ export default class FlightController extends BaseController {
       .getByFlightCode(flightCode)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The flight is not found!",
-          };
+          throw new StatusError(404, "The flight is not found!");
         }
 
         res.send(result);
@@ -122,10 +124,10 @@ export default class FlightController extends BaseController {
               givenTravelClassInformation.travelClassId
             )
           ) {
-            throw {
-              status: 404,
-              message: `Travel class with ID ${givenTravelClassInformation.travelClassId} not found!`,
-            };
+            throw new StatusError(
+              404,
+              `Travel class with ID ${givenTravelClassInformation.travelClassId} not found!`
+            );
           }
         }
 
@@ -154,10 +156,7 @@ export default class FlightController extends BaseController {
               is_active: 1,
             })
             .catch((error) => {
-              throw {
-                status: 500,
-                message: error?.message,
-              };
+              throw new StatusError(500, error?.message);
             });
         }
 
@@ -188,121 +187,139 @@ export default class FlightController extends BaseController {
       return res.status(400).send(EditFlightValidator.errors);
     }
 
-    this.services.flight
-      .getById(flightId, DefaultFlightAdapterOptions)
-      .then((result) => {
-        if (result === null) {
-          throw {
-            status: 404,
-            message: "Flight not found!",
-          };
-        }
+    try {
+      const result = await this.services.flight.getById(
+        flightId,
+        DefaultFlightAdapterOptions
+      );
 
-        return result as FlightModel;
-      })
-      .then(async (result) => {
-        await this.services.flight.startTransaction();
-        return result;
-      })
-      .then(async (result) => {
-        const currentTravelClassIds = result.travelClasses?.map(
-          (travelClassInfo) => travelClassInfo.travelClass.travelClassId
-        );
-        const currentVisibleTravelClassIds = result.travelClasses
-          ?.filter((travelClassInfo) => travelClassInfo.isActive)
-          .map((travelClassInfo) => travelClassInfo.travelClass.travelClassId);
-        const currentInvisibleTravelClassIds = result.travelClasses
-          ?.filter((travelClassInfo) => !travelClassInfo.isActive)
-          .map((travelClassInfo) => travelClassInfo.travelClass.travelClassId);
+      if (result === null) {
+        throw new StatusError(404, "Flight not found!");
+      }
 
-        const newTravelClassIds = data.travelClasses?.map(
-          (travelClass) => travelClass.travelClassId
-        );
+      await this.services.flight.startTransaction();
 
-        const travelClassIdsToHide = currentVisibleTravelClassIds.filter(
-          (id) => !newTravelClassIds.includes(id)
-        );
-        const travelClassIdsToShow = currentInvisibleTravelClassIds.filter(
-          (id) => newTravelClassIds.includes(id)
-        );
-        const travelClassIdsToAdd = newTravelClassIds.filter(
-          (id) => !currentTravelClassIds.includes(id)
-        );
-        const travelClassIdsUnion = [
-          ...new Set([...newTravelClassIds, ...travelClassIdsToShow]),
-        ];
-        const travelClassIdsToEdit = travelClassIdsUnion.filter(
-          (id) => !travelClassIdsToAdd.includes(id)
-        );
+      const travelClassIds = this.getTravelClassIds(result, data);
 
-        for (let id of travelClassIdsToHide) {
-          await this.services.travelClass.hideFlightTravelClass(
-            result.flightId,
-            id
-          );
-        }
+      await this.updateTravelClasses(result, data, travelClassIds);
 
-        for (let id of travelClassIdsToShow) {
-          await this.services.travelClass.showFlightTravelClass(
-            result.flightId,
-            id
-          );
-        }
-
-        for (let id of travelClassIdsToAdd) {
-          const travelClass = data.travelClasses?.find(
-            (travelClass) => travelClass.travelClassId === id
-          );
-
-          if (!travelClass) continue;
-
-          await this.services.flight.addFlightTravelClass({
-            flight_id: result.flightId,
-            travel_class_id: id,
-            price: travelClass.price,
-            is_active: 1,
-          });
-        }
-
-        for (let id of travelClassIdsToEdit) {
-          const travelClass = data.travelClasses?.find(
-            (travelClass) => travelClass.travelClassId === id
-          );
-
-          if (!travelClass) continue;
-
-          await this.services.flight.editFlightTravelClass({
-            flight_id: result.flightId,
-            travel_class_id: id,
-            price: travelClass.price,
-          });
-        }
-
-        await this.services.flight.editById(result.flightId, {
-          flight_code: data.flightCode,
-          origin_airport_id: data.originAirportId,
-          destination_airport_id: data.destinationAirportId,
-          departure_date_and_time: data.departureDateAndTime,
-          arrival_date_and_time: data.arrivalDateAndTime,
-          aircraft_id: data.aircraftId,
-        });
-
-        return result;
-      })
-      .then(async (result) => {
-        await this.services.flight.commitChanges();
-
-        res.send(
-          await this.services.flight.getById(
-            result.flightId,
-            DefaultFlightAdapterOptions
-          )
-        );
-      })
-      .catch(async (error) => {
-        await this.services.flight.rollbackChanges();
-        res.status(error?.status ?? 500).send(error?.message);
+      await this.services.flight.editById(result.flightId, {
+        flight_code: data.flightCode,
+        origin_airport_id: data.originAirportId,
+        destination_airport_id: data.destinationAirportId,
+        departure_date_and_time: data.departureDateAndTime,
+        arrival_date_and_time: data.arrivalDateAndTime,
+        aircraft_id: data.aircraftId,
       });
+
+      await this.services.flight.commitChanges();
+
+      res.send(
+        await this.services.flight.getById(
+          result.flightId,
+          DefaultFlightAdapterOptions
+        )
+      );
+    } catch (error) {
+      await this.services.flight.rollbackChanges();
+      res.status(error?.status ?? 500).send(error?.message);
+    }
+  }
+
+  private getTravelClassIds(
+    result: FlightModel,
+    data: IEditFlightDto
+  ): TravelClassIds {
+    const currentTravelClassIds = result.travelClasses?.map(
+      (travelClassInfo) => travelClassInfo.travelClass.travelClassId
+    );
+    const currentVisibleTravelClassIds = result.travelClasses
+      ?.filter((travelClassInfo) => travelClassInfo.isActive)
+      .map((travelClassInfo) => travelClassInfo.travelClass.travelClassId);
+    const currentInvisibleTravelClassIds = result.travelClasses
+      ?.filter((travelClassInfo) => !travelClassInfo.isActive)
+      .map((travelClassInfo) => travelClassInfo.travelClass.travelClassId);
+
+    const newTravelClassIds = data.travelClasses?.map(
+      (travelClass) => travelClass.travelClassId
+    );
+
+    const travelClassIdsToHide = currentVisibleTravelClassIds.filter(
+      (id) => !newTravelClassIds.includes(id)
+    );
+    const travelClassIdsToShow = currentInvisibleTravelClassIds.filter((id) =>
+      newTravelClassIds.includes(id)
+    );
+    const travelClassIdsToAdd = newTravelClassIds.filter(
+      (id) => !currentTravelClassIds.includes(id)
+    );
+    const travelClassIdsUnion = [
+      ...new Set([...newTravelClassIds, ...travelClassIdsToShow]),
+    ];
+    const travelClassIdsToEdit = travelClassIdsUnion.filter(
+      (id) => !travelClassIdsToAdd.includes(id)
+    );
+
+    return {
+      toHide: travelClassIdsToHide,
+      toShow: travelClassIdsToShow,
+      toAdd: travelClassIdsToAdd,
+      toEdit: travelClassIdsToEdit,
+    };
+  }
+
+  private async updateTravelClasses(
+    result: FlightModel,
+    data: IEditFlightDto,
+    travelClassIds: {
+      toHide: number[];
+      toShow: number[];
+      toAdd: number[];
+      toEdit: number[];
+    }
+  ) {
+    for (let id of travelClassIds.toHide) {
+      await this.services.travelClass.hideFlightTravelClass(
+        result.flightId,
+        id
+      );
+    }
+
+    for (let id of travelClassIds.toShow) {
+      await this.services.travelClass.showFlightTravelClass(
+        result.flightId,
+        id
+      );
+    }
+
+    for (let id of travelClassIds.toAdd) {
+      const travelClass = data.travelClasses?.find(
+        (travelClass) => travelClass.travelClassId === id
+      );
+
+      if (!travelClass) continue;
+
+      await this.services.flight.addFlightTravelClass({
+        flight_id: result.flightId,
+        travel_class_id: id,
+        price: travelClass.price,
+        is_active: 1,
+      });
+    }
+
+    for (let id of travelClassIds.toEdit) {
+      const travelClass = data.travelClasses?.find(
+        (travelClass) => travelClass.travelClassId === id
+      );
+
+      if (!travelClass) continue;
+
+      await this.services.flight.editFlightTravelClass({
+        flight_id: result.flightId,
+        travel_class_id: id,
+        price: travelClass.price,
+      });
+    }
   }
 
   async delete(req: Request, res: Response) {
@@ -311,9 +328,7 @@ export default class FlightController extends BaseController {
     this.services.flight
       .getById(flightId, DefaultFlightAdapterOptions)
       .then((result) => {
-        if (result === null)
-          throw { status: 404, message: "Flight not found!" };
-        return result;
+        if (result === null) throw new StatusError(404, "Flight not found!");
       })
       .then(async () => {
         const flight = await this.services.flight.getById(
@@ -323,8 +338,7 @@ export default class FlightController extends BaseController {
         return flight;
       })
       .then((flight) => {
-        if (flight === null)
-          throw { status: 404, message: "Flight not found!" };
+        if (flight === null) throw new StatusError(404, "Flight not found!");
         return flight;
       })
       .then((flight) => {

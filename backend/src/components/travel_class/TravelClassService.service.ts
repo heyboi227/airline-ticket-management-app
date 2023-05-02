@@ -1,5 +1,6 @@
 import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
+import StatusError from "../../common/StatusError";
 import { IFlightTravelClass } from "../flight/FlightModel.model";
 import IAddTravelClass from "./dto/IAddTravelClass.dto";
 import IEditTravelClass from "./dto/IEditTravelClass.dto";
@@ -125,16 +126,13 @@ export default class TravelClassService extends BaseService<
             return resolve(true);
           }
 
-          throw {
-            status: 500,
-            message: "Could not hide this flight travel class record!",
-          };
+          throw new StatusError(
+            500,
+            "Could not hide this flight travel class record!"
+          );
         })
         .catch((error) => {
-          throw {
-            status: 500,
-            message: error?.message,
-          };
+          throw new StatusError(500, error?.message);
         });
     });
   }
@@ -156,16 +154,13 @@ export default class TravelClassService extends BaseService<
             return resolve(true);
           }
 
-          throw {
-            status: 500,
-            message: "Could not show this flight travel class record!",
-          };
+          throw new StatusError(
+            500,
+            "Could not show this flight travel class record!"
+          );
         })
         .catch((error) => {
-          throw {
-            status: 500,
-            message: error?.message,
-          };
+          throw new StatusError(500, error?.message);
         });
     });
   }

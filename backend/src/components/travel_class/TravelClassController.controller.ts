@@ -6,6 +6,7 @@ import IAddTravelClassDto, {
 import IEditTravelClassDto, {
   EditTravelClassValidator,
 } from "./dto/IEditTravelClass.dto";
+import StatusError from "../../common/StatusError";
 
 export default class TravelClassController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -26,10 +27,7 @@ export default class TravelClassController extends BaseController {
       .getById(travelClassId, {})
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "Travel class not found!",
-          };
+          throw new StatusError(404, "Travel class not found!");
         }
 
         return result;
@@ -55,10 +53,7 @@ export default class TravelClassController extends BaseController {
       .add(data)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 400,
-            message: "Bad travel class data given!",
-          };
+          throw new StatusError(400, "Bad travel class data given!");
         }
 
         return result;
@@ -85,10 +80,7 @@ export default class TravelClassController extends BaseController {
       .getById(travelClassId, {})
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "Travel class not found!",
-          };
+          throw new StatusError(404, "Travel class not found!");
         }
       })
       .then(() => {

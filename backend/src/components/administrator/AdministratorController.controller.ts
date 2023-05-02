@@ -6,6 +6,7 @@ import {
 } from "./dto/IAddAdministrator.dto";
 import * as bcrypt from "bcrypt";
 import { DefaultAdministratorAdapterOptions } from "./AdministratorService.service";
+import StatusError from "../../common/StatusError";
 import IEditAdministrator, {
   EditAdministratorValidator,
   IEditAdministratorDto,
@@ -36,10 +37,7 @@ export default class AdministratorController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The administrator is not found!",
-          };
+          throw new StatusError(404, "The administrator is not found!");
         }
 
         res.send(result);
@@ -60,10 +58,7 @@ export default class AdministratorController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The administrator is not found!",
-          };
+          throw new StatusError(404, "The administrator is not found!");
         }
 
         res.send(result);

@@ -2,6 +2,7 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
+import StatusError from "../../common/StatusError";
 
 export default class DocumentController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -25,18 +26,15 @@ export default class DocumentController extends BaseController {
       .then((result) => {
         if (req.authorization?.role === "user") {
           if (req.authorization?.id !== result.userId) {
-            throw {
-              status: 403,
-              message: "You do not have access to this resource!",
-            };
+            throw new StatusError(
+              403,
+              "You do not have access to this resource!"
+            );
           }
         }
 
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The document is not found!",
-          };
+          throw new StatusError(404, "The document is not found!");
         }
 
         res.send(result);
@@ -56,18 +54,15 @@ export default class DocumentController extends BaseController {
       .then((result) => {
         if (req.authorization?.role === "user") {
           if (req.authorization?.id !== result.userId) {
-            throw {
-              status: 403,
-              message: "You do not have access to this resource!",
-            };
+            throw new StatusError(
+              403,
+              "You do not have access to this resource!"
+            );
           }
         }
 
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The document is not found!",
-          };
+          throw new StatusError(404, "The document is not found!");
         }
 
         res.send(result);
@@ -121,10 +116,7 @@ export default class DocumentController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The document is not found!",
-          };
+          throw new StatusError(404, "The document is not found!");
         }
       })
       .then(async () => {

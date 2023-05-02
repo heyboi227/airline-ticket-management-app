@@ -8,6 +8,7 @@ import { DevConfig } from "../../configs";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 import { IUserLoginDto } from "./dto/IUserLogin.dto";
 import { DefaultAdministratorAdapterOptions } from "../administrator/AdministratorService.service";
+import StatusError from "../../common/StatusError";
 
 export default class AuthController extends BaseController {
   public async administratorLogin(req: Request, res: Response) {
@@ -17,20 +18,14 @@ export default class AuthController extends BaseController {
       .getByUsername(data.username, DefaultAdministratorAdapterOptions)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "Administrator account not found!",
-          };
+          throw new StatusError(404, "Administrator account not found!");
         }
 
         return result;
       })
       .then((administrator) => {
         if (!bcrypt.compareSync(data.password, administrator.passwordHash)) {
-          throw {
-            status: 404,
-            message: "Administrator account not found!",
-          };
+          throw new StatusError(404, "Administrator account not found!");
         }
 
         return administrator;
@@ -110,30 +105,21 @@ export default class AuthController extends BaseController {
       .getByEmail(data.email)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "User account not found!",
-          };
+          throw new StatusError(404, "User account not found!");
         }
 
         return result;
       })
       .then((user) => {
         if (!bcrypt.compareSync(data.password, user.passwordHash)) {
-          throw {
-            status: 404,
-            message: "User account not found!",
-          };
+          throw new StatusError(404, "User account not found!");
         }
 
         return user;
       })
       .then((user) => {
         if (!user.isActive) {
-          throw {
-            status: 404,
-            message: "User account is not active!",
-          };
+          throw new StatusError(404, "User account is not active!");
         }
 
         return user;

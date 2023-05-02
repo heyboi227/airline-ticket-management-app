@@ -2,6 +2,7 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
 import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
+import StatusError from "../../common/StatusError";
 
 export default class CountryController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -24,10 +25,7 @@ export default class CountryController extends BaseController {
       .getById(countryId, {})
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The country is not found!",
-          };
+          throw new StatusError(404, "The country is not found!");
         }
 
         res.send(result);
@@ -46,10 +44,7 @@ export default class CountryController extends BaseController {
       .getByName(name)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The country is not found!",
-          };
+          throw new StatusError(404, "The country is not found!");
         }
 
         res.send(result);
@@ -124,10 +119,7 @@ export default class CountryController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The country is not found!",
-          };
+          throw new StatusError(404, "The country is not found!");
         }
       })
       .then(async () => {

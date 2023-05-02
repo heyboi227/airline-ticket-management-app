@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import ITokenData from "../components/auth/dto/ITokenData";
 import * as jwt from "jsonwebtoken";
 import { DevConfig } from "../configs";
+import StatusError from "../common/StatusError";
 
 export default class AuthMiddleware {
   public static getVerifier(
@@ -22,7 +23,7 @@ export default class AuthMiddleware {
       return next();
     }
 
-    const tokenHeader: string = req.headers?.authorization ?? ""; // "Bearer TOKEN"
+    const tokenHeader: string = req.headers?.authorization ?? "";
 
     try {
       const checks = [];
@@ -38,10 +39,10 @@ export default class AuthMiddleware {
       }
 
       if (checks.length === 0) {
-        throw {
-          status: 403,
-          message: "You are not authorized to access this resource!",
-        };
+        throw new StatusError(
+          403,
+          "You are not authorized to access this resource!"
+        );
       }
 
       req.authorization = checks[0];
@@ -58,26 +59,17 @@ export default class AuthMiddleware {
     type: "auth" | "refresh"
   ): ITokenData {
     if (tokenString === "") {
-      throw {
-        status: 400,
-        message: "No token specified!",
-      };
+      throw new StatusError(400, "No token specified!");
     }
 
     const [tokenType, token] = tokenString.trim().split(" ");
 
     if (tokenType !== "Bearer") {
-      throw {
-        status: 401,
-        message: "Invalid token type!",
-      };
+      throw new StatusError(401, "Invalid token type!");
     }
 
     if (typeof token !== "string" || token.length === 0) {
-      throw {
-        status: 401,
-        message: "Token not specified!",
-      };
+      throw new StatusError(401, "Token not specified!");
     }
 
     try {
@@ -87,10 +79,7 @@ export default class AuthMiddleware {
       );
 
       if (!tokenVerification) {
-        throw {
-          status: 401,
-          message: "Invalid token specified!",
-        };
+        throw new StatusError(401, "Invalid token specified!");
       }
 
       const originalTokenData = tokenVerification as ITokenData;
@@ -102,10 +91,7 @@ export default class AuthMiddleware {
       };
 
       if (tokenData.role !== role) {
-        throw {
-          status: 401,
-          message: "Invalid token role!",
-        };
+        throw new StatusError(401, "Invalid token role!");
       }
 
       return tokenData;
@@ -113,16 +99,10 @@ export default class AuthMiddleware {
       const message: string = error?.message ?? "";
 
       if (message.includes("jwt expired")) {
-        throw {
-          status: 401,
-          message: "This token has expired!",
-        };
+        throw new StatusError(401, "This token has expired!");
       }
 
-      throw {
-        status: 500,
-        message: error?.message,
-      };
+      throw new StatusError(500, error?.message);
     }
   }
 }

@@ -21,6 +21,7 @@ import {
   PasswordResetValidator,
 } from "./dto/IPasswordReset.dto";
 import * as generatePassword from "generate-password";
+import StatusError from "../../common/StatusError";
 
 export default class UserController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -55,10 +56,7 @@ export default class UserController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The user is not found!",
-          };
+          throw new StatusError(404, "The user is not found!");
         }
 
         res.send(result);
@@ -168,20 +166,17 @@ export default class UserController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "User not found!",
-          };
+          throw new StatusError(404, "The user is not found!");
         }
 
         return result;
       })
       .then((user) => {
         if (!user.isActive && !user.activationCode) {
-          throw {
-            status: 403,
-            message: "Your account has been deactivated by the administrator!",
-          };
+          throw new StatusError(
+            403,
+            "Your account has been deactivated by the administrator!"
+          );
         }
 
         return user;
@@ -230,16 +225,13 @@ export default class UserController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "User not found!",
-          };
+          throw new StatusError(404, "The user is not found!");
         }
 
         return result;
       })
       .then((result) => {
-        const user = result as UserModel;
+        const user = result;
 
         return this.services.user.editById(user.userId, {
           is_active: 1,
@@ -274,20 +266,17 @@ export default class UserController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "User not found!",
-          };
+          throw new StatusError(404, "The user is not found!");
         }
 
         return result;
       })
       .then((user) => {
         if (!user.isActive && !user.activationCode) {
-          throw {
-            status: 403,
-            message: "Your account has been deactivated by the administrator",
-          };
+          throw new StatusError(
+            403,
+            "Your account has been deactivated by the administrator!"
+          );
         }
 
         return user;
@@ -620,20 +609,17 @@ export default class UserController extends BaseController {
       })
       .then((result) => {
         if (!result) {
-          throw {
-            status: 404,
-            message: "Address not found!",
-          };
+          throw new StatusError(403, "The address is not found!");
         }
 
         return result;
       })
       .then((address) => {
         if (address.userId !== userId) {
-          throw {
-            status: 403,
-            message: "You do not have access to this resource!",
-          };
+          throw new StatusError(
+            403,
+            "You do not have access to this resource!"
+          );
         }
 
         return address;

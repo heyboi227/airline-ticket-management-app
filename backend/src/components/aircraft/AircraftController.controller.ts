@@ -5,6 +5,7 @@ import {
   EditAircraftValidator,
   IEditAircraftDto,
 } from "./dto/IEditAircraft.dto";
+import StatusError from "../../common/StatusError";
 
 export default class AircraftController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -27,10 +28,7 @@ export default class AircraftController extends BaseController {
       .getById(aircraftId, {})
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The aircraft is not found!",
-          };
+          throw new StatusError(404, "The aircraft is not found!");
         }
 
         res.send(result);
@@ -49,10 +47,7 @@ export default class AircraftController extends BaseController {
       .getAllByType(type)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The aircraft are not found!",
-          };
+          throw new StatusError(404, "The aircraft are not found!");
         }
 
         res.send(result);
@@ -71,10 +66,7 @@ export default class AircraftController extends BaseController {
       .getByName(name)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The aircraft is not found!",
-          };
+          throw new StatusError(404, "The aircraft is not found!");
         }
 
         res.send(result);
@@ -151,10 +143,7 @@ export default class AircraftController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The aircraft is not found!",
-          };
+          throw new StatusError(404, "The aircraft is not found!");
         }
       })
       .then(async () => {

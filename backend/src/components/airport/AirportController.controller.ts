@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AddAirportValidator, IAddAirportDto } from "./dto/IAddAirport.dto";
 import { EditAirportValidator, IEditAirportDto } from "./dto/IEditAirport.dto";
 import { DefaultAirportAdapterOptions } from "./AirportService.service";
+import StatusError from "../../common/StatusError";
 
 export default class AirportController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -25,10 +26,7 @@ export default class AirportController extends BaseController {
       .getById(airportId, DefaultAirportAdapterOptions)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airport is not found!",
-          };
+          throw new StatusError(404, "The airport is not found!");
         }
 
         res.send(result);
@@ -47,10 +45,7 @@ export default class AirportController extends BaseController {
       .getByAirportCode(airportCode)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airport is not found!",
-          };
+          throw new StatusError(404, "The airport is not found!");
         }
 
         res.send(result);
@@ -69,10 +64,7 @@ export default class AirportController extends BaseController {
       .getByName(name)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airport is not found!",
-          };
+          throw new StatusError(404, "The airport is not found!");
         }
 
         res.send(result);
@@ -91,10 +83,7 @@ export default class AirportController extends BaseController {
       .getAllByCity(city)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airports are not found!",
-          };
+          throw new StatusError(404, "The airports are not found!");
         }
 
         res.send(result);
@@ -113,10 +102,7 @@ export default class AirportController extends BaseController {
       .getAllByCountryId(countryId)
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airports are not found!",
-          };
+          throw new StatusError(404, "The airports are not found!");
         }
 
         res.send(result);
@@ -152,10 +138,7 @@ export default class AirportController extends BaseController {
       .getById(body.countryId, DefaultAirportAdapterOptions)
       .then((resultCountry) => {
         if (resultCountry === null) {
-          throw {
-            status: 404,
-            message: "The country is not found!",
-          };
+          throw new StatusError(404, "The country is not found!");
         }
 
         return this.services.airport.startTransaction();
@@ -226,10 +209,7 @@ export default class AirportController extends BaseController {
       })
       .then((result) => {
         if (result === null) {
-          throw {
-            status: 404,
-            message: "The airport is not found!",
-          };
+          throw new StatusError(404, "The airport is not found!");
         }
       })
       .then(async () => {
