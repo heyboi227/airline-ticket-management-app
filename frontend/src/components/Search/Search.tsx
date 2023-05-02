@@ -280,6 +280,7 @@ export default function Search() {
             Search
           </button>
         </div>
+        {error && <p className="text-bg-danger">{error}</p>}
       </div>
     </div>
   );
