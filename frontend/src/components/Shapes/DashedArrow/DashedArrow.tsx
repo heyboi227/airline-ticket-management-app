@@ -1,6 +1,6 @@
 import "./DashedArrow.scss";
 
-const DashedArrow: React.FC = () => {
+export default function DashedArrow() {
   return (
     <div className="dashed-arrow-container">
       <svg
@@ -25,6 +25,4 @@ const DashedArrow: React.FC = () => {
       </svg>
     </div>
   );
-};
-
-export default DashedArrow;
+}
