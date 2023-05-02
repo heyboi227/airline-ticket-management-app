@@ -59,8 +59,8 @@ export default function UserDeactivatePage() {
               An account is needed for booking the tickets. All your data will
               be removed, which includes personal information, saved flights,
               your booking history and other. If you have still decided to
-              proceed, the account could be reactivated by contacting our
-              support team.
+              proceed, the account could be further reactivated by contacting
+              our support team.
             </p>
 
             <div className="form-group mb-3">
