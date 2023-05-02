@@ -61,14 +61,6 @@ export default function MenuVisitor() {
             Register
           </Link>
 
-          {/* <Link className="nav-item nav-link" to="/auth/administrator/login">
-            <FontAwesomeIcon icon={faUser} /> Admin login
-          </Link>
-
-          <Link className="nav-item nav-link" to="/contact">
-            <FontAwesomeIcon icon={faContactCard} /> Contact
-          </Link> */}
-
           {role === "user" && (
             <div
               className="nav-item nav-link"

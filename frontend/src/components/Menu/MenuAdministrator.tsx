@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import AppStore from "../../stores/AppStore";
-import React from "react";
 
 export default function MenuAdministrator() {
   const navigate = useNavigate();
