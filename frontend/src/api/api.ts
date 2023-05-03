@@ -18,6 +18,16 @@ interface IApiArguments {
   attemptToRefreshToken: boolean;
 }
 
+class DataError {
+  status: string;
+  data: string;
+
+  constructor(status: string, data: string) {
+    this.status = status;
+    this.data = data;
+  }
+}
+
 export function api(
   method: TApiMethod,
   path: string,
@@ -90,11 +100,7 @@ function handleApiError(
       refreshToken()
         .then((token) => {
           if (!token) {
-            // eslint-disable-next-line no-throw-literal
-            throw {
-              status: "login",
-              data: "Another login attempt is needed!",
-            };
+            throw new DataError("login", "Another login attempt is needed!");
           }
 
           return token;
