@@ -275,7 +275,7 @@ export default function Search() {
             type="button"
             className="btn btn-primary position-absolute"
             style={{ right: "5%" }}
-            onClick={() => doSearchDeparture()}
+            onClick={doSearchDeparture}
           >
             Search
           </button>
