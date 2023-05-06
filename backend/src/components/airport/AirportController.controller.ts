@@ -1,7 +1,11 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import { AddAirportValidator, IAddAirportDto } from "./dto/IAddAirport.dto";
-import { EditAirportValidator, IEditAirportDto } from "./dto/IEditAirport.dto";
+import {
+  EditAirportValidator,
+  IEditAirport,
+  IEditAirportDto,
+} from "./dto/IEditAirport.dto";
 import { DefaultAirportAdapterOptions } from "./AirportService.service";
 import StatusError from "../../common/StatusError";
 
@@ -175,14 +179,24 @@ export default class AirportController extends BaseController {
       return res.status(400).send(EditAirportValidator.errors);
     }
 
+    const serviceData: IEditAirport = {};
+
+    if (data.airportCode !== undefined) {
+      serviceData.airport_code = data.airportCode;
+    }
+
+    if (data.city !== undefined) {
+      serviceData.city = data.city;
+    }
+
+    if (data.name !== undefined) {
+      serviceData.name = data.name;
+    }
+
     this.services.airport
       .startTransaction()
       .then(() => {
-        return this.services.airport.editById(airportId, {
-          airport_code: data.airportCode,
-          name: data.name,
-          city: data.city,
-        });
+        return this.services.airport.editById(airportId, serviceData);
       })
       .then(async (result) => {
         await this.services.airport.commitChanges();
