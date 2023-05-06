@@ -111,6 +111,12 @@ export default function UserLoginPage() {
         </div>
         <span>Forgot your password?</span>&nbsp;
         <Link to="/auth/user/forgot-password">Click here.</Link>
+        <br />
+        <span>
+          <small>
+            <Link to="/auth/administrator/login">Admin login</Link>
+          </small>
+        </span>
         {error && <p className="alert alert-danger">{error}</p>}
       </div>
     </motion.div>
