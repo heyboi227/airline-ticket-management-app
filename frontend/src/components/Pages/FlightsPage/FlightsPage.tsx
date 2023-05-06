@@ -647,7 +647,7 @@ export default function FlightsPage() {
     }
   };
 
-  const currentDate = new Date();
+  const currentDate: Date = new Date(location.state[2]);
 
   return (
     <Container>
@@ -670,7 +670,11 @@ export default function FlightsPage() {
               eventKey={formattedDate}
               title={
                 <TabTitle
-                  title={`${formattedDate} ${minimalPrice} RSD`}
+                  title={
+                    !isDisabled
+                      ? `${formattedDate} ${minimalPrice} RSD`
+                      : `${formattedDate}`
+                  }
                 ></TabTitle>
               }
               disabled={isDisabled}
