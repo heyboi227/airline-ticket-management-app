@@ -27,6 +27,42 @@ export default function AdminDashboard() {
         <div className="card">
           <div className="card-body">
             <div className="card-title">
+              <h2 className="h5">Aircraft</h2>
+            </div>
+            <div className="card-text d-grid gap-3">
+              <Link
+                className="btn btn-primary"
+                to="/admin/dashboard/aircraft/list"
+              >
+                List all
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-12 col-lg-4 col-md-6 col-xl-3 p-3">
+        <div className="card">
+          <div className="card-body">
+            <div className="card-title">
+              <h2 className="h5">Countries</h2>
+            </div>
+            <div className="card-text d-grid gap-3">
+              <Link
+                className="btn btn-primary"
+                to="/admin/dashboard/country/list"
+              >
+                List all
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-12 col-lg-4 col-md-6 col-xl-3 p-3">
+        <div className="card">
+          <div className="card-body">
+            <div className="card-title">
               <h2 className="h5">Flights</h2>
             </div>
             <div className="card-text d-grid gap-3">
@@ -62,6 +98,24 @@ export default function AdminDashboard() {
                   <FontAwesomeIcon icon={faPlusSquare} /> Add
                 </Link>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="col-12 col-lg-4 col-md-6 col-xl-3 p-3">
+        <div className="card">
+          <div className="card-body">
+            <div className="card-title">
+              <h2 className="h5">Travel classes</h2>
+            </div>
+            <div className="card-text d-grid gap-3">
+              <Link
+                className="btn btn-primary"
+                to="/admin/dashboard/travel-class/list"
+              >
+                List all
+              </Link>
             </div>
           </div>
         </div>
