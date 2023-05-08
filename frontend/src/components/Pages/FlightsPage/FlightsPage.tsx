@@ -613,7 +613,7 @@ export default function FlightsPage() {
 
         setTimeout(() => {
           setError("");
-        }, 35000);
+        }, 3500);
 
         return -1;
       }
