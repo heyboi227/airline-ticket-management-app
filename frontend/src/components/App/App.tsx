@@ -1,6 +1,6 @@
 import { Container } from "react-bootstrap";
 import ContactPage from "../Pages/ContactPage/ContactPage";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Menu from "../Menu/Menu";
 import UserLoginPage from "../User/UserLoginPage/UserLoginPage";
 import AdministratorLoginPage from "../Administrator/AdministratorLoginPage/AdministratorLoginPage";
@@ -18,12 +18,14 @@ import FlightsPage from "../Pages/FlightsPage/FlightsPage";
 import AppStore from "../../stores/AppStore";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AdminAirportList from "../Administrator/Dashboard/AdminAirportList";
+import AdminAircraftList from "../Administrator/Dashboard/AdminAircraftList";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
 }
 
 function App() {
+  const location = useLocation();
   return (
     <Container className="mt-4">
       <Menu />
@@ -62,11 +64,15 @@ function App() {
           path="/admin/dashboard/airport/list"
           element={<AdminAirportList />}
         />
+        <Route
+          path="/admin/dashboard/aircraft/list"
+          element={<AdminAircraftList />}
+        />
 
         <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {AppStore.getState().auth.role !== "administrator" && <Footer />}
+      {!location.pathname.includes("/admin/") && <Footer />}
     </Container>
   );
 }
