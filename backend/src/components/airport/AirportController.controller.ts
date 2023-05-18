@@ -153,6 +153,7 @@ export default class AirportController extends BaseController {
           name: body.name,
           city: body.city,
           country_id: body.countryId,
+          time_zone: body.timeZone,
         });
       })
       .then((newAirport) => {
