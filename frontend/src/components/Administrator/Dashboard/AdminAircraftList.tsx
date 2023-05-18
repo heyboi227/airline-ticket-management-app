@@ -65,12 +65,15 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
           {editAircraftTypeVisible && (
             <div>
               <div className="form-group mb-3">
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
+                <select
+                  className="form-select form-select-sm"
                   value={newAircraftType}
                   onChange={(e) => setNewAircraftType(e.target.value)}
-                />
+                >
+                  <option value={""}>Choose a type</option>
+                  <option value={"Wide-body"}>Wide-body</option>
+                  <option value={"Narrow-body"}>Narrow-body</option>
+                </select>
               </div>
 
               {newAircraftType !== props.aircraft.type && (
