@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AddAircraftValidator, IAddAircraftDto } from "./dto/IAddAircraft.dto";
 import {
   EditAircraftValidator,
+  IEditAircraft,
   IEditAircraftDto,
 } from "./dto/IEditAircraft.dto";
 import StatusError from "../../common/StatusError";
@@ -113,13 +114,20 @@ export default class AircraftController extends BaseController {
       return res.status(400).send(EditAircraftValidator.errors);
     }
 
+    const serviceData: IEditAircraft = {};
+
+    if (data.name !== undefined) {
+      serviceData.name = data.name;
+    }
+
+    if (data.type !== undefined) {
+      serviceData.type = data.type;
+    }
+
     this.services.aircraft
       .startTransaction()
       .then(() => {
-        return this.services.aircraft.editById(aircraftId, {
-          type: data.type,
-          name: data.name,
-        });
+        return this.services.aircraft.editById(aircraftId, serviceData);
       })
       .then(async (result) => {
         await this.services.aircraft.commitChanges();
