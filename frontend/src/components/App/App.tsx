@@ -19,6 +19,7 @@ import AppStore from "../../stores/AppStore";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AdminAirportList from "../Administrator/Dashboard/AdminAirportList";
 import AdminAircraftList from "../Administrator/Dashboard/AdminAircraftList";
+import AdminAirportAdd from "../Administrator/Dashboard/AdminAirportAdd";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -64,6 +65,11 @@ function App() {
           path="/admin/dashboard/airport/list"
           element={<AdminAirportList />}
         />
+        <Route
+          path="/admin/dashboard/airport/add"
+          element={<AdminAirportAdd />}
+        />
+
         <Route
           path="/admin/dashboard/aircraft/list"
           element={<AdminAircraftList />}
