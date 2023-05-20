@@ -6,25 +6,25 @@ const ajv = new Ajv();
 addFormats(ajv);
 
 export interface IEditFlightDto {
-  flightCode: string;
-  originAirportId: number;
-  destinationAirportId: number;
-  departureDateAndTime: string;
-  arrivalDateAndTime: string;
-  aircraftId: number;
-  travelClasses: {
+  flightCode?: string;
+  originAirportId?: number;
+  destinationAirportId?: number;
+  departureDateAndTime?: string;
+  arrivalDateAndTime?: string;
+  aircraftId?: number;
+  travelClasses?: {
     travelClassId: number;
     price: number;
   }[];
 }
 
 export interface IEditFlight extends IServiceData {
-  flight_code: string;
-  origin_airport_id: number;
-  destination_airport_id: number;
-  departure_date_and_time: string;
-  arrival_date_and_time: string;
-  aircraft_id: number;
+  flight_code?: string;
+  origin_airport_id?: number;
+  destination_airport_id?: number;
+  departure_date_and_time?: string;
+  arrival_date_and_time?: string;
+  aircraft_id?: number;
 }
 
 const EditFlightValidator = ajv.compile({
@@ -71,15 +71,7 @@ const EditFlightValidator = ajv.compile({
       },
     },
   },
-  required: [
-    "flightCode",
-    "originAirportId",
-    "destinationAirportId",
-    "departureDateAndTime",
-    "arrivalDateAndTime",
-    "aircraftId",
-    "travelClasses",
-  ],
+  required: [],
   additionalProperties: false,
 });
 

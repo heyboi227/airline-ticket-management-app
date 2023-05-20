@@ -21,7 +21,7 @@ export default class CountryService extends BaseService<
     const country = new CountryModel();
 
     country.countryId = +data?.country_id;
-    country.name = data?.name;
+    country.countryName = data?.name;
 
     return country;
   }

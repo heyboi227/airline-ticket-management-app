@@ -4,7 +4,7 @@ import CountryModel from "../country/CountryModel.model";
 export default class AirportModel implements IModel {
   airportId: number;
   airportCode: string;
-  name: string;
+  airportName: string;
   city: string;
   countryId: number;
   timeZone: string;

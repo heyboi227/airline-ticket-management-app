@@ -6,7 +6,11 @@ import {
   IFlightDepartureSearchDto,
   IFlightReturnSearchDto,
 } from "./dto/IAddFlight.dto";
-import { EditFlightValidator, IEditFlightDto } from "./dto/IEditFlight.dto";
+import {
+  EditFlightValidator,
+  IEditFlight,
+  IEditFlightDto,
+} from "./dto/IEditFlight.dto";
 import { DefaultFlightAdapterOptions } from "./FlightService.service";
 import FlightModel from "./FlightModel.model";
 import StatusError from "../../common/StatusError";
@@ -197,20 +201,40 @@ export default class FlightController extends BaseController {
         throw new StatusError(404, "Flight not found!");
       }
 
+      const serviceData: IEditFlight = {};
+
+      if (data.flightCode !== undefined) {
+        serviceData.flight_code = data.flightCode;
+      }
+
+      if (data.originAirportId !== undefined) {
+        serviceData.origin_airport_id = data.originAirportId;
+      }
+
+      if (data.destinationAirportId !== undefined) {
+        serviceData.destination_airport_id = data.destinationAirportId;
+      }
+
+      if (data.departureDateAndTime !== undefined) {
+        serviceData.departure_date_and_time = data.departureDateAndTime;
+      }
+
+      if (data.arrivalDateAndTime !== undefined) {
+        serviceData.arrival_date_and_time = data.arrivalDateAndTime;
+      }
+
+      if (data.aircraftId !== undefined) {
+        serviceData.aircraft_id = data.aircraftId;
+      }
+
       await this.services.flight.startTransaction();
 
-      const travelClassIds = this.getTravelClassIds(result, data);
+      if (data.travelClasses !== undefined) {
+        const travelClassIds = this.getTravelClassIds(result, data);
+        await this.updateTravelClasses(result, data, travelClassIds);
+      }
 
-      await this.updateTravelClasses(result, data, travelClassIds);
-
-      await this.services.flight.editById(result.flightId, {
-        flight_code: data.flightCode,
-        origin_airport_id: data.originAirportId,
-        destination_airport_id: data.destinationAirportId,
-        departure_date_and_time: data.departureDateAndTime,
-        arrival_date_and_time: data.arrivalDateAndTime,
-        aircraft_id: data.aircraftId,
-      });
+      await this.services.flight.editById(result.flightId, serviceData);
 
       await this.services.flight.commitChanges();
 

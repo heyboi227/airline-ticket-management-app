@@ -29,7 +29,7 @@ export default class AirportService extends BaseService<
 
     airport.airportId = +data?.airport_id;
     airport.airportCode = data?.airport_code;
-    airport.name = data?.name;
+    airport.airportName = data?.name;
     airport.city = data?.city;
     airport.countryId = +data?.country_id;
     airport.timeZone = data?.time_zone;

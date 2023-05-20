@@ -67,7 +67,7 @@ export default class CountryController extends BaseController {
       .startTransaction()
       .then(() => {
         return this.services.country.add({
-          name: body.name,
+          name: body.countryName,
         });
       })
       .then(async (result) => {
@@ -94,7 +94,7 @@ export default class CountryController extends BaseController {
       .startTransaction()
       .then(() => {
         return this.services.country.editById(countryId, {
-          name: data.name,
+          name: data.countryName,
         });
       })
       .then(async (result) => {

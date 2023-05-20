@@ -4,30 +4,30 @@ import IServiceData from "../../../common/IServiceData.interface";
 const ajv = new Ajv();
 
 export default interface IEditTravelClass extends IServiceData {
-  name: string;
-  subname: string;
+  name?: string;
+  subname?: string;
 }
 
 interface IEditTravelClassDto {
-  name: string;
-  subname: string;
+  travelClassName?: string;
+  travelClassSubname?: string;
 }
 
 const EditTravelClassValidator = ajv.compile({
   type: "object",
   properties: {
-    name: {
+    travelClassName: {
       type: "string",
       minLength: 2,
       maxLength: 64,
     },
-    subname: {
+    travelClassSubname: {
       type: "string",
       minLength: 2,
       maxLength: 64,
     },
   },
-  required: ["name", "subname"],
+  required: [],
   additionalProperties: false,
 });
 

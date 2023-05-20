@@ -5,7 +5,7 @@ const ajv = new Ajv();
 
 export interface IAddAirportDto {
   airportCode: string;
-  name: string;
+  airportName: string;
   city: string;
   countryId: number;
   timeZone: string;
@@ -27,7 +27,7 @@ const AddAirportValidator = ajv.compile({
       minLength: 3,
       maxLength: 3,
     },
-    name: {
+    airportName: {
       type: "string",
       minLength: 2,
       maxLength: 128,
@@ -46,7 +46,7 @@ const AddAirportValidator = ajv.compile({
       maxLength: 128,
     },
   },
-  required: ["airportCode", "name", "city", "countryId", "timeZone"],
+  required: ["airportCode", "airportName", "city", "countryId", "timeZone"],
   additionalProperties: false,
 });
 

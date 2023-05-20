@@ -6,22 +6,22 @@ const ajv = new Ajv();
 addFormats(ajv);
 
 export interface IEditAddressDto {
-  streetAndNumber: string;
-  zipCode: number;
-  city: string;
-  countryId: number;
-  phoneNumber: string;
+  streetAndNumber?: string;
+  zipCode?: number;
+  city?: string;
+  countryId?: number;
+  phoneNumber?: string;
   isActive?: boolean;
 }
 
 export interface IEditAddress extends IServiceData {
-  user_id: number;
-  street_and_number: string;
-  zip_code: number;
-  city: string;
-  country_id: number;
-  phone_number: string;
-  is_active: number;
+  user_id?: number;
+  street_and_number?: string;
+  zip_code?: number;
+  city?: string;
+  country_id?: number;
+  phone_number?: string;
+  is_active?: number;
 }
 
 const EditAddressValidator = ajv.compile({
@@ -51,7 +51,7 @@ const EditAddressValidator = ajv.compile({
       type: "boolean",
     },
   },
-  required: ["streetAndNumber", "zipCode", "city", "countryId", "phoneNumber"],
+  required: [],
   additionalProperties: false,
 });
 

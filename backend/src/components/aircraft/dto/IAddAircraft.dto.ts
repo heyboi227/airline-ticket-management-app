@@ -4,8 +4,8 @@ import IServiceData from "../../../common/IServiceData.interface";
 const ajv = new Ajv();
 
 export interface IAddAircraftDto {
-  type: string;
-  name: string;
+  aircraftType: string;
+  aircraftName: string;
 }
 
 export interface IAddAircraft extends IServiceData {
@@ -16,16 +16,16 @@ export interface IAddAircraft extends IServiceData {
 const AddAircraftValidator = ajv.compile({
   type: "object",
   properties: {
-    type: {
+    aircraftType: {
       type: "string",
     },
-    name: {
+    aircraftName: {
       type: "string",
       minLength: 2,
       maxLength: 128,
     },
   },
-  required: ["type", "name"],
+  required: ["aircraftType", "aircraftName"],
   additionalProperties: false,
 });
 

@@ -7,7 +7,7 @@ addFormats(ajv);
 
 export interface IAddDocumentDto {
   countryId: number;
-  type: string;
+  documentType: string;
   documentNumber: string;
   userId: number;
 }
@@ -25,7 +25,7 @@ const AddDocumentValidator = ajv.compile({
     countryId: {
       type: "number",
     },
-    type: {
+    documentType: {
       type: "string",
       minLength: 8,
       maxLength: 12,
@@ -39,7 +39,7 @@ const AddDocumentValidator = ajv.compile({
       type: "number",
     },
   },
-  required: ["countryId", "type", "documentNumber", "userId"],
+  required: ["countryId", "documentType", "documentNumber", "userId"],
   additionalProperties: false,
 });
 

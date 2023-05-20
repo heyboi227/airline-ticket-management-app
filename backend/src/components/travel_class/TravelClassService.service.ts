@@ -23,8 +23,8 @@ export default class TravelClassService extends BaseService<
     const travelClass = new TravelClassModel();
 
     travelClass.travelClassId = +data?.travel_class_id;
-    travelClass.name = data?.name;
-    travelClass.subname = data?.subname;
+    travelClass.travelClassName = data?.name;
+    travelClass.travelClassSubname = data?.subname;
 
     return travelClass;
   }
@@ -52,8 +52,8 @@ export default class TravelClassService extends BaseService<
               return {
                 travelClass: {
                   travelClassId: row.travel_class_id,
-                  name: travelClass.name,
-                  subname: travelClass.subname,
+                  travelClassName: travelClass.travelClassName,
+                  travelClassSubname: travelClass.travelClassSubname,
                 },
                 price: row.price,
                 isActive: row.is_active === 1,
@@ -92,8 +92,8 @@ export default class TravelClassService extends BaseService<
               return {
                 travelClass: {
                   travelClassId: row.travel_class_id,
-                  name: travelClass.name,
-                  subname: travelClass.subname,
+                  travelClassName: travelClass.travelClassName,
+                  travelClassSubname: travelClass.travelClassSubname,
                 },
                 price: row.price,
                 isActive: row.is_active === 1,

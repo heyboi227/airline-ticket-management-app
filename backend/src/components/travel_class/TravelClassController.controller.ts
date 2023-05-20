@@ -3,8 +3,9 @@ import { Request, Response } from "express";
 import IAddTravelClassDto, {
   AddTravelClassValidator,
 } from "./dto/IAddTravelClass.dto";
-import IEditTravelClassDto, {
+import IEditTravelClass, {
   EditTravelClassValidator,
+  IEditTravelClassDto,
 } from "./dto/IEditTravelClass.dto";
 import StatusError from "../../common/StatusError";
 
@@ -76,6 +77,16 @@ export default class TravelClassController extends BaseController {
       return res.status(400).send(EditTravelClassValidator.errors);
     }
 
+    const serviceData: IEditTravelClass = {};
+
+    if (data.travelClassName !== undefined) {
+      serviceData.name = data.travelClassName;
+    }
+
+    if (data.travelClassSubname !== undefined) {
+      serviceData.subname = data.travelClassSubname;
+    }
+
     this.services.travelClass
       .getById(travelClassId, {})
       .then((result) => {
@@ -84,7 +95,7 @@ export default class TravelClassController extends BaseController {
         }
       })
       .then(() => {
-        return this.services.travelClass.editById(travelClassId, data);
+        return this.services.travelClass.editById(travelClassId, serviceData);
       })
       .then((travelClass) => {
         res.send(travelClass);

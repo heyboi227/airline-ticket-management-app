@@ -1,4 +1,8 @@
-import { EditAddressValidator, IEditAddressDto } from "./dto/IEditAddress.dto";
+import {
+  EditAddressValidator,
+  IEditAddress,
+  IEditAddressDto,
+} from "./dto/IEditAddress.dto";
 import { AddAddressValidator, IAddAddressDto } from "./dto/IAddAddress.dto";
 import { Request, Response } from "express";
 import BaseController from "../../common/BaseController";
@@ -599,6 +603,32 @@ export default class UserController extends BaseController {
       return res.status(400).send(EditAddressValidator.errors);
     }
 
+    const serviceData: IEditAddress = {};
+
+    if (data.streetAndNumber !== undefined) {
+      serviceData.street_and_number = data.streetAndNumber;
+    }
+
+    if (data.zipCode !== undefined) {
+      serviceData.zip_code = data.zipCode;
+    }
+
+    if (data.city !== undefined) {
+      serviceData.city = data.city;
+    }
+
+    if (data.phoneNumber !== undefined) {
+      serviceData.phone_number = data.phoneNumber;
+    }
+
+    if (data.countryId !== undefined) {
+      serviceData.country_id = data.countryId;
+    }
+
+    if (data.isActive !== undefined) {
+      serviceData.is_active = +data.isActive;
+    }
+
     this.services.address
       .startTransaction()
       .then(() => {
@@ -624,23 +654,11 @@ export default class UserController extends BaseController {
 
         return address;
       })
-      .then((address) => {
-        return this.services.address.editById(
-          addressId,
-          {
-            street_and_number: data.streetAndNumber,
-            zip_code: data.zipCode,
-            city: data.city,
-            country_id: data.countryId,
-            phone_number: data.phoneNumber,
-            user_id: userId,
-            is_active: data?.isActive ?? address.isActive ? 1 : 0,
-          },
-          {
-            loadUserData: true,
-            loadCountryData: false,
-          }
-        );
+      .then(() => {
+        return this.services.address.editById(addressId, serviceData, {
+          loadUserData: true,
+          loadCountryData: false,
+        });
       })
       .then(async (address) => {
         await this.services.address.commitChanges();

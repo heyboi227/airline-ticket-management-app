@@ -6,7 +6,7 @@ const ajv = new Ajv();
 addFormats(ajv);
 
 export interface IEditCountryDto {
-  name: string;
+  countryName: string;
 }
 
 export interface IEditCountry extends IServiceData {
@@ -16,13 +16,13 @@ export interface IEditCountry extends IServiceData {
 const EditCountryValidator = ajv.compile({
   type: "object",
   properties: {
-    name: {
+    countryName: {
       type: "string",
       minLength: 2,
       maxLength: 128,
     },
   },
-  required: ["name"],
+  required: ["countryName"],
   additionalProperties: false,
 });
 

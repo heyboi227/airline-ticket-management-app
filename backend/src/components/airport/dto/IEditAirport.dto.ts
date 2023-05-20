@@ -5,7 +5,7 @@ const ajv = new Ajv();
 
 export interface IEditAirportDto {
   airportCode?: string;
-  name?: string;
+  airportName?: string;
   city?: string;
 }
 
@@ -23,7 +23,7 @@ const EditAirportValidator = ajv.compile({
       minLength: 3,
       maxLength: 3,
     },
-    name: {
+    airportName: {
       type: "string",
       minLength: 2,
       maxLength: 128,
