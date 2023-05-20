@@ -224,7 +224,7 @@ export default function AdminAirportAdd() {
                   <option value="">Choose a country</option>
                   {countries.map((country) => (
                     <option value={country.countryId} key={country.countryId}>
-                      {country.name}
+                      {country.countryName}
                     </option>
                   ))}
                 </select>

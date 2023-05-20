@@ -87,7 +87,7 @@ function ClassPricesDrawer(props: IClassPricesDrawerProps) {
             <span style={{ fontSize: "1.5vw" }}>
               {props.flight.travelClasses
                 ?.filter((travelClass) =>
-                  travelClass.travelClass.name.includes(props.travelClassName)
+                  travelClass.travelClass.travelClassName.includes(props.travelClassName)
                 )
                 .map((travelClass) => travelClass.price)
                 .reduce((smallestPrice: number, currentPrice: number) => {
@@ -228,7 +228,7 @@ const ClassPrices = (props: IClassPricesProps) => {
           >
             {props.flight.travelClasses
               ?.filter((travelClass) =>
-                travelClass.travelClass.name.includes(props.travelClassName)
+                travelClass.travelClass.travelClassName.includes(props.travelClassName)
               )
               .map((travelClass, index) => (
                 <div
@@ -241,11 +241,11 @@ const ClassPrices = (props: IClassPricesProps) => {
                     style={{ position: "relative" }}
                   >
                     <h2 className="card-title">
-                      {travelClass.travelClass.subname}
+                      {travelClass.travelClass.travelClassSubname}
                     </h2>
                     <div className="card-text">
                       {renderTextForSubTravelClasses(
-                        travelClass.travelClass.subname
+                        travelClass.travelClass.travelClassSubname
                       )}
                       <h1 style={{ position: "absolute", bottom: 0 }}>
                         {travelClass.price} RSD
@@ -349,7 +349,7 @@ function FlightRow(props: IFlightRowProps) {
             />
             <span>{props.flight.flightCode}</span>
           </div>
-          <span>{props.flight.aircraft?.name}</span>
+          <span>{props.flight.aircraft?.aircraftName}</span>
         </div>
         <ClassPricesDrawer
           travelClassName={"Economy"}

@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAircraft from "../../../models/IAircraft.model";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 
 interface IAdminAircraftRowProperties {
   aircraft: IAircraft;
@@ -14,9 +17,9 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
   const [editNameVisible, setEditNameVisible] = useState<boolean>(false);
 
   const [newAircraftType, setNewAircraftType] = useState<string>(
-    props.aircraft.type
+    props.aircraft.aircraftType
   );
-  const [newName, setNewName] = useState<string>(props.aircraft.name);
+  const [newName, setNewName] = useState<string>(props.aircraft.aircraftName);
 
   function doEditAircraftType() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
@@ -51,7 +54,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
         <td>
           {!editAircraftTypeVisible && (
             <div className="row">
-              <span className="col col-4">{props.aircraft.type}</span>
+              <span className="col col-4">{props.aircraft.aircraftType}</span>
               <div className="col col-4">
                 <button
                   className="btn btn-primary btn-sm"
@@ -76,7 +79,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
                 </select>
               </div>
 
-              {newAircraftType !== props.aircraft.type && (
+              {newAircraftType !== props.aircraft.aircraftType && (
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={() => doEditAircraftType()}
@@ -88,7 +91,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewAircraftType(props.aircraft.type);
+                  setNewAircraftType(props.aircraft.aircraftType);
                   setEditAircraftTypeVisible(false);
                 }}
               >
@@ -100,7 +103,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
         <td>
           {!editNameVisible && (
             <div className="row">
-              <span className="col col-4">{props.aircraft.name}</span>
+              <span className="col col-4">{props.aircraft.aircraftName}</span>
               <div className="col col-4">
                 <button
                   className="btn btn-primary btn-sm"
@@ -122,7 +125,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
                 />
               </div>
 
-              {newName !== props.aircraft.name && (
+              {newName !== props.aircraft.aircraftName && (
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={() => doEditName()}
@@ -134,7 +137,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewName(props.aircraft.name);
+                  setNewName(props.aircraft.aircraftName);
                   setEditNameVisible(false);
                 }}
               >
@@ -168,25 +171,35 @@ export default function AdminAircraftList() {
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
       {!errorMessage && (
-        <table className="table table-sm table-hover aircraft-list">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Aircraft type</th>
-              <th>Aircraft name</th>
-            </tr>
-          </thead>
-          <tbody>
-            {aircraft.map((aircraft) => (
-              <AdminAircraftRow
-                key={"aircraft" + aircraft.aircraftId}
-                aircraft={aircraft}
-                loadAircraft={loadAircraft}
-                setErrorMessage={setErrorMessage}
-              />
-            ))}
-          </tbody>
-        </table>
+        <>
+          <div>
+            <Link
+              className="btn btn-sm btn-success"
+              to={"/admin/dashboard/aircraft/add"}
+            >
+              <FontAwesomeIcon icon={faPlusSquare} /> Add aircraft
+            </Link>
+          </div>
+          <table className="table table-sm table-hover aircraft-list">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Aircraft type</th>
+                <th>Aircraft name</th>
+              </tr>
+            </thead>
+            <tbody>
+              {aircraft.map((aircraft) => (
+                <AdminAircraftRow
+                  key={"aircraft" + aircraft.aircraftId}
+                  aircraft={aircraft}
+                  loadAircraft={loadAircraft}
+                  setErrorMessage={setErrorMessage}
+                />
+              ))}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );

@@ -15,13 +15,16 @@ interface IAdminAirportRowProperties {
 function AdminAirportRow(props: IAdminAirportRowProperties) {
   const [editAirportCodeVisible, setEditAirportCodeVisible] =
     useState<boolean>(false);
-  const [editNameVisible, setEditNameVisible] = useState<boolean>(false);
+  const [editAirportNameVisible, setEditAirportNameVisible] =
+    useState<boolean>(false);
   const [editCityVisible, setEditCityVisible] = useState<boolean>(false);
 
   const [newAirportCode, setNewAirportCode] = useState<string>(
     props.airport.airportCode
   );
-  const [newName, setNewName] = useState<string>(props.airport.name);
+  const [newAirportName, setNewAirportName] = useState<string>(
+    props.airport.airportName
+  );
   const [newCity, setNewCity] = useState<string>(props.airport.city);
 
   function doEditAirportCode() {
@@ -37,16 +40,16 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
     });
   }
 
-  function doEditName() {
+  function doEditAirportName() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
-      name: newName,
+      airportAirportName: newAirportName,
     }).then((res) => {
       if (res.status === "error") {
         return props.setErrorMessage(res.data + "");
       }
 
       props.loadAirports();
-      setEditNameVisible(false);
+      setEditAirportNameVisible(false);
     });
   }
 
@@ -114,34 +117,34 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
           )}
         </td>
         <td>
-          {!editNameVisible && (
+          {!editAirportNameVisible && (
             <div className="row">
-              <span className="col col-4">{props.airport.name}</span>
+              <span className="col col-4">{props.airport.airportName}</span>
               <div className="col col-4">
                 <button
                   className="btn btn-primary btn-sm"
-                  onClick={() => setEditNameVisible(true)}
+                  onClick={() => setEditAirportNameVisible(true)}
                 >
                   Edit
                 </button>
               </div>
             </div>
           )}
-          {editNameVisible && (
+          {editAirportNameVisible && (
             <div>
               <div className="form-group mb-3">
                 <input
                   type="text"
                   className="form-control form-control-sm"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
+                  value={newAirportName}
+                  onChange={(e) => setNewAirportName(e.target.value)}
                 />
               </div>
 
-              {newName !== props.airport.name && (
+              {newAirportName !== props.airport.airportName && (
                 <button
                   className="btn btn-sm btn-primary"
-                  onClick={() => doEditName()}
+                  onClick={() => doEditAirportName()}
                 >
                   Edit
                 </button>
@@ -150,8 +153,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewName(props.airport.name);
-                  setEditNameVisible(false);
+                  setNewAirportName(props.airport.airportName);
+                  setEditAirportNameVisible(false);
                 }}
               >
                 Cancel
@@ -184,7 +187,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
                 />
               </div>
 
-              {newCity !== props.airport.name && (
+              {newCity !== props.airport.airportName && (
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={() => doEditCity()}
@@ -196,7 +199,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewCity(props.airport.name);
+                  setNewCity(props.airport.airportName);
                   setEditCityVisible(false);
                 }}
               >
@@ -207,7 +210,9 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         </td>
         <td>
           <div className="row">
-            <span className="col col-4">{props.airport.country?.name}</span>
+            <span className="col col-4">
+              {props.airport.country?.countryName}
+            </span>
           </div>
         </td>
       </tr>

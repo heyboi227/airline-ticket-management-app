@@ -22,7 +22,7 @@ export function formatAddress(address: IAddress): string {
     " " +
     address.city +
     ", " +
-    address.country?.name +
+    address.country?.countryName +
     " (" +
     address.phoneNumber +
     ")"

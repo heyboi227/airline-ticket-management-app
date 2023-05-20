@@ -20,6 +20,9 @@ import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AdminAirportList from "../Administrator/Dashboard/AdminAirportList";
 import AdminAircraftList from "../Administrator/Dashboard/AdminAircraftList";
 import AdminAirportAdd from "../Administrator/Dashboard/AdminAirportAdd";
+import AdminAircraftAdd from "../Administrator/Dashboard/AdminAircraftAdd";
+import AdminCountryList from "../Administrator/Dashboard/AdminCountryList";
+import AdminCountryAdd from "../Administrator/Dashboard/AdminCountryAdd";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -73,6 +76,19 @@ function App() {
         <Route
           path="/admin/dashboard/aircraft/list"
           element={<AdminAircraftList />}
+        />
+        <Route
+          path="/admin/dashboard/aircraft/add"
+          element={<AdminAircraftAdd />}
+        />
+
+        <Route
+          path="/admin/dashboard/country/list"
+          element={<AdminCountryList />}
+        />
+        <Route
+          path="/admin/dashboard/country/add"
+          element={<AdminCountryAdd />}
         />
 
         <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />

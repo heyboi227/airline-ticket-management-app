@@ -59,7 +59,7 @@ function AirportInput({
     setQuery(
       result.city +
         ", " +
-        result.country?.name +
+        result.country?.countryName +
         " (" +
         result.airportCode +
         ")"
@@ -92,9 +92,9 @@ function AirportInput({
                 className="list-group-item"
                 onClick={() => handleClick(result)}
               >
-                {result.city}, {result.country?.name} ({result.airportCode})
+                {result.city}, {result.country?.countryName} ({result.airportCode})
                 <br />
-                <small>{result.name}</small>
+                <small>{result.airportName}</small>
               </li>
             ))}
           </ul>
