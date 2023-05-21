@@ -3,6 +3,11 @@ export function localDateFormat(date: string): string {
   return dateInstance.toLocaleDateString();
 }
 
+export function localDateTimeFormat(date: string): string {
+  const dateInstance = new Date(date);
+  return dateInstance.toLocaleString("sr-RS");
+}
+
 export function getYear(): number {
   return new Date().getFullYear();
 }
@@ -37,6 +42,20 @@ function stringToTime(time: string, baseDate: Date): Date {
   newDate.setMilliseconds(0);
 
   return newDate;
+}
+
+export function formatDateTime(date: Date, timeZone: string): string {
+  const dateTimeFormatter = new Intl.DateTimeFormat("sr-RS", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: timeZone,
+  });
+
+  return dateTimeFormatter.format(date);
 }
 
 export function formatTime(date: Date, timeZone: string): string {
