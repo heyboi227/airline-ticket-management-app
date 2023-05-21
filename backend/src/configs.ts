@@ -13,6 +13,17 @@ import DocumentRouter from "./components/document/DocumentRouter.Router";
 import FlightRouter from "./components/flight/FlightRouter.Router";
 import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
 
+const offsetToMySQL = (): string => {
+  const offsetInMinutes = new Date().getTimezoneOffset();
+
+  const offsetHours = -offsetInMinutes / 60;
+  const offsetSign = offsetHours >= 0 ? "+" : "-";
+  const offset =
+    offsetSign + String(Math.abs(offsetHours)).padStart(2, "0") + ":00";
+
+  return offset;
+};
+
 const DevConfig: IConfig = {
   server: {
     port: 10000,
@@ -33,7 +44,7 @@ const DevConfig: IConfig = {
     password: process.env.DATABASE_PASSWORD,
     database: "diplomski_app",
     charset: "utf8",
-    timezone: "+01:00",
+    timezone: offsetToMySQL(),
     supportBigNumbers: true,
   },
   routers: [
