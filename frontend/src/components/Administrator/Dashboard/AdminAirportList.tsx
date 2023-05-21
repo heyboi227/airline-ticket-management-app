@@ -2,9 +2,6 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAirport from "../../../models/IAirport.model";
 import ICountry from "../../../models/ICountry.model";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
-import { Link } from "react-router-dom";
 
 interface IAdminAirportRowProperties {
   airport: IAirport;
@@ -383,38 +380,28 @@ export default function AdminAirportList() {
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
       {!errorMessage && (
-        <>
-          <div>
-            <Link
-              className="btn btn-sm btn-success"
-              to={"/admin/dashboard/airport/add"}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} /> Add airport
-            </Link>
-          </div>
-          <table className="table table-sm table-hover airport-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Airport code</th>
-                <th>Airport name</th>
-                <th>City</th>
-                <th>Country</th>
-                <th>Time zone</th>
-              </tr>
-            </thead>
-            <tbody>
-              {airports.map((airport) => (
-                <AdminAirportRow
-                  key={"airport" + airport.airportId}
-                  airport={airport}
-                  loadAirports={loadAirports}
-                  setErrorMessage={setErrorMessage}
-                />
-              ))}
-            </tbody>
-          </table>
-        </>
+        <table className="table table-sm table-hover airport-list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Airport code</th>
+              <th>Airport name</th>
+              <th>City</th>
+              <th>Country</th>
+              <th>Time zone</th>
+            </tr>
+          </thead>
+          <tbody>
+            {airports.map((airport) => (
+              <AdminAirportRow
+                key={"airport" + airport.airportId}
+                airport={airport}
+                loadAirports={loadAirports}
+                setErrorMessage={setErrorMessage}
+              />
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

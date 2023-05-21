@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import ICountry from "../../../models/ICountry.model";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 
 interface IAdminCountryRowProperties {
   country: ICountry;
@@ -107,34 +104,24 @@ export default function AdminCountryList() {
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
       {!errorMessage && (
-        <>
-          <div>
-            <Link
-              className="btn btn-sm btn-success"
-              to={"/admin/dashboard/country/add"}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} /> Add country
-            </Link>
-          </div>
-          <table className="table table-sm table-hover country-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Country name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {country.map((country) => (
-                <AdminCountryRow
-                  key={"country" + country.countryId}
-                  country={country}
-                  loadCountry={loadCountry}
-                  setErrorMessage={setErrorMessage}
-                />
-              ))}
-            </tbody>
-          </table>
-        </>
+        <table className="table table-sm table-hover country-list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Country name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {country.map((country) => (
+              <AdminCountryRow
+                key={"country" + country.countryId}
+                country={country}
+                loadCountry={loadCountry}
+                setErrorMessage={setErrorMessage}
+              />
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAircraft from "../../../models/IAircraft.model";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlusSquare } from "@fortawesome/free-regular-svg-icons";
 
 interface IAdminAircraftRowProperties {
   aircraft: IAircraft;
@@ -171,35 +168,25 @@ export default function AdminAircraftList() {
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
       {!errorMessage && (
-        <>
-          <div>
-            <Link
-              className="btn btn-sm btn-success"
-              to={"/admin/dashboard/aircraft/add"}
-            >
-              <FontAwesomeIcon icon={faPlusSquare} /> Add aircraft
-            </Link>
-          </div>
-          <table className="table table-sm table-hover aircraft-list">
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Aircraft type</th>
-                <th>Aircraft name</th>
-              </tr>
-            </thead>
-            <tbody>
-              {aircraft.map((aircraft) => (
-                <AdminAircraftRow
-                  key={"aircraft" + aircraft.aircraftId}
-                  aircraft={aircraft}
-                  loadAircraft={loadAircraft}
-                  setErrorMessage={setErrorMessage}
-                />
-              ))}
-            </tbody>
-          </table>
-        </>
+        <table className="table table-sm table-hover aircraft-list">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Aircraft type</th>
+              <th>Aircraft name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {aircraft.map((aircraft) => (
+              <AdminAircraftRow
+                key={"aircraft" + aircraft.aircraftId}
+                aircraft={aircraft}
+                loadAircraft={loadAircraft}
+                setErrorMessage={setErrorMessage}
+              />
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

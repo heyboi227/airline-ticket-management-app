@@ -11,13 +11,21 @@ export default function AdminDashboard() {
             <div className="card-title">
               <h2 className="h5">Airports</h2>
             </div>
-            <div className="card-text d-grid gap-3">
-              <Link
-                className="btn btn-primary"
-                to="/admin/dashboard/airport/list"
-              >
-                List all
-              </Link>
+            <div className="card-text">
+              <div className="btn-group w-100">
+                <Link
+                  className="btn btn-primary"
+                  to="/admin/dashboard/airport/list"
+                >
+                  List all
+                </Link>
+                <Link
+                  className="btn btn-success"
+                  to="/admin/dashboard/airport/add"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} /> Add
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -29,13 +37,21 @@ export default function AdminDashboard() {
             <div className="card-title">
               <h2 className="h5">Aircraft</h2>
             </div>
-            <div className="card-text d-grid gap-3">
-              <Link
-                className="btn btn-primary"
-                to="/admin/dashboard/aircraft/list"
-              >
-                List all
-              </Link>
+            <div className="card-text">
+              <div className="btn-group w-100">
+                <Link
+                  className="btn btn-primary"
+                  to="/admin/dashboard/aircraft/list"
+                >
+                  List all
+                </Link>
+                <Link
+                  className="btn btn-success"
+                  to="/admin/dashboard/aircraft/add"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} /> Add
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -47,13 +63,21 @@ export default function AdminDashboard() {
             <div className="card-title">
               <h2 className="h5">Countries</h2>
             </div>
-            <div className="card-text d-grid gap-3">
-              <Link
-                className="btn btn-primary"
-                to="/admin/dashboard/country/list"
-              >
-                List all
-              </Link>
+            <div className="card-text">
+              <div className="btn-group w-100">
+                <Link
+                  className="btn btn-primary"
+                  to="/admin/dashboard/country/list"
+                >
+                  List all
+                </Link>
+                <Link
+                  className="btn btn-success"
+                  to="/admin/dashboard/country/add"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} /> Add
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -65,13 +89,21 @@ export default function AdminDashboard() {
             <div className="card-title">
               <h2 className="h5">Flights</h2>
             </div>
-            <div className="card-text d-grid gap-3">
-              <Link
-                className="btn btn-primary"
-                to="/admin/dashboard/flight/list"
-              >
-                List all
-              </Link>
+            <div className="card-text">
+              <div className="btn-group w-100">
+                <Link
+                  className="btn btn-primary"
+                  to="/admin/dashboard/flight/list"
+                >
+                  List all
+                </Link>
+                <Link
+                  className="btn btn-success"
+                  to="/admin/dashboard/flight/add"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} /> Add
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -109,13 +141,21 @@ export default function AdminDashboard() {
             <div className="card-title">
               <h2 className="h5">Travel classes</h2>
             </div>
-            <div className="card-text d-grid gap-3">
-              <Link
-                className="btn btn-primary"
-                to="/admin/dashboard/travel-class/list"
-              >
-                List all
-              </Link>
+            <div className="card-text">
+              <div className="btn-group w-100">
+                <Link
+                  className="btn btn-primary"
+                  to="/admin/dashboard/travel-class/list"
+                >
+                  List all
+                </Link>
+                <Link
+                  className="btn btn-success"
+                  to="/admin/dashboard/travel-class/add"
+                >
+                  <FontAwesomeIcon icon={faPlusSquare} /> Add
+                </Link>
+              </div>
             </div>
           </div>
         </div>
