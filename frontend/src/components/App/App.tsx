@@ -23,6 +23,7 @@ import AdminAirportAdd from "../Administrator/Dashboard/AdminAirportAdd";
 import AdminAircraftAdd from "../Administrator/Dashboard/AdminAircraftAdd";
 import AdminCountryList from "../Administrator/Dashboard/AdminCountryList";
 import AdminCountryAdd from "../Administrator/Dashboard/AdminCountryAdd";
+import AdminFlightList from "../Administrator/Dashboard/AdminFlightList";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -89,6 +90,11 @@ function App() {
         <Route
           path="/admin/dashboard/country/add"
           element={<AdminCountryAdd />}
+        />
+
+        <Route
+          path="/admin/dashboard/flight/list"
+          element={<AdminFlightList />}
         />
 
         <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />
