@@ -18,6 +18,10 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
   const [editAirportNameVisible, setEditAirportNameVisible] =
     useState<boolean>(false);
   const [editCityVisible, setEditCityVisible] = useState<boolean>(false);
+  const [editCountryIdVisible, setEditCountryIdVisible] =
+    useState<boolean>(false);
+  const [editTimeZoneVisible, setEditTimeZoneVisible] =
+    useState<boolean>(false);
 
   const [newAirportCode, setNewAirportCode] = useState<string>(
     props.airport.airportCode
@@ -26,6 +30,24 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
     props.airport.airportName
   );
   const [newCity, setNewCity] = useState<string>(props.airport.city);
+  const [newCountryId, setNewCountryId] = useState<number>(
+    props.airport.countryId
+  );
+  const [newTimeZone, setNewTimeZone] = useState<string>(
+    props.airport.timeZone
+  );
+
+  const [countries, setCountries] = useState<ICountry[]>([]);
+
+  function loadCountries() {
+    api("get", "/api/country", "administrator").then((res) => {
+      if (res.status === "error") {
+        return props.setErrorMessage(res.data + "");
+      }
+
+      setCountries(res.data);
+    });
+  }
 
   function doEditAirportCode() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
@@ -66,6 +88,32 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
     });
   }
 
+  function doEditCountryId() {
+    api("put", "/api/airport/" + props.airport.airportId, "administrator", {
+      countryId: newCountryId,
+    }).then((res) => {
+      if (res.status === "error") {
+        return props.setErrorMessage(res.data + "");
+      }
+
+      props.loadAirports();
+      setEditCityVisible(false);
+    });
+  }
+
+  function doEditTimeZone() {
+    api("put", "/api/airport/" + props.airport.airportId, "administrator", {
+      timeZone: newTimeZone,
+    }).then((res) => {
+      if (res.status === "error") {
+        return props.setErrorMessage(res.data + "");
+      }
+
+      props.loadAirports();
+      setEditTimeZoneVisible(false);
+    });
+  }
+
   return (
     <>
       <tr>
@@ -73,8 +121,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editAirportCodeVisible && (
             <div className="row">
-              <span className="col col-4">{props.airport.airportCode}</span>
-              <div className="col col-4">
+              <span className="col col-6">{props.airport.airportCode}</span>
+              <div className="col col-6">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditAirportCodeVisible(true)}
@@ -119,8 +167,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editAirportNameVisible && (
             <div className="row">
-              <span className="col col-4">{props.airport.airportName}</span>
-              <div className="col col-4">
+              <span className="col col-6">{props.airport.airportName}</span>
+              <div className="col col-6">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditAirportNameVisible(true)}
@@ -165,8 +213,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editCityVisible && (
             <div className="row">
-              <span className="col col-4">{props.airport.city}</span>
-              <div className="col col-4">
+              <span className="col col-6">{props.airport.city}</span>
+              <div className="col col-6">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditCityVisible(true)}
@@ -187,7 +235,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
                 />
               </div>
 
-              {newCity !== props.airport.airportName && (
+              {newCity !== props.airport.city && (
                 <button
                   className="btn btn-sm btn-primary"
                   onClick={() => doEditCity()}
@@ -199,7 +247,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewCity(props.airport.airportName);
+                  setNewCity(props.airport.city);
                   setEditCityVisible(false);
                 }}
               >
@@ -209,11 +257,106 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
           )}
         </td>
         <td>
-          <div className="row">
-            <span className="col col-4">
-              {props.airport.country?.countryName}
-            </span>
-          </div>
+          {!editCountryIdVisible && (
+            <div className="row">
+              <span className="col col-6">
+                {props.airport.country?.countryName}
+              </span>
+              <div className="col col-6">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => {
+                    setEditCountryIdVisible(true);
+                    loadCountries();
+                  }}
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          )}
+          {editCountryIdVisible && (
+            <div>
+              <div className="form-group mb-3">
+                <select
+                  className="form-select form-select-sm"
+                  value={newCountryId}
+                  onChange={(e) => setNewCountryId(+e.target.value)}
+                >
+                  {countries.map((country) => (
+                    <option key={country.countryId} value={country.countryId}>
+                      {country.countryName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {newCountryId !== props.airport.countryId && (
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => doEditCountryId()}
+                >
+                  Edit
+                </button>
+              )}
+
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => {
+                  setNewCountryId(props.airport.countryId);
+                  setEditCountryIdVisible(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </td>
+        <td>
+          {!editTimeZoneVisible && (
+            <div className="row">
+              <span className="col col-6">{props.airport.timeZone}</span>
+              <div className="col col-6">
+                <button
+                  className="btn btn-primary btn-sm"
+                  onClick={() => setEditTimeZoneVisible(true)}
+                >
+                  Edit
+                </button>
+              </div>
+            </div>
+          )}
+          {editTimeZoneVisible && (
+            <div>
+              <div className="form-group mb-3">
+                <input
+                  type="text"
+                  className="form-control form-control-sm"
+                  value={newTimeZone}
+                  onChange={(e) => setNewTimeZone(e.target.value)}
+                />
+              </div>
+
+              {newTimeZone !== props.airport.timeZone && (
+                <button
+                  className="btn btn-sm btn-primary"
+                  onClick={() => doEditTimeZone()}
+                >
+                  Edit
+                </button>
+              )}
+
+              <button
+                className="btn btn-sm btn-danger"
+                onClick={() => {
+                  setNewTimeZone(props.airport.timeZone);
+                  setEditTimeZoneVisible(false);
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </td>
       </tr>
     </>
@@ -257,6 +400,7 @@ export default function AdminAirportList() {
                 <th>Airport name</th>
                 <th>City</th>
                 <th>Country</th>
+                <th>Time zone</th>
               </tr>
             </thead>
             <tbody>

@@ -1,7 +1,8 @@
-import { useEffect, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
-import ICountry from "../../../models/ICountry.model";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-regular-svg-icons";
 
 interface IAddAircraftFormState {
   aircraftType: string;
@@ -141,7 +142,8 @@ export default function AdminAircraftAdd() {
 
             <div className="form-group mb-3">
               <button className="btn btn-primary" onClick={doAddAircraft}>
-                Add aircraft
+                <FontAwesomeIcon icon={faSave} />
+                &nbsp;Add aircraft
               </button>
             </div>
           </div>

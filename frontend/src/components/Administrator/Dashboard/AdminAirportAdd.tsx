@@ -2,6 +2,8 @@ import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import ICountry from "../../../models/ICountry.model";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-regular-svg-icons";
 
 interface IAddAirportFormState {
   airportCode: string;
@@ -250,7 +252,8 @@ export default function AdminAirportAdd() {
 
             <div className="form-group mb-3">
               <button className="btn btn-primary" onClick={doAddAirport}>
-                Add airport
+                <FontAwesomeIcon icon={faSave} />
+                &nbsp;Add airport
               </button>
             </div>
           </div>

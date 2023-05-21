@@ -1,6 +1,8 @@
 import { useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSave } from "@fortawesome/free-regular-svg-icons";
 
 interface IAddCountryFormState {
   countryName: string;
@@ -105,7 +107,8 @@ export default function AdminCountryAdd() {
 
             <div className="form-group mb-3">
               <button className="btn btn-primary" onClick={doAddCountry}>
-                Add country
+              <FontAwesomeIcon icon={faSave} />
+                &nbsp;Add country
               </button>
             </div>
           </div>
