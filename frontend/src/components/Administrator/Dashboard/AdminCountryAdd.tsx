@@ -17,16 +17,13 @@ function AddCountryFormReducer(
   oldState: IAddCountryFormState,
   action: TSetCountryName
 ): IAddCountryFormState {
-  switch (action.type) {
-    case "addCountryForm/setCountryName": {
-      return {
-        ...oldState,
-        countryName: action.value,
-      };
-    }
-
-    default:
-      return oldState;
+  if (action.type === "addCountryForm/setCountryName") {
+    return {
+      ...oldState,
+      countryName: action.value,
+    };
+  } else {
+    return oldState;
   }
 }
 
@@ -107,7 +104,7 @@ export default function AdminCountryAdd() {
 
             <div className="form-group mb-3">
               <button className="btn btn-primary" onClick={doAddCountry}>
-              <FontAwesomeIcon icon={faSave} />
+                <FontAwesomeIcon icon={faSave} />
                 &nbsp;Add country
               </button>
             </div>
