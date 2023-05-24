@@ -26,6 +26,7 @@ import {
 } from "./dto/IPasswordReset.dto";
 import * as generatePassword from "generate-password";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class UserController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -600,7 +601,10 @@ export default class UserController extends BaseController {
     const userId = req.authorization?.id;
 
     if (!EditAddressValidator(data)) {
-      return res.status(400).send(EditAddressValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditAddressValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditAddress = {};
