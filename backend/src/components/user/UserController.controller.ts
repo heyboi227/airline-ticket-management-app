@@ -77,7 +77,10 @@ export default class UserController extends BaseController {
     const body = req.body as IRegisterUserDto;
 
     if (!RegisterUserValidator(body)) {
-      return res.status(400).send(RegisterUserValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(RegisterUserValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const passwordHash = bcrypt.hashSync(body.password, 10);
