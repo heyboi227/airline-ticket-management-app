@@ -7,6 +7,7 @@ import {
   IEditAircraftDto,
 } from "./dto/IEditAircraft.dto";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class AircraftController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -111,7 +112,10 @@ export default class AircraftController extends BaseController {
     const data = req.body as IEditAircraftDto;
 
     if (!EditAircraftValidator(data)) {
-      return res.status(400).send(EditAircraftValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditAircraftValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditAircraft = {};
