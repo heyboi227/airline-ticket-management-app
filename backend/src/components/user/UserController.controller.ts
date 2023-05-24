@@ -562,7 +562,8 @@ export default class UserController extends BaseController {
     const userId = req.authorization?.id;
 
     if (!AddAddressValidator(data)) {
-      return res.status(400).send(AddAddressValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddAddressValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.address
