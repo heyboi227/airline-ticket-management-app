@@ -213,11 +213,11 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editOriginAirportIdVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-9">
                 {props.flight.originAirport?.airportName +
                   ` (${props.flight.originAirport?.airportCode})`}
               </span>
-              <div className="col col-6">
+              <div className="col col-3">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
@@ -270,11 +270,11 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editDestinationAirportIdVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-9">
                 {props.flight.destinationAirport?.airportName +
                   ` (${props.flight.destinationAirport?.airportCode})`}
               </span>
-              <div className="col col-6">
+              <div className="col col-3">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
@@ -447,10 +447,10 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editAircraftIdVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-10">
                 {props.flight.aircraft?.aircraftName}
               </span>
-              <div className="col col-6">
+              <div className="col col-2">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
