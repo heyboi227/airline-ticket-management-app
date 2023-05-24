@@ -180,7 +180,8 @@ export default class FlightController extends BaseController {
       })
       .catch(async (error) => {
         await this.services.flight.rollbackChanges();
-        res.status(error?.status ?? 500).send(error?.message);
+        const safeOutput = escapeHTML(error?.message);
+        res.status(error?.status ?? 500).send(safeOutput);
       });
   }
 
