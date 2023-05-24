@@ -513,7 +513,8 @@ export default class UserController extends BaseController {
     }
 
     if (!EditUserValidator(data)) {
-      return res.status(400).send(EditUserValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(EditUserValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditUser = {};
