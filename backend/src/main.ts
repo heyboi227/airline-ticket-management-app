@@ -29,23 +29,37 @@ async function main() {
     supportBigNumbers: config.database.supportBigNumbers,
   });
 
+  async function createAndMonitorConnection(): Promise<mysql2.Connection> {
+    attactConnectionMonitoring(db);
+    return db;
+  }
+
+  async function handleErrorAndReconnect(
+    db: mysql2.Connection,
+    error: mysql2.QueryError
+  ): Promise<void> {
+    if (!error.fatal) {
+      return;
+    }
+
+    if (error?.code !== "PROTOCOL_CONNECTION_LOST") {
+      throw error;
+    }
+
+    console.log("Reconnecting to the database server...");
+
+    db.end().catch((error) => console.error("An error occured: ", error));
+
+    db = await createAndMonitorConnection();
+
+    db.connect().catch((error) => console.error("An error occured: ", error));
+  }
+
   function attactConnectionMonitoring(db: mysql2.Connection) {
-    db.on("error", async (error) => {
-      if (!error.fatal) {
-        return;
-      }
-
-      if (error?.code !== "PROTOCOL_CONNECTION_LOST") {
-        throw error;
-      }
-
-      console.log("Reconnecting to the database server...");
-
-      db = await mysql2.createConnection(db.config);
-
-      attactConnectionMonitoring(db);
-
-      db.connect();
+    db.on("error", (error) => {
+      handleErrorAndReconnect(db, error).catch((error) => {
+        console.error("Failed to reconnect: ", error);
+      });
     });
   }
 
@@ -98,7 +112,20 @@ async function main() {
 
   const application: express.Application = express();
 
-  application.use(cors());
+  application.use(
+    cors({
+      origin: function (
+        origin: string | undefined,
+        callback: (err: Error | null, allow?: boolean) => void
+      ) {
+        if (["http://127.0.0.1"].indexOf(origin) !== -1) {
+          callback(null, true);
+        } else {
+          callback(new Error("Not allowed by CORS!"));
+        }
+      },
+    })
+  );
 
   application.use(express.urlencoded({ extended: true }));
 
@@ -138,11 +165,11 @@ async function main() {
     }
   }
 
-  function scheduleUpdate() {
-    updateFlightStatus();
+  async function scheduleUpdate() {
+    await updateFlightStatus();
   }
 
-  scheduleUpdate();
+  await scheduleUpdate();
 
   application.listen(config.server.port);
 }
@@ -151,4 +178,4 @@ process.on("uncaughtException", (error) => {
   console.error("Error:", error);
 });
 
-main();
+await main();

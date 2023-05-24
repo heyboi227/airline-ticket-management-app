@@ -55,109 +55,141 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
   const [aircraft, setAircraft] = useState<IAircraft[]>([]);
 
   function loadAirports() {
-    api("get", "/api/airport", "administrator").then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    api("get", "/api/airport", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      const sortedAirports = res.data.sort((a: IAirport, b: IAirport) =>
-        a.airportCode.localeCompare(b.airportCode)
-      );
+        const sortedAirports = res.data.sort((a: IAirport, b: IAirport) =>
+          a.airportCode.localeCompare(b.airportCode)
+        );
 
-      setAirports(sortedAirports);
-    });
+        setAirports(sortedAirports);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function loadAircraft() {
-    api("get", "/api/aircraft", "administrator").then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    api("get", "/api/aircraft", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      const sortedAircraft = res.data.sort((a: IAircraft, b: IAircraft) =>
-        a.aircraftName.localeCompare(b.aircraftName)
-      );
+        const sortedAircraft = res.data.sort((a: IAircraft, b: IAircraft) =>
+          a.aircraftName.localeCompare(b.aircraftName)
+        );
 
-      setAircraft(sortedAircraft);
-    });
+        setAircraft(sortedAircraft);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditFlightCode() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       flightCode: newFlightCode,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditFlightCodeVisible(false);
-    });
+        props.loadFlights();
+        setEditFlightCodeVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditOriginAirportId() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       originAirportId: newOriginAirportId,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditOriginAirportIdVisible(false);
-    });
+        props.loadFlights();
+        setEditOriginAirportIdVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditDestinationAirportId() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       destinationAirportId: newDestinationAirportId,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditDestinationAirportIdVisible(false);
-    });
+        props.loadFlights();
+        setEditDestinationAirportIdVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditDepartureDateAndTime() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       departureDateAndTime: newDepartureDateAndTime,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditDepartureDateAndTimeVisible(false);
-    });
+        props.loadFlights();
+        setEditDepartureDateAndTimeVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditArrivalDateAndTime() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       arrivalDateAndTime: newArrivalDateAndTime,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditArrivalDateAndTimeVisible(false);
-    });
+        props.loadFlights();
+        setEditArrivalDateAndTimeVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditAircraftId() {
     api("put", "/api/flight/" + props.flight.flightId, "administrator", {
       aircraftId: newAircraftId,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadFlights();
-      setEditAircraftIdVisible(false);
-    });
+        props.loadFlights();
+        setEditAircraftIdVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   return (
@@ -513,13 +545,17 @@ export default function AdminFlightList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadFlights() {
-    api("get", "/api/flight", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/flight", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setFlights(res.data);
-    });
+        setFlights(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadFlights, []);

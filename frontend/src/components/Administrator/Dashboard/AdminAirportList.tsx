@@ -37,78 +37,102 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
   const [countries, setCountries] = useState<ICountry[]>([]);
 
   function loadCountries() {
-    api("get", "/api/country", "administrator").then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    api("get", "/api/country", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      setCountries(res.data);
-    });
+        setCountries(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditAirportCode() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
       airportCode: newAirportCode,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAirports();
-      setEditAirportCodeVisible(false);
-    });
+        props.loadAirports();
+        setEditAirportCodeVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditAirportName() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
       airportAirportName: newAirportName,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAirports();
-      setEditAirportNameVisible(false);
-    });
+        props.loadAirports();
+        setEditAirportNameVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditCity() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
       city: newCity,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAirports();
-      setEditCityVisible(false);
-    });
+        props.loadAirports();
+        setEditCityVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditCountryId() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
       countryId: newCountryId,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAirports();
-      setEditCityVisible(false);
-    });
+        props.loadAirports();
+        setEditCityVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditTimeZone() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
       timeZone: newTimeZone,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAirports();
-      setEditTimeZoneVisible(false);
-    });
+        props.loadAirports();
+        setEditTimeZoneVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   return (
@@ -365,13 +389,17 @@ export default function AdminAirportList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAirports() {
-    api("get", "/api/airport", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/airport", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setAirports(res.data);
-    });
+        setAirports(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadAirports, []);

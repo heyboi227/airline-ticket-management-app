@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
@@ -83,35 +83,42 @@ export default function AdministratorLoginPage() {
       <div className="col col-xs-12 col-md-6 offset-md-3">
         <h1 className="h5 mb-3">Log into your administrator account</h1>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Enter your username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            doLogin();
+          }}
+        >
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <button className="btn btn-primary px-5" onClick={() => doLogin()}>
-            Log in
-          </button>
-        </div>
+          <div className="form-group mb-3">
+            <button className="btn btn-primary px-5" type="submit">
+              Log in
+            </button>
+          </div>
+        </form>
 
         {error && <p className="alert alert-danger">{error}</p>}
       </div>

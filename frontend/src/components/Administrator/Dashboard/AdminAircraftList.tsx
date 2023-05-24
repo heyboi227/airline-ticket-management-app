@@ -21,27 +21,35 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
   function doEditAircraftType() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
       type: newAircraftType,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAircraft();
-      setEditAircraftTypeVisible(false);
-    });
+        props.loadAircraft();
+        setEditAircraftTypeVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditName() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
       name: newName,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAircraft();
-      setEditNameVisible(false);
-    });
+        props.loadAircraft();
+        setEditNameVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   return (
@@ -153,13 +161,17 @@ export default function AdminAircraftList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAircraft() {
-    api("get", "/api/aircraft", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/aircraft", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setAircraft(res.data);
-    });
+        setAircraft(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadAircraft, []);

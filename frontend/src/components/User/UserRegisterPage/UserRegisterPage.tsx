@@ -66,59 +66,66 @@ export default function UserRegisterPage() {
       <div className="col col-xs-12 col-md-6 offset-md-3 p-5">
         <h1 className="h5 mb-3">Register your account</h1>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            doRegister();
+          }}
+        >
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Forename"
-              value={forename}
-              onChange={(e) => setForename(e.target.value)}
-            />
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Forename"
+                value={forename}
+                onChange={(e) => setForename(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <div className="input-group">
-            <input
-              className="form-control"
-              type="text"
-              placeholder="Surname"
-              value={surname}
-              onChange={(e) => setSurname(e.target.value)}
-            />
+          <div className="form-group mb-3">
+            <div className="input-group">
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Surname"
+                value={surname}
+                onChange={(e) => setSurname(e.target.value)}
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="form-group mb-3">
-          <button className="btn btn-primary px-5" onClick={() => doRegister()}>
-            <FontAwesomeIcon icon={faUserCircle} /> Register
-          </button>
-        </div>
+          <div className="form-group mb-3">
+            <button className="btn btn-primary px-5" type="submit">
+              <FontAwesomeIcon icon={faUserCircle} /> Register
+            </button>
+          </div>
+        </form>
 
         {error && <p className="alert alert-danger">{error}</p>}
       </div>

@@ -30,49 +30,65 @@ function AdminUserRow(props: IAdminUserRowProperties) {
   function doToggleUserActiveState() {
     api("put", "/api/user/" + props.user.userId, "administrator", {
       isActive: !props.user.isActive,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadUsers();
-    });
+        props.loadUsers();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doChangePassword() {
     api("put", "/api/user/" + props.user.userId, "administrator", {
       password: newPassword,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadUsers();
-    });
+        props.loadUsers();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditForename() {
     api("put", "/api/user/" + props.user.userId, "administrator", {
       forename: newForename,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadUsers();
-    });
+        props.loadUsers();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doEditSurname() {
     api("put", "/api/user/" + props.user.userId, "administrator", {
       surname: newSurname,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadUsers();
-    });
+        props.loadUsers();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   return (
@@ -234,13 +250,17 @@ export default function AdminUserList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadUsers() {
-    api("get", "/api/user", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/user", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setUsers(res.data);
-    });
+        setUsers(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadUsers, []);

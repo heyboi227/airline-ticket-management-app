@@ -31,13 +31,17 @@ function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
       {
         isActive: !props.administrator.isActive,
       }
-    ).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    )
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAdministrators();
-    });
+        props.loadAdministrators();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function doChangePassword() {
@@ -48,13 +52,17 @@ function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
       {
         password: newPassword,
       }
-    ).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    )
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadAdministrators();
-    });
+        props.loadAdministrators();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   function changePassword(e: React.ChangeEvent<HTMLInputElement>) {
@@ -126,13 +134,17 @@ export default function AdminAdministratorList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAdministrators() {
-    api("get", "/api/administrator", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/administrator", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setAdministrators(res.data);
-    });
+        setAdministrators(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadAdministrators, []);

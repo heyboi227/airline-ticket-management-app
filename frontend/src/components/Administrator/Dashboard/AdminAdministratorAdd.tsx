@@ -15,15 +15,19 @@ export default function AdminAdministratorAdd() {
     api("post", "/api/administrator", "administrator", {
       username,
       password,
-    }).then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      navigate("/admin/dashboard/administrator/list", {
-        replace: true,
+        navigate("/admin/dashboard/administrator/list", {
+          replace: true,
+        });
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
       });
-    });
   }
 
   return (

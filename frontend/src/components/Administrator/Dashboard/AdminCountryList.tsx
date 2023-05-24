@@ -19,14 +19,18 @@ function AdminCountryRow(props: IAdminCountryRowProperties) {
   function doEditCountryName() {
     api("put", "/api/country/" + props.country.countryId, "administrator", {
       countryName: newCountryName,
-    }).then((res) => {
-      if (res.status === "error") {
-        return props.setErrorMessage(res.data + "");
-      }
+    })
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
 
-      props.loadCountry();
-      setEditCountryNameVisible(false);
-    });
+        props.loadCountry();
+        setEditCountryNameVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   return (
@@ -89,13 +93,17 @@ export default function AdminCountryList() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadCountry() {
-    api("get", "/api/country", "administrator").then((res) => {
-      if (res.status === "error") {
-        return setErrorMessage(res.data + "");
-      }
+    api("get", "/api/country", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      setCountry(res.data);
-    });
+        setCountry(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
   useEffect(loadCountry, []);

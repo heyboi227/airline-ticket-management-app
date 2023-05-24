@@ -15,7 +15,6 @@ import UserPasswordResetPage from "../User/UserPasswordResetPage/UserPasswordRes
 import UserDeactivatePage from "../User/UserDeactivatePage/UserDeactivatePage";
 import Footer from "../Footer/Footer";
 import FlightsPage from "../Pages/FlightsPage/FlightsPage";
-import AppStore from "../../stores/AppStore";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AdminAirportList from "../Administrator/Dashboard/AdminAirportList";
 import AdminAircraftList from "../Administrator/Dashboard/AdminAircraftList";
@@ -105,7 +104,7 @@ function App() {
         <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {!location.pathname.includes("/admin/") && <Footer />}
+      {!location.pathname.includes("admin") && <Footer />}
     </Container>
   );
 }

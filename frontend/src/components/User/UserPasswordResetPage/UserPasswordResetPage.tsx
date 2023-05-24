@@ -65,29 +65,31 @@ export default function UserPasswordResetPage() {
                 Please enter your email below in order to recieve a password
                 reset link.
               </p>
-              <div className="form-group mb-3">
-                <div className="input-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  doSendPasswordResetLink();
+                  setSent(true);
+                }}
+              >
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="form-group mb-3">
-                <button
-                  className="btn btn-primary px-5"
-                  onClick={() => {
-                    doSendPasswordResetLink();
-                    setSent(true);
-                  }}
-                >
-                  Submit
-                </button>
-              </div>
+                <div className="form-group mb-3">
+                  <button className="btn btn-primary px-5" type="submit">
+                    Submit
+                  </button>
+                </div>
+              </form>
             </div>
           )}
         </div>
