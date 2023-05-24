@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class DocumentController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -78,7 +79,10 @@ export default class DocumentController extends BaseController {
     const body = req.body as IAddDocumentDto;
 
     if (!AddDocumentValidator(body)) {
-      return res.status(400).send(AddDocumentValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(AddDocumentValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.document

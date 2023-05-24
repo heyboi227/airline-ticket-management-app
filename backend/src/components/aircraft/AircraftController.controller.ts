@@ -84,7 +84,10 @@ export default class AircraftController extends BaseController {
     const body = req.body as IAddAircraftDto;
 
     if (!AddAircraftValidator(body)) {
-      return res.status(400).send(AddAircraftValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(AddAircraftValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.aircraft

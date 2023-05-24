@@ -11,6 +11,7 @@ import IEditAdministrator, {
   EditAdministratorValidator,
   IEditAdministratorDto,
 } from "./dto/IEditAdministrator.dto";
+import escapeHTML = require("escape-html");
 
 export default class AdministratorController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -74,7 +75,10 @@ export default class AdministratorController extends BaseController {
     const body = req.body as IAddAdministratorDto;
 
     if (!AddAdministratorValidator(body)) {
-      return res.status(400).send(AddAdministratorValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(AddAdministratorValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const passwordHash = bcrypt.hashSync(body.password, 10);
@@ -104,7 +108,10 @@ export default class AdministratorController extends BaseController {
     const data = req.body as IEditAdministratorDto;
 
     if (!EditAdministratorValidator(data)) {
-      return res.status(400).send(EditAdministratorValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditAdministratorValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditAdministrator = {};

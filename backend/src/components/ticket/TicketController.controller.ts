@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AddTicketValidator, IAddTicketDto } from "./dto/IAddTicket.dto";
 import { DefaultTicketAdapterOptions } from "./TicketService.service";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class TicketController extends BaseController {
   getById(req: Request, res: Response) {
@@ -103,7 +104,8 @@ export default class TicketController extends BaseController {
     const body = req.body as IAddTicketDto;
 
     if (!AddTicketValidator(body)) {
-      return res.status(400).send(AddTicketValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddTicketValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.ticket

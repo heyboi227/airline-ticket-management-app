@@ -8,6 +8,7 @@ import {
 } from "./dto/IEditAirport.dto";
 import { DefaultAirportAdapterOptions } from "./AirportService.service";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class AirportController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -135,7 +136,8 @@ export default class AirportController extends BaseController {
     const body = req.body as IAddAirportDto;
 
     if (!AddAirportValidator(body)) {
-      return res.status(400).send(AddAirportValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddAirportValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.country
@@ -177,7 +179,10 @@ export default class AirportController extends BaseController {
     const data = req.body as IEditAirportDto;
 
     if (!EditAirportValidator(data)) {
-      return res.status(400).send(EditAirportValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditAirportValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditAirport = {};

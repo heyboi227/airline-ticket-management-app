@@ -14,6 +14,7 @@ import {
 import { DefaultFlightAdapterOptions } from "./FlightService.service";
 import FlightModel from "./FlightModel.model";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 type TravelClassIds = {
   toHide: number[];
@@ -112,7 +113,8 @@ export default class FlightController extends BaseController {
     const data = req.body as IAddFlightDto;
 
     if (!AddFlightValidator(data)) {
-      return res.status(400).send(AddFlightValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddFlightValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.travelClass
@@ -188,7 +190,8 @@ export default class FlightController extends BaseController {
     const data = req.body as IEditFlightDto;
 
     if (!EditFlightValidator(data)) {
-      return res.status(400).send(EditFlightValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(EditFlightValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     try {
