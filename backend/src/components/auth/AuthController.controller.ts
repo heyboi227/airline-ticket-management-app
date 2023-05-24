@@ -9,6 +9,7 @@ import AuthMiddleware from "../../middleware/AuthMiddleware";
 import { IUserLoginDto } from "./dto/IUserLogin.dto";
 import { DefaultAdministratorAdapterOptions } from "../administrator/AdministratorService.service";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class AuthController extends BaseController {
   public async administratorLogin(req: Request, res: Response) {
@@ -65,7 +66,8 @@ export default class AuthController extends BaseController {
       })
       .catch((error) => {
         setTimeout(() => {
-          res.status(error?.status ?? 500).send(error?.message);
+          const safeOutput = escapeHTML(error?.message);
+          res.status(error?.status ?? 500).send(safeOutput);
         }, 1500);
       });
   }
@@ -94,7 +96,8 @@ export default class AuthController extends BaseController {
         authToken: authToken,
       });
     } catch (error) {
-      res.status(error?.status ?? 500).send(error?.message);
+      const safeOutput = escapeHTML(error?.message);
+      res.status(error?.status ?? 500).send(safeOutput);
     }
   }
 
@@ -159,7 +162,8 @@ export default class AuthController extends BaseController {
       })
       .catch((error) => {
         setTimeout(() => {
-          res.status(error?.status ?? 500).send(error?.message);
+          const safeOutput = escapeHTML(error?.message);
+          res.status(error?.status ?? 500).send(safeOutput);
         }, 1500);
       });
   }
@@ -188,7 +192,8 @@ export default class AuthController extends BaseController {
         authToken: authToken,
       });
     } catch (error) {
-      res.status(error?.status ?? 500).send(error?.message);
+      const safeOutput = escapeHTML(error?.message);
+      res.status(error?.status ?? 500).send(safeOutput);
     }
   }
 }
