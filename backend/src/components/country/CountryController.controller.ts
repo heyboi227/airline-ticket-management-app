@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
 import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class CountryController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -60,7 +61,8 @@ export default class CountryController extends BaseController {
     const body = req.body as IAddCountryDto;
 
     if (!AddCountryValidator(body)) {
-      return res.status(400).send(AddCountryValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddCountryValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.country
@@ -87,7 +89,10 @@ export default class CountryController extends BaseController {
     const data = req.body as IEditCountryDto;
 
     if (!EditCountryValidator(data)) {
-      return res.status(400).send(EditCountryValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditCountryValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.country

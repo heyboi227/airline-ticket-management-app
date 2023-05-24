@@ -8,6 +8,7 @@ import IEditTravelClass, {
   IEditTravelClassDto,
 } from "./dto/IEditTravelClass.dto";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class TravelClassController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -47,7 +48,10 @@ export default class TravelClassController extends BaseController {
     const data = req.body as IAddTravelClassDto;
 
     if (!AddTravelClassValidator(data)) {
-      return res.status(400).send(AddTravelClassValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(AddTravelClassValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.travelClass
@@ -74,7 +78,10 @@ export default class TravelClassController extends BaseController {
     const data = req.body as IEditTravelClassDto;
 
     if (!EditTravelClassValidator(data)) {
-      return res.status(400).send(EditTravelClassValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditTravelClassValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditTravelClass = {};

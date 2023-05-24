@@ -26,6 +26,7 @@ import {
 } from "./dto/IPasswordReset.dto";
 import * as generatePassword from "generate-password";
 import StatusError from "../../common/StatusError";
+import escapeHTML = require("escape-html");
 
 export default class UserController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -76,7 +77,10 @@ export default class UserController extends BaseController {
     const body = req.body as IRegisterUserDto;
 
     if (!RegisterUserValidator(body)) {
-      return res.status(400).send(RegisterUserValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(RegisterUserValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const passwordHash = bcrypt.hashSync(body.password, 10);
@@ -157,7 +161,10 @@ export default class UserController extends BaseController {
     const data = req.body as IPasswordResetDto;
 
     if (!PasswordResetValidator(data)) {
-      return res.status(400).send(PasswordResetValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(PasswordResetValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.user
@@ -512,7 +519,8 @@ export default class UserController extends BaseController {
     }
 
     if (!EditUserValidator(data)) {
-      return res.status(400).send(EditUserValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(EditUserValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditUser = {};
@@ -561,7 +569,8 @@ export default class UserController extends BaseController {
     const userId = req.authorization?.id;
 
     if (!AddAddressValidator(data)) {
-      return res.status(400).send(AddAddressValidator.errors);
+      const safeOutput = escapeHTML(JSON.stringify(AddAddressValidator.errors));
+      return res.status(400).send(safeOutput);
     }
 
     this.services.address
@@ -600,7 +609,10 @@ export default class UserController extends BaseController {
     const userId = req.authorization?.id;
 
     if (!EditAddressValidator(data)) {
-      return res.status(400).send(EditAddressValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(EditAddressValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     const serviceData: IEditAddress = {};
