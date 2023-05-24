@@ -178,4 +178,4 @@ process.on("uncaughtException", (error) => {
   console.error("Error:", error);
 });
 
-await main();
+main().catch((error) => console.error("An error occured: ", error));
