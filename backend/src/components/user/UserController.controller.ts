@@ -158,7 +158,10 @@ export default class UserController extends BaseController {
     const data = req.body as IPasswordResetDto;
 
     if (!PasswordResetValidator(data)) {
-      return res.status(400).send(PasswordResetValidator.errors);
+      const safeOutput = escapeHTML(
+        JSON.stringify(PasswordResetValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
     }
 
     this.services.user
