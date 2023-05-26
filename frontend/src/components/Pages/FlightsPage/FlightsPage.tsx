@@ -87,7 +87,9 @@ function ClassPricesDrawer(props: IClassPricesDrawerProps) {
             <span style={{ fontSize: "1.5vw" }}>
               {props.flight.travelClasses
                 ?.filter((travelClass) =>
-                  travelClass.travelClass.travelClassName.includes(props.travelClassName)
+                  travelClass.travelClass.travelClassName.includes(
+                    props.travelClassName
+                  )
                 )
                 .map((travelClass) => travelClass.price)
                 .reduce((smallestPrice: number, currentPrice: number) => {
@@ -228,7 +230,9 @@ const ClassPrices = (props: IClassPricesProps) => {
           >
             {props.flight.travelClasses
               ?.filter((travelClass) =>
-                travelClass.travelClass.travelClassName.includes(props.travelClassName)
+                travelClass.travelClass.travelClassName.includes(
+                  props.travelClassName
+                )
               )
               .map((travelClass, index) => (
                 <div
@@ -627,7 +631,9 @@ export default function FlightsPage() {
       setMinimalPrices(prices);
     }
 
-    updateMinimalPrices();
+    updateMinimalPrices().catch((error) =>
+      console.error("An error occured: ", error)
+    );
   }, [chosenDate, dateRange, flightDirection, location.state]);
 
   const [activeTab, setActiveTab] = useState<string>("currentDate");

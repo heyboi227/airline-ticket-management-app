@@ -11,6 +11,14 @@ export default function UserLoginPage() {
 
   const navigate = useNavigate();
 
+  const dispatchAuthUpdate = (key: string, value: any) => {
+    AppStore.dispatch({
+      type: "auth.update",
+      key,
+      value,
+    });
+  };
+
   const doLogin = () => {
     api("post", "/api/auth/user/login", "user", {
       email,
@@ -26,27 +34,11 @@ export default function UserLoginPage() {
         return res.data;
       })
       .then((data) => {
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "authToken",
-          value: data?.authToken,
-        });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "refreshToken",
-          value: data?.refreshToken,
-        });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "identity",
-          value: email,
-        });
-        AppStore.dispatch({ type: "auth.update", key: "id", value: +data?.id });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "role",
-          value: "user",
-        });
+        dispatchAuthUpdate("authToken", data?.authToken);
+        dispatchAuthUpdate("refreshToken", data?.refreshToken);
+        dispatchAuthUpdate("identity", email);
+        dispatchAuthUpdate("id", +data?.id);
+        dispatchAuthUpdate("role", "user");
 
         navigate("/", {
           replace: true,

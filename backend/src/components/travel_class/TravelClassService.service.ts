@@ -29,8 +29,9 @@ export default class TravelClassService extends BaseService<
     return travelClass;
   }
 
-  public async getAllByFlightId(
-    flightId: number
+  public async getAllByField(
+    fieldName: string,
+    fieldValue: number
   ): Promise<IFlightTravelClass[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
@@ -39,7 +40,7 @@ export default class TravelClassService extends BaseService<
         travel_class_id: number;
         price: number;
         is_active: number;
-      }>("flight_travel_class", "flight_id", flightId)
+      }>("flight_travel_class", fieldName, fieldValue)
         .then(async (result) => {
           if (result.length === 0) {
             return resolve([]);
@@ -69,44 +70,16 @@ export default class TravelClassService extends BaseService<
     });
   }
 
+  public async getAllByFlightId(
+    flightId: number
+  ): Promise<IFlightTravelClass[]> {
+    return this.getAllByField("flight_id", flightId);
+  }
+
   public async getAllByTravelClassId(
     travelClassId: number
   ): Promise<IFlightTravelClass[]> {
-    return new Promise((resolve, reject) => {
-      this.getAllFromTableByFieldNameAndValue<{
-        flight_travel_class_id: number;
-        flight_id: number;
-        travel_class_id: number;
-        price: number;
-        is_active: number;
-      }>("flight_travel_class", "travel_class_id", travelClassId)
-        .then(async (result) => {
-          if (result.length === 0) {
-            return resolve([]);
-          }
-
-          const travelClasses: IFlightTravelClass[] = await Promise.all(
-            result.map(async (row) => {
-              const travelClass = await this.getById(row.travel_class_id, {});
-
-              return {
-                travelClass: {
-                  travelClassId: row.travel_class_id,
-                  travelClassName: travelClass.travelClassName,
-                  travelClassSubname: travelClass.travelClassSubname,
-                },
-                price: row.price,
-                isActive: row.is_active === 1,
-              };
-            })
-          );
-
-          resolve(travelClasses);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    return this.getAllByField("travel_class_id", travelClassId);
   }
 
   public async hideFlightTravelClass(

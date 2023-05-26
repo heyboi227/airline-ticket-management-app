@@ -14,7 +14,7 @@ interface IApiArguments {
   method: TApiMethod;
   path: string;
   role: TApiRole;
-  data: any | undefined;
+  data: any;
   attemptToRefreshToken: boolean;
 }
 
@@ -32,7 +32,7 @@ export function api(
   method: TApiMethod,
   path: string,
   role: TApiRole,
-  data: any | undefined = undefined,
+  data: any = undefined,
   attemptToRefreshToken: boolean = true
 ): Promise<IApiResponse> {
   return new Promise((resolve) => {

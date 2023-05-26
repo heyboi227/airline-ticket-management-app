@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
@@ -10,6 +10,14 @@ export default function AdministratorLoginPage() {
   const [error, setError] = useState<string>("");
 
   const navigate = useNavigate();
+
+  const dispatchAuthUpdate = (key: string, value: any) => {
+    AppStore.dispatch({
+      type: "auth.update",
+      key,
+      value,
+    });
+  };
 
   const doLogin = () => {
     api("post", "/api/auth/administrator/login", "administrator", {
@@ -26,27 +34,11 @@ export default function AdministratorLoginPage() {
         return res.data;
       })
       .then((data) => {
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "authToken",
-          value: data?.authToken,
-        });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "refreshToken",
-          value: data?.refreshToken,
-        });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "identity",
-          value: username,
-        });
-        AppStore.dispatch({ type: "auth.update", key: "id", value: +data?.id });
-        AppStore.dispatch({
-          type: "auth.update",
-          key: "role",
-          value: "administrator",
-        });
+        dispatchAuthUpdate("authToken", data?.authToken);
+        dispatchAuthUpdate("refreshToken", data?.refreshToken);
+        dispatchAuthUpdate("identity", username);
+        dispatchAuthUpdate("id", +data?.id);
+        dispatchAuthUpdate("role", "administrator");
 
         navigate("/admin/dashboard", {
           replace: true,

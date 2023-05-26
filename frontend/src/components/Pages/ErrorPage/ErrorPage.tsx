@@ -12,7 +12,7 @@ export default function ErrorPage(props: ErrorPageProps) {
         Error {props.statusCode}
       </h1>
       <p className={`h4 ${styles.errorMessage}`}>
-        {props.message || "An error occured."}
+        {props.message ?? "An error occured."}
       </p>
     </div>
   );
