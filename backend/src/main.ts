@@ -118,7 +118,7 @@ async function main() {
         origin: string | undefined,
         callback: (err: Error | null, allow?: boolean) => void
       ) {
-        if (["http://127.0.0.1"].indexOf(origin) !== -1) {
+        if (["http://localhost:3000"].indexOf(origin) !== -1) {
           callback(null, true);
         } else {
           callback(new Error("Not allowed by CORS!"));
