@@ -49,7 +49,9 @@ function AirportInput({
 
   useEffect(() => {
     if (query) {
-      debouncedFetchResults(query);
+      debouncedFetchResults(query)?.catch((error) =>
+        console.error("An error occured: ", error)
+      );
     } else {
       setResults([]);
     }
@@ -92,7 +94,8 @@ function AirportInput({
                 className="list-group-item"
                 onClick={() => handleClick(result)}
               >
-                {result.city}, {result.country?.countryName} ({result.airportCode})
+                {result.city}, {result.country?.countryName} (
+                {result.airportCode})
                 <br />
                 <small>{result.airportName}</small>
               </li>
