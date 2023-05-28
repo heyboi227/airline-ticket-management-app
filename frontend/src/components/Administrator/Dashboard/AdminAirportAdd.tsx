@@ -7,21 +7,21 @@ import { faSave } from "@fortawesome/free-regular-svg-icons";
 
 interface IAddAirportFormState {
   airportCode: string;
-  name: string;
+  airportName: string;
   city: string;
   countryId: number;
   timeZone: string;
 }
 
 type TSetAirportCode = { type: "addAirportForm/setAirportCode"; value: string };
-type TSetName = { type: "addAirportForm/setName"; value: string };
+type TSetAirportName = { type: "addAirportForm/setAirportName"; value: string };
 type TSetCity = { type: "addAirportForm/setCity"; value: string };
 type TSetCountryId = { type: "addAirportForm/setCountryId"; value: number };
 type TSetTimeZone = { type: "addAirportForm/setTimeZone"; value: string };
 
 type AddAirportFormAction =
   | TSetAirportCode
-  | TSetName
+  | TSetAirportName
   | TSetCity
   | TSetCountryId
   | TSetTimeZone;
@@ -38,10 +38,10 @@ function AddAirportFormReducer(
       };
     }
 
-    case "addAirportForm/setName": {
+    case "addAirportForm/setAirportName": {
       return {
         ...oldState,
-        name: action.value,
+        airportName: action.value,
       };
     }
 
@@ -81,7 +81,7 @@ export default function AdminAirportAdd() {
     AddAirportFormReducer,
     {
       airportCode: "",
-      name: "",
+      airportName: "",
       city: "",
       countryId: 0,
       timeZone: "",
@@ -182,10 +182,10 @@ export default function AdminAirportAdd() {
                 <input
                   type="text"
                   className="form-control form-control-sm"
-                  value={formState.name}
+                  value={formState.airportName}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addAirportForm/setName",
+                      type: "addAirportForm/setAirportName",
                       value: e.target.value,
                     })
                   }
