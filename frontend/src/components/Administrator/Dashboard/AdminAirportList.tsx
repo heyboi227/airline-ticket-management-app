@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAirport from "../../../models/IAirport.model";
 import ICountry from "../../../models/ICountry.model";
+import "./AdminList.scss";
 
 interface IAdminAirportRowProperties {
   airport: IAirport;

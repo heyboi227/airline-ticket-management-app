@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAircraft from "../../../models/IAircraft.model";
+import "./AdminList.scss";
 
 interface IAdminAircraftRowProperties {
   aircraft: IAircraft;

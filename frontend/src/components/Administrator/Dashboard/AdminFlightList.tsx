@@ -8,6 +8,7 @@ import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
 import { parseISO } from "date-fns";
+import "./AdminList.scss";
 
 interface IAdminFlightRowProperties {
   flight: IFlight;
@@ -355,13 +356,13 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editDepartureDateAndTimeVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-7">
                 {formatDateTime(
                   new Date(props.flight.departureDateAndTime),
                   props.flight.originAirport?.timeZone!
                 )}
               </span>
-              <div className="col col-6">
+              <div className="col col-7">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditDepartureDateAndTimeVisible(true)}
@@ -415,13 +416,13 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editArrivalDateAndTimeVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-7">
                 {formatDateTime(
                   new Date(props.flight.arrivalDateAndTime),
                   props.flight.destinationAirport?.timeZone!
                 )}
               </span>
-              <div className="col col-6">
+              <div className="col col-7">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditArrivalDateAndTimeVisible(true)}
@@ -474,7 +475,7 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
         <td>
           {!editAircraftIdVisible && (
             <div className="row">
-              <span className="col col-10">
+              <span className="col col-8">
                 {props.flight.aircraft?.aircraftName}
               </span>
               <div className="col col-2">

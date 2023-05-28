@@ -3,6 +3,7 @@ import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 import IUser from "../../../models/IUser.model";
+import "./AdminList.scss";
 
 interface IAdminUserRowProperties {
   user: IUser;

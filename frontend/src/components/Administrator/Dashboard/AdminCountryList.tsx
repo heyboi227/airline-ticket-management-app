@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import ICountry from "../../../models/ICountry.model";
+import "./AdminList.scss";
 
 interface IAdminCountryRowProperties {
   country: ICountry;
