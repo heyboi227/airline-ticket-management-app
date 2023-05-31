@@ -1,8 +1,8 @@
 -- --------------------------------------------------------
 -- Host:                         127.0.0.1
--- Server version:               10.6.7-MariaDB - mariadb.org binary distribution
+-- Server version:               10.4.22-MariaDB - mariadb.org binary distribution
 -- Server OS:                    Win64
--- HeidiSQL Version:             12.4.0.6659
+-- HeidiSQL Version:             12.5.0.6677
 -- --------------------------------------------------------
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS `administrator` (
   UNIQUE KEY `uq_administrator_username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.administrator: ~0 rows (approximately)
+-- Dumping data for table diplomski_app.administrator: ~1 rows (approximately)
 DELETE FROM `administrator`;
 INSERT INTO `administrator` (`administrator_id`, `username`, `password_hash`, `created_at`, `is_active`) VALUES
 	(1, 'administrator', '$2b$10$IMzeaW3XruiyZRs1jRK9NuN4b1JknWpYMf0ADWid.EOKCdh1TYVH.', '2022-08-12 09:51:57', 1);
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `aircraft` (
   UNIQUE KEY `uq_aircraft_name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.aircraft: ~6 rows (approximately)
+-- Dumping data for table diplomski_app.aircraft: ~7 rows (approximately)
 DELETE FROM `aircraft`;
 INSERT INTO `aircraft` (`aircraft_id`, `type`, `name`) VALUES
 	(1, 'Wide-body', 'Boeing 777-300'),
@@ -80,7 +80,8 @@ INSERT INTO `aircraft` (`aircraft_id`, `type`, `name`) VALUES
 	(3, 'Narrow-body', 'ATR 72-600'),
 	(4, 'Narrow-body', 'Boeing 737-800'),
 	(5, 'Wide-body', 'Boeing 747-8I'),
-	(6, 'Wide-body', 'Airbus A380-800');
+	(6, 'Wide-body', 'Airbus A380-800'),
+	(7, 'Narrow-body', 'Embraer E175');
 
 -- Dumping structure for table diplomski_app.airport
 DROP TABLE IF EXISTS `airport`;
@@ -97,13 +98,16 @@ CREATE TABLE IF NOT EXISTS `airport` (
   CONSTRAINT `fk_airport_country_id` FOREIGN KEY (`country_id`) REFERENCES `country` (`country_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.airport: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.airport: ~6 rows (approximately)
 DELETE FROM `airport`;
 INSERT INTO `airport` (`airport_id`, `airport_code`, `name`, `city`, `country_id`, `time_zone`) VALUES
 	(1, 'BEG', 'Nikola Tesla', 'Belgrade', 153, 'Europe/Belgrade'),
 	(2, 'VIE', 'Vienna International', 'Vienna', 10, 'Europe/Vienna'),
 	(3, 'LHR', 'Heathrow', 'London', 185, 'Europe/London'),
-	(10, 'JFK', 'John F. Kennedy International', 'New York', 186, 'America/New_York');
+	(10, 'JFK', 'John F. Kennedy International', 'New York', 186, 'America/New_York'),
+	(11, 'BCN', 'El Prat', 'Barcelona', 164, 'Europe/Madrid'),
+	(12, 'TIV', 'Tivat', 'Tivat', 115, 'Europe/Belgrade'),
+	(13, 'LAX', 'Los Angeles International', 'Los Angeles', 186, 'America/Los_Angeles');
 
 -- Dumping structure for table diplomski_app.country
 DROP TABLE IF EXISTS `country`;
@@ -340,8 +344,8 @@ CREATE TABLE IF NOT EXISTS `flight` (
   `flight_code` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   `origin_airport_id` int(10) unsigned NOT NULL,
   `destination_airport_id` int(10) unsigned NOT NULL,
-  `departure_date_and_time` datetime NOT NULL,
-  `arrival_date_and_time` datetime NOT NULL,
+  `departure_date_and_time` timestamp NOT NULL DEFAULT current_timestamp(),
+  `arrival_date_and_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `aircraft_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`flight_id`) USING BTREE,
   KEY `fk_flight_origin_airport_id` (`origin_airport_id`) USING BTREE,
@@ -352,13 +356,20 @@ CREATE TABLE IF NOT EXISTS `flight` (
   CONSTRAINT `fk_flight_origin_airport_id` FOREIGN KEY (`origin_airport_id`) REFERENCES `airport` (`airport_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.flight: ~10 rows (approximately)
 DELETE FROM `flight`;
 INSERT INTO `flight` (`flight_id`, `flight_code`, `origin_airport_id`, `destination_airport_id`, `departure_date_and_time`, `arrival_date_and_time`, `aircraft_id`) VALUES
-	(1, 'AS100', 1, 3, '2023-04-01 15:00:00', '2023-04-01 18:00:00', 2),
-	(2, 'AS101', 3, 1, '2023-04-01 19:10:00', '2023-04-01 21:50:00', 2),
-	(6, 'AS300', 1, 10, '2023-04-05 08:30:00', '2023-04-05 18:30:00', 1),
-	(7, 'AS301', 10, 1, '2023-04-05 20:45:00', '2023-04-06 05:35:00', 1);
+	(1, 'AS100', 1, 3, '2023-04-01 13:00:00', '2023-04-01 16:00:00', 2),
+	(2, 'AS101', 3, 1, '2023-04-01 17:10:00', '2023-04-01 19:50:00', 2),
+	(6, 'AS300', 1, 10, '2023-04-05 06:30:00', '2023-04-05 16:30:00', 1),
+	(7, 'AS301', 10, 1, '2023-04-05 18:45:00', '2023-04-06 03:35:00', 1),
+	(12, 'AS300', 1, 10, '2023-04-25 08:00:00', '2023-04-25 18:00:00', 1),
+	(13, 'AS300', 1, 10, '2023-04-27 08:00:00', '2023-04-27 18:00:00', 1),
+	(14, 'AS300', 1, 10, '2023-04-29 08:00:00', '2023-04-29 18:00:00', 1),
+	(15, 'AS301', 10, 1, '2023-04-25 20:00:00', '2023-04-26 04:50:00', 1),
+	(16, 'AS301', 10, 1, '2023-04-27 20:00:00', '2023-04-28 04:50:00', 1),
+	(17, 'AS301', 10, 1, '2023-04-29 20:00:00', '2023-04-30 04:50:00', 1),
+	(18, 'AS400', 1, 13, '2023-05-30 04:50:00', '2023-05-30 18:10:00', 1);
 
 -- Dumping structure for table diplomski_app.flight_travel_class
 DROP TABLE IF EXISTS `flight_travel_class`;
@@ -375,19 +386,41 @@ CREATE TABLE IF NOT EXISTS `flight_travel_class` (
   CONSTRAINT `fk_flight_travel_class_travel_class_id` FOREIGN KEY (`travel_class_id`) REFERENCES `travel_class` (`travel_class_id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.flight_travel_class: ~10 rows (approximately)
+-- Dumping data for table diplomski_app.flight_travel_class: ~32 rows (approximately)
 DELETE FROM `flight_travel_class`;
 INSERT INTO `flight_travel_class` (`flight_travel_class_id`, `flight_id`, `travel_class_id`, `price`, `is_active`) VALUES
-	(1, 1, 3, 11000.00, 1),
-	(2, 1, 2, 32000.00, 1),
-	(3, 2, 3, 11000.00, 1),
-	(4, 2, 2, 32000.00, 1),
-	(5, 6, 3, 26874.00, 1),
-	(6, 6, 2, 47835.72, 1),
-	(7, 7, 3, 25424.24, 1),
-	(8, 7, 2, 44123.15, 1),
-	(9, 6, 5, 63233.52, 1),
-	(10, 7, 5, 61262.23, 1);
+	(1, 1, 3, 11000.00, 0),
+	(2, 1, 2, 32000.00, 0),
+	(3, 2, 3, 11000.00, 0),
+	(4, 2, 2, 32000.00, 0),
+	(5, 6, 3, 26874.00, 0),
+	(6, 6, 2, 47835.72, 0),
+	(7, 7, 3, 25424.24, 0),
+	(8, 7, 2, 44123.15, 0),
+	(9, 6, 5, 63233.52, 0),
+	(10, 7, 5, 61262.23, 0),
+	(20, 12, 2, 25424.24, 0),
+	(21, 12, 3, 34546.54, 0),
+	(22, 12, 5, 52362.62, 0),
+	(23, 13, 2, 25424.24, 0),
+	(24, 13, 3, 34546.54, 0),
+	(25, 13, 5, 52362.62, 0),
+	(26, 14, 2, 25424.24, 0),
+	(27, 14, 3, 34546.54, 0),
+	(28, 14, 5, 52362.62, 0),
+	(29, 15, 2, 25424.24, 0),
+	(30, 15, 3, 34546.54, 0),
+	(31, 15, 5, 52362.62, 0),
+	(32, 16, 2, 25424.24, 0),
+	(33, 16, 3, 34546.54, 0),
+	(34, 16, 5, 52362.62, 0),
+	(35, 17, 2, 25424.24, 0),
+	(36, 17, 3, 34546.54, 0),
+	(37, 17, 5, 52362.62, 0),
+	(38, 18, 2, 32534.22, 1),
+	(39, 18, 1, 16125.12, 1),
+	(40, 18, 3, 47742.56, 1),
+	(41, 18, 5, 78122.45, 1);
 
 -- Dumping structure for table diplomski_app.ticket
 DROP TABLE IF EXISTS `ticket`;
@@ -427,7 +460,7 @@ CREATE TABLE IF NOT EXISTS `travel_class` (
   UNIQUE KEY `uq_travel_class_subname` (`subname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table diplomski_app.travel_class: ~4 rows (approximately)
+-- Dumping data for table diplomski_app.travel_class: ~5 rows (approximately)
 DELETE FROM `travel_class`;
 INSERT INTO `travel_class` (`travel_class_id`, `name`, `subname`) VALUES
 	(1, 'Economy', 'Basic Economy'),
@@ -466,22 +499,6 @@ DROP TRIGGER IF EXISTS `bi_flight`;
 SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
 DELIMITER //
 CREATE TRIGGER `bi_flight` BEFORE INSERT ON `flight` FOR EACH ROW BEGIN
-	IF NEW.arrival_date_and_time <= NEW.departure_date_and_time THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Arrival date must be later than the departure one!';
-	END IF;
-	
-	IF NEW.departure_date_and_time <= NOW() THEN
-		SIGNAL SQLSTATE '45001' SET MESSAGE_TEXT = 'The departure date of a flight cannot be set in the past!';
-	END IF;
-END//
-DELIMITER ;
-SET SQL_MODE=@OLDTMP_SQL_MODE;
-
--- Dumping structure for trigger diplomski_app.bu_flight
-DROP TRIGGER IF EXISTS `bu_flight`;
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION';
-DELIMITER //
-CREATE TRIGGER `bu_flight` BEFORE UPDATE ON `flight` FOR EACH ROW BEGIN
 	IF NEW.arrival_date_and_time <= NEW.departure_date_and_time THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Arrival date must be later than the departure one!';
 	END IF;
