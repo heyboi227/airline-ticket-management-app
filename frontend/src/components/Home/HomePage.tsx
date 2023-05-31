@@ -1,4 +1,5 @@
 import Search from "../Search/Search";
+import Slider from "../Slider/Slider";
 import "./HomePage.scss";
 
 export default function HomePage() {
@@ -18,6 +19,7 @@ export default function HomePage() {
         </div>
       </div>
       <Search />
+      <Slider />
     </>
   );
 }
