@@ -15,7 +15,9 @@ export default function Slider() {
       pauseOnHover={false}
     >
       <img src={partizan1} />
-      <img src={partizan2} />
+      <div style={{ width: "100%", textAlign: "right" }}>
+        <img src={partizan2} />
+      </div>
       <img src={partizan3} />
     </Carousel>
   );
