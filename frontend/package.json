@@ -31,7 +31,6 @@
     "framer-motion": "^10.12.16",
     "lodash": "^4.17.21",
     "node-sass": "^9.0.0",
-    "nuka-carousel": "^6.0.3",
     "path-browserify": "^1.0.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
