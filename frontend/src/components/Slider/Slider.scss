@@ -1,7 +1,41 @@
-.carousel {
-  background-color: #787ebe;
-}
+.slider-item {
+  position: relative;
+  width: 100%;
+  height: 500px;
 
-.carousel img {
-  height: 30vw;
+  .slider-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 75% 25%;
+  }
+
+  .slider-text {
+    position: absolute;
+    width: 30vw;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.5vw;
+    color: #fff;
+    z-index: 1;
+
+    &::before {
+      content: "";
+      position: absolute;
+      width: 40vw;
+      height: 20vw;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      filter: blur(5px);
+      z-index: -1;
+    }
+  }
 }
