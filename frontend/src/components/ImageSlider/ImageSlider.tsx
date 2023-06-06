@@ -1,5 +1,5 @@
 import { Carousel } from "react-bootstrap";
-import "./Slider.scss";
+import "./ImageSlider.scss";
 import { useState } from "react";
 
 interface SliderProps {
