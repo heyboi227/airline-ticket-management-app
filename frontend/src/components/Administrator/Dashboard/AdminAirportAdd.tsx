@@ -4,27 +4,28 @@ import { api } from "../../../api/api";
 import ICountry from "../../../models/ICountry.model";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-regular-svg-icons";
+import ITimeZone from "../../../models/ITimeZone.model";
 
 interface IAddAirportFormState {
   airportCode: string;
   airportName: string;
   city: string;
   countryId: number;
-  timeZone: string;
+  timeZoneId: number;
 }
 
 type TSetAirportCode = { type: "addAirportForm/setAirportCode"; value: string };
 type TSetAirportName = { type: "addAirportForm/setAirportName"; value: string };
 type TSetCity = { type: "addAirportForm/setCity"; value: string };
 type TSetCountryId = { type: "addAirportForm/setCountryId"; value: number };
-type TSetTimeZone = { type: "addAirportForm/setTimeZone"; value: string };
+type TSetTimeZoneId = { type: "addAirportForm/setTimeZoneId"; value: number };
 
 type AddAirportFormAction =
   | TSetAirportCode
   | TSetAirportName
   | TSetCity
   | TSetCountryId
-  | TSetTimeZone;
+  | TSetTimeZoneId;
 
 function AddAirportFormReducer(
   oldState: IAddAirportFormState,
@@ -59,10 +60,10 @@ function AddAirportFormReducer(
       };
     }
 
-    case "addAirportForm/setTimeZone": {
+    case "addAirportForm/setTimeZoneId": {
       return {
         ...oldState,
-        timeZone: action.value,
+        timeZoneId: action.value,
       };
     }
 
@@ -74,6 +75,7 @@ function AddAirportFormReducer(
 export default function AdminAirportAdd() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [countries, setCountries] = useState<ICountry[]>([]);
+  const [timeZones, setTimeZones] = useState<ITimeZone[]>([]);
 
   const navigate = useNavigate();
 
@@ -84,7 +86,7 @@ export default function AdminAirportAdd() {
       airportName: "",
       city: "",
       countryId: 0,
-      timeZone: "",
+      timeZoneId: 0,
     }
   );
 
@@ -109,8 +111,30 @@ export default function AdminAirportAdd() {
       });
   };
 
+  const fetchTimeZones = () => {
+    api("get", "/api/time-zone", "administrator")
+      .then((res) => {
+        if (res.status !== "ok") {
+          throw new Error(
+            "Could not fetch time zones! Reason: " +
+              res?.data
+                ?.map(
+                  (error: any) => error?.instancePath + " " + error?.message
+                )
+                .join(", ")
+          );
+        }
+
+        setTimeZones(res.data);
+      })
+      .catch((error) => {
+        setErrorMessage(error?.message ?? "Unknown error!");
+      });
+  };
+
   useEffect(() => {
     fetchCountries();
+    fetchTimeZones();
   }, []);
 
   const doAddAirport = () => {
@@ -236,17 +260,26 @@ export default function AdminAirportAdd() {
             <div className="form-group mb-3">
               <label>Time zone</label>
               <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  value={formState.timeZone}
+                <select
+                  className="form-select form-select-sm"
+                  value={formState.timeZoneId}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addAirportForm/setTimeZone",
-                      value: e.target.value,
+                      type: "addAirportForm/setTimeZoneId",
+                      value: +e.target.value,
                     })
                   }
-                />
+                >
+                  <option value="">Choose a time zone</option>
+                  {timeZones.map((timeZone) => (
+                    <option
+                      value={timeZone.timeZoneId}
+                      key={timeZone.timeZoneId}
+                    >
+                      {timeZone.timeZoneName}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 

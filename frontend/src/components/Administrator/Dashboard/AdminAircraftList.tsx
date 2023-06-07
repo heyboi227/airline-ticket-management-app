@@ -12,12 +12,15 @@ interface IAdminAircraftRowProperties {
 function AdminAircraftRow(props: IAdminAircraftRowProperties) {
   const [editAircraftTypeVisible, setEditAircraftTypeVisible] =
     useState<boolean>(false);
-  const [editNameVisible, setEditNameVisible] = useState<boolean>(false);
+  const [editAircraftNameVisible, setEditAircraftNameVisible] =
+    useState<boolean>(false);
 
   const [newAircraftType, setNewAircraftType] = useState<string>(
     props.aircraft.aircraftType
   );
-  const [newName, setNewName] = useState<string>(props.aircraft.aircraftName);
+  const [newAircraftName, setNewAircraftName] = useState<string>(
+    props.aircraft.aircraftName
+  );
 
   function doEditAircraftType() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
@@ -36,9 +39,9 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
       });
   }
 
-  function doEditName() {
+  function doEditAircraftName() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
-      name: newName,
+      aircraftAircraftName: newAircraftName,
     })
       .then((res) => {
         if (res.status === "error") {
@@ -46,7 +49,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
         }
 
         props.loadAircraft();
-        setEditNameVisible(false);
+        setEditAircraftNameVisible(false);
       })
       .catch((error) => {
         console.error("An error occured: ", error);
@@ -107,34 +110,34 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
           )}
         </td>
         <td>
-          {!editNameVisible && (
+          {!editAircraftNameVisible && (
             <div className="row">
               <span className="col col-4">{props.aircraft.aircraftName}</span>
               <div className="col col-4">
                 <button
                   className="btn btn-primary btn-sm"
-                  onClick={() => setEditNameVisible(true)}
+                  onClick={() => setEditAircraftNameVisible(true)}
                 >
                   Edit
                 </button>
               </div>
             </div>
           )}
-          {editNameVisible && (
+          {editAircraftNameVisible && (
             <div>
               <div className="form-group mb-3">
                 <input
                   type="text"
                   className="form-control form-control-sm"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
+                  value={newAircraftName}
+                  onChange={(e) => setNewAircraftName(e.target.value)}
                 />
               </div>
 
-              {newName !== props.aircraft.aircraftName && (
+              {newAircraftName !== props.aircraft.aircraftName && (
                 <button
                   className="btn btn-sm btn-primary"
-                  onClick={() => doEditName()}
+                  onClick={() => doEditAircraftName()}
                 >
                   Edit
                 </button>
@@ -143,8 +146,8 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewName(props.aircraft.aircraftName);
-                  setEditNameVisible(false);
+                  setNewAircraftName(props.aircraft.aircraftName);
+                  setEditAircraftNameVisible(false);
                 }}
               >
                 Cancel

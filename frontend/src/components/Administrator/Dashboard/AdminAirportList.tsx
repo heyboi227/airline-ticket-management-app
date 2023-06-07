@@ -3,6 +3,7 @@ import { api } from "../../../api/api";
 import IAirport from "../../../models/IAirport.model";
 import ICountry from "../../../models/ICountry.model";
 import "./AdminList.scss";
+import ITimeZone from "../../../models/ITimeZone.model";
 
 interface IAdminAirportRowProperties {
   airport: IAirport;
@@ -18,7 +19,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
   const [editCityVisible, setEditCityVisible] = useState<boolean>(false);
   const [editCountryIdVisible, setEditCountryIdVisible] =
     useState<boolean>(false);
-  const [editTimeZoneVisible, setEditTimeZoneVisible] =
+  const [editTimeZoneIdVisible, setEditTimeZoneIdVisible] =
     useState<boolean>(false);
 
   const [newAirportCode, setNewAirportCode] = useState<string>(
@@ -31,11 +32,12 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
   const [newCountryId, setNewCountryId] = useState<number>(
     props.airport.countryId
   );
-  const [newTimeZone, setNewTimeZone] = useState<string>(
-    props.airport.timeZone
+  const [newTimeZoneId, setNewTimeZoneId] = useState<number>(
+    props.airport.timeZoneId
   );
 
   const [countries, setCountries] = useState<ICountry[]>([]);
+  const [timeZones, setTimeZones] = useState<ITimeZone[]>([]);
 
   function loadCountries() {
     api("get", "/api/country", "administrator")
@@ -45,6 +47,20 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         }
 
         setCountries(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
+  function loadTimeZones() {
+    api("get", "/api/time-zone", "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage(res.data + "");
+        }
+
+        setTimeZones(res.data);
       })
       .catch((error) => {
         console.error("An error occured: ", error);
@@ -119,9 +135,9 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
       });
   }
 
-  function doEditTimeZone() {
+  function doEditTimeZoneId() {
     api("put", "/api/airport/" + props.airport.airportId, "administrator", {
-      timeZone: newTimeZone,
+      timeZoneId: newTimeZoneId,
     })
       .then((res) => {
         if (res.status === "error") {
@@ -129,7 +145,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         }
 
         props.loadAirports();
-        setEditTimeZoneVisible(false);
+        setEditTimeZoneIdVisible(false);
       })
       .catch((error) => {
         console.error("An error occured: ", error);
@@ -189,8 +205,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editAirportNameVisible && (
             <div className="row">
-              <span className="col col-6">{props.airport.airportName}</span>
-              <div className="col col-6">
+              <span className="col col-7">{props.airport.airportName}</span>
+              <div className="col col-5">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditAirportNameVisible(true)}
@@ -281,10 +297,10 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editCountryIdVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-7">
                 {props.airport.country?.countryName}
               </span>
-              <div className="col col-6">
+              <div className="col col-5">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
@@ -335,34 +351,47 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
           )}
         </td>
         <td>
-          {!editTimeZoneVisible && (
+          {!editTimeZoneIdVisible && (
             <div className="row">
-              <span className="col col-6">{props.airport.timeZone}</span>
+              <span className="col col-6">
+                {props.airport.timeZone?.timeZoneName}
+              </span>
               <div className="col col-6">
                 <button
                   className="btn btn-primary btn-sm"
-                  onClick={() => setEditTimeZoneVisible(true)}
+                  onClick={() => {
+                    setEditTimeZoneIdVisible(true);
+                    loadTimeZones();
+                  }}
                 >
                   Edit
                 </button>
               </div>
             </div>
           )}
-          {editTimeZoneVisible && (
+          {editTimeZoneIdVisible && (
             <div>
               <div className="form-group mb-3">
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  value={newTimeZone}
-                  onChange={(e) => setNewTimeZone(e.target.value)}
-                />
+                <select
+                  className="form-select form-select-sm"
+                  value={newTimeZoneId}
+                  onChange={(e) => setNewTimeZoneId(+e.target.value)}
+                >
+                  {timeZones.map((timeZone) => (
+                    <option
+                      key={timeZone.timeZoneId}
+                      value={timeZone.timeZoneId}
+                    >
+                      {timeZone.timeZoneName}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              {newTimeZone !== props.airport.timeZone && (
+              {newTimeZoneId !== props.airport.timeZoneId && (
                 <button
                   className="btn btn-sm btn-primary"
-                  onClick={() => doEditTimeZone()}
+                  onClick={() => doEditTimeZoneId()}
                 >
                   Edit
                 </button>
@@ -371,8 +400,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
               <button
                 className="btn btn-sm btn-danger"
                 onClick={() => {
-                  setNewTimeZone(props.airport.timeZone);
-                  setEditTimeZoneVisible(false);
+                  setNewTimeZoneId(props.airport.timeZoneId);
+                  setEditTimeZoneIdVisible(false);
                 }}
               >
                 Cancel

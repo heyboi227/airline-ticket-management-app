@@ -359,7 +359,7 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
               <span className="col col-7">
                 {formatDateTime(
                   new Date(props.flight.departureDateAndTime),
-                  props.flight.originAirport?.timeZone!
+                  props.flight.originAirport?.timeZone?.timeZoneName!
                 )}
               </span>
               <div className="col col-7">
@@ -419,7 +419,7 @@ function AdminFlightRow(props: IAdminFlightRowProperties) {
               <span className="col col-7">
                 {formatDateTime(
                   new Date(props.flight.arrivalDateAndTime),
-                  props.flight.destinationAirport?.timeZone!
+                  props.flight.destinationAirport?.timeZone?.timeZoneName!
                 )}
               </span>
               <div className="col col-7">
