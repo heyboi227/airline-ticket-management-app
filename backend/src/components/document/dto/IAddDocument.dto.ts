@@ -14,7 +14,7 @@ export interface IAddDocumentDto {
 
 export interface IAddDocument extends IServiceData {
   country_id: number;
-  type: string;
+  document_type: string;
   document_number: string;
   user_id: number;
 }

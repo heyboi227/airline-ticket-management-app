@@ -23,8 +23,8 @@ export default class TravelClassService extends BaseService<
     const travelClass = new TravelClassModel();
 
     travelClass.travelClassId = +data?.travel_class_id;
-    travelClass.travelClassName = data?.name;
-    travelClass.travelClassSubname = data?.subname;
+    travelClass.travelClassName = data?.travel_class_name;
+    travelClass.travelClassSubname = data?.travel_class_subname;
 
     return travelClass;
   }

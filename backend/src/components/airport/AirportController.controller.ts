@@ -152,10 +152,10 @@ export default class AirportController extends BaseController {
       .then(() => {
         return this.services.airport.add({
           airport_code: body.airportCode,
-          name: body.airportName,
+          airport_name: body.airportName,
           city: body.city,
           country_id: body.countryId,
-          time_zone: body.timeZone,
+          time_zone_id: body.timeZoneId,
         });
       })
       .then((newAirport) => {
@@ -198,6 +198,14 @@ export default class AirportController extends BaseController {
 
     if (data.airportName !== undefined) {
       serviceData.name = data.airportName;
+    }
+
+    if (data.countryId !== undefined) {
+      serviceData.country_id = data.countryId;
+    }
+
+    if (data.timeZoneId !== undefined) {
+      serviceData.time_zone_id = data.timeZoneId;
     }
 
     this.services.airport

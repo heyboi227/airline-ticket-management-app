@@ -14,6 +14,7 @@ import FlightService from "./components/flight/FlightService.service";
 import AirportService from "./components/airport/AirportService.service";
 import DocumentService from "./components/document/DocumentService.service";
 import TicketService from "./components/ticket/TicketService.service";
+import TimeZoneService from "./components/time_zone/TimeZoneService.service";
 
 async function main() {
   const config: IConfig = DevConfig;
@@ -76,6 +77,7 @@ async function main() {
       document: null,
       flight: null,
       ticket: null,
+      timeZone: null,
       travelClass: null,
       user: null,
     },
@@ -105,6 +107,9 @@ async function main() {
   applicationResources.services.ticket = new TicketService(
     applicationResources
   );
+  applicationResources.services.timeZone = new TimeZoneService(
+    applicationResources
+  );
   applicationResources.services.travelClass = new TravelClassService(
     applicationResources
   );
@@ -118,7 +123,7 @@ async function main() {
         origin: string | undefined,
         callback: (err: Error | null, allow?: boolean) => void
       ) {
-        if (["http://localhost:3000"].indexOf(origin) !== -1) {
+        if (!origin || origin?.startsWith("http://localhost")) {
           callback(null, true);
         } else {
           callback(new Error("Not allowed by CORS!"));

@@ -21,8 +21,8 @@ export default class AircraftService extends BaseService<
     const aircraft = new AircraftModel();
 
     aircraft.aircraftId = +data?.aircraft_id;
-    aircraft.aircraftType = data?.type;
-    aircraft.aircraftName = data?.name;
+    aircraft.aircraftType = data?.aircraft_type;
+    aircraft.aircraftName = data?.aircraft_name;
 
     return aircraft;
   }

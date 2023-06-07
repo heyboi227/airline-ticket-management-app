@@ -7,12 +7,16 @@ export interface IEditAirportDto {
   airportCode?: string;
   airportName?: string;
   city?: string;
+  countryId?: number;
+  timeZoneId?: number;
 }
 
 export interface IEditAirport extends IServiceData {
   airport_code?: string;
   name?: string;
   city?: string;
+  country_id?: number;
+  time_zone_id?: number;
 }
 
 const EditAirportValidator = ajv.compile({
@@ -32,6 +36,12 @@ const EditAirportValidator = ajv.compile({
       type: "string",
       minLength: 2,
       maxLength: 128,
+    },
+    countryId: {
+      type: "number",
+    },
+    timeZoneId: {
+      type: "number",
     },
   },
   required: [],

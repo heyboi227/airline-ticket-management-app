@@ -12,6 +12,7 @@ import TicketRouter from "./components/ticket/TicketRouter.Router";
 import DocumentRouter from "./components/document/DocumentRouter.Router";
 import FlightRouter from "./components/flight/FlightRouter.Router";
 import TravelClassRouter from "./components/travel_class/TravelClassRouter.Router";
+import TimeZoneRouter from "./components/time_zone/TimeZoneRouter.Router";
 
 const offsetToMySQL = (): string => {
   const offsetInMinutes = new Date().getTimezoneOffset();
@@ -56,6 +57,7 @@ const DevConfig: IConfig = {
     new DocumentRouter(),
     new FlightRouter(),
     new TicketRouter(),
+    new TimeZoneRouter(),
     new TravelClassRouter(),
     new UserRouter(),
   ],

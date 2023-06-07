@@ -1,4 +1,5 @@
 import ICountry from "./ICountry.model";
+import ITimeZone from "./ITimeZone.model";
 
 export default interface IAirport {
   airportId: number;
@@ -6,7 +7,8 @@ export default interface IAirport {
   airportName: string;
   city: string;
   countryId: number;
-  timeZone: string;
+  timeZoneId: number;
 
   country?: ICountry;
+  timeZone?: ITimeZone;
 }

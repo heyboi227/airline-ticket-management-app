@@ -4,8 +4,8 @@ import IServiceData from "../../../common/IServiceData.interface";
 const ajv = new Ajv();
 
 export default interface IEditTravelClass extends IServiceData {
-  name?: string;
-  subname?: string;
+  travel_class_name?: string;
+  travel_class_subname?: string;
 }
 
 interface IEditTravelClassDto {

@@ -9,6 +9,7 @@ import FlightService from "../components/flight/FlightService.service";
 import AddressService from "../components/user/AddressService.service";
 import UserService from "../components/user/UserService.service";
 import TicketService from "../components/ticket/TicketService.service";
+import TimeZoneService from "../components/time_zone/TimeZoneService.service";
 
 export interface IServices {
   address: AddressService;
@@ -19,6 +20,7 @@ export interface IServices {
   document: DocumentService;
   flight: FlightService;
   ticket: TicketService;
+  timeZone: TimeZoneService;
   travelClass: TravelClassService;
   user: UserService;
 }

@@ -9,8 +9,8 @@ export interface IEditAircraftDto {
 }
 
 export interface IEditAircraft extends IServiceData {
-  type?: string;
-  name?: string;
+  aircraft_type?: string;
+  aircraft_name?: string;
 }
 
 const EditAircraftValidator = ajv.compile({

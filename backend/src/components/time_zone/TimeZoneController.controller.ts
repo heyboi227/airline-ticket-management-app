@@ -1,13 +1,16 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
-import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
+import { AddTimeZoneValidator, IAddTimeZoneDto } from "./dto/IAddTimeZone.dto";
+import {
+  EditTimeZoneValidator,
+  IEditTimeZoneDto,
+} from "./dto/IEditTimeZone.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 
-export default class CountryController extends BaseController {
+export default class TimeZoneController extends BaseController {
   getAll(_req: Request, res: Response) {
-    this.services.country
+    this.services.timeZone
       .getAll({})
       .then((result) => {
         res.send(result);
@@ -20,13 +23,13 @@ export default class CountryController extends BaseController {
   }
 
   getById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
+    const timeZoneId: number = +req.params?.tzid;
 
-    this.services.country
-      .getById(countryId, {})
+    this.services.timeZone
+      .getById(timeZoneId, {})
       .then((result) => {
         if (result === null) {
-          throw new StatusError(404, "The country is not found!");
+          throw new StatusError(404, "The time zone is not found!");
         }
 
         res.send(result);
@@ -39,13 +42,13 @@ export default class CountryController extends BaseController {
   }
 
   getByName(req: Request, res: Response) {
-    const name: string = req.params?.cname;
+    const name: string = req.params?.tzname;
 
-    this.services.country
-      .getByName(name)
+    this.services.timeZone
+      .getByTimeZoneName(name)
       .then((result) => {
         if (result === null) {
-          throw new StatusError(404, "The country is not found!");
+          throw new StatusError(404, "The time zone is not found!");
         }
 
         res.send(result);
@@ -58,26 +61,28 @@ export default class CountryController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddCountryDto;
+    const body = req.body as IAddTimeZoneDto;
 
-    if (!AddCountryValidator(body)) {
-      const safeOutput = escapeHTML(JSON.stringify(AddCountryValidator.errors));
+    if (!AddTimeZoneValidator(body)) {
+      const safeOutput = escapeHTML(
+        JSON.stringify(AddTimeZoneValidator.errors)
+      );
       return res.status(400).send(safeOutput);
     }
 
-    this.services.country
+    this.services.timeZone
       .startTransaction()
       .then(() => {
-        return this.services.country.add({
-          country_name: body.countryName,
+        return this.services.timeZone.add({
+          time_zone_name: body.timeZoneName,
         });
       })
       .then(async (result) => {
-        await this.services.country.commitChanges();
+        await this.services.timeZone.commitChanges();
         res.send(result);
       })
       .catch(async (error) => {
-        await this.services.country.rollbackChanges();
+        await this.services.timeZone.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
@@ -85,29 +90,29 @@ export default class CountryController extends BaseController {
   }
 
   editById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
-    const data = req.body as IEditCountryDto;
+    const timeZoneId: number = +req.params?.tzid;
+    const data = req.body as IEditTimeZoneDto;
 
-    if (!EditCountryValidator(data)) {
+    if (!EditTimeZoneValidator(data)) {
       const safeOutput = escapeHTML(
-        JSON.stringify(EditCountryValidator.errors)
+        JSON.stringify(EditTimeZoneValidator.errors)
       );
       return res.status(400).send(safeOutput);
     }
 
-    this.services.country
+    this.services.timeZone
       .startTransaction()
       .then(() => {
-        return this.services.country.editById(countryId, {
-          country_name: data.countryName,
+        return this.services.timeZone.editById(timeZoneId, {
+          time_zone_name: data.timeZoneName,
         });
       })
       .then(async (result) => {
-        await this.services.country.commitChanges();
+        await this.services.timeZone.commitChanges();
         res.send(result);
       })
       .catch(async (error) => {
-        await this.services.country.rollbackChanges();
+        await this.services.timeZone.rollbackChanges();
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
@@ -115,27 +120,27 @@ export default class CountryController extends BaseController {
   }
 
   deleteById(req: Request, res: Response) {
-    const countryId: number = +req.params?.cid;
+    const timeZoneId: number = +req.params?.tzid;
 
-    this.services.country
+    this.services.timeZone
       .startTransaction()
       .then(() => {
-        return this.services.country.getById(countryId, {});
+        return this.services.timeZone.getById(timeZoneId, {});
       })
       .then((result) => {
         if (result === null) {
-          throw new StatusError(404, "The country is not found!");
+          throw new StatusError(404, "The time zone is not found!");
         }
       })
       .then(async () => {
-        await this.services.country.commitChanges();
-        return this.services.country.deleteById(countryId);
+        await this.services.timeZone.commitChanges();
+        return this.services.timeZone.deleteById(timeZoneId);
       })
       .then(() => {
-        res.send("This country has been deleted!");
+        res.send("This time zone has been deleted!");
       })
       .catch(async (error) => {
-        await this.services.country.commitChanges();
+        await this.services.timeZone.commitChanges();
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 300);

@@ -87,11 +87,11 @@ export default class TravelClassController extends BaseController {
     const serviceData: IEditTravelClass = {};
 
     if (data.travelClassName !== undefined) {
-      serviceData.name = data.travelClassName;
+      serviceData.travel_class_name = data.travelClassName;
     }
 
     if (data.travelClassSubname !== undefined) {
-      serviceData.subname = data.travelClassSubname;
+      serviceData.travel_class_subname = data.travelClassSubname;
     }
 
     this.services.travelClass

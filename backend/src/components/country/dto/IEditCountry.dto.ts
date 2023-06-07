@@ -10,7 +10,7 @@ export interface IEditCountryDto {
 }
 
 export interface IEditCountry extends IServiceData {
-  name: string;
+  country_name: string;
 }
 
 const EditCountryValidator = ajv.compile({

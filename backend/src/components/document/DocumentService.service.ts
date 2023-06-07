@@ -29,7 +29,7 @@ export default class DocumentService extends BaseService<
 
     document.documentId = +data?.document_id;
     document.countryId = +data?.country_id;
-    document.documentType = data?.type;
+    document.documentType = data?.document_type;
     document.documentNumber = data?.document_number;
     document.userId = +data?.user_id;
 

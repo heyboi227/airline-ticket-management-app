@@ -7,10 +7,12 @@ import * as mysql2 from "mysql2/promise";
 
 export interface IAirportAdapterOptions extends IAdapterOptions {
   showCountry: boolean;
+  showTimeZone: boolean;
 }
 
 export const DefaultAirportAdapterOptions: IAirportAdapterOptions = {
   showCountry: true,
+  showTimeZone: true,
 };
 
 export default class AirportService extends BaseService<
@@ -32,11 +34,18 @@ export default class AirportService extends BaseService<
     airport.airportName = data?.name;
     airport.city = data?.city;
     airport.countryId = +data?.country_id;
-    airport.timeZone = data?.time_zone;
+    airport.timeZoneId = +data?.time_zone_id;
 
     if (options.showCountry) {
       airport.country = await this.services.country.getById(
         airport.countryId,
+        {}
+      );
+    }
+
+    if (options.showTimeZone) {
+      airport.timeZone = await this.services.timeZone.getById(
+        airport.timeZoneId,
         {}
       );
     }

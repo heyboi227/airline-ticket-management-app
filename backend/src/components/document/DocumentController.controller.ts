@@ -91,7 +91,7 @@ export default class DocumentController extends BaseController {
         return this.services.document.add({
           country_id: body.countryId,
           document_number: body.documentNumber,
-          type: body.documentType,
+          document_type: body.documentType,
           user_id: body.userId,
         });
       })

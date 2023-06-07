@@ -94,8 +94,8 @@ export default class AircraftController extends BaseController {
       .startTransaction()
       .then(() => {
         return this.services.aircraft.add({
-          type: body.aircraftType,
-          name: body.aircraftName,
+          aircraft_type: body.aircraftType,
+          aircraft_name: body.aircraftName,
         });
       })
       .then(async (result) => {
@@ -124,11 +124,11 @@ export default class AircraftController extends BaseController {
     const serviceData: IEditAircraft = {};
 
     if (data.aircraftName !== undefined) {
-      serviceData.name = data.aircraftName;
+      serviceData.aircraft_name = data.aircraftName;
     }
 
     if (data.aircraftType !== undefined) {
-      serviceData.type = data.aircraftType;
+      serviceData.aircraft_type = data.aircraftType;
     }
 
     this.services.aircraft

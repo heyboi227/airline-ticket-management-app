@@ -8,15 +8,15 @@ export interface IAddAirportDto {
   airportName: string;
   city: string;
   countryId: number;
-  timeZone: string;
+  timeZoneId: number;
 }
 
 export interface IAddAirport extends IServiceData {
   airport_code: string;
-  name: string;
+  airport_name: string;
   city: string;
   country_id: number;
-  time_zone: string;
+  time_zone_id: number;
 }
 
 const AddAirportValidator = ajv.compile({
@@ -40,13 +40,11 @@ const AddAirportValidator = ajv.compile({
     countryId: {
       type: "number",
     },
-    timeZone: {
-      type: "string",
-      minLength: 2,
-      maxLength: 128,
+    timeZoneId: {
+      type: "number",
     },
   },
-  required: ["airportCode", "airportName", "city", "countryId", "timeZone"],
+  required: ["airportCode", "airportName", "city", "countryId", "timeZoneId"],
   additionalProperties: false,
 });
 

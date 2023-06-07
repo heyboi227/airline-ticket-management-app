@@ -9,8 +9,8 @@ export interface IAddTravelClassDto {
 }
 
 export default interface IAddTravelClass extends IServiceData {
-  name: string;
-  subname: string;
+  travel_class_name: string;
+  travel_class_subname: string;
 }
 
 const AddTravelClassValidator = ajv.compile({

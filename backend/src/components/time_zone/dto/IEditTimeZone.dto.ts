@@ -5,25 +5,25 @@ import IServiceData from "../../../common/IServiceData.interface";
 const ajv = new Ajv();
 addFormats(ajv);
 
-export interface IAddCountryDto {
-  countryName: string;
+export interface IEditTimeZoneDto {
+  timeZoneName: string;
 }
 
-export interface IAddCountry extends IServiceData {
-  country_name: string;
+export interface IEditTimeZone extends IServiceData {
+  time_zone_name: string;
 }
 
-const AddCountryValidator = ajv.compile({
+const EditTimeZoneValidator = ajv.compile({
   type: "object",
   properties: {
-    countryName: {
+    timeZoneName: {
       type: "string",
       minLength: 2,
       maxLength: 128,
     },
   },
-  required: ["countryName"],
+  required: ["timeZoneName"],
   additionalProperties: false,
 });
 
-export { AddCountryValidator };
+export { EditTimeZoneValidator };
