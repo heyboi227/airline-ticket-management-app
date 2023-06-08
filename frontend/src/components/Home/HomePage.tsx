@@ -4,6 +4,7 @@ import "./HomePage.scss";
 import firstSliderImage from "../../static/3.jpg";
 import secondSliderImage from "../../static/2.jpg";
 import thirdSliderImage from "../../static/1.jpg";
+import LoadingScreen from "../../LoadingScreen/LoadingScreen";
 
 export default function HomePage() {
   const items = [
@@ -37,6 +38,7 @@ export default function HomePage() {
 
   return (
     <>
+      <LoadingScreen />
       <div className="landing-page-header">
         <div className="w-50 d-flex flex-column justify-content-start align-items-center">
           <div className="d-flex flex-column justify-content-start align-items-center ms-5 intro-text">

@@ -34,76 +34,79 @@ function App() {
   return (
     <Container className="mt-4">
       <Menu />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/contact" element={<ContactPage />} />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
-        <Route path="/search/flights" element={<FlightsPage />} />
+          <Route path="/search/flights" element={<FlightsPage />} />
 
-        <Route
-          path="/auth/administrator/login"
-          element={<AdministratorLoginPage />}
-        />
-        <Route path="/auth/user/login" element={<UserLoginPage />} />
-        <Route path="/auth/user/register" element={<UserRegisterPage />} />
-        <Route
-          path="/auth/user/forgot-password"
-          element={<UserPasswordResetPage />}
-        />
+          <Route
+            path="/auth/administrator/login"
+            element={<AdministratorLoginPage />}
+          />
+          <Route path="/auth/user/login" element={<UserLoginPage />} />
+          <Route path="/auth/user/register" element={<UserRegisterPage />} />
+          <Route
+            path="/auth/user/forgot-password"
+            element={<UserPasswordResetPage />}
+          />
 
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/deactivate" element={<UserDeactivatePage />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/deactivate" element={<UserDeactivatePage />} />
 
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
 
-        <Route
-          path="/admin/dashboard/administrator/list"
-          element={<AdminAdministratorList />}
-        />
-        <Route
-          path="/admin/dashboard/administrator/add"
-          element={<AdminAdministratorAdd />}
-        />
+          <Route
+            path="/admin/dashboard/administrator/list"
+            element={<AdminAdministratorList />}
+          />
+          <Route
+            path="/admin/dashboard/administrator/add"
+            element={<AdminAdministratorAdd />}
+          />
 
-        <Route
-          path="/admin/dashboard/airport/list"
-          element={<AdminAirportList />}
-        />
-        <Route
-          path="/admin/dashboard/airport/add"
-          element={<AdminAirportAdd />}
-        />
+          <Route
+            path="/admin/dashboard/airport/list"
+            element={<AdminAirportList />}
+          />
+          <Route
+            path="/admin/dashboard/airport/add"
+            element={<AdminAirportAdd />}
+          />
 
-        <Route
-          path="/admin/dashboard/aircraft/list"
-          element={<AdminAircraftList />}
-        />
-        <Route
-          path="/admin/dashboard/aircraft/add"
-          element={<AdminAircraftAdd />}
-        />
+          <Route
+            path="/admin/dashboard/aircraft/list"
+            element={<AdminAircraftList />}
+          />
+          <Route
+            path="/admin/dashboard/aircraft/add"
+            element={<AdminAircraftAdd />}
+          />
 
-        <Route
-          path="/admin/dashboard/country/list"
-          element={<AdminCountryList />}
-        />
-        <Route
-          path="/admin/dashboard/country/add"
-          element={<AdminCountryAdd />}
-        />
+          <Route
+            path="/admin/dashboard/country/list"
+            element={<AdminCountryList />}
+          />
+          <Route
+            path="/admin/dashboard/country/add"
+            element={<AdminCountryAdd />}
+          />
 
-        <Route
-          path="/admin/dashboard/flight/list"
-          element={<AdminFlightList />}
-        />
-        <Route
-          path="/admin/dashboard/flight/add"
-          element={<AdminFlightAdd />}
-        />
+          <Route
+            path="/admin/dashboard/flight/list"
+            element={<AdminFlightList />}
+          />
+          <Route
+            path="/admin/dashboard/flight/add"
+            element={<AdminFlightAdd />}
+          />
 
-        <Route path="/admin/dashboard/user/list" element={<AdminUserList />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route
+            path="/admin/dashboard/user/list"
+            element={<AdminUserList />}
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       {!location.pathname.includes("admin") && <Footer />}
     </Container>
   );

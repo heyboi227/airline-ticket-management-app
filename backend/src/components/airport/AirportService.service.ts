@@ -31,7 +31,7 @@ export default class AirportService extends BaseService<
 
     airport.airportId = +data?.airport_id;
     airport.airportCode = data?.airport_code;
-    airport.airportName = data?.name;
+    airport.airportName = data?.airport_name;
     airport.city = data?.city;
     airport.countryId = +data?.country_id;
     airport.timeZoneId = +data?.time_zone_id;
@@ -147,7 +147,7 @@ export default class AirportService extends BaseService<
   ): Promise<AirportModel[]> {
     return new Promise<AirportModel[]>((resolve, reject) => {
       const sql: string =
-        "SELECT * FROM `airport` WHERE CONCAT_WS('|', `name`, `airport_code`, `city`) LIKE CONCAT('%', ?, '%');";
+        "SELECT * FROM `airport` WHERE CONCAT_WS('|', `airport_name`, `airport_code`, `city`) LIKE CONCAT('%', ?, '%');";
 
       this.db
         .execute(sql, [searchString])
