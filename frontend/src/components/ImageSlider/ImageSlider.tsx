@@ -26,8 +26,8 @@ export default function ImageSlider(props: SliderProps) {
 
   return (
     <Carousel fade activeIndex={index} onSelect={handleSelect} interval={7000}>
-      {props.items.map((item, index) => (
-        <Carousel.Item key={index}>
+      {props.items.map((item) => (
+        <Carousel.Item key={+RegExp(/\d+/).exec(item.image)![0]}>
           <div className="slider-item">
             <img className="slider-image" src={item.image} alt={item.altText} />
             <div
