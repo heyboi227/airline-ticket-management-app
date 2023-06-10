@@ -294,7 +294,7 @@ function FlightRow(props: IFlightRowProps) {
               <h3>
                 {formatTime(
                   new Date(props.flight.departureDateAndTime),
-                  props.flight.originAirport?.timeZone!
+                  props.flight.originAirport?.timeZone?.timeZoneName!
                 )}
               </h3>
               <h5>{props.flight.originAirport?.airportCode}</h5>
@@ -326,15 +326,15 @@ function FlightRow(props: IFlightRowProps) {
                 <h3>
                   {formatTime(
                     new Date(props.flight.arrivalDateAndTime),
-                    props.flight.destinationAirport?.timeZone!
+                    props.flight.destinationAirport?.timeZone?.timeZoneName!
                   )}
                 </h3>
                 <small>
                   {checkForDayDifference(
                     new Date(props.flight.departureDateAndTime),
                     new Date(props.flight.arrivalDateAndTime),
-                    props.flight.originAirport?.timeZone!,
-                    props.flight.destinationAirport?.timeZone!
+                    props.flight.originAirport?.timeZone?.timeZoneName!,
+                    props.flight.destinationAirport?.timeZone?.timeZoneName!
                   )}
                 </small>
               </div>
