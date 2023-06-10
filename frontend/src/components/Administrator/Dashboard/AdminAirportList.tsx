@@ -4,10 +4,12 @@ import IAirport from "../../../models/IAirport.model";
 import ICountry from "../../../models/ICountry.model";
 import "./AdminList.scss";
 import ITimeZone from "../../../models/ITimeZone.model";
+import ConfirmAction from "../../../helpers/ConfirmAction";
 
 interface IAdminAirportRowProperties {
   airport: IAirport;
   loadAirports: () => void;
+  errorMessage: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -38,6 +40,9 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
 
   const [countries, setCountries] = useState<ICountry[]>([]);
   const [timeZones, setTimeZones] = useState<ITimeZone[]>([]);
+
+  const [airportDeleteRequested, setAirportDeleteRequested] =
+    useState<boolean>(false);
 
   function loadCountries() {
     api("get", "/api/country", "administrator")
@@ -146,6 +151,21 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
 
         props.loadAirports();
         setEditTimeZoneIdVisible(false);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
+  function doDeleteAirport() {
+    console.log("Called the delete operation");
+    api("delete", "/api/airport/" + props.airport.airportId, "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage("Could not delete this airport!");
+        }
+
+        props.loadAirports();
       })
       .catch((error) => {
         console.error("An error occured: ", error);
@@ -353,10 +373,10 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
         <td>
           {!editTimeZoneIdVisible && (
             <div className="row">
-              <span className="col col-6">
+              <span className="col col-7">
                 {props.airport.timeZone?.timeZoneName}
               </span>
-              <div className="col col-6">
+              <div className="col col-5">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => {
@@ -409,6 +429,27 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
             </div>
           )}
         </td>
+        <td>
+          <button
+            className="btn btn-sm btn-danger"
+            onClick={() => {
+              setAirportDeleteRequested(true);
+            }}
+          >
+            Delete
+          </button>
+
+          {airportDeleteRequested && (
+            <ConfirmAction
+              title={`Are you sure you want to delete ${props.airport.airportName}?`}
+              message={
+                "All associated flights with this airport will also be deleted."
+              }
+              onYes={doDeleteAirport}
+              onNo={() => setAirportDeleteRequested(false)}
+            />
+          )}
+        </td>
       </tr>
     </>
   );
@@ -456,6 +497,7 @@ export default function AdminAirportList() {
                 airport={airport}
                 loadAirports={loadAirports}
                 setErrorMessage={setErrorMessage}
+                errorMessage={errorMessage}
               />
             ))}
           </tbody>

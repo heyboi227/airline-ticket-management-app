@@ -328,4 +328,27 @@ export default class FlightService extends BaseService<
         });
     });
   }
+
+  public async deleteAllFlightsByAirportId(airportId: number): Promise<true> {
+    return new Promise((resolve) => {
+      const sql1 =
+        "DELETE FROM `flight_travel_class` WHERE `flight_id` IN (SELECT `flight_id` FROM `flight` WHERE CONCAT_WS('|', `origin_airport_id`, `destination_airport_id`) LIKE CONCAT('%', ?, '%'));";
+      const sql2 =
+        "DELETE FROM `flight` WHERE CONCAT_WS('|', `origin_airport_id`, `destination_airport_id`) LIKE CONCAT('%', ?, '%');";
+      this.db
+        .execute(sql1, [airportId])
+        .then(() => resolve(true))
+        .catch((error) => {
+          throw new Error(
+            error?.message ?? "Could not delete the flight travel class prices!"
+          );
+        });
+      this.db
+        .execute(sql2, [airportId])
+        .then(() => resolve(true))
+        .catch((error) => {
+          throw new Error(error?.message ?? "Could not delete the flights!");
+        });
+    });
+  }
 }

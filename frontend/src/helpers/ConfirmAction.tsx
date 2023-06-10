@@ -24,10 +24,10 @@ export default function ConfirmAction(props: IConfirmActionProperties) {
         <p>{props.message}</p>
       </Modal.Body>
       <Modal.Footer>
-        <Button className="btn btn-lg btn-success" onClick={props.onYes}>
+        <Button className="btn btn-lg btn-danger" onClick={props.onYes}>
           Yes
         </Button>
-        <Button className="btn btn-lg btn-secondary" onClick={props.onNo}>
+        <Button className="btn btn-lg btn-success" onClick={props.onNo}>
           No
         </Button>
       </Modal.Footer>

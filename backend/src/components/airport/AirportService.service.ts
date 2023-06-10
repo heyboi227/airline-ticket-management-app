@@ -1,5 +1,6 @@
 import BaseService from "../../common/BaseService";
 import IAdapterOptions from "../../common/IAdapterOptions.interface";
+import StatusError from "../../common/StatusError";
 import AirportModel from "./AirportModel.model";
 import { IAddAirport } from "./dto/IAddAirport.dto";
 import { IEditAirport } from "./dto/IEditAirport.dto";
@@ -64,8 +65,23 @@ export default class AirportService extends BaseService<
     return this.baseEditById(airportId, data, DefaultAirportAdapterOptions);
   }
 
-  public async deleteById(airportId: number) {
-    return this.baseDeleteById(airportId);
+  public async deleteById(airportId: number): Promise<true> {
+    return new Promise((resolve) => {
+      this.services.flight
+        .deleteAllFlightsByAirportId(airportId)
+        .then(() => this.getById(airportId, DefaultAirportAdapterOptions))
+        .then((airport) => {
+          if (airport === null)
+            throw new StatusError(404, "Airport not found!");
+        })
+        .then(async () => {
+          await this.baseDeleteById(airportId);
+        })
+        .then(() => resolve(true))
+        .catch((error) => {
+          throw new Error(error?.message ?? "Could not delete this airport!");
+        });
+    });
   }
 
   public async getByAirportCode(
