@@ -24,12 +24,7 @@ export function convertDateToMySqlDateTime(date: Date): string {
   const minutes = pad(date.getMinutes());
   const seconds = pad(date.getSeconds());
 
-  const timezoneOffset = date.getTimezoneOffset();
-  const offsetSign = timezoneOffset > 0 ? "-" : "+";
-  const offsetHours = pad(Math.abs(Math.floor(timezoneOffset / 60)));
-  const offsetMinutes = pad(Math.abs(Math.floor(timezoneOffset % 60)));
-
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}${offsetSign}${offsetHours}:${offsetMinutes}`;
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 function stringToTime(time: string, baseDate: Date): Date {
