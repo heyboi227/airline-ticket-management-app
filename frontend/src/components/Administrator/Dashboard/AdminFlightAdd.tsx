@@ -14,6 +14,7 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
 import { parseISO } from "date-fns";
 import ITravelClass from "../../../models/ITravelClass.model";
+import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 
 interface IAddFlightFormState {
   flightCode: string;
@@ -401,7 +402,7 @@ export default function AdminFlightAdd() {
                     if (e)
                       dispatchFormStateAction({
                         type: "addFlightForm/setDepartureDateAndTime",
-                        value: e.toISOString(),
+                        value: convertDateToMySqlDateTime(e),
                       });
                   }}
                   className="form-control"
@@ -423,7 +424,7 @@ export default function AdminFlightAdd() {
                     if (e)
                       dispatchFormStateAction({
                         type: "addFlightForm/setArrivalDateAndTime",
-                        value: e.toISOString(),
+                        value: convertDateToMySqlDateTime(e),
                       });
                   }}
                   className="form-control"
