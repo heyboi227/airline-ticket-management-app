@@ -1,5 +1,5 @@
 export default interface ITravelClass {
   travelClassId: number;
-  travelClassName: string;
+  travelClassName: "Business" | "Economy";
   travelClassSubname: string;
 }
