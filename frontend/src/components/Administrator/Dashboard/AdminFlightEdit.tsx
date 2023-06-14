@@ -6,6 +6,11 @@ import { api } from "../../../api/api";
 import IFlight from "../../../models/IFlight.model";
 import ITravelClass from "../../../models/ITravelClass.model";
 import IAirport from "../../../models/IAirport.model";
+import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { srLatn } from "date-fns/locale";
+import { parseISO } from "date-fns";
+import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 
 export interface IAdminFlightEditUrlParams
   extends Record<string, string | undefined> {
@@ -350,12 +355,15 @@ export default function AdminFlightEdit() {
 
     dispatchFormStateAction({
       type: "editFlightForm/setDepartureDateAndTime",
-      value: flight?.departureDateAndTime ?? "",
+      value:
+        convertDateToMySqlDateTime(new Date(flight?.departureDateAndTime!)) ??
+        "",
     });
 
     dispatchFormStateAction({
       type: "editFlightForm/setArrivalDateAndTime",
-      value: flight?.arrivalDateAndTime ?? "",
+      value:
+        convertDateToMySqlDateTime(new Date(flight?.arrivalDateAndTime!)) ?? "",
     });
 
     dispatchFormStateAction({
@@ -457,6 +465,48 @@ export default function AdminFlightEdit() {
                       ))}
                     </select>
                   </div>
+                </div>
+
+                <div className="form-group mb-3">
+                  <label>Departure date and time</label>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    adapterLocale={srLatn}
+                  >
+                    <DateTimePicker
+                      value={parseISO(formState.departureDateAndTime)}
+                      onChange={(e) => {
+                        if (e)
+                          dispatchFormStateAction({
+                            type: "editFlightForm/setDepartureDateAndTime",
+                            value: convertDateToMySqlDateTime(e),
+                          });
+                      }}
+                      className="form-control"
+                      disablePast={true}
+                    ></DateTimePicker>
+                  </LocalizationProvider>
+                </div>
+
+                <div className="form-group mb-3">
+                  <label>Arrival date and time</label>
+                  <LocalizationProvider
+                    dateAdapter={AdapterDateFns}
+                    adapterLocale={srLatn}
+                  >
+                    <DateTimePicker
+                      value={parseISO(formState.arrivalDateAndTime)}
+                      onChange={(e) => {
+                        if (e)
+                          dispatchFormStateAction({
+                            type: "editFlightForm/setArrivalDateAndTime",
+                            value: convertDateToMySqlDateTime(e),
+                          });
+                      }}
+                      className="form-control"
+                      disablePast={true}
+                    ></DateTimePicker>
+                  </LocalizationProvider>
                 </div>
 
                 <div className="form-froup mb-3">
