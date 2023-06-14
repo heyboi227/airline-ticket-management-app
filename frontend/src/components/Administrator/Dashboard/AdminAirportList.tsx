@@ -158,7 +158,6 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
   }
 
   function doDeleteAirport() {
-    console.log("Called the delete operation");
     api("delete", "/api/airport/" + props.airport.airportId, "administrator")
       .then((res) => {
         if (res.status === "error") {

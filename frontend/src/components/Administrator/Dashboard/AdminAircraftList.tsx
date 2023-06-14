@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import IAircraft from "../../../models/IAircraft.model";
 import "./AdminList.scss";
+import ConfirmAction from "../../../helpers/ConfirmAction";
 
 interface IAdminAircraftRowProperties {
   aircraft: IAircraft;
@@ -21,6 +22,9 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
   const [newAircraftName, setNewAircraftName] = useState<string>(
     props.aircraft.aircraftName
   );
+
+  const [aircraftDeleteRequested, setAircraftDeleteRequested] =
+    useState<boolean>(false);
 
   function doEditAircraftType() {
     api("put", "/api/aircraft/" + props.aircraft.aircraftId, "administrator", {
@@ -56,6 +60,20 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
       });
   }
 
+  function doDeleteAircraft() {
+    api("delete", "/api/aircraft/" + props.aircraft.aircraftId, "administrator")
+      .then((res) => {
+        if (res.status === "error") {
+          return props.setErrorMessage("Could not delete this aircraft!");
+        }
+
+        props.loadAircraft();
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
   return (
     <>
       <tr>
@@ -63,8 +81,8 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
         <td>
           {!editAircraftTypeVisible && (
             <div className="row">
-              <span className="col col-4">{props.aircraft.aircraftType}</span>
-              <div className="col col-4">
+              <span className="col col-6">{props.aircraft.aircraftType}</span>
+              <div className="col col-6">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditAircraftTypeVisible(true)}
@@ -112,8 +130,8 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
         <td>
           {!editAircraftNameVisible && (
             <div className="row">
-              <span className="col col-4">{props.aircraft.aircraftName}</span>
-              <div className="col col-4">
+              <span className="col col-9">{props.aircraft.aircraftName}</span>
+              <div className="col col-3">
                 <button
                   className="btn btn-primary btn-sm"
                   onClick={() => setEditAircraftNameVisible(true)}
@@ -155,6 +173,27 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
             </div>
           )}
         </td>
+        <td>
+          <button
+            className="btn btn-sm btn-danger"
+            onClick={() => {
+              setAircraftDeleteRequested(true);
+            }}
+          >
+            Delete
+          </button>
+
+          {aircraftDeleteRequested && (
+            <ConfirmAction
+              title={`Are you sure you want to delete ${props.aircraft.aircraftName}?`}
+              message={
+                "All associated flights with this aircraft will also be deleted."
+              }
+              onYes={doDeleteAircraft}
+              onNo={() => setAircraftDeleteRequested(false)}
+            />
+          )}
+        </td>
       </tr>
     </>
   );
@@ -184,7 +223,7 @@ export default function AdminAircraftList() {
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
       {!errorMessage && (
-        <table className="table table-sm table-hover aircraft-list">
+        <table className="table w-75 my-0 mx-auto table-sm table-hover aircraft-list">
           <thead>
             <tr>
               <th>ID</th>
