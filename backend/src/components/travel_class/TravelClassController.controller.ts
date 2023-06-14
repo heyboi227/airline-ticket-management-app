@@ -1,14 +1,15 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import IAddTravelClassDto, {
-  AddTravelClassValidator,
-} from "./dto/IAddTravelClass.dto";
 import IEditTravelClass, {
   EditTravelClassValidator,
   IEditTravelClassDto,
 } from "./dto/IEditTravelClass.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
+import {
+  AddTravelClassValidator,
+  IAddTravelClassDto,
+} from "./dto/IAddTravelClass.dto";
 
 export default class TravelClassController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -55,7 +56,10 @@ export default class TravelClassController extends BaseController {
     }
 
     this.services.travelClass
-      .add(data)
+      .add({
+        travel_class_name: data.travelClassName,
+        travel_class_subname: data.travelClassSubname,
+      })
       .then((result) => {
         if (result === null) {
           throw new StatusError(400, "Bad travel class data given!");
