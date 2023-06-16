@@ -121,12 +121,6 @@ export default function AdminFlightList() {
                       >
                         <FontAwesomeIcon icon={faEdit} /> Edit
                       </Link>
-                      <button
-                        className="btn btn-sm btn-danger"
-                        onClick={() => {}}
-                      >
-                        Delete
-                      </button>
                     </td>
                   </tr>
                 ) : null

@@ -15,6 +15,7 @@ import { srLatn } from "date-fns/locale";
 import { parseISO } from "date-fns";
 import ITravelClass from "../../../models/ITravelClass.model";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
+import { faBackward } from "@fortawesome/free-solid-svg-icons";
 
 interface IAddFlightFormState {
   flightCode: string;
@@ -196,6 +197,8 @@ export default function AdminFlightAdd() {
   const [aircraft, setAircraft] = useState<IAircraft[]>([]);
   const [travelClasses, setTravelClasses] = useState<ITravelClass[]>([]);
 
+  const [flightAdded, setFlightAdded] = useState<boolean>(false);
+
   const navigate = useNavigate();
 
   const [formState, dispatchFormStateAction] = useReducer(
@@ -304,9 +307,8 @@ export default function AdminFlightAdd() {
         return flight;
       })
       .then(() => {
-        navigate("/admin/dashboard/flight/list", {
-          replace: true,
-        });
+        setFlightAdded(true);
+        setTimeout(() => setFlightAdded(false), 3000);
       })
       .catch((error) => {
         setErrorMessage(error?.message ?? "Unknown error!");
@@ -533,6 +535,24 @@ export default function AdminFlightAdd() {
                 <FontAwesomeIcon icon={faSave} />
                 &nbsp;Add flight
               </button>
+              &nbsp;
+              <button
+                className="btn btn-danger"
+                onClick={() =>
+                  navigate("/admin/dashboard/flight/list", {
+                    replace: true,
+                  })
+                }
+              >
+                <FontAwesomeIcon icon={faBackward} />
+                &nbsp;Back
+              </button>
+              &nbsp;
+              {flightAdded && (
+                <span className="text-bg-success">
+                  Flight successfully added!
+                </span>
+              )}
             </div>
           </div>
         </div>
