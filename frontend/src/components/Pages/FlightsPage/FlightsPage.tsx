@@ -31,6 +31,7 @@ interface IFlightRowWithPricesProps {
   flight: IFlight;
   setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
+  setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 interface IClassPricesProps {
@@ -39,6 +40,7 @@ interface IClassPricesProps {
   visibility: boolean;
   setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
+  setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
 interface IClassPricesDrawerProps {
@@ -136,6 +138,12 @@ const ClassPrices = (props: IClassPricesProps) => {
     props.setFlightDirection(newDirection);
   };
 
+  const changeDate = (newDate: Date) => {
+    props.setChosenDate(newDate);
+  };
+
+  const location = useLocation();
+
   const renderTextForSubTravelClasses = (subTravelClass: string) => {
     switch (subTravelClass) {
       case "Basic Economy":
@@ -193,6 +201,26 @@ const ClassPrices = (props: IClassPricesProps) => {
             </p>
             <p>Two free checked bags included</p>
             <p>Priority seat selection</p>
+          </div>
+        );
+      case "Business+":
+        return (
+          <div>
+            <p>
+              Access to premium <strong>SokoRest&trade;</strong> with additional
+              amenities such as spa services and private rooms
+            </p>
+            <p>
+              Personalized in-flight service with an expanded gourmet menu,
+              including meals designed by renowned chefs and a wider selection
+              of premium wines and spirits
+            </p>
+            <p>Three free checked bags included</p>
+            <p>
+              Priority seat selection with the option to pre-book specific
+              suites or seats
+            </p>
+            <p>Complimentary high-speed Wi-Fi throughout the flight</p>
           </div>
         );
       default:
@@ -264,6 +292,7 @@ const ClassPrices = (props: IClassPricesProps) => {
                     }`}
                     onClick={() => {
                       changeFlightDirection("return");
+                      changeDate(new Date(location.state[3]));
                       props.setChooseFlightText("Choose your return flight");
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
@@ -390,6 +419,7 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
               visibility={isEconomyVisible}
               setFlightDirection={props.setFlightDirection}
               setChooseFlightText={props.setChooseFlightText}
+              setChosenDate={props.setChosenDate}
             />
           </CSSTransition>
         )}
@@ -401,6 +431,7 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
               visibility={isBusinessVisible}
               setFlightDirection={props.setFlightDirection}
               setChooseFlightText={props.setChooseFlightText}
+              setChosenDate={props.setChosenDate}
             />
           </CSSTransition>
         )}
@@ -716,6 +747,7 @@ export default function FlightsPage() {
                         key={flight.flightId}
                         setFlightDirection={setFlightDirection}
                         setChooseFlightText={setChooseFlightText}
+                        setChosenDate={setChosenDate}
                       />
                     ))}
                   </>
