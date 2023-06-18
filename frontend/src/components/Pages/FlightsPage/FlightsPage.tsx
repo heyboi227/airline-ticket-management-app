@@ -1,5 +1,5 @@
 import "./FlightsPage.scss";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import IFlight from "../../../models/IFlight.model";
 import {
   checkForDayDifference,
@@ -29,8 +29,11 @@ interface IFlightRowProps {
 
 interface IFlightRowWithPricesProps {
   flight: IFlight;
+  flightDirection: string;
   setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
+  chooseFlightText: string;
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
+  chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
@@ -38,8 +41,11 @@ interface IClassPricesProps {
   travelClassName: string;
   flight: IFlight;
   visibility: boolean;
+  flightDirection: string;
   setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
+  chooseFlightText: string;
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
+  chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
 }
 
@@ -84,24 +90,32 @@ function ClassPricesDrawer(props: IClassPricesDrawerProps) {
       <div className="card" style={{ width: "18rem" }}>
         <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
           <h2 className="card-title">{props.travelClassName}</h2>
-          <p className="card-text">
-            From{" "}
-            <span style={{ fontSize: "1.5vw" }}>
-              {props.flight.travelClasses
-                ?.filter((travelClass) =>
-                  travelClass.travelClass.travelClassName.includes(
-                    props.travelClassName
+          {props.flight.travelClasses?.filter((travelClass) =>
+            travelClass.travelClass.travelClassName.includes(
+              props.travelClassName
+            )
+          ).length !== 0 ? (
+            <p className="card-text">
+              From{" "}
+              <span style={{ fontSize: "1.5vw" }}>
+                {props.flight.travelClasses
+                  ?.filter((travelClass) =>
+                    travelClass.travelClass.travelClassName.includes(
+                      props.travelClassName
+                    )
                   )
-                )
-                .map((travelClass) => travelClass.price)
-                .reduce((smallestPrice: number, currentPrice: number) => {
-                  return currentPrice < smallestPrice
-                    ? currentPrice
-                    : smallestPrice;
-                }, Infinity)}{" "}
-              RSD
-            </span>
-          </p>
+                  .map((travelClass) => travelClass.price)
+                  .reduce((smallestPrice: number, currentPrice: number) => {
+                    return currentPrice < smallestPrice
+                      ? currentPrice
+                      : smallestPrice;
+                  }, Infinity)}{" "}
+                RSD
+              </span>
+            </p>
+          ) : (
+            <p>N/A</p>
+          )}
         </div>
         <div
           className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
@@ -134,15 +148,8 @@ const ClassPrices = (props: IClassPricesProps) => {
     setSelectPriceHoveredIndex(null);
   };
 
-  const changeFlightDirection = (newDirection: string) => {
-    props.setFlightDirection(newDirection);
-  };
-
-  const changeDate = (newDate: Date) => {
-    props.setChosenDate(newDate);
-  };
-
   const location = useLocation();
+  const navigate = useNavigate();
 
   const renderTextForSubTravelClasses = (subTravelClass: string) => {
     switch (subTravelClass) {
@@ -291,9 +298,13 @@ const ClassPrices = (props: IClassPricesProps) => {
                         : ""
                     }`}
                     onClick={() => {
-                      changeFlightDirection("return");
-                      changeDate(new Date(location.state[3]));
-                      props.setChooseFlightText("Choose your return flight");
+                      if (props.flightDirection.includes("departure")) {
+                        props.setFlightDirection("return");
+                        props.setChosenDate(new Date(location.state[3]));
+                        props.setChooseFlightText("Choose your return flight");
+                      } else {
+                        navigate("/order", { replace: true });
+                      }
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
                     onMouseLeave={handleMouseLeave}
@@ -403,6 +414,8 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
   const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
   const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
 
+  const nodeRef = React.useRef(null);
+
   return (
     <>
       <FlightRow
@@ -412,27 +425,45 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
       />
       <TransitionGroup component={null}>
         {isEconomyVisible && (
-          <CSSTransition classNames={"row-transition"} timeout={300}>
-            <ClassPrices
-              travelClassName="Economy"
-              flight={props.flight}
-              visibility={isEconomyVisible}
-              setFlightDirection={props.setFlightDirection}
-              setChooseFlightText={props.setChooseFlightText}
-              setChosenDate={props.setChosenDate}
-            />
+          <CSSTransition
+            nodeRef={nodeRef}
+            classNames={"row-transition"}
+            timeout={300}
+          >
+            <div ref={nodeRef}>
+              <ClassPrices
+                travelClassName="Economy"
+                flight={props.flight}
+                visibility={isEconomyVisible}
+                setFlightDirection={props.setFlightDirection}
+                setChooseFlightText={props.setChooseFlightText}
+                setChosenDate={props.setChosenDate}
+                flightDirection={props.flightDirection}
+                chooseFlightText={props.chooseFlightText}
+                chosenDate={props.chosenDate}
+              />
+            </div>
           </CSSTransition>
         )}
         {isBusinessVisible && (
-          <CSSTransition classNames={"row-transition"} timeout={300}>
-            <ClassPrices
-              travelClassName="Business"
-              flight={props.flight}
-              visibility={isBusinessVisible}
-              setFlightDirection={props.setFlightDirection}
-              setChooseFlightText={props.setChooseFlightText}
-              setChosenDate={props.setChosenDate}
-            />
+          <CSSTransition
+            nodeRef={nodeRef}
+            classNames={"row-transition"}
+            timeout={300}
+          >
+            <div ref={nodeRef}>
+              <ClassPrices
+                travelClassName="Business"
+                flight={props.flight}
+                visibility={isBusinessVisible}
+                setFlightDirection={props.setFlightDirection}
+                setChooseFlightText={props.setChooseFlightText}
+                setChosenDate={props.setChosenDate}
+                flightDirection={props.flightDirection}
+                chooseFlightText={props.chooseFlightText}
+                chosenDate={props.chosenDate}
+              />
+            </div>
           </CSSTransition>
         )}
       </TransitionGroup>
@@ -748,6 +779,9 @@ export default function FlightsPage() {
                         setFlightDirection={setFlightDirection}
                         setChooseFlightText={setChooseFlightText}
                         setChosenDate={setChosenDate}
+                        flightDirection={flightDirection}
+                        chooseFlightText={chooseFlightText}
+                        chosenDate={chosenDate}
                       />
                     ))}
                   </>
