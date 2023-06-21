@@ -1,5 +1,5 @@
 import "./FlightsPage.scss";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import IFlight from "../../../models/IFlight.model";
 import {
   checkForDayDifference,
@@ -23,8 +23,8 @@ import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 interface IFlightRowProps {
   flight: IFlight;
-  handleToggleEconomy: () => void;
-  handleToggleBusiness: () => void;
+  handleToggleEconomy?: () => void;
+  handleToggleBusiness?: () => void;
 }
 
 interface IFlightRowWithPricesProps {
@@ -35,6 +35,10 @@ interface IFlightRowWithPricesProps {
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
   chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
+  departFlight: IFlight;
+  setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
+  returnFlight: IFlight;
+  setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
 }
 
 interface IClassPricesProps {
@@ -47,6 +51,10 @@ interface IClassPricesProps {
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
   chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
+  departFlight: IFlight;
+  setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
+  returnFlight: IFlight;
+  setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
 }
 
 interface IClassPricesDrawerProps {
@@ -149,7 +157,6 @@ const ClassPrices = (props: IClassPricesProps) => {
   };
 
   const location = useLocation();
-  const navigate = useNavigate();
 
   const renderTextForSubTravelClasses = (subTravelClass: string) => {
     switch (subTravelClass) {
@@ -299,11 +306,12 @@ const ClassPrices = (props: IClassPricesProps) => {
                     }`}
                     onClick={() => {
                       if (props.flightDirection.includes("departure")) {
+                        props.setDepartFlight(props.flight);
                         props.setFlightDirection("return");
                         props.setChosenDate(new Date(location.state[3]));
                         props.setChooseFlightText("Choose your return flight");
                       } else {
-                        navigate("/order", { replace: true });
+                        props.setReturnFlight(props.flight);
                       }
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
@@ -319,6 +327,86 @@ const ClassPrices = (props: IClassPricesProps) => {
     </div>
   );
 };
+
+function FlightRowWithoutPrices(props: IFlightRowProps) {
+  return (
+    <>
+      <div className="container-fluid d-flex flex-row">
+        <div className="card p-3 w-50 p-3">
+          <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
+            <div
+              className="d-flex flex-column justify-content-center align-items-start"
+              style={{ width: "10vw" }}
+            >
+              <span>Departure</span>
+              <h3>
+                {formatTime(
+                  new Date(props.flight.departureDateAndTime),
+                  props.flight.originAirport?.timeZone?.timeZoneName!
+                )}
+              </h3>
+              <h5>{props.flight.originAirport?.airportCode}</h5>
+            </div>
+            <div className="d-flex flex-column align-items-center mt-3">
+              <DashedArrow />
+              <p>
+                Duration:{" "}
+                {subtractTime(
+                  formatTime(
+                    new Date(props.flight.departureDateAndTime),
+                    Config.LOCAL_TIME_ZONE
+                  ),
+                  formatTime(
+                    new Date(props.flight.arrivalDateAndTime),
+                    Config.LOCAL_TIME_ZONE
+                  ),
+                  new Date(props.flight.departureDateAndTime),
+                  new Date(props.flight.arrivalDateAndTime)
+                )}
+              </p>
+            </div>
+            <div
+              className="d-flex flex-column justify-content-center align-items-end"
+              style={{ width: "10vw" }}
+            >
+              <span>Arrival</span>
+              <div className="d-flex flex-row justify-content-center align-items-center">
+                <h3>
+                  {formatTime(
+                    new Date(props.flight.arrivalDateAndTime),
+                    props.flight.destinationAirport?.timeZone?.timeZoneName!
+                  )}
+                </h3>
+                <small>
+                  {checkForDayDifference(
+                    new Date(props.flight.departureDateAndTime),
+                    new Date(props.flight.arrivalDateAndTime),
+                    props.flight.originAirport?.timeZone?.timeZoneName!,
+                    props.flight.destinationAirport?.timeZone?.timeZoneName!
+                  )}
+                </small>
+              </div>
+              <h5>{props.flight.destinationAirport?.airportCode}</h5>
+            </div>
+          </div>
+          <div
+            className="d-flex flex-row justify-content-start align-items-center"
+            style={{ width: "10vw" }}
+          >
+            <img
+              src={smallLogo}
+              alt="The logo of Air Soko, without the fontface"
+              style={{ width: "2vw", borderRadius: "15px" }}
+              className="me-2"
+            />
+            <span>{props.flight.flightCode}</span>
+          </div>
+          <span>{props.flight.aircraft?.aircraftName}</span>
+        </div>
+      </div>
+    </>
+  );
+}
 
 function FlightRow(props: IFlightRowProps) {
   return (
@@ -398,12 +486,12 @@ function FlightRow(props: IFlightRowProps) {
         <ClassPricesDrawer
           travelClassName={"Economy"}
           flight={props.flight}
-          handleToggle={props.handleToggleEconomy}
+          handleToggle={props.handleToggleEconomy!}
         />
         <ClassPricesDrawer
           travelClassName={"Business"}
           flight={props.flight}
-          handleToggle={props.handleToggleBusiness}
+          handleToggle={props.handleToggleBusiness!}
         />
       </div>
     </>
@@ -441,6 +529,10 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
                 flightDirection={props.flightDirection}
                 chooseFlightText={props.chooseFlightText}
                 chosenDate={props.chosenDate}
+                departFlight={props.departFlight}
+                setDepartFlight={props.setDepartFlight}
+                returnFlight={props.returnFlight}
+                setReturnFlight={props.setReturnFlight}
               />
             </div>
           </CSSTransition>
@@ -462,6 +554,10 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
                 flightDirection={props.flightDirection}
                 chooseFlightText={props.chooseFlightText}
                 chosenDate={props.chosenDate}
+                departFlight={props.departFlight}
+                setDepartFlight={props.setDepartFlight}
+                returnFlight={props.returnFlight}
+                setReturnFlight={props.setReturnFlight}
               />
             </div>
           </CSSTransition>
@@ -481,6 +577,13 @@ export default function FlightsPage() {
 
   const [chooseFlightText, setChooseFlightText] = useState<string>(
     "Choose your departure flight"
+  );
+
+  const [departFlight, setDepartFlight] = useState<IFlight | undefined>(
+    undefined
+  );
+  const [returnFlight, setReturnFlight] = useState<IFlight | undefined>(
+    undefined
   );
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -698,7 +801,11 @@ export default function FlightsPage() {
     );
   }, [chosenDate, dateRange, flightDirection, location.state]);
 
-  const [activeTab, setActiveTab] = useState<string>("currentDate");
+  const currentDate = new Date(location.state[2]);
+
+  const [activeTab, setActiveTab] = useState<string>(
+    currentDate.toDateString()
+  );
 
   const formatDate = (date: Date): string => {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -715,7 +822,7 @@ export default function FlightsPage() {
     }
   };
 
-  const currentDate: Date = new Date(location.state[2]);
+  const today: Date = new Date();
 
   return (
     <Container>
@@ -730,7 +837,8 @@ export default function FlightsPage() {
         {dateRange.map((date, index) => {
           const formattedDate = formatDate(date);
           const minimalPrice = minimalPrices[index];
-          const isDisabled = date < currentDate;
+          const isDisabled =
+            today < currentDate ? date < today : date < currentDate;
 
           return (
             <Tab
@@ -747,6 +855,26 @@ export default function FlightsPage() {
               }
               disabled={isDisabled}
             >
+              <div className="d-flex flex-row justify-content-center align-items-center mt-2">
+                {departFlight && (
+                  <div className="d-flex flex-column w-100 justify-content-center align-items-start">
+                    <p>
+                      Selected departure flight:{" "}
+                      {new Date(location.state[2]).toDateString()}
+                    </p>
+                    <FlightRowWithoutPrices flight={departFlight} />
+                  </div>
+                )}
+                {returnFlight && (
+                  <div className="d-flex flex-column w-100 justify-content-center align-items-start">
+                    <p>
+                      Selected return flight:{" "}
+                      {new Date(location.state[3]).toDateString()}
+                    </p>
+                    <FlightRowWithoutPrices flight={returnFlight} />
+                  </div>
+                )}
+              </div>
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
                 {error && <h2 className="text-bg-warning">{error}</h2>}
                 {!isLoading && flightData.length === 0 && (
@@ -782,6 +910,10 @@ export default function FlightsPage() {
                         flightDirection={flightDirection}
                         chooseFlightText={chooseFlightText}
                         chosenDate={chosenDate}
+                        departFlight={departFlight!}
+                        setDepartFlight={setDepartFlight}
+                        returnFlight={returnFlight!}
+                        setReturnFlight={setReturnFlight}
                       />
                     ))}
                   </>

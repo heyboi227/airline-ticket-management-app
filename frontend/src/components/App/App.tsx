@@ -27,6 +27,7 @@ import AdminFlightAdd from "../Administrator/Dashboard/AdminFlightAdd";
 import AdminFlightEdit from "../Administrator/Dashboard/AdminFlightEdit";
 import AdminTravelClassList from "../Administrator/Dashboard/AdminTravelClassList";
 import AdminTravelClassAdd from "../Administrator/Dashboard/AdminTravelClassAdd";
+import OrderPage from "../Pages/OrderPage/OrderPage";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -42,6 +43,8 @@ function App() {
         <Route path="/contact" element={<ContactPage />} />
 
         <Route path="/search/flights" element={<FlightsPage />} />
+
+        <Route path="/order" element={<OrderPage />} />
 
         <Route
           path="/auth/administrator/login"
