@@ -35,10 +35,14 @@ interface IFlightRowWithPricesProps {
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
   chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
-  departFlight: IFlight;
+  departFlight: IFlight | undefined;
   setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
-  returnFlight: IFlight;
+  returnFlight: IFlight | undefined;
   setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
+  selectedDeparturePrice: number;
+  setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
+  selectedReturnPrice: number;
+  setSelectedReturnPrice: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface IClassPricesProps {
@@ -51,16 +55,20 @@ interface IClassPricesProps {
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
   chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
-  departFlight: IFlight;
+  departFlight: IFlight | undefined;
   setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
-  returnFlight: IFlight;
+  returnFlight: IFlight | undefined;
   setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
+  selectedDeparturePrice: number;
+  setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
+  selectedReturnPrice: number;
+  setSelectedReturnPrice: React.Dispatch<React.SetStateAction<number>>;
 }
 
 interface IClassPricesDrawerProps {
   travelClassName: string;
   flight: IFlight;
-  handleToggle: () => void;
+  handleToggle: (() => void) | undefined;
 }
 
 interface TabTitleProps {
@@ -310,8 +318,10 @@ const ClassPrices = (props: IClassPricesProps) => {
                         props.setFlightDirection("return");
                         props.setChosenDate(new Date(location.state[3]));
                         props.setChooseFlightText("Choose your return flight");
+                        props.setSelectedDeparturePrice(travelClass.price);
                       } else {
                         props.setReturnFlight(props.flight);
+                        props.setSelectedReturnPrice(travelClass.price);
                       }
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
@@ -328,84 +338,84 @@ const ClassPrices = (props: IClassPricesProps) => {
   );
 };
 
-function FlightRowWithoutPrices(props: IFlightRowProps) {
+function FlightDetails(props: IFlightRowProps) {
   return (
     <>
-      <div className="container-fluid d-flex flex-row">
-        <div className="card p-3 w-50 p-3">
-          <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
-            <div
-              className="d-flex flex-column justify-content-center align-items-start"
-              style={{ width: "10vw" }}
-            >
-              <span>Departure</span>
-              <h3>
-                {formatTime(
-                  new Date(props.flight.departureDateAndTime),
-                  props.flight.originAirport?.timeZone?.timeZoneName!
-                )}
-              </h3>
-              <h5>{props.flight.originAirport?.airportCode}</h5>
-            </div>
-            <div className="d-flex flex-column align-items-center mt-3">
-              <DashedArrow />
-              <p>
-                Duration:{" "}
-                {subtractTime(
-                  formatTime(
-                    new Date(props.flight.departureDateAndTime),
-                    Config.LOCAL_TIME_ZONE
-                  ),
-                  formatTime(
-                    new Date(props.flight.arrivalDateAndTime),
-                    Config.LOCAL_TIME_ZONE
-                  ),
-                  new Date(props.flight.departureDateAndTime),
-                  new Date(props.flight.arrivalDateAndTime)
-                )}
-              </p>
-            </div>
-            <div
-              className="d-flex flex-column justify-content-center align-items-end"
-              style={{ width: "10vw" }}
-            >
-              <span>Arrival</span>
-              <div className="d-flex flex-row justify-content-center align-items-center">
-                <h3>
-                  {formatTime(
-                    new Date(props.flight.arrivalDateAndTime),
-                    props.flight.destinationAirport?.timeZone?.timeZoneName!
-                  )}
-                </h3>
-                <small>
-                  {checkForDayDifference(
-                    new Date(props.flight.departureDateAndTime),
-                    new Date(props.flight.arrivalDateAndTime),
-                    props.flight.originAirport?.timeZone?.timeZoneName!,
-                    props.flight.destinationAirport?.timeZone?.timeZoneName!
-                  )}
-                </small>
-              </div>
-              <h5>{props.flight.destinationAirport?.airportCode}</h5>
-            </div>
+      <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
+        <div
+          className="d-flex flex-column justify-content-center align-items-start"
+          style={{ width: "10vw" }}
+        >
+          <span>Departure</span>
+          <h3>
+            {formatTime(
+              new Date(props.flight.departureDateAndTime),
+              props.flight.originAirport?.timeZone?.timeZoneName!
+            )}
+          </h3>
+          <h5>{props.flight.originAirport?.airportCode}</h5>
+        </div>
+        <div className="d-flex flex-column align-items-center mt-3">
+          <DashedArrow />
+          <p>
+            Duration:{" "}
+            {subtractTime(
+              formatTime(
+                new Date(props.flight.departureDateAndTime),
+                Config.LOCAL_TIME_ZONE
+              ),
+              formatTime(
+                new Date(props.flight.arrivalDateAndTime),
+                Config.LOCAL_TIME_ZONE
+              ),
+              new Date(props.flight.departureDateAndTime),
+              new Date(props.flight.arrivalDateAndTime)
+            )}
+          </p>
+        </div>
+        <div
+          className="d-flex flex-column justify-content-center align-items-end"
+          style={{ width: "10vw" }}
+        >
+          <span>Arrival</span>
+          <div className="d-flex flex-row justify-content-center align-items-center">
+            <h3>
+              {formatTime(
+                new Date(props.flight.arrivalDateAndTime),
+                props.flight.destinationAirport?.timeZone?.timeZoneName!
+              )}
+            </h3>
+            <small>
+              {checkForDayDifference(
+                new Date(props.flight.departureDateAndTime),
+                new Date(props.flight.arrivalDateAndTime),
+                props.flight.originAirport?.timeZone?.timeZoneName!,
+                props.flight.destinationAirport?.timeZone?.timeZoneName!
+              )}
+            </small>
           </div>
-          <div
-            className="d-flex flex-row justify-content-start align-items-center"
-            style={{ width: "10vw" }}
-          >
-            <img
-              src={smallLogo}
-              alt="The logo of Air Soko, without the fontface"
-              style={{ width: "2vw", borderRadius: "15px" }}
-              className="me-2"
-            />
-            <span>{props.flight.flightCode}</span>
-          </div>
-          <span>{props.flight.aircraft?.aircraftName}</span>
+          <h5>{props.flight.destinationAirport?.airportCode}</h5>
         </div>
       </div>
+      <div
+        className="d-flex flex-row justify-content-start align-items-center"
+        style={{ width: "10vw" }}
+      >
+        <img
+          src={smallLogo}
+          alt="The logo of Air Soko, without the fontface"
+          style={{ width: "2vw", borderRadius: "15px" }}
+          className="me-2"
+        />
+        <span>{props.flight.flightCode}</span>
+      </div>
+      <span>{props.flight.aircraft?.aircraftName}</span>
     </>
   );
+}
+
+function FlightRowWithoutPrices(flightRowProps: IFlightRowProps) {
+  return <FlightDetails flight={flightRowProps.flight} />;
 }
 
 function FlightRow(props: IFlightRowProps) {
@@ -413,85 +423,17 @@ function FlightRow(props: IFlightRowProps) {
     <>
       <div className="container-fluid d-flex flex-row my-5">
         <div className="card p-3 w-50 p-3">
-          <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
-            <div
-              className="d-flex flex-column justify-content-center align-items-start"
-              style={{ width: "10vw" }}
-            >
-              <span>Departure</span>
-              <h3>
-                {formatTime(
-                  new Date(props.flight.departureDateAndTime),
-                  props.flight.originAirport?.timeZone?.timeZoneName!
-                )}
-              </h3>
-              <h5>{props.flight.originAirport?.airportCode}</h5>
-            </div>
-            <div className="d-flex flex-column align-items-center mt-3">
-              <DashedArrow />
-              <p>
-                Duration:{" "}
-                {subtractTime(
-                  formatTime(
-                    new Date(props.flight.departureDateAndTime),
-                    Config.LOCAL_TIME_ZONE
-                  ),
-                  formatTime(
-                    new Date(props.flight.arrivalDateAndTime),
-                    Config.LOCAL_TIME_ZONE
-                  ),
-                  new Date(props.flight.departureDateAndTime),
-                  new Date(props.flight.arrivalDateAndTime)
-                )}
-              </p>
-            </div>
-            <div
-              className="d-flex flex-column justify-content-center align-items-end"
-              style={{ width: "10vw" }}
-            >
-              <span>Arrival</span>
-              <div className="d-flex flex-row justify-content-center align-items-center">
-                <h3>
-                  {formatTime(
-                    new Date(props.flight.arrivalDateAndTime),
-                    props.flight.destinationAirport?.timeZone?.timeZoneName!
-                  )}
-                </h3>
-                <small>
-                  {checkForDayDifference(
-                    new Date(props.flight.departureDateAndTime),
-                    new Date(props.flight.arrivalDateAndTime),
-                    props.flight.originAirport?.timeZone?.timeZoneName!,
-                    props.flight.destinationAirport?.timeZone?.timeZoneName!
-                  )}
-                </small>
-              </div>
-              <h5>{props.flight.destinationAirport?.airportCode}</h5>
-            </div>
-          </div>
-          <div
-            className="d-flex flex-row justify-content-start align-items-center"
-            style={{ width: "10vw" }}
-          >
-            <img
-              src={smallLogo}
-              alt="The logo of Air Soko, without the fontface"
-              style={{ width: "2vw", borderRadius: "15px" }}
-              className="me-2"
-            />
-            <span>{props.flight.flightCode}</span>
-          </div>
-          <span>{props.flight.aircraft?.aircraftName}</span>
+          <FlightDetails flight={props.flight} />
         </div>
         <ClassPricesDrawer
           travelClassName={"Economy"}
           flight={props.flight}
-          handleToggle={props.handleToggleEconomy!}
+          handleToggle={props.handleToggleEconomy}
         />
         <ClassPricesDrawer
           travelClassName={"Business"}
           flight={props.flight}
-          handleToggle={props.handleToggleBusiness!}
+          handleToggle={props.handleToggleBusiness}
         />
       </div>
     </>
@@ -508,8 +450,14 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
     <>
       <FlightRow
         flight={props.flight}
-        handleToggleEconomy={() => setIsEconomyVisible(!isEconomyVisible)}
-        handleToggleBusiness={() => setIsBusinessVisible(!isBusinessVisible)}
+        handleToggleEconomy={() => {
+          if (isBusinessVisible) setIsBusinessVisible(false);
+          setIsEconomyVisible(!isEconomyVisible);
+        }}
+        handleToggleBusiness={() => {
+          if (isEconomyVisible) setIsEconomyVisible(false);
+          setIsBusinessVisible(!isBusinessVisible);
+        }}
       />
       <TransitionGroup component={null}>
         {isEconomyVisible && (
@@ -533,6 +481,10 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
                 setDepartFlight={props.setDepartFlight}
                 returnFlight={props.returnFlight}
                 setReturnFlight={props.setReturnFlight}
+                selectedDeparturePrice={props.selectedDeparturePrice}
+                setSelectedDeparturePrice={props.setSelectedDeparturePrice}
+                selectedReturnPrice={props.selectedReturnPrice}
+                setSelectedReturnPrice={props.setSelectedReturnPrice}
               />
             </div>
           </CSSTransition>
@@ -558,6 +510,10 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
                 setDepartFlight={props.setDepartFlight}
                 returnFlight={props.returnFlight}
                 setReturnFlight={props.setReturnFlight}
+                selectedDeparturePrice={props.selectedDeparturePrice}
+                setSelectedDeparturePrice={props.setSelectedDeparturePrice}
+                selectedReturnPrice={props.selectedReturnPrice}
+                setSelectedReturnPrice={props.setSelectedReturnPrice}
               />
             </div>
           </CSSTransition>
@@ -585,6 +541,10 @@ export default function FlightsPage() {
   const [returnFlight, setReturnFlight] = useState<IFlight | undefined>(
     undefined
   );
+
+  const [selectedDeparturePrice, setSelectedDeparturePrice] =
+    useState<number>(0);
+  const [selectedReturnPrice, setSelectedReturnPrice] = useState<number>(0);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingStyle, setLoadingStyle] = useState<Object>({ opacity: 1 });
@@ -862,7 +822,14 @@ export default function FlightsPage() {
                       Selected departure flight:{" "}
                       {new Date(location.state[2]).toDateString()}
                     </p>
-                    <FlightRowWithoutPrices flight={departFlight} />
+                    <div className="container-fluid d-flex flex-row">
+                      <div className="card p-3 w-50 p-3">
+                        <FlightRowWithoutPrices flight={departFlight} />
+                        <h2 className="text-end">
+                          {selectedDeparturePrice} RSD
+                        </h2>
+                      </div>
+                    </div>
                   </div>
                 )}
                 {returnFlight && (
@@ -871,7 +838,12 @@ export default function FlightsPage() {
                       Selected return flight:{" "}
                       {new Date(location.state[3]).toDateString()}
                     </p>
-                    <FlightRowWithoutPrices flight={returnFlight} />
+                    <div className="container-fluid d-flex flex-row">
+                      <div className="card p-3 w-50 p-3">
+                        <FlightRowWithoutPrices flight={returnFlight} />
+                        <h2 className="text-end">{selectedReturnPrice} RSD</h2>
+                      </div>
+                    </div>
                   </div>
                 )}
               </div>
@@ -910,10 +882,14 @@ export default function FlightsPage() {
                         flightDirection={flightDirection}
                         chooseFlightText={chooseFlightText}
                         chosenDate={chosenDate}
-                        departFlight={departFlight!}
+                        departFlight={departFlight}
                         setDepartFlight={setDepartFlight}
-                        returnFlight={returnFlight!}
+                        returnFlight={returnFlight}
                         setReturnFlight={setReturnFlight}
+                        selectedDeparturePrice={selectedDeparturePrice}
+                        setSelectedDeparturePrice={setSelectedDeparturePrice}
+                        selectedReturnPrice={selectedReturnPrice}
+                        setSelectedReturnPrice={setSelectedReturnPrice}
                       />
                     ))}
                   </>
