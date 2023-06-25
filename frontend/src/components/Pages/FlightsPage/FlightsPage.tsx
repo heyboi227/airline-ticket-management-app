@@ -774,8 +774,19 @@ export default function FlightsPage() {
         {dateRange.map((date, index) => {
           const formattedDate = formatDate(date);
           const minimalPrice = minimalPrices[index];
-          const isDisabled =
-            today < currentDate ? date < today : date < currentDate;
+
+          const isBeforeToday = (date1: Date, date2: Date) => {
+            return (
+              date1.getFullYear() < date2.getFullYear() ||
+              (date1.getFullYear() === date2.getFullYear() &&
+                date1.getMonth() < date2.getMonth()) ||
+              (date1.getFullYear() === date2.getFullYear() &&
+                date1.getMonth() === date2.getMonth() &&
+                date1.getDate() < date2.getDate())
+            );
+          };
+
+          const isDisabled = isBeforeToday(date, today);
 
           return (
             <Tab
@@ -794,13 +805,13 @@ export default function FlightsPage() {
             >
               <div className="d-flex flex-row justify-content-center align-items-center mt-2">
                 {departFlight && (
-                  <div className="d-flex flex-column w-100 justify-content-center align-items-start">
+                  <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected departure flight:{" "}
                       {new Date(location.state[2]).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
-                      <div className="card p-3 w-50 p-3">
+                      <div className="card p-3">
                         <FlightRowWithoutPrices flight={departFlight} />
                         <h2 className="text-end">
                           {selectedDeparturePrice} RSD
@@ -810,13 +821,13 @@ export default function FlightsPage() {
                   </div>
                 )}
                 {returnFlight && (
-                  <div className="d-flex flex-column w-100 justify-content-center align-items-start">
+                  <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected return flight:{" "}
                       {new Date(location.state[3]).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
-                      <div className="card p-3 w-50 p-3">
+                      <div className="card p-3">
                         <FlightRowWithoutPrices flight={returnFlight} />
                         <h2 className="text-end">{selectedReturnPrice} RSD</h2>
                       </div>
@@ -824,6 +835,16 @@ export default function FlightsPage() {
                   </div>
                 )}
               </div>
+              {selectedDeparturePrice !== 0 && selectedReturnPrice !== 0 && (
+                <div className="d-flex flex-row justify-content-end align-items-center mt-5">
+                  <h2>
+                    Price:{" "}
+                    {Number(selectedDeparturePrice) +
+                      Number(selectedReturnPrice)}{" "}
+                    RSD
+                  </h2>
+                </div>
+              )}
               <div className="d-flex flex-row justify-content-center align-items-center mt-5">
                 {error && <h2 className="text-bg-warning">{error}</h2>}
                 {!isLoading && flightData.length === 0 && (
