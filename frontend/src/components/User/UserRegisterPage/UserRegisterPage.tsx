@@ -3,7 +3,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
-import { motion } from "framer-motion";
 import MotionDiv from "../../MotionDiv/MotionDiv";
 
 export default function UserRegisterPage() {
