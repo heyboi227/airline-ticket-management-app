@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
 import { motion } from "framer-motion";
+import MotionDiv from "../../MotionDiv/MotionDiv";
 
 export default function UserRegisterPage() {
   const [email, setEmail] = useState<string>("");
@@ -45,24 +46,7 @@ export default function UserRegisterPage() {
   };
 
   return (
-    <motion.div
-      className="row"
-      initial={{
-        position: "relative",
-        top: 20,
-        scale: 0.95,
-        opacity: 0,
-      }}
-      animate={{
-        top: 0,
-        scale: 1,
-        opacity: 1,
-      }}
-      transition={{
-        delay: 0.125,
-        duration: 0.75,
-      }}
-    >
+    <MotionDiv>
       <div className="col col-xs-12 col-md-6 offset-md-3 p-5">
         <h1 className="h5 mb-3">Register your account</h1>
 
@@ -129,6 +113,6 @@ export default function UserRegisterPage() {
 
         {error && <p className="alert alert-danger">{error}</p>}
       </div>
-    </motion.div>
+    </MotionDiv>
   );
 }

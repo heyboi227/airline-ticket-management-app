@@ -47,22 +47,8 @@ interface IFlightRowWithPricesProps {
 
 interface IClassPricesProps {
   travelClassName: string;
-  flight: IFlight;
   visibility: boolean;
-  flightDirection: string;
-  setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
-  chooseFlightText: string;
-  setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
-  chosenDate: Date;
-  setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
-  departFlight: IFlight | undefined;
-  setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
-  returnFlight: IFlight | undefined;
-  setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
-  selectedDeparturePrice: number;
-  setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
-  selectedReturnPrice: number;
-  setSelectedReturnPrice: React.Dispatch<React.SetStateAction<number>>;
+  flightRowWithPricesProps: IFlightRowWithPricesProps;
 }
 
 interface IClassPricesDrawerProps {
@@ -278,7 +264,7 @@ const ClassPrices = (props: IClassPricesProps) => {
               duration: 0.3,
             }}
           >
-            {props.flight.travelClasses
+            {props.flightRowWithPricesProps.flight.travelClasses
               ?.filter((travelClass) =>
                 travelClass.travelClass.travelClassName.includes(
                   props.travelClassName
@@ -313,15 +299,33 @@ const ClassPrices = (props: IClassPricesProps) => {
                         : ""
                     }`}
                     onClick={() => {
-                      if (props.flightDirection.includes("departure")) {
-                        props.setDepartFlight(props.flight);
-                        props.setFlightDirection("return");
-                        props.setChosenDate(new Date(location.state[3]));
-                        props.setChooseFlightText("Choose your return flight");
-                        props.setSelectedDeparturePrice(travelClass.price);
+                      if (
+                        props.flightRowWithPricesProps.flightDirection.includes(
+                          "departure"
+                        )
+                      ) {
+                        props.flightRowWithPricesProps.setDepartFlight(
+                          props.flightRowWithPricesProps.flight
+                        );
+                        props.flightRowWithPricesProps.setFlightDirection(
+                          "return"
+                        );
+                        props.flightRowWithPricesProps.setChosenDate(
+                          new Date(location.state[3])
+                        );
+                        props.flightRowWithPricesProps.setChooseFlightText(
+                          "Choose your return flight"
+                        );
+                        props.flightRowWithPricesProps.setSelectedDeparturePrice(
+                          travelClass.price
+                        );
                       } else {
-                        props.setReturnFlight(props.flight);
-                        props.setSelectedReturnPrice(travelClass.price);
+                        props.flightRowWithPricesProps.setReturnFlight(
+                          props.flightRowWithPricesProps.flight
+                        );
+                        props.flightRowWithPricesProps.setSelectedReturnPrice(
+                          travelClass.price
+                        );
                       }
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
@@ -419,22 +423,25 @@ function FlightRowWithoutPrices(flightRowProps: IFlightRowProps) {
 }
 
 function FlightRow(props: IFlightRowProps) {
+  const classConfig = [
+    { className: "Economy", handler: props.handleToggleEconomy },
+    { className: "Business", handler: props.handleToggleBusiness },
+  ];
+
   return (
     <>
       <div className="container-fluid d-flex flex-row my-5">
         <div className="card p-3 w-50 p-3">
           <FlightDetails flight={props.flight} />
         </div>
-        <ClassPricesDrawer
-          travelClassName={"Economy"}
-          flight={props.flight}
-          handleToggle={props.handleToggleEconomy}
-        />
-        <ClassPricesDrawer
-          travelClassName={"Business"}
-          flight={props.flight}
-          handleToggle={props.handleToggleBusiness}
-        />
+        {classConfig.map((config) => (
+          <ClassPricesDrawer
+            key={config.className}
+            travelClassName={config.className}
+            flight={props.flight}
+            handleToggle={config.handler}
+          />
+        ))}
       </div>
     </>
   );
@@ -469,22 +476,8 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
             <div ref={nodeRef}>
               <ClassPrices
                 travelClassName="Economy"
-                flight={props.flight}
                 visibility={isEconomyVisible}
-                setFlightDirection={props.setFlightDirection}
-                setChooseFlightText={props.setChooseFlightText}
-                setChosenDate={props.setChosenDate}
-                flightDirection={props.flightDirection}
-                chooseFlightText={props.chooseFlightText}
-                chosenDate={props.chosenDate}
-                departFlight={props.departFlight}
-                setDepartFlight={props.setDepartFlight}
-                returnFlight={props.returnFlight}
-                setReturnFlight={props.setReturnFlight}
-                selectedDeparturePrice={props.selectedDeparturePrice}
-                setSelectedDeparturePrice={props.setSelectedDeparturePrice}
-                selectedReturnPrice={props.selectedReturnPrice}
-                setSelectedReturnPrice={props.setSelectedReturnPrice}
+                flightRowWithPricesProps={props}
               />
             </div>
           </CSSTransition>
@@ -498,22 +491,8 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
             <div ref={nodeRef}>
               <ClassPrices
                 travelClassName="Business"
-                flight={props.flight}
                 visibility={isBusinessVisible}
-                setFlightDirection={props.setFlightDirection}
-                setChooseFlightText={props.setChooseFlightText}
-                setChosenDate={props.setChosenDate}
-                flightDirection={props.flightDirection}
-                chooseFlightText={props.chooseFlightText}
-                chosenDate={props.chosenDate}
-                departFlight={props.departFlight}
-                setDepartFlight={props.setDepartFlight}
-                returnFlight={props.returnFlight}
-                setReturnFlight={props.setReturnFlight}
-                selectedDeparturePrice={props.selectedDeparturePrice}
-                setSelectedDeparturePrice={props.setSelectedDeparturePrice}
-                selectedReturnPrice={props.selectedReturnPrice}
-                setSelectedReturnPrice={props.setSelectedReturnPrice}
+                flightRowWithPricesProps={props}
               />
             </div>
           </CSSTransition>
@@ -652,9 +631,7 @@ export default function FlightsPage() {
           height: "max-content",
         });
       }, 100);
-    }
-
-    if (isLoading) {
+    } else {
       setLoadingStyle({
         opacity: 1,
       });

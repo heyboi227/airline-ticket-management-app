@@ -11,213 +11,13 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
 import { parseISO } from "date-fns";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
+import FlightFormReducer, {
+  initialFlightFormState,
+} from "../../../api/flight-reducers";
 
 export interface IAdminFlightEditUrlParams
   extends Record<string, string | undefined> {
   fid: string;
-}
-
-interface IEditFlightFormState {
-  flightCode: string;
-  originAirportId: number;
-  destinationAirportId: number;
-  departureDateAndTime: string;
-  arrivalDateAndTime: string;
-  aircraftId: number;
-  travelClasses: {
-    travelClassId: number;
-    price: number;
-  }[];
-}
-
-type TSetFlightCode = { type: "editFlightForm/setFlightCode"; value: string };
-type TSetOriginAirportId = {
-  type: "editFlightForm/setOriginAirportId";
-  value: number;
-};
-type TSetDestinationAirportId = {
-  type: "editFlightForm/setDestinationAirportId";
-  value: number;
-};
-type TSetDepartureDateAndTime = {
-  type: "editFlightForm/setDepartureDateAndTime";
-  value: string;
-};
-type TSetArrivalDateAndTime = {
-  type: "editFlightForm/setArrivalDateAndTime";
-  value: string;
-};
-type TSetAircraftId = { type: "editFlightForm/setAircraftId"; value: number };
-type TAddTravelClass = { type: "editFlightForm/addTravelClass"; value: number };
-type TAddTravelClassFull = {
-  type: "editFlightForm/addTravelClassFull";
-  value: { travelClassId: number; price: number };
-};
-type TRemoveTravelClass = {
-  type: "editFlightForm/removeTravelClass";
-  value: number;
-};
-type TSetTravelClassPrice = {
-  type: "editFlightForm/setTravelClassPrice";
-  value: { travelClassId: number; price: number };
-};
-
-type EditFlightFormAction =
-  | TSetFlightCode
-  | TSetOriginAirportId
-  | TSetDestinationAirportId
-  | TSetDepartureDateAndTime
-  | TSetArrivalDateAndTime
-  | TSetAircraftId
-  | TAddTravelClass
-  | TAddTravelClassFull
-  | TRemoveTravelClass
-  | TSetTravelClassPrice;
-
-function EditFlightFormReducer(
-  oldState: IEditFlightFormState,
-  action: EditFlightFormAction
-): IEditFlightFormState {
-  switch (action.type) {
-    case "editFlightForm/setFlightCode": {
-      return {
-        ...oldState,
-        flightCode: action.value,
-      };
-    }
-
-    case "editFlightForm/setOriginAirportId": {
-      return {
-        ...oldState,
-        originAirportId: action.value,
-      };
-    }
-
-    case "editFlightForm/setDestinationAirportId": {
-      return {
-        ...oldState,
-        destinationAirportId: action.value,
-      };
-    }
-
-    case "editFlightForm/setDepartureDateAndTime": {
-      return {
-        ...oldState,
-        departureDateAndTime: action.value,
-      };
-    }
-
-    case "editFlightForm/setArrivalDateAndTime": {
-      return {
-        ...oldState,
-        arrivalDateAndTime: action.value,
-      };
-    }
-
-    case "editFlightForm/setAircraftId": {
-      return {
-        ...oldState,
-        aircraftId: action.value,
-      };
-    }
-
-    case "editFlightForm/addTravelClass": {
-      if (
-        oldState.travelClasses.find(
-          (travelClass) => travelClass.travelClassId === action.value
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses.map((travelClass) => {
-            return { ...travelClass };
-          }),
-          { travelClassId: action.value, price: 0 },
-        ],
-      };
-    }
-
-    case "editFlightForm/addTravelClassFull": {
-      if (
-        oldState.travelClasses.find(
-          (travelClass) =>
-            travelClass.travelClassId === action.value.travelClassId
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses.map((travelClass) => {
-            return { ...travelClass };
-          }),
-          {
-            travelClassId: action.value.travelClassId,
-            price: +action.value.price,
-          },
-        ],
-      };
-    }
-
-    case "editFlightForm/removeTravelClass": {
-      if (
-        !oldState.travelClasses.find(
-          (travelClass) => travelClass.travelClassId === action.value
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses
-            .map((travelClass) => {
-              return { ...travelClass };
-            })
-            .filter(
-              (travelClass) => travelClass.travelClassId !== action.value
-            ),
-        ],
-      };
-    }
-
-    case "editFlightForm/setTravelClassPrice": {
-      if (
-        !oldState.travelClasses.find(
-          (travelClass) =>
-            travelClass.travelClassId === action.value.travelClassId
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses.map((travelClass) => {
-            if (action.value.travelClassId !== travelClass.travelClassId) {
-              return { ...travelClass };
-            }
-
-            return {
-              ...travelClass,
-              price: action.value.price,
-            };
-          }),
-        ],
-      };
-    }
-
-    default:
-      return oldState;
-  }
 }
 
 export default function AdminFlightEdit() {
@@ -232,16 +32,8 @@ export default function AdminFlightEdit() {
   const navigate = useNavigate();
 
   const [formState, dispatchFormStateAction] = useReducer(
-    EditFlightFormReducer,
-    {
-      flightCode: "",
-      originAirportId: 0,
-      destinationAirportId: 0,
-      departureDateAndTime: "",
-      arrivalDateAndTime: "",
-      aircraftId: 0,
-      travelClasses: [],
-    }
+    FlightFormReducer,
+    initialFlightFormState
   );
 
   const loadFlight = () => {
@@ -339,47 +131,54 @@ export default function AdminFlightEdit() {
 
   useEffect(() => {
     dispatchFormStateAction({
-      type: "editFlightForm/setFlightCode",
+      type: "flightForm/setFlightCode",
       value: flight?.flightCode ?? "",
+      formType: "edit",
     });
 
     dispatchFormStateAction({
-      type: "editFlightForm/setOriginAirportId",
+      type: "flightForm/setOriginAirportId",
       value: flight?.originAirportId ?? 0,
+      formType: "edit",
     });
 
     dispatchFormStateAction({
-      type: "editFlightForm/setDestinationAirportId",
+      type: "flightForm/setDestinationAirportId",
       value: flight?.destinationAirportId ?? 0,
+      formType: "edit",
     });
 
     dispatchFormStateAction({
-      type: "editFlightForm/setDepartureDateAndTime",
+      type: "flightForm/setDepartureDateAndTime",
       value:
         convertDateToMySqlDateTime(new Date(flight?.departureDateAndTime!)) ??
         "",
+      formType: "edit",
     });
 
     dispatchFormStateAction({
-      type: "editFlightForm/setArrivalDateAndTime",
+      type: "flightForm/setArrivalDateAndTime",
       value:
         convertDateToMySqlDateTime(new Date(flight?.arrivalDateAndTime!)) ?? "",
+      formType: "edit",
     });
 
     dispatchFormStateAction({
-      type: "editFlightForm/setAircraftId",
+      type: "flightForm/setAircraftId",
       value: flight?.aircraftId ?? 0,
+      formType: "edit",
     });
 
     for (let travelClass of (flight?.travelClasses ?? []).filter(
       (travelClass) => travelClass.isActive
     )) {
       dispatchFormStateAction({
-        type: "editFlightForm/addTravelClassFull",
+        type: "flightForm/addTravelClassFull",
         value: {
           travelClassId: travelClass.travelClass.travelClassId,
           price: travelClass.price,
         },
+        formType: "edit",
       });
     }
   }, [flight]);
@@ -409,7 +208,7 @@ export default function AdminFlightEdit() {
                       value={formState.flightCode}
                       onChange={(e) =>
                         dispatchFormStateAction({
-                          type: "editFlightForm/setFlightCode",
+                          type: "flightForm/setFlightCode",
                           value: e.target.value,
                         })
                       }
@@ -425,8 +224,9 @@ export default function AdminFlightEdit() {
                       value={formState.originAirportId}
                       onChange={(e) =>
                         dispatchFormStateAction({
-                          type: "editFlightForm/setOriginAirportId",
+                          type: "flightForm/setOriginAirportId",
                           value: +e.target.value,
+                          formType: "edit",
                         })
                       }
                     >
@@ -450,8 +250,9 @@ export default function AdminFlightEdit() {
                       value={formState.destinationAirportId}
                       onChange={(e) =>
                         dispatchFormStateAction({
-                          type: "editFlightForm/setDestinationAirportId",
+                          type: "flightForm/setDestinationAirportId",
                           value: +e.target.value,
+                          formType: "edit",
                         })
                       }
                     >
@@ -478,8 +279,9 @@ export default function AdminFlightEdit() {
                       onChange={(e) => {
                         if (e)
                           dispatchFormStateAction({
-                            type: "editFlightForm/setDepartureDateAndTime",
+                            type: "flightForm/setDepartureDateAndTime",
                             value: convertDateToMySqlDateTime(e),
+                            formType: "edit",
                           });
                       }}
                       className="form-control"
@@ -499,8 +301,9 @@ export default function AdminFlightEdit() {
                       onChange={(e) => {
                         if (e)
                           dispatchFormStateAction({
-                            type: "editFlightForm/setArrivalDateAndTime",
+                            type: "flightForm/setArrivalDateAndTime",
                             value: convertDateToMySqlDateTime(e),
+                            formType: "edit",
                           });
                       }}
                       className="form-control"
@@ -527,8 +330,9 @@ export default function AdminFlightEdit() {
                             <FontAwesomeIcon
                               onClick={() =>
                                 dispatchFormStateAction({
-                                  type: "editFlightForm/removeTravelClass",
+                                  type: "flightForm/removeTravelClass",
                                   value: travelClass.travelClassId,
+                                  formType: "edit",
                                 })
                               }
                               icon={faCheckSquare}
@@ -537,8 +341,9 @@ export default function AdminFlightEdit() {
                             <FontAwesomeIcon
                               onClick={() =>
                                 dispatchFormStateAction({
-                                  type: "editFlightForm/addTravelClass",
+                                  type: "flightForm/addTravelClass",
                                   value: travelClass.travelClassId,
+                                  formType: "edit",
                                 })
                               }
                               icon={faSquare}
@@ -558,11 +363,12 @@ export default function AdminFlightEdit() {
                                 className="form-control form-control-sm"
                                 onChange={(e) =>
                                   dispatchFormStateAction({
-                                    type: "editFlightForm/setTravelClassPrice",
+                                    type: "flightForm/setTravelClassPrice",
                                     value: {
                                       travelClassId: travelClass.travelClassId,
                                       price: +e.target.value,
                                     },
+                                    formType: "edit",
                                   })
                                 }
                               />

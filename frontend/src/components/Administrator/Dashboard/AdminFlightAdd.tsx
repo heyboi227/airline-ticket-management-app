@@ -16,180 +16,9 @@ import { parseISO } from "date-fns";
 import ITravelClass from "../../../models/ITravelClass.model";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
-
-interface IAddFlightFormState {
-  flightCode: string;
-  originAirportId: number;
-  destinationAirportId: number;
-  departureDateAndTime: string;
-  arrivalDateAndTime: string;
-  aircraftId: number;
-  travelClasses: {
-    travelClassId: number;
-    price: number;
-  }[];
-}
-
-type TSetFlightCode = { type: "addFlightForm/setFlightCode"; value: string };
-type TSetOriginAirportId = {
-  type: "addFlightForm/setOriginAirportId";
-  value: number;
-};
-type TSetDestinationAirportId = {
-  type: "addFlightForm/setDestinationAirportId";
-  value: number;
-};
-type TSetDepartureDateAndTime = {
-  type: "addFlightForm/setDepartureDateAndTime";
-  value: string;
-};
-type TSetArrivalDateAndTime = {
-  type: "addFlightForm/setArrivalDateAndTime";
-  value: string;
-};
-type TSetAircraftId = { type: "addFlightForm/setAircraftId"; value: number };
-type TAddTravelClass = { type: "addFlightForm/addTravelClass"; value: number };
-type TRemoveTravelClass = {
-  type: "addFlightForm/removeTravelClass";
-  value: number;
-};
-type TSetTravelClassPrice = {
-  type: "addFlightForm/setTravelClassPrice";
-  value: { travelClassId: number; price: number };
-};
-
-type AddFlightFormAction =
-  | TSetFlightCode
-  | TSetOriginAirportId
-  | TSetDestinationAirportId
-  | TSetDepartureDateAndTime
-  | TSetArrivalDateAndTime
-  | TSetAircraftId
-  | TAddTravelClass
-  | TRemoveTravelClass
-  | TSetTravelClassPrice;
-
-function AddFlightFormReducer(
-  oldState: IAddFlightFormState,
-  action: AddFlightFormAction
-): IAddFlightFormState {
-  switch (action.type) {
-    case "addFlightForm/setFlightCode": {
-      return {
-        ...oldState,
-        flightCode: action.value,
-      };
-    }
-
-    case "addFlightForm/setOriginAirportId": {
-      return {
-        ...oldState,
-        originAirportId: action.value,
-      };
-    }
-
-    case "addFlightForm/setDestinationAirportId": {
-      return {
-        ...oldState,
-        destinationAirportId: action.value,
-      };
-    }
-
-    case "addFlightForm/setDepartureDateAndTime": {
-      return {
-        ...oldState,
-        departureDateAndTime: action.value,
-      };
-    }
-
-    case "addFlightForm/setArrivalDateAndTime": {
-      return {
-        ...oldState,
-        arrivalDateAndTime: action.value,
-      };
-    }
-
-    case "addFlightForm/setAircraftId": {
-      return {
-        ...oldState,
-        aircraftId: action.value,
-      };
-    }
-
-    case "addFlightForm/addTravelClass": {
-      if (
-        oldState.travelClasses.find(
-          (travelClass) => travelClass.travelClassId === action.value
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses.map((travelClass) => {
-            return { ...travelClass };
-          }),
-          { travelClassId: action.value, price: 0 },
-        ],
-      };
-    }
-
-    case "addFlightForm/removeTravelClass": {
-      if (
-        !oldState.travelClasses.find(
-          (travelClass) => travelClass.travelClassId === action.value
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses
-            .map((travelClass) => {
-              return { ...travelClass };
-            })
-            .filter(
-              (travelClass) => travelClass.travelClassId !== action.value
-            ),
-        ],
-      };
-    }
-
-    case "addFlightForm/setTravelClassPrice": {
-      if (
-        !oldState.travelClasses.find(
-          (travelClass) =>
-            travelClass.travelClassId === action.value.travelClassId
-        )
-      ) {
-        return oldState;
-      }
-
-      return {
-        ...oldState,
-        travelClasses: [
-          ...oldState.travelClasses.map((travelClass) => {
-            if (action.value.travelClassId !== travelClass.travelClassId) {
-              return { ...travelClass };
-            }
-
-            return {
-              ...travelClass,
-              price: action.value.price,
-            };
-          }),
-        ],
-      };
-    }
-
-    default:
-      return oldState;
-  }
-}
+import FlightFormReducer, {
+  initialFlightFormState,
+} from "../../../api/flight-reducers";
 
 export default function AdminFlightAdd() {
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -202,16 +31,8 @@ export default function AdminFlightAdd() {
   const navigate = useNavigate();
 
   const [formState, dispatchFormStateAction] = useReducer(
-    AddFlightFormReducer,
-    {
-      flightCode: "",
-      originAirportId: 0,
-      destinationAirportId: 0,
-      departureDateAndTime: "",
-      arrivalDateAndTime: "",
-      aircraftId: 0,
-      travelClasses: [],
-    }
+    FlightFormReducer,
+    initialFlightFormState
   );
 
   const fetchAirports = () => {
@@ -337,8 +158,9 @@ export default function AdminFlightAdd() {
                   value={formState.flightCode}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addFlightForm/setFlightCode",
+                      type: "flightForm/setFlightCode",
                       value: e.target.value,
+                      formType: "add",
                     })
                   }
                 />
@@ -353,8 +175,9 @@ export default function AdminFlightAdd() {
                   value={formState.originAirportId}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addFlightForm/setOriginAirportId",
+                      type: "flightForm/setOriginAirportId",
                       value: +e.target.value,
+                      formType: "add",
                     })
                   }
                 >
@@ -376,8 +199,9 @@ export default function AdminFlightAdd() {
                   value={formState.destinationAirportId}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addFlightForm/setDestinationAirportId",
+                      type: "flightForm/setDestinationAirportId",
                       value: +e.target.value,
+                      formType: "add",
                     })
                   }
                 >
@@ -403,8 +227,9 @@ export default function AdminFlightAdd() {
                   onChange={(e) => {
                     if (e)
                       dispatchFormStateAction({
-                        type: "addFlightForm/setDepartureDateAndTime",
+                        type: "flightForm/setDepartureDateAndTime",
                         value: convertDateToMySqlDateTime(e),
+                        formType: "add",
                       });
                   }}
                   className="form-control"
@@ -425,8 +250,9 @@ export default function AdminFlightAdd() {
                   onChange={(e) => {
                     if (e)
                       dispatchFormStateAction({
-                        type: "addFlightForm/setArrivalDateAndTime",
+                        type: "flightForm/setArrivalDateAndTime",
                         value: convertDateToMySqlDateTime(e),
+                        formType: "add",
                       });
                   }}
                   className="form-control"
@@ -443,8 +269,9 @@ export default function AdminFlightAdd() {
                   value={formState.aircraftId}
                   onChange={(e) =>
                     dispatchFormStateAction({
-                      type: "addFlightForm/setAircraftId",
+                      type: "flightForm/setAircraftId",
                       value: +e.target.value,
+                      formType: "add",
                     })
                   }
                 >
@@ -479,8 +306,9 @@ export default function AdminFlightAdd() {
                         <FontAwesomeIcon
                           onClick={() =>
                             dispatchFormStateAction({
-                              type: "addFlightForm/removeTravelClass",
+                              type: "flightForm/removeTravelClass",
                               value: travelClass.travelClassId,
+                              formType: "add",
                             })
                           }
                           icon={faCheckSquare}
@@ -489,8 +317,9 @@ export default function AdminFlightAdd() {
                         <FontAwesomeIcon
                           onClick={() =>
                             dispatchFormStateAction({
-                              type: "addFlightForm/addTravelClass",
+                              type: "flightForm/addTravelClass",
                               value: travelClass.travelClassId,
+                              formType: "add",
                             })
                           }
                           icon={faSquare}
@@ -512,11 +341,12 @@ export default function AdminFlightAdd() {
                               className="form-control form-control-sm"
                               onChange={(e) =>
                                 dispatchFormStateAction({
-                                  type: "addFlightForm/setTravelClassPrice",
+                                  type: "flightForm/setTravelClassPrice",
                                   value: {
                                     travelClassId: travelClass.travelClassId,
                                     price: +e.target.value,
                                   },
+                                  formType: "add",
                                 })
                               }
                             />
@@ -549,7 +379,7 @@ export default function AdminFlightAdd() {
               </button>
               &nbsp;
               {flightAdded && (
-                <span className="text-bg-success">
+                <span className="text-bg-success rounded-3 p-3">
                   Flight successfully added!
                 </span>
               )}
