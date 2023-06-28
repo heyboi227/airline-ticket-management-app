@@ -43,6 +43,8 @@ interface IFlightRowWithPricesProps {
   setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
   selectedReturnPrice: number;
   setSelectedReturnPrice: React.Dispatch<React.SetStateAction<number>>;
+  areFlightsSelected: boolean;
+  setAreFlightsSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface IClassPricesProps {
@@ -326,6 +328,9 @@ const ClassPrices = (props: IClassPricesProps) => {
                         props.flightRowWithPricesProps.setSelectedReturnPrice(
                           travelClass.price
                         );
+                        props.flightRowWithPricesProps.setAreFlightsSelected(
+                          true
+                        );
                       }
                     }}
                     onMouseEnter={() => handleMouseEnter(index)}
@@ -524,6 +529,8 @@ export default function FlightsPage() {
   const [selectedDeparturePrice, setSelectedDeparturePrice] =
     useState<number>(0);
   const [selectedReturnPrice, setSelectedReturnPrice] = useState<number>(0);
+
+  const [areFlightsSelected, setAreFlightsSelected] = useState<boolean>(false);
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [loadingStyle, setLoadingStyle] = useState<Object>({ opacity: 1 });
@@ -845,52 +852,69 @@ export default function FlightsPage() {
                   </h2>
                 </div>
               )}
-              <div className="d-flex flex-row justify-content-center align-items-center mt-5">
-                {error && <h2 className="text-bg-warning">{error}</h2>}
-                {!isLoading && flightData.length === 0 && (
-                  <h2 className="fade" style={contentStyle}>
-                    There are no flights for the specified {flightDirection}{" "}
-                    date. Please choose another one.
-                  </h2>
-                )}
-                {!isLoading && flightData.length !== 0 && (
-                  <h2 className="fade" style={contentStyle}>
-                    {chooseFlightText}
-                  </h2>
-                )}
-              </div>
-              {isLoading && (
-                <div
-                  className="fade d-flex justify-content-center align-items-center mb-5"
-                  style={loadingStyle}
-                >
-                  <Circles color="#0718c4" height={40} width={40} />
+              {!areFlightsSelected && (
+                <div className="d-flex flex-row justify-content-center align-items-center mt-5">
+                  {error && <h2 className="text-bg-warning">{error}</h2>}
+                  {!isLoading && flightData.length === 0 && (
+                    <h2 className="fade" style={contentStyle}>
+                      There are no flights for the specified {flightDirection}{" "}
+                      date. Please choose another one.
+                    </h2>
+                  )}
+                  {!isLoading && flightData.length !== 0 && (
+                    <h2 className="fade" style={contentStyle}>
+                      {chooseFlightText}
+                    </h2>
+                  )}
                 </div>
               )}
-              {!isLoading && (
-                <div className="fade" style={contentStyle}>
-                  <>
-                    {flightData.map((flight) => (
-                      <FlightRowWithPrices
-                        flight={flight}
-                        key={flight.flightId}
-                        setFlightDirection={setFlightDirection}
-                        setChooseFlightText={setChooseFlightText}
-                        setChosenDate={setChosenDate}
-                        flightDirection={flightDirection}
-                        chooseFlightText={chooseFlightText}
-                        chosenDate={chosenDate}
-                        departFlight={departFlight}
-                        setDepartFlight={setDepartFlight}
-                        returnFlight={returnFlight}
-                        setReturnFlight={setReturnFlight}
-                        selectedDeparturePrice={selectedDeparturePrice}
-                        setSelectedDeparturePrice={setSelectedDeparturePrice}
-                        selectedReturnPrice={selectedReturnPrice}
-                        setSelectedReturnPrice={setSelectedReturnPrice}
-                      />
-                    ))}
-                  </>
+              {areFlightsSelected && (
+                <div className="d-flex flex-row justify-content-end align-items-center">
+                  <button className="btn btn-lg btn-primary mb-3">
+                    Proceed
+                  </button>
+                </div>
+              )}
+              {!areFlightsSelected && (
+                <div>
+                  {isLoading && (
+                    <div
+                      className="fade d-flex justify-content-center align-items-center mb-5"
+                      style={loadingStyle}
+                    >
+                      <Circles color="#0718c4" height={40} width={40} />
+                    </div>
+                  )}
+                  {!isLoading && (
+                    <div className="fade" style={contentStyle}>
+                      <>
+                        {flightData.map((flight) => (
+                          <FlightRowWithPrices
+                            flight={flight}
+                            key={flight.flightId}
+                            setFlightDirection={setFlightDirection}
+                            setChooseFlightText={setChooseFlightText}
+                            setChosenDate={setChosenDate}
+                            flightDirection={flightDirection}
+                            chooseFlightText={chooseFlightText}
+                            chosenDate={chosenDate}
+                            departFlight={departFlight}
+                            setDepartFlight={setDepartFlight}
+                            returnFlight={returnFlight}
+                            setReturnFlight={setReturnFlight}
+                            selectedDeparturePrice={selectedDeparturePrice}
+                            setSelectedDeparturePrice={
+                              setSelectedDeparturePrice
+                            }
+                            selectedReturnPrice={selectedReturnPrice}
+                            setSelectedReturnPrice={setSelectedReturnPrice}
+                            areFlightsSelected={areFlightsSelected}
+                            setAreFlightsSelected={setAreFlightsSelected}
+                          />
+                        ))}
+                      </>
+                    </div>
+                  )}
                 </div>
               )}
             </Tab>
