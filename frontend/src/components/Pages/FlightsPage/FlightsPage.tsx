@@ -1,5 +1,5 @@
 import "./FlightsPage.scss";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import IFlight from "../../../models/IFlight.model";
 import {
   checkForDayDifference,
@@ -556,7 +556,7 @@ export default function FlightsPage() {
   const [dateRange, setDateRange] = useState<Date[]>([]);
 
   useEffect(() => {
-    const dates = [];
+    const dates: Date[] = [];
     const currentDate = chosenDate;
     for (let i = -3; i <= 3; i++) {
       const date = new Date(currentDate);
@@ -760,6 +760,8 @@ export default function FlightsPage() {
 
   const [minimalPrices, setMinimalPrices] = useState<number[]>([]);
 
+  const navigate = useNavigate();
+
   const handleTabSelect = (key: string | null) => {
     if (key) {
       setActiveTab(key);
@@ -843,13 +845,14 @@ export default function FlightsPage() {
                 )}
               </div>
               {selectedDeparturePrice !== 0 && selectedReturnPrice !== 0 && (
-                <div className="d-flex flex-row justify-content-end align-items-center mt-5">
+                <div className="d-flex flex-column justify-content-center align-items-end mt-5">
                   <h2>
                     Price:{" "}
                     {Number(selectedDeparturePrice) +
                       Number(selectedReturnPrice)}{" "}
                     RSD
                   </h2>
+                  <small>Including taxes + airport fees</small>
                 </div>
               )}
               {!areFlightsSelected && (
@@ -870,8 +873,22 @@ export default function FlightsPage() {
               )}
               {areFlightsSelected && (
                 <div className="d-flex flex-row justify-content-end align-items-center">
-                  <button className="btn btn-lg btn-primary mb-3">
-                    Proceed
+                  <button
+                    className="btn btn-lg btn-primary mb-3"
+                    onClick={() => {
+                      navigate("/order", {
+                        replace: true,
+                        state: {
+                          departFlight: departFlight,
+                          returnFlight: returnFlight,
+                          totalPrice:
+                            Number(selectedDeparturePrice) +
+                            Number(selectedReturnPrice),
+                        },
+                      });
+                    }}
+                  >
+                    Enter passenger details
                   </button>
                 </div>
               )}
