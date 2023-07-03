@@ -28,7 +28,7 @@
     "bootstrap": "^5.3.0",
     "caniuse-lite": "^1.0.30001509",
     "date-fns": "^2.30.0",
-    "framer-motion": "^10.12.17",
+    "framer-motion": "^10.12.18",
     "lodash": "^4.17.21",
     "node-sass": "^9.0.0",
     "path-browserify": "^1.0.1",
