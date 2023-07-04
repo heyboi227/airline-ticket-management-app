@@ -48,8 +48,8 @@ export default class UserController extends BaseController {
   getById(req: Request, res: Response) {
     const userId: number = +req.params?.uid;
 
-    if (req.authorization?.role === "user") {
-      if (req.authorization?.id !== userId) {
+    if (req.authorization.role === "user") {
+      if (req.authorization.id !== userId) {
         return res.status(403).send("You do not have access to this resource!");
       }
     }
@@ -512,8 +512,8 @@ export default class UserController extends BaseController {
     const userId: number = +req.params?.uid;
     const data = req.body as IEditUserDto;
 
-    if (req.authorization?.role === "user") {
-      if (req.authorization?.id !== userId) {
+    if (req.authorization.role === "user") {
+      if (req.authorization.id !== userId) {
         return res.status(403).send("You do not have access to this resource!");
       }
     }
@@ -532,7 +532,7 @@ export default class UserController extends BaseController {
 
     if (
       DevConfig.auth.allowAllRoutesWithoutAuthTokens ||
-      req.authorization?.role === "administrator"
+      req.authorization.role === "administrator"
     ) {
       if (data.isActive !== undefined) {
         serviceData.is_active = data.isActive ? 1 : 0;
@@ -566,7 +566,7 @@ export default class UserController extends BaseController {
 
   addAddress(req: Request, res: Response) {
     const data = req.body as IAddAddressDto;
-    const userId = req.authorization?.id;
+    const userId = req.authorization.id;
 
     if (!AddAddressValidator(data)) {
       const safeOutput = escapeHTML(JSON.stringify(AddAddressValidator.errors));
@@ -606,7 +606,7 @@ export default class UserController extends BaseController {
   editAddressById(req: Request, res: Response) {
     const addressId = +req.params?.aid;
     const data = req.body as IEditAddressDto;
-    const userId = req.authorization?.id;
+    const userId = req.authorization.id;
 
     if (!EditAddressValidator(data)) {
       const safeOutput = escapeHTML(

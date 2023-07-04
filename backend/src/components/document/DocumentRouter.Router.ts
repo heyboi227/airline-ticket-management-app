@@ -31,6 +31,12 @@ export default class DocumentRouter implements IRouter {
       documentController.getByDocumentNumber.bind(documentController)
     );
 
+    application.get(
+      "/api/document/user/:uid",
+      AuthMiddleware.getVerifier("user"),
+      documentController.getAllByUserId.bind(documentController)
+    );
+
     application.post(
       "/api/document",
       AuthMiddleware.getVerifier("user"),

@@ -12,8 +12,8 @@ export default class TicketController extends BaseController {
     this.services.ticket
       .getById(ticketId, DefaultTicketAdapterOptions)
       .then((result) => {
-        if (req.authorization?.role === "user") {
-          if (req.authorization?.id !== result.userId) {
+        if (req.authorization.role === "user") {
+          if (req.authorization.id !== result.userId) {
             throw new StatusError(
               403,
               "You do not have access to this resource!"
@@ -40,8 +40,8 @@ export default class TicketController extends BaseController {
     this.services.ticket
       .getByTicketNumber(ticketNumber)
       .then((result) => {
-        if (req.authorization?.role === "user") {
-          if (req.authorization?.id !== result.userId) {
+        if (req.authorization.role === "user") {
+          if (req.authorization.id !== result.userId) {
             throw new StatusError(
               403,
               "You do not have access to this resource!"
@@ -65,6 +65,10 @@ export default class TicketController extends BaseController {
   getAllByUserId(req: Request, res: Response) {
     const userId: number = +req.params?.uid;
 
+    if (req.authorization.role === "user" && req.authorization.id !== userId) {
+      throw new StatusError(403, "You do not have access to this resource!");
+    }
+
     this.services.ticket
       .getAllByUserId(userId)
       .then((result) => {
@@ -85,7 +89,7 @@ export default class TicketController extends BaseController {
     const flightId: number = +req.params?.fid;
 
     this.services.ticket
-      .getAllByUserId(flightId)
+      .getAllByFlightId(flightId)
       .then((result) => {
         if (result === null) {
           throw new StatusError(404, "The tickets are not found!");

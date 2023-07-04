@@ -25,8 +25,8 @@ export default class DocumentController extends BaseController {
     this.services.document
       .getById(documentId, DefaultDocumentAdapterOptions)
       .then((result) => {
-        if (req.authorization?.role === "user") {
-          if (req.authorization?.id !== result.userId) {
+        if (req.authorization.role === "user") {
+          if (req.authorization.id !== result.userId) {
             throw new StatusError(
               403,
               "You do not have access to this resource!"
@@ -53,8 +53,8 @@ export default class DocumentController extends BaseController {
     this.services.document
       .getByDocumentNumber(documentNumber)
       .then((result) => {
-        if (req.authorization?.role === "user") {
-          if (req.authorization?.id !== result.userId) {
+        if (req.authorization.role === "user") {
+          if (req.authorization.id !== result.userId) {
             throw new StatusError(
               403,
               "You do not have access to this resource!"
@@ -72,6 +72,29 @@ export default class DocumentController extends BaseController {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 300);
+      });
+  }
+
+  getAllByUserId(req: Request, res: Response) {
+    const userId: number = +req.params?.uid;
+
+    if (req.authorization.role === "user" && req.authorization.id !== userId) {
+      throw new StatusError(403, "You do not have access to this resource!");
+    }
+
+    this.services.document
+      .getAllByUserId(userId)
+      .then((result) => {
+        if (result === null) {
+          throw new StatusError(404, "The documents are not found!");
+        }
+
+        res.send(result);
+      })
+      .catch((error) => {
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 500);
       });
   }
 
