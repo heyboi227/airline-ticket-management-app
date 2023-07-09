@@ -423,7 +423,7 @@ function FlightDetails(props: FlightRowProps) {
   );
 }
 
-function FlightRowWithoutPrices(flightRowProps: FlightRowProps) {
+export function FlightRowWithoutPrices(flightRowProps: FlightRowProps) {
   return <FlightDetails flight={flightRowProps.flight} />;
 }
 

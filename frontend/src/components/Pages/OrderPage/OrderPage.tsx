@@ -7,6 +7,7 @@ import DocumentModel from "../../../../../backend/dist/components/document/Docum
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
 import { Random, MersenneTwister19937 } from "random-js";
+import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 
 export default function OrderPage() {
   const location = useLocation();
@@ -27,6 +28,10 @@ export default function OrderPage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const random = new Random(MersenneTwister19937.autoSeed());
+  const randomPrice = random.integer(
+    flights.totalPrice * 0.2,
+    flights.totalPrice * 0.6
+  );
 
   function loadUserDocuments() {
     if (AppStore.getState().auth.id !== 0) {
@@ -143,16 +148,24 @@ export default function OrderPage() {
           </form>
         </div>
         <div className="col col-xs-12 col-md-4 p-5">
+          <span>Departure flight:</span>
+          <br></br>
+          <FlightRowWithoutPrices flight={flights.departFlight} />
+          <br></br>
+          <br></br>
+          <span>Return flight:</span>
+          <br></br>
+          <FlightRowWithoutPrices flight={flights.returnFlight} />
+          <br></br>
+          <br></br>
           <span>
-            Ticket price:{" "}
-            {flights.totalPrice -
-              random.integer(
-                flights.totalPrice * 0.05,
-                flights.totalPrice * 0.1
-              )}{" "}
-            RSD
+            <h5>Ticket price: {flights.totalPrice - randomPrice} RSD</h5>
+            <h5>Taxes and fees: {randomPrice} RSD</h5>
           </span>
-          <span>Total price: {flights.totalPrice} RSD</span>
+          <br></br>
+          <span>
+            <h2>Total price: {flights.totalPrice} RSD</h2>
+          </span>
         </div>
       </div>
       <span>{errorMessage}</span>

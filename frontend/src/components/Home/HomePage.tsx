@@ -1,5 +1,5 @@
 import Search from "../Search/Search";
-import mageSlider from "../ImageSlider/ImageSlder";
+import ImageSlider from "../ImageSlider/ImageSlider";
 import "./HomePage.scss";
 import firstSliderImage from "../../static/3.jpg";
 import secondSliderImage from "../../static/2.jpg";
