@@ -1,13 +1,13 @@
-import IRouter from "../../common/IRouter.interface";
+import Router from "../../common/Router.interface";
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
 import TimeZoneController from "./TimeZoneController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 
-export default class TimeZoneRouter implements IRouter {
+export default class TimeZoneRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const timeZoneController: TimeZoneController = new TimeZoneController(
       resources.services

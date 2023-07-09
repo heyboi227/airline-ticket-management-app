@@ -2,15 +2,15 @@ import { Request, Response } from "express";
 import BaseController from "../../common/BaseController";
 import {
   AddAdministratorValidator,
-  IAddAdministratorDto,
-} from "./dto/IAddAdministrator.dto";
+  AddAdministratorDto,
+} from "./dto/AddAdministrator.dto";
 import * as bcrypt from "bcrypt";
 import { DefaultAdministratorAdapterOptions } from "./AdministratorService.service";
 import StatusError from "../../common/StatusError";
-import IEditAdministrator, {
+import EditAdministrator, {
   EditAdministratorValidator,
-  IEditAdministratorDto,
-} from "./dto/IEditAdministrator.dto";
+  EditAdministratorDto,
+} from "./dto/EditAdministrator.dto";
 import escapeHTML = require("escape-html");
 
 export default class AdministratorController extends BaseController {
@@ -72,7 +72,7 @@ export default class AdministratorController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddAdministratorDto;
+    const body = req.body as AddAdministratorDto;
 
     if (!AddAdministratorValidator(body)) {
       const safeOutput = escapeHTML(
@@ -105,7 +105,7 @@ export default class AdministratorController extends BaseController {
 
   editById(req: Request, res: Response) {
     const administratorId: number = +req.params?.aid;
-    const data = req.body as IEditAdministratorDto;
+    const data = req.body as EditAdministratorDto;
 
     if (!EditAdministratorValidator(data)) {
       const safeOutput = escapeHTML(
@@ -114,7 +114,7 @@ export default class AdministratorController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditAdministrator = {};
+    const serviceData: EditAdministrator = {};
 
     if (data.password !== undefined) {
       const passwordHash = bcrypt.hashSync(data.password, 10);

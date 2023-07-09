@@ -4,7 +4,7 @@ import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-regular-svg-icons";
 
-interface IAddAircraftFormState {
+interface AddAircraftFormState {
   aircraftType: string;
   aircraftName: string;
 }
@@ -21,9 +21,9 @@ type TSetAircraftName = {
 type AddAircraftFormAction = TSetAircraftType | TSetAircraftName;
 
 function AddAircraftFormReducer(
-  oldState: IAddAircraftFormState,
+  oldState: AddAircraftFormState,
   action: AddAircraftFormAction
-): IAddAircraftFormState {
+): AddAircraftFormState {
   switch (action.type) {
     case "addAircraftForm/setAircraftType": {
       return {

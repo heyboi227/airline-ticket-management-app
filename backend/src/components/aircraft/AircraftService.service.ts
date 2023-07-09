@@ -1,14 +1,13 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import AircraftModel from "./AircraftModel.model";
-import { IAddAircraft } from "./dto/IAddAircraft.dto";
-import { IEditAircraft } from "./dto/IEditAircraft.dto";
+import { AddAircraft } from "./dto/AddAircraft.dto";
+import { EditAircraft } from "./dto/EditAircraft.dto";
 
-export interface IAircraftAdapterOptions extends IAdapterOptions {}
+export interface AircraftAdapterOptions {}
 
 export default class AircraftService extends BaseService<
   AircraftModel,
-  IAircraftAdapterOptions
+  AircraftAdapterOptions
 > {
   tableName(): string {
     return "aircraft";
@@ -16,7 +15,7 @@ export default class AircraftService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    _options: IAircraftAdapterOptions
+    _options: AircraftAdapterOptions
   ): Promise<AircraftModel> {
     const aircraft = new AircraftModel();
 
@@ -27,13 +26,13 @@ export default class AircraftService extends BaseService<
     return aircraft;
   }
 
-  public async add(data: IAddAircraft): Promise<AircraftModel> {
+  public async add(data: AddAircraft): Promise<AircraftModel> {
     return this.baseAdd(data, {});
   }
 
   public async editById(
     aircraftId: number,
-    data: IEditAircraft
+    data: EditAircraft
   ): Promise<AircraftModel> {
     return this.baseEditById(aircraftId, data, {});
   }

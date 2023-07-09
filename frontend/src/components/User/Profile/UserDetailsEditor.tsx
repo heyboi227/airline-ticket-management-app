@@ -2,26 +2,26 @@ import { faSave, faSquareMinus } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { api } from "../../../api/api";
-import IUser from "../../../models/IUser.model";
+import User from "../../../models/User.model";
 import { motion } from "framer-motion";
 import AppStore from "../../../stores/AppStore";
 
-export interface IUserDetailsEditorProperties {
-  user: IUser;
-  onDataChanged: (user: IUser) => void;
+export interface UserDetailsEditorProperties {
+  user: User;
+  onDataChanged: (user: User) => void;
 }
 
-interface IInputData {
+interface InputData {
   value: string;
   isValid: boolean;
 }
 
-export default function UserDetailsEditor(props: IUserDetailsEditorProperties) {
-  const [forename, setForename] = useState<IInputData>({
+export default function UserDetailsEditor(props: UserDetailsEditorProperties) {
+  const [forename, setForename] = useState<InputData>({
     value: props.user.forename,
     isValid: true,
   });
-  const [surname, setSurname] = useState<IInputData>({
+  const [surname, setSurname] = useState<InputData>({
     value: props.user.surname,
     isValid: true,
   });

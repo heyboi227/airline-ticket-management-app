@@ -2,15 +2,15 @@ import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
 import {
   AddFlightValidator,
-  IAddFlightDto,
-  IFlightDepartureSearchDto,
-  IFlightReturnSearchDto,
-} from "./dto/IAddFlight.dto";
+  AddFlightDto,
+  FlightDepartureSearchDto,
+  FlightReturnSearchDto,
+} from "./dto/AddFlight.dto";
 import {
   EditFlightValidator,
-  IEditFlight,
-  IEditFlightDto,
-} from "./dto/IEditFlight.dto";
+  EditFlight,
+  EditFlightDto,
+} from "./dto/EditFlight.dto";
 import { DefaultFlightAdapterOptions } from "./FlightService.service";
 import FlightModel from "./FlightModel.model";
 import StatusError from "../../common/StatusError";
@@ -76,7 +76,7 @@ export default class FlightController extends BaseController {
   }
 
   getAllByDepartureDateSearchQuery(req: Request, res: Response) {
-    const searchData = req.body as IFlightDepartureSearchDto;
+    const searchData = req.body as FlightDepartureSearchDto;
 
     this.services.flight
       .getAllByDepartureDateSearchQuery({
@@ -93,7 +93,7 @@ export default class FlightController extends BaseController {
   }
 
   getAllByReturnDateSearchQuery(req: Request, res: Response) {
-    const searchData = req.body as IFlightReturnSearchDto;
+    const searchData = req.body as FlightReturnSearchDto;
 
     this.services.flight
       .getAllByReturnDateSearchQuery({
@@ -110,7 +110,7 @@ export default class FlightController extends BaseController {
   }
 
   async add(req: Request, res: Response) {
-    const data = req.body as IAddFlightDto;
+    const data = req.body as AddFlightDto;
 
     if (!AddFlightValidator(data)) {
       const safeOutput = escapeHTML(JSON.stringify(AddFlightValidator.errors));
@@ -188,7 +188,7 @@ export default class FlightController extends BaseController {
   async edit(req: Request, res: Response) {
     const flightId: number = +req.params?.fid;
 
-    const data = req.body as IEditFlightDto;
+    const data = req.body as EditFlightDto;
 
     if (!EditFlightValidator(data)) {
       const safeOutput = escapeHTML(JSON.stringify(EditFlightValidator.errors));
@@ -205,7 +205,7 @@ export default class FlightController extends BaseController {
         throw new StatusError(404, "Flight not found!");
       }
 
-      const serviceData: IEditFlight = {};
+      const serviceData: EditFlight = {};
 
       if (data.flightCode !== undefined) {
         serviceData.flight_code = data.flightCode;
@@ -256,7 +256,7 @@ export default class FlightController extends BaseController {
 
   private getTravelClassIds(
     result: FlightModel,
-    data: IEditFlightDto
+    data: EditFlightDto
   ): TravelClassIds {
     const currentTravelClassIds = result.travelClasses?.map(
       (travelClassInfo) => travelClassInfo.travelClass.travelClassId
@@ -298,7 +298,7 @@ export default class FlightController extends BaseController {
 
   private async updateTravelClasses(
     result: FlightModel,
-    data: IEditFlightDto,
+    data: EditFlightDto,
     travelClassIds: {
       toHide: number[];
       toShow: number[];

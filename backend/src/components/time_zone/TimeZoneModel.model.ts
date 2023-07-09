@@ -1,6 +1,6 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 
-export default class TimeZoneModel implements IModel {
+export default class TimeZoneModel implements Model {
   timeZoneId: number;
   timeZoneName: string;
 }

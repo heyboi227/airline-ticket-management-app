@@ -1,6 +1,6 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 
-export default class CountryModel implements IModel {
+export default class CountryModel implements Model {
   countryId: number;
   countryName: string;
 }

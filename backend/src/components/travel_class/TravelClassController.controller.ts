@@ -1,15 +1,15 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import IEditTravelClass, {
+import EditTravelClass, {
   EditTravelClassValidator,
-  IEditTravelClassDto,
-} from "./dto/IEditTravelClass.dto";
+  EditTravelClassDto,
+} from "./dto/EditTravelClass.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 import {
   AddTravelClassValidator,
-  IAddTravelClassDto,
-} from "./dto/IAddTravelClass.dto";
+  AddTravelClassDto,
+} from "./dto/AddTravelClass.dto";
 
 export default class TravelClassController extends BaseController {
   getAll(_req: Request, res: Response) {
@@ -46,7 +46,7 @@ export default class TravelClassController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const data = req.body as IAddTravelClassDto;
+    const data = req.body as AddTravelClassDto;
 
     if (!AddTravelClassValidator(data)) {
       const safeOutput = escapeHTML(
@@ -79,7 +79,7 @@ export default class TravelClassController extends BaseController {
 
   editById(req: Request, res: Response) {
     const travelClassId: number = +req.params?.id;
-    const data = req.body as IEditTravelClassDto;
+    const data = req.body as EditTravelClassDto;
 
     if (!EditTravelClassValidator(data)) {
       const safeOutput = escapeHTML(
@@ -88,7 +88,7 @@ export default class TravelClassController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditTravelClass = {};
+    const serviceData: EditTravelClass = {};
 
     if (data.travelClassName !== undefined) {
       serviceData.travel_class_name = data.travelClassName;

@@ -1,8 +1,8 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 import CountryModel from "../country/CountryModel.model";
 import UserModel from "./UserModel.model";
 
-export default class AddressModel implements IModel {
+export default class AddressModel implements Model {
   addressId: number;
   userId: number;
 

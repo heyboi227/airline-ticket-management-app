@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
-import IUser from "../../../models/IUser.model";
+import User from "../../../models/User.model";
 import "./AdminList.scss";
 
-interface IAdminUserRowProperties {
-  user: IUser;
+interface AdminUserRowProperties {
+  user: User;
   loadUsers: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminUserRow(props: IAdminUserRowProperties) {
+function AdminUserRow(props: AdminUserRowProperties) {
   const [editPasswordVisible, setEditPasswordVisible] =
     useState<boolean>(false);
   const [editForenameVisible, setEditForenameVisible] =
@@ -247,7 +247,7 @@ function AdminUserRow(props: IAdminUserRowProperties) {
 }
 
 export default function AdminUserList() {
-  const [users, setUsers] = useState<IUser[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadUsers() {

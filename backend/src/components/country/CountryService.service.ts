@@ -1,14 +1,13 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import CountryModel from "./CountryModel.model";
-import { IAddCountry } from "./dto/IAddCountry.dto";
-import { IEditCountry } from "./dto/IEditCountry.dto";
+import { AddCountry } from "./dto/AddCountry.dto";
+import { EditCountry } from "./dto/EditCountry.dto";
 
-export interface ICountryAdapterOptions extends IAdapterOptions {}
+export interface CountryAdapterOptions {}
 
 export default class CountryService extends BaseService<
   CountryModel,
-  ICountryAdapterOptions
+  CountryAdapterOptions
 > {
   tableName(): string {
     return "country";
@@ -16,7 +15,7 @@ export default class CountryService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    _options: ICountryAdapterOptions
+    _options: CountryAdapterOptions
   ): Promise<CountryModel> {
     const country = new CountryModel();
 
@@ -26,13 +25,13 @@ export default class CountryService extends BaseService<
     return country;
   }
 
-  public async add(data: IAddCountry): Promise<CountryModel> {
+  public async add(data: AddCountry): Promise<CountryModel> {
     return this.baseAdd(data, {});
   }
 
   public async editById(
     countryId: number,
-    data: IEditCountry
+    data: EditCountry
   ): Promise<CountryModel> {
     return this.baseEditById(countryId, data, {});
   }

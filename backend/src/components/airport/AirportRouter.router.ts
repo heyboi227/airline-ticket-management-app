@@ -1,13 +1,13 @@
-import IRouter from "../../common/IRouter.interface";
+import Router from "../../common/Router.interface";
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
 import AirportController from "./AirportController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 
-export default class AirportRouter implements IRouter {
+export default class AirportRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const airportController: AirportController = new AirportController(
       resources.services

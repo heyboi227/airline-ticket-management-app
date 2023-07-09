@@ -1,19 +1,18 @@
 import * as mysql2 from "mysql2/promise";
-import IAdapterOptions from "./IAdapterOptions.interface";
-import IApplicationResources, {
-  IServices,
-} from "./IApplicationResources.interface";
-import IModel from "./IModel.interface";
-import IServiceData from "./IServiceData.interface";
+import ApplicationResources, {
+  Services,
+} from "./ApplicationResources.interface";
+import Model from "./Model.interface";
+import ServiceData from "./ServiceData.interface";
 
 export default abstract class BaseService<
-  ReturnModel extends IModel,
-  AdapterOptions extends IAdapterOptions
+  ReturnModel extends Model,
+  AdapterOptions
 > {
   private database: mysql2.Connection;
-  private serviceInstances: IServices;
+  private serviceInstances: Services;
 
-  constructor(resources: IApplicationResources) {
+  constructor(resources: ApplicationResources) {
     this.database = resources.databaseConnection;
     this.serviceInstances = resources.services;
   }
@@ -22,7 +21,7 @@ export default abstract class BaseService<
     return this.database;
   }
 
-  protected get services(): IServices {
+  protected get services(): Services {
     return this.serviceInstances;
   }
 
@@ -161,7 +160,7 @@ export default abstract class BaseService<
   }
 
   protected async baseAdd(
-    data: IServiceData,
+    data: ServiceData,
     options: AdapterOptions
   ): Promise<ReturnModel> {
     const tableName = this.tableName();
@@ -204,7 +203,7 @@ export default abstract class BaseService<
 
   protected async baseEditById(
     id: number,
-    data: IServiceData,
+    data: ServiceData,
     options: AdapterOptions
   ): Promise<ReturnModel> {
     const tableName = this.tableName();

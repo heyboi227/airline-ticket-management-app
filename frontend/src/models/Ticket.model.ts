@@ -1,0 +1,19 @@
+import Document from "./Document.model";
+import User from "./User.model";
+import Flight from "./Flight.model";
+
+export default interface Ticket {
+  ticketId: number;
+  ticketNumber: string;
+  ticketHolderName: string;
+  documentId: number;
+  price: number;
+  userId: number;
+  flightId: number;
+  flightFareCode: string;
+  seatNumber: string;
+
+  document?: Document;
+  user?: User;
+  flight?: Flight;
+}

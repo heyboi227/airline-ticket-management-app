@@ -5,12 +5,12 @@ export type TApiMethod = "get" | "post" | "put" | "delete";
 export type TApiRole = "user" | "administrator";
 export type TApiResponse = "ok" | "error" | "login";
 
-export interface IApiResponse {
+export interface ApiResponse {
   status: TApiResponse;
   data: any;
 }
 
-interface IApiArguments {
+interface ApiArguments {
   method: TApiMethod;
   path: string;
   role: TApiRole;
@@ -34,7 +34,7 @@ export function api(
   role: TApiRole,
   data: any = undefined,
   attemptToRefreshToken: boolean = true
-): Promise<IApiResponse> {
+): Promise<ApiResponse> {
   return new Promise((resolve) => {
     axios({
       method: method,
@@ -65,7 +65,7 @@ export function apiForm(
   role: TApiRole,
   data: FormData,
   attemptToRefreshToken: boolean = true
-): Promise<IApiResponse> {
+): Promise<ApiResponse> {
   return new Promise((resolve) => {
     axios({
       method: method,
@@ -92,8 +92,8 @@ export function apiForm(
 
 function handleApiError(
   err: any,
-  resolve: (value: IApiResponse | PromiseLike<IApiResponse>) => void,
-  args: IApiArguments
+  resolve: (value: ApiResponse | PromiseLike<ApiResponse>) => void,
+  args: ApiArguments
 ) {
   if (err?.response?.status === 401 || err?.response?.status === 403) {
     if (args.attemptToRefreshToken) {
@@ -136,7 +136,7 @@ function handleApiError(
 
 function handleApiResponse(
   res: AxiosResponse<any, any>,
-  resolve: (value: IApiResponse | PromiseLike<IApiResponse>) => void
+  resolve: (value: ApiResponse | PromiseLike<ApiResponse>) => void
 ) {
   if (res?.status < 200 || res?.status >= 300) {
     return resolve({

@@ -1,13 +1,13 @@
-import IRouter from "../../common/IRouter.interface";
+import Router from "../../common/Router.interface";
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
 import TicketController from "./TicketController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 
-export default class TicketRouter implements IRouter {
+export default class TicketRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const ticketController: TicketController = new TicketController(
       resources.services

@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
 import BaseController from "../../common/BaseController";
-import { IAdministratorLoginDto } from "./dto/IAdministratorLogin.dto";
+import { AdministratorLoginDto } from "./dto/AdministratorLogin.dto";
 import * as bcrypt from "bcrypt";
 import * as jwt from "jsonwebtoken";
-import ITokenData from "./dto/ITokenData";
+import TokenData from "./dto/TokenData";
 import { DevConfig } from "../../configs";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
-import { IUserLoginDto } from "./dto/IUserLogin.dto";
+import { UserLoginDto } from "./dto/UserLogin.dto";
 import { DefaultAdministratorAdapterOptions } from "../administrator/AdministratorService.service";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 
 export default class AuthController extends BaseController {
   public async administratorLogin(req: Request, res: Response) {
-    const data = req.body as IAdministratorLoginDto;
+    const data = req.body as AdministratorLoginDto;
 
     this.services.administrator
       .getByUsername(data.username, DefaultAdministratorAdapterOptions)
@@ -32,7 +32,7 @@ export default class AuthController extends BaseController {
         return administrator;
       })
       .then((administrator) => {
-        const tokenData: ITokenData = {
+        const tokenData: TokenData = {
           role: "administrator",
           id: administrator.administratorId,
           identity: administrator.username,
@@ -102,7 +102,7 @@ export default class AuthController extends BaseController {
   }
 
   public async userLogin(req: Request, res: Response) {
-    const data = req.body as IUserLoginDto;
+    const data = req.body as UserLoginDto;
 
     this.services.user
       .getByEmail(data.email)
@@ -128,7 +128,7 @@ export default class AuthController extends BaseController {
         return user;
       })
       .then((user) => {
-        const tokenData: ITokenData = {
+        const tokenData: TokenData = {
           role: "user",
           id: user.userId,
           identity: user.forename + " " + user.surname,

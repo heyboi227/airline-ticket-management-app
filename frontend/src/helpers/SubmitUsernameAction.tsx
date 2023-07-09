@@ -1,6 +1,6 @@
 import { Button, Modal } from "react-bootstrap";
 
-export interface ISubmitUsernameActionProperties {
+export interface SubmitUsernameActionProperties {
   title: string;
   message: string;
   username: string;
@@ -10,7 +10,7 @@ export interface ISubmitUsernameActionProperties {
 }
 
 export default function SubmitUsernameAction(
-  props: ISubmitUsernameActionProperties
+  props: SubmitUsernameActionProperties
 ) {
   return (
     <Modal

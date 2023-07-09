@@ -1,4 +1,4 @@
-import IConfig from "./common/IConfig.interface";
+import Config from "./common/Config.interface";
 import { MailConfigurationParameters } from "./config.mail";
 import { readFileSync } from "fs";
 import AdministratorRouter from "./components/administrator/AdministratorRouter.router";
@@ -25,7 +25,7 @@ const offsetToMySQL = (): string => {
   return offset;
 };
 
-const DevConfig: IConfig = {
+const DevConfig: Config = {
   server: {
     port: 10000,
     static: {

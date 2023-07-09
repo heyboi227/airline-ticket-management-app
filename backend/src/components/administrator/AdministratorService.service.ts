@@ -1,21 +1,19 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import AdministratorModel from "./AdministratorModel.model";
-import IAddAdministrator from "./dto/IAddAdministrator.dto";
-import IEditAdministrator from "./dto/IEditAdministrator.dto";
+import AddAdministrator from "./dto/AddAdministrator.dto";
+import EditAdministrator from "./dto/EditAdministrator.dto";
 
-export class IAdministratorAdapterOptions implements IAdapterOptions {
+export class AdministratorAdapterOptions {
   removePassword: boolean;
 }
 
-export const DefaultAdministratorAdapterOptions: IAdministratorAdapterOptions =
-  {
-    removePassword: false,
-  };
+export const DefaultAdministratorAdapterOptions: AdministratorAdapterOptions = {
+  removePassword: false,
+};
 
 export default class AdministratorService extends BaseService<
   AdministratorModel,
-  IAdministratorAdapterOptions
+  AdministratorAdapterOptions
 > {
   tableName(): string {
     return "administrator";
@@ -23,7 +21,7 @@ export default class AdministratorService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IAdministratorAdapterOptions = DefaultAdministratorAdapterOptions
+    options: AdministratorAdapterOptions = DefaultAdministratorAdapterOptions
   ): Promise<AdministratorModel> {
     const administrator = new AdministratorModel();
 
@@ -40,21 +38,21 @@ export default class AdministratorService extends BaseService<
     return administrator;
   }
 
-  public async add(data: IAddAdministrator): Promise<AdministratorModel> {
+  public async add(data: AddAdministrator): Promise<AdministratorModel> {
     return this.baseAdd(data, DefaultAdministratorAdapterOptions);
   }
 
   public async editById(
     administratorId: number,
-    data: IEditAdministrator,
-    options: IAdministratorAdapterOptions
+    data: EditAdministrator,
+    options: AdministratorAdapterOptions
   ): Promise<AdministratorModel> {
     return this.baseEditById(administratorId, data, options);
   }
 
   public async getByUsername(
     username: string,
-    options: IAdministratorAdapterOptions
+    options: AdministratorAdapterOptions
   ): Promise<AdministratorModel | null> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("username", username, options)

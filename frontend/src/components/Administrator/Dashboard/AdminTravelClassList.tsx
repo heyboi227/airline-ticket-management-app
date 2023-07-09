@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import ITravelClass from "../../../models/ITravelClass.model";
+import TravelClass from "../../../models/TravelClass.model";
 import "./AdminList.scss";
 
-interface IAdminTravelClassRowProperties {
-  travelClass: ITravelClass;
+interface AdminTravelClassRowProperties {
+  travelClass: TravelClass;
   loadTravelClass: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminTravelClassRow(props: IAdminTravelClassRowProperties) {
+function AdminTravelClassRow(props: AdminTravelClassRowProperties) {
   const [editTravelClassNameVisible, setEditTravelClassNameVisible] =
     useState<boolean>(false);
   const [editTravelClassSubnameVisible, setEditTravelClassSubnameVisible] =
@@ -181,7 +181,7 @@ function AdminTravelClassRow(props: IAdminTravelClassRowProperties) {
 }
 
 export default function AdminTravelClassList() {
-  const [travelClass, setTravelClass] = useState<ITravelClass[]>([]);
+  const [travelClass, setTravelClass] = useState<TravelClass[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadTravelClass() {

@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import IAircraft from "../../../models/IAircraft.model";
+import Aircraft from "../../../models/Aircraft.model";
 import "./AdminList.scss";
 import ConfirmAction from "../../../helpers/ConfirmAction";
 
-interface IAdminAircraftRowProperties {
-  aircraft: IAircraft;
+interface AdminAircraftRowProperties {
+  aircraft: Aircraft;
   loadAircraft: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAircraftRow(props: IAdminAircraftRowProperties) {
+function AdminAircraftRow(props: AdminAircraftRowProperties) {
   const [editAircraftTypeVisible, setEditAircraftTypeVisible] =
     useState<boolean>(false);
   const [editAircraftNameVisible, setEditAircraftNameVisible] =
@@ -200,7 +200,7 @@ function AdminAircraftRow(props: IAdminAircraftRowProperties) {
 }
 
 export default function AdminAircraftList() {
-  const [aircraft, setAircraft] = useState<IAircraft[]>([]);
+  const [aircraft, setAircraft] = useState<Aircraft[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAircraft() {

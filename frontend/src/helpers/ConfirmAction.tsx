@@ -1,13 +1,13 @@
 import { Button, Modal } from "react-bootstrap";
 
-export interface IConfirmActionProperties {
+export interface ConfirmActionProperties {
   title: string;
   message: string;
   onYes: () => void;
   onNo: () => void;
 }
 
-export default function ConfirmAction(props: IConfirmActionProperties) {
+export default function ConfirmAction(props: ConfirmActionProperties) {
   return (
     <Modal
       size="lg"

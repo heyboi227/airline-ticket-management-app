@@ -1,6 +1,6 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddDocumentValidator, IAddDocumentDto } from "./dto/IAddDocument.dto";
+import { AddDocumentValidator, AddDocumentDto } from "./dto/AddDocument.dto";
 import { DefaultDocumentAdapterOptions } from "./DocumentService.service";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
@@ -99,7 +99,7 @@ export default class DocumentController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddDocumentDto;
+    const body = req.body as AddDocumentDto;
 
     if (!AddDocumentValidator(body)) {
       const safeOutput = escapeHTML(

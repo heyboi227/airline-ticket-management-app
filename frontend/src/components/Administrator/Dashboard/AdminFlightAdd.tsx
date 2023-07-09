@@ -7,13 +7,13 @@ import {
   faSave,
   faSquare,
 } from "@fortawesome/free-regular-svg-icons";
-import IAirport from "../../../models/IAirport.model";
-import IAircraft from "../../../models/IAircraft.model";
+import Airport from "../../../models/Airport.model";
+import Aircraft from "../../../models/Aircraft.model";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
 import { parseISO } from "date-fns";
-import ITravelClass from "../../../models/ITravelClass.model";
+import TravelClass from "../../../models/TravelClass.model";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
 import FlightFormReducer, {
@@ -22,9 +22,9 @@ import FlightFormReducer, {
 
 export default function AdminFlightAdd() {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [airports, setAirports] = useState<IAirport[]>([]);
-  const [aircraft, setAircraft] = useState<IAircraft[]>([]);
-  const [travelClasses, setTravelClasses] = useState<ITravelClass[]>([]);
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [aircraft, setAircraft] = useState<Aircraft[]>([]);
+  const [travelClasses, setTravelClasses] = useState<TravelClass[]>([]);
 
   const [flightAdded, setFlightAdded] = useState<boolean>(false);
 

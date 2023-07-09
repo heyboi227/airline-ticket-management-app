@@ -1,20 +1,19 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import { DefaultAirportAdapterOptions } from "../airport/AirportService.service";
-import FlightModel, { IFlightTravelClass } from "./FlightModel.model";
+import FlightModel, { FlightTravelClass } from "./FlightModel.model";
 import {
-  IAddFlight,
-  IDepartureFlightSearch,
-  IReturnFlightSearch,
-  IFlightTravelClass as IDtoFlightTravelClass,
-} from "./dto/IAddFlight.dto";
-import { IEditFlight } from "./dto/IEditFlight.dto";
+  AddFlight,
+  DepartureFlightSearch,
+  ReturnFlightSearch,
+  FlightTravelClass as DtoFlightTravelClass,
+} from "./dto/AddFlight.dto";
+import { EditFlight } from "./dto/EditFlight.dto";
 import * as mysql2 from "mysql2/promise";
 import AirportModel from "../airport/AirportModel.model";
 import AircraftModel from "../aircraft/AircraftModel.model";
 import StatusError from "../../common/StatusError";
 
-export interface IFlightAdapterOptions extends IAdapterOptions {
+export interface FlightAdapterOptions {
   loadOriginAirport: boolean;
   loadDestinationAirport: boolean;
   loadAircraft: boolean;
@@ -22,7 +21,7 @@ export interface IFlightAdapterOptions extends IAdapterOptions {
   hideInactiveTravelClasses: boolean;
 }
 
-export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
+export const DefaultFlightAdapterOptions: FlightAdapterOptions = {
   loadOriginAirport: true,
   loadDestinationAirport: true,
   loadAircraft: true,
@@ -31,7 +30,7 @@ export const DefaultFlightAdapterOptions: IFlightAdapterOptions = {
 };
 export default class FlightService extends BaseService<
   FlightModel,
-  IFlightAdapterOptions
+  FlightAdapterOptions
 > {
   tableName(): string {
     return "flight";
@@ -57,13 +56,13 @@ export default class FlightService extends BaseService<
 
   protected async loadResources(
     flight: FlightModel,
-    options: IFlightAdapterOptions
+    options: FlightAdapterOptions
   ): Promise<
     [
       AirportModel | undefined,
       AirportModel | undefined,
       AircraftModel | undefined,
-      IFlightTravelClass[]
+      FlightTravelClass[]
     ]
   > {
     const loadOriginAirportPromise = options.loadOriginAirport
@@ -104,9 +103,9 @@ export default class FlightService extends BaseService<
       AirportModel | undefined,
       AirportModel | undefined,
       AircraftModel | undefined,
-      IFlightTravelClass[]
+      FlightTravelClass[]
     ],
-    options: IFlightAdapterOptions
+    options: FlightAdapterOptions
   ): FlightModel {
     const [originAirport, destinationAirport, aircraft, travelClasses] =
       resources;
@@ -138,7 +137,7 @@ export default class FlightService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IFlightAdapterOptions
+    options: FlightAdapterOptions
   ): Promise<FlightModel> {
     const flight = this.initializeFlight(data);
 
@@ -147,13 +146,13 @@ export default class FlightService extends BaseService<
     return updatedFlight;
   }
 
-  public async add(data: IAddFlight): Promise<FlightModel> {
+  public async add(data: AddFlight): Promise<FlightModel> {
     return this.baseAdd(data, DefaultFlightAdapterOptions);
   }
 
   public async editById(
     flightId: number,
-    data: IEditFlight
+    data: EditFlight
   ): Promise<FlightModel> {
     return this.baseEditById(flightId, data, DefaultFlightAdapterOptions);
   }
@@ -181,7 +180,7 @@ export default class FlightService extends BaseService<
   }
 
   public async getAllByDepartureDateSearchQuery(
-    data: IDepartureFlightSearch
+    data: DepartureFlightSearch
   ): Promise<FlightModel[]> {
     return new Promise<FlightModel[]>((resolve, reject) => {
       const sql: string =
@@ -216,7 +215,7 @@ export default class FlightService extends BaseService<
   }
 
   public async getAllByReturnDateSearchQuery(
-    data: IReturnFlightSearch
+    data: ReturnFlightSearch
   ): Promise<FlightModel[]> {
     return new Promise<FlightModel[]>((resolve, reject) => {
       const sql: string =
@@ -250,7 +249,7 @@ export default class FlightService extends BaseService<
     });
   }
 
-  async addFlightTravelClass(data: IDtoFlightTravelClass): Promise<number> {
+  async addFlightTravelClass(data: DtoFlightTravelClass): Promise<number> {
     return new Promise((resolve, reject) => {
       const sql: string =
         "INSERT flight_travel_class SET flight_id = ?, travel_class_id = ?, price = ?;";
@@ -267,7 +266,7 @@ export default class FlightService extends BaseService<
     });
   }
 
-  async editFlightTravelClass(data: IDtoFlightTravelClass): Promise<true> {
+  async editFlightTravelClass(data: DtoFlightTravelClass): Promise<true> {
     return new Promise((resolve, reject) => {
       const sql: string =
         "UPDATE flight_travel_class SET price = ? WHERE flight_id = ? AND travel_class_id = ?;";

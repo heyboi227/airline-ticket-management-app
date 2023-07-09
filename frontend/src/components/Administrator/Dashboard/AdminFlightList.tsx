@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import IFlight from "../../../models/IFlight.model";
+import Flight from "../../../models/Flight.model";
 import { formatDateTime } from "../../../helpers/helpers";
 import "./AdminList.scss";
 import { Link } from "react-router-dom";
@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit } from "@fortawesome/free-regular-svg-icons";
 
 export default function AdminFlightList() {
-  const [flights, setFlights] = useState<IFlight[]>([]);
+  const [flights, setFlights] = useState<Flight[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [showInactiveFlights, setShowInactiveFlights] =

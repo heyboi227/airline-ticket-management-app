@@ -1,22 +1,21 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import UserModel from "./UserModel.model";
-import { IAddUser } from "./dto/IRegisterUser.dto";
-import IEditUser from "./dto/IEditUser.dto";
+import { AddUser } from "./dto/RegisterUser.dto";
+import EditUser from "./dto/EditUser.dto";
 
-export interface IUserAdapterOptions extends IAdapterOptions {
+export interface UserAdapterOptions {
   removePassword: boolean;
   removeActivationCode: boolean;
 }
 
-export const DefaultUserAdapterOptions: IUserAdapterOptions = {
+export const DefaultUserAdapterOptions: UserAdapterOptions = {
   removePassword: false,
   removeActivationCode: false,
 };
 
 export default class UserService extends BaseService<
   UserModel,
-  IUserAdapterOptions
+  UserAdapterOptions
 > {
   tableName(): string {
     return "user";
@@ -24,7 +23,7 @@ export default class UserService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IUserAdapterOptions = DefaultUserAdapterOptions
+    options: UserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel> {
     const user = new UserModel();
 
@@ -55,7 +54,7 @@ export default class UserService extends BaseService<
     return user;
   }
 
-  public async add(data: IAddUser): Promise<UserModel> {
+  public async add(data: AddUser): Promise<UserModel> {
     return this.baseAdd(data, {
       removeActivationCode: false,
       removePassword: true,
@@ -64,8 +63,8 @@ export default class UserService extends BaseService<
 
   public async editById(
     userId: number,
-    data: IEditUser,
-    options: IUserAdapterOptions = {
+    data: EditUser,
+    options: UserAdapterOptions = {
       removePassword: true,
       removeActivationCode: true,
     }
@@ -75,7 +74,7 @@ export default class UserService extends BaseService<
 
   public async getByActivationCode(
     activationCode: string,
-    option: IUserAdapterOptions = DefaultUserAdapterOptions
+    option: UserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("activation_code", activationCode, option)
@@ -94,7 +93,7 @@ export default class UserService extends BaseService<
 
   public async getByPasswordResetCode(
     passwordResetCode: string,
-    option: IUserAdapterOptions = DefaultUserAdapterOptions
+    option: UserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue(
@@ -117,7 +116,7 @@ export default class UserService extends BaseService<
 
   public async getByEmail(
     email: string,
-    option: IUserAdapterOptions = DefaultUserAdapterOptions
+    option: UserAdapterOptions = DefaultUserAdapterOptions
   ): Promise<UserModel | null> {
     return new Promise((resolve, reject) => {
       this.getAllByFieldNameAndValue("email", email, option)

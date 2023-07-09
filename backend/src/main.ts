@@ -1,8 +1,8 @@
 import * as express from "express";
 import * as cors from "cors";
-import IConfig from "./common/IConfig.interface";
+import Config from "./common/Config.interface";
 import { DevConfig } from "./configs";
-import IApplicationResources from "./common/IApplicationResources.interface";
+import ApplicationResources from "./common/ApplicationResources.interface";
 import * as mysql2 from "mysql2/promise";
 import AddressService from "./components/user/AddressService.service";
 import AdministratorService from "./components/administrator/AdministratorService.service";
@@ -17,7 +17,7 @@ import TicketService from "./components/ticket/TicketService.service";
 import TimeZoneService from "./components/time_zone/TimeZoneService.service";
 
 async function main() {
-  const config: IConfig = DevConfig;
+  const config: Config = DevConfig;
 
   let db = await mysql2.createConnection({
     host: config.database.host,
@@ -66,7 +66,7 @@ async function main() {
 
   attactConnectionMonitoring(db);
 
-  const applicationResources: IApplicationResources = {
+  const applicationResources: ApplicationResources = {
     databaseConnection: db,
     services: {
       address: null,

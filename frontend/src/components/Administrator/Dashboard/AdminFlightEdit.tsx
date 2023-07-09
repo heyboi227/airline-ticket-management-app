@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { api } from "../../../api/api";
-import IFlight from "../../../models/IFlight.model";
-import ITravelClass from "../../../models/ITravelClass.model";
-import IAirport from "../../../models/IAirport.model";
+import Flight from "../../../models/Flight.model";
+import TravelClass from "../../../models/TravelClass.model";
+import Airport from "../../../models/Airport.model";
 import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
@@ -15,19 +15,19 @@ import FlightFormReducer, {
   initialFlightFormState,
 } from "../../../api/flight-reducers";
 
-export interface IAdminFlightEditUrlParams
+export interface AdminFlightEditUrlParams
   extends Record<string, string | undefined> {
   fid: string;
 }
 
 export default function AdminFlightEdit() {
-  const params = useParams<IAdminFlightEditUrlParams>();
+  const params = useParams<AdminFlightEditUrlParams>();
   const flightId = +(params.fid ?? "");
 
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [flight, setFlight] = useState<IFlight>();
-  const [airports, setAirports] = useState<IAirport[]>([]);
-  const [travelClasses, setTravelClasses] = useState<ITravelClass[]>([]);
+  const [flight, setFlight] = useState<Flight>();
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [travelClasses, setTravelClasses] = useState<TravelClass[]>([]);
 
   const navigate = useNavigate();
 
@@ -43,7 +43,7 @@ export default function AdminFlightEdit() {
           throw new Error("Could not load this flight!");
         }
 
-        return res.data as IFlight;
+        return res.data as Flight;
       })
       .then((flight) => {
         setFlight(flight);
@@ -60,7 +60,7 @@ export default function AdminFlightEdit() {
           throw new Error("Could not load this flight!");
         }
 
-        return res.data as IAirport[];
+        return res.data as Airport[];
       })
       .then((airports) => {
         airports.sort((a, b) => a.airportName.localeCompare(b.airportName));
@@ -78,7 +78,7 @@ export default function AdminFlightEdit() {
           throw new Error("Could not load travel class information!");
         }
 
-        return res.data as ITravelClass[];
+        return res.data as TravelClass[];
       })
       .then((travelClasses) => {
         setTravelClasses(travelClasses);

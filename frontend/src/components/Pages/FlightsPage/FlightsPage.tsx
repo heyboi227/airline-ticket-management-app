@@ -1,6 +1,6 @@
 import "./FlightsPage.scss";
 import { useLocation, useNavigate } from "react-router-dom";
-import IFlight from "../../../models/IFlight.model";
+import Flight from "../../../models/Flight.model";
 import {
   checkForDayDifference,
   formatTime,
@@ -21,24 +21,24 @@ import "./transitions.css";
 import "./tabs-transition.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
 
-interface IFlightRowProps {
-  flight: IFlight;
+interface FlightRowProps {
+  flight: Flight;
   handleToggleEconomy?: () => void;
   handleToggleBusiness?: () => void;
 }
 
-interface IFlightRowWithPricesProps {
-  flight: IFlight;
+interface FlightRowWithPricesProps {
+  flight: Flight;
   flightDirection: string;
   setFlightDirection: React.Dispatch<React.SetStateAction<string>>;
   chooseFlightText: string;
   setChooseFlightText: React.Dispatch<React.SetStateAction<string>>;
   chosenDate: Date;
   setChosenDate: React.Dispatch<React.SetStateAction<Date>>;
-  departFlight: IFlight | undefined;
-  setDepartFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
-  returnFlight: IFlight | undefined;
-  setReturnFlight: React.Dispatch<React.SetStateAction<IFlight | undefined>>;
+  departFlight: Flight | undefined;
+  setDepartFlight: React.Dispatch<React.SetStateAction<Flight | undefined>>;
+  returnFlight: Flight | undefined;
+  setReturnFlight: React.Dispatch<React.SetStateAction<Flight | undefined>>;
   selectedDeparturePrice: number;
   setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
   selectedReturnPrice: number;
@@ -47,15 +47,15 @@ interface IFlightRowWithPricesProps {
   setAreFlightsSelected: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-interface IClassPricesProps {
+interface ClassPricesProps {
   travelClassName: string;
   visibility: boolean;
-  flightRowWithPricesProps: IFlightRowWithPricesProps;
+  flightRowWithPricesProps: FlightRowWithPricesProps;
 }
 
-interface IClassPricesDrawerProps {
+interface ClassPricesDrawerProps {
   travelClassName: string;
-  flight: IFlight;
+  flight: Flight;
   handleToggle: (() => void) | undefined;
 }
 
@@ -77,7 +77,7 @@ const TabTitle = (props: TabTitleProps) => {
   );
 };
 
-function ClassPricesDrawer(props: IClassPricesDrawerProps) {
+function ClassPricesDrawer(props: ClassPricesDrawerProps) {
   const [isOpenPricesHovered, setIsOpenPricesHovered] =
     useState<boolean>(false);
 
@@ -139,7 +139,7 @@ function ClassPricesDrawer(props: IClassPricesDrawerProps) {
   );
 }
 
-const ClassPrices = (props: IClassPricesProps) => {
+const ClassPrices = (props: ClassPricesProps) => {
   const [selectPriceHoveredIndex, setSelectPriceHoveredIndex] = useState<
     number | null
   >(null);
@@ -347,7 +347,7 @@ const ClassPrices = (props: IClassPricesProps) => {
   );
 };
 
-function FlightDetails(props: IFlightRowProps) {
+function FlightDetails(props: FlightRowProps) {
   return (
     <>
       <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
@@ -423,11 +423,11 @@ function FlightDetails(props: IFlightRowProps) {
   );
 }
 
-function FlightRowWithoutPrices(flightRowProps: IFlightRowProps) {
+function FlightRowWithoutPrices(flightRowProps: FlightRowProps) {
   return <FlightDetails flight={flightRowProps.flight} />;
 }
 
-function FlightRow(props: IFlightRowProps) {
+function FlightRow(props: FlightRowProps) {
   const classConfig = [
     { className: "Economy", handler: props.handleToggleEconomy },
     { className: "Business", handler: props.handleToggleBusiness },
@@ -452,7 +452,7 @@ function FlightRow(props: IFlightRowProps) {
   );
 }
 
-function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
+function FlightRowWithPrices(props: FlightRowWithPricesProps) {
   const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
   const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
 
@@ -509,7 +509,7 @@ function FlightRowWithPrices(props: IFlightRowWithPricesProps) {
 
 export default function FlightsPage() {
   const location = useLocation();
-  const [flightData, setFlightData] = useState<IFlight[]>(
+  const [flightData, setFlightData] = useState<Flight[]>(
     location.state[4] || []
   );
 
@@ -519,10 +519,10 @@ export default function FlightsPage() {
     "Choose your departure flight"
   );
 
-  const [departFlight, setDepartFlight] = useState<IFlight | undefined>(
+  const [departFlight, setDepartFlight] = useState<Flight | undefined>(
     undefined
   );
-  const [returnFlight, setReturnFlight] = useState<IFlight | undefined>(
+  const [returnFlight, setReturnFlight] = useState<Flight | undefined>(
     undefined
   );
 
@@ -668,7 +668,7 @@ export default function FlightsPage() {
         }),
   });
 
-  const findLowestPriceInFlight = (flight: IFlight) => {
+  const findLowestPriceInFlight = (flight: Flight) => {
     const minPriceInFlight = flight.travelClasses?.reduce(
       (minClassPrice, travelClass) => {
         return Math.min(minClassPrice, travelClass.price);
@@ -678,7 +678,7 @@ export default function FlightsPage() {
     return minPriceInFlight;
   };
 
-  const findLowestPrice = (flights: IFlight[]) => {
+  const findLowestPrice = (flights: Flight[]) => {
     const lowestPrice = flights.reduce((minPrice, flight) => {
       return Math.min(minPrice, findLowestPriceInFlight(flight)!);
     }, Infinity);
@@ -705,7 +705,7 @@ export default function FlightsPage() {
           );
         }
 
-        const flights = res.data as IFlight[];
+        const flights = res.data as Flight[];
 
         if (
           flights.length === 0 ||

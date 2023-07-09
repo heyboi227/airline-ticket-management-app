@@ -1,13 +1,13 @@
 import { Button, Modal } from "react-bootstrap";
 
-export interface IRegisterUserActionProperties {
+export interface RegisterUserActionProperties {
   title: string;
   message: string;
   onSubmit: () => void;
 }
 
 export default function RegisterUserAction(
-  props: IRegisterUserActionProperties
+  props: RegisterUserActionProperties
 ) {
   return (
     <Modal

@@ -1,29 +1,23 @@
 import {
   EditAddressValidator,
-  IEditAddress,
-  IEditAddressDto,
-} from "./dto/IEditAddress.dto";
-import { AddAddressValidator, IAddAddressDto } from "./dto/IAddAddress.dto";
+  EditAddress,
+  EditAddressDto,
+} from "./dto/EditAddress.dto";
+import { AddAddressValidator, AddAddressDto } from "./dto/AddAddress.dto";
 import { Request, Response } from "express";
 import BaseController from "../../common/BaseController";
-import {
-  IRegisterUserDto,
-  RegisterUserValidator,
-} from "./dto/IRegisterUser.dto";
+import { RegisterUserDto, RegisterUserValidator } from "./dto/RegisterUser.dto";
 import * as bcrypt from "bcrypt";
-import IEditUser, {
-  EditUserValidator,
-  IEditUserDto,
-} from "./dto/IEditUser.dto";
+import EditUser, { EditUserValidator, EditUserDto } from "./dto/EditUser.dto";
 import * as uuid from "uuid";
 import UserModel from "./UserModel.model";
 import * as nodemailer from "nodemailer";
 import * as Mailer from "nodemailer/lib/mailer";
 import { DevConfig } from "../../configs";
 import {
-  IPasswordResetDto,
+  PasswordResetDto,
   PasswordResetValidator,
-} from "./dto/IPasswordReset.dto";
+} from "./dto/PasswordReset.dto";
 import * as generatePassword from "generate-password";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
@@ -74,7 +68,7 @@ export default class UserController extends BaseController {
   }
 
   register(req: Request, res: Response) {
-    const body = req.body as IRegisterUserDto;
+    const body = req.body as RegisterUserDto;
 
     if (!RegisterUserValidator(body)) {
       const safeOutput = escapeHTML(
@@ -158,7 +152,7 @@ export default class UserController extends BaseController {
   }
 
   passwordResetEmailSend(req: Request, res: Response) {
-    const data = req.body as IPasswordResetDto;
+    const data = req.body as PasswordResetDto;
 
     if (!PasswordResetValidator(data)) {
       const safeOutput = escapeHTML(
@@ -510,7 +504,7 @@ export default class UserController extends BaseController {
 
   editById(req: Request, res: Response) {
     const userId: number = +req.params?.uid;
-    const data = req.body as IEditUserDto;
+    const data = req.body as EditUserDto;
 
     if (req.authorization.role === "user") {
       if (req.authorization.id !== userId) {
@@ -523,7 +517,7 @@ export default class UserController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditUser = {};
+    const serviceData: EditUser = {};
 
     if (data.password !== undefined) {
       const passwordHash = bcrypt.hashSync(data.password, 10);
@@ -565,7 +559,7 @@ export default class UserController extends BaseController {
   }
 
   addAddress(req: Request, res: Response) {
-    const data = req.body as IAddAddressDto;
+    const data = req.body as AddAddressDto;
     const userId = req.authorization.id;
 
     if (!AddAddressValidator(data)) {
@@ -605,7 +599,7 @@ export default class UserController extends BaseController {
 
   editAddressById(req: Request, res: Response) {
     const addressId = +req.params?.aid;
-    const data = req.body as IEditAddressDto;
+    const data = req.body as EditAddressDto;
     const userId = req.authorization.id;
 
     if (!EditAddressValidator(data)) {
@@ -615,7 +609,7 @@ export default class UserController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditAddress = {};
+    const serviceData: EditAddress = {};
 
     if (data.streetAndNumber !== undefined) {
       serviceData.street_and_number = data.streetAndNumber;

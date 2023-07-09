@@ -4,7 +4,7 @@ import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-regular-svg-icons";
 
-interface IAddCountryFormState {
+interface AddCountryFormState {
   countryName: string;
 }
 
@@ -14,9 +14,9 @@ type TSetCountryName = {
 };
 
 function AddCountryFormReducer(
-  oldState: IAddCountryFormState,
+  oldState: AddCountryFormState,
   action: TSetCountryName
-): IAddCountryFormState {
+): AddCountryFormState {
   if (action.type === "addCountryForm/setCountryName") {
     return {
       ...oldState,

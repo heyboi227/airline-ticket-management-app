@@ -1,20 +1,19 @@
-import { IEditAddress } from "./dto/IEditAddress.dto";
-import { IAddAddress } from "./dto/IAddAddress.dto";
+import { EditAddress } from "./dto/EditAddress.dto";
+import { AddAddress } from "./dto/AddAddress.dto";
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import AddressModel from "./AddressModel.model";
 import CountryModel from "../country/CountryModel.model";
 import UserModel from "./UserModel.model";
 import { DefaultUserAdapterOptions } from "./UserService.service";
 
-export interface IAddressAdapterOptions extends IAdapterOptions {
+export interface AddressAdapterOptions {
   loadUserData: boolean;
   loadCountryData: boolean;
 }
 
 export default class AddressService extends BaseService<
   AddressModel,
-  IAddressAdapterOptions
+  AddressAdapterOptions
 > {
   tableName(): string {
     return "address";
@@ -38,7 +37,7 @@ export default class AddressService extends BaseService<
 
   protected async loadResources(
     address: AddressModel,
-    options: IAddressAdapterOptions
+    options: AddressAdapterOptions
   ): Promise<[UserModel | undefined, CountryModel | undefined]> {
     const loadUserDataPromise = options.loadUserData
       ? this.services.user.getById(address.userId, DefaultUserAdapterOptions)
@@ -59,7 +58,7 @@ export default class AddressService extends BaseService<
   protected assignResources(
     address: AddressModel,
     resources: [UserModel | undefined, CountryModel | undefined],
-    options: IAddressAdapterOptions
+    options: AddressAdapterOptions
   ): AddressModel {
     const [userData, countryData] = resources;
 
@@ -76,7 +75,7 @@ export default class AddressService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IAddressAdapterOptions = {
+    options: AddressAdapterOptions = {
       loadUserData: true,
       loadCountryData: true,
     }
@@ -91,22 +90,22 @@ export default class AddressService extends BaseService<
 
   public async getAllByUserId(
     userId: number,
-    options: IAddressAdapterOptions
+    options: AddressAdapterOptions
   ): Promise<AddressModel[]> {
     return this.getAllByFieldNameAndValue("user_id", userId, options);
   }
 
   public async add(
-    data: IAddAddress,
-    options: IAddressAdapterOptions
+    data: AddAddress,
+    options: AddressAdapterOptions
   ): Promise<AddressModel> {
     return this.baseAdd(data, options);
   }
 
   public async editById(
     addressId: number,
-    data: IEditAddress,
-    options: IAddressAdapterOptions
+    data: EditAddress,
+    options: AddressAdapterOptions
   ): Promise<AddressModel> {
     return this.baseEditById(addressId, data, options);
   }

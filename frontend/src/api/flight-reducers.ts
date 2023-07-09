@@ -1,4 +1,4 @@
-export interface IFlightFormState {
+export interface FlightFormState {
   flightCode: string;
   originAirportId: number;
   destinationAirportId: number;
@@ -85,9 +85,9 @@ export type FlightFormAction =
   | TSetTravelClassPrice;
 
 export default function FlightFormReducer(
-  oldState: IFlightFormState,
+  oldState: FlightFormState,
   action: FlightFormAction
-): IFlightFormState {
+): FlightFormState {
   switch (action.type) {
     case "flightForm/setFlightCode": {
       return {

@@ -1,10 +1,10 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddTimeZoneValidator, IAddTimeZoneDto } from "./dto/IAddTimeZone.dto";
+import { AddTimeZoneValidator, AddTimeZoneDto } from "./dto/AddTimeZone.dto";
 import {
   EditTimeZoneValidator,
-  IEditTimeZoneDto,
-} from "./dto/IEditTimeZone.dto";
+  EditTimeZoneDto,
+} from "./dto/EditTimeZone.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 
@@ -61,7 +61,7 @@ export default class TimeZoneController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddTimeZoneDto;
+    const body = req.body as AddTimeZoneDto;
 
     if (!AddTimeZoneValidator(body)) {
       const safeOutput = escapeHTML(
@@ -91,7 +91,7 @@ export default class TimeZoneController extends BaseController {
 
   editById(req: Request, res: Response) {
     const timeZoneId: number = +req.params?.tzid;
-    const data = req.body as IEditTimeZoneDto;
+    const data = req.body as EditTimeZoneDto;
 
     if (!EditTimeZoneValidator(data)) {
       const safeOutput = escapeHTML(

@@ -1,7 +1,7 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddCountryValidator, IAddCountryDto } from "./dto/IAddCountry.dto";
-import { EditCountryValidator, IEditCountryDto } from "./dto/IEditCountry.dto";
+import { AddCountryValidator, AddCountryDto } from "./dto/AddCountry.dto";
+import { EditCountryValidator, EditCountryDto } from "./dto/EditCountry.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 
@@ -58,7 +58,7 @@ export default class CountryController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddCountryDto;
+    const body = req.body as AddCountryDto;
 
     if (!AddCountryValidator(body)) {
       const safeOutput = escapeHTML(JSON.stringify(AddCountryValidator.errors));
@@ -86,7 +86,7 @@ export default class CountryController extends BaseController {
 
   editById(req: Request, res: Response) {
     const countryId: number = +req.params?.cid;
-    const data = req.body as IEditCountryDto;
+    const data = req.body as EditCountryDto;
 
     if (!EditCountryValidator(data)) {
       const safeOutput = escapeHTML(

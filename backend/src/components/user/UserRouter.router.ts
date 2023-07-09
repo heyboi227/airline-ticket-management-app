@@ -1,13 +1,13 @@
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
-import IRouter from "../../common/IRouter.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
+import Router from "../../common/Router.interface";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 import UserController from "./UserController.controller";
 
-class UserRouter implements IRouter {
+class UserRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const userController: UserController = new UserController(
       resources.services

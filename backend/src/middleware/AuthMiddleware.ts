@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import ITokenData from "../components/auth/dto/ITokenData";
+import TokenData from "../components/auth/dto/TokenData";
 import * as jwt from "jsonwebtoken";
 import { DevConfig } from "../configs";
 import StatusError from "../common/StatusError";
@@ -57,7 +57,7 @@ export default class AuthMiddleware {
     tokenString: string,
     role: "user" | "administrator",
     type: "auth" | "refresh"
-  ): ITokenData {
+  ): TokenData {
     if (tokenString === "") {
       throw new StatusError(400, "No token specified!");
     }
@@ -82,9 +82,9 @@ export default class AuthMiddleware {
         throw new StatusError(401, "Invalid token specified!");
       }
 
-      const originalTokenData = tokenVerification as ITokenData;
+      const originalTokenData = tokenVerification as TokenData;
 
-      const tokenData: ITokenData = {
+      const tokenData: TokenData = {
         role: originalTokenData.role,
         id: originalTokenData.id,
         identity: originalTokenData.identity,

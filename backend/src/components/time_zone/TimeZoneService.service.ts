@@ -1,14 +1,13 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import TimeZoneModel from "./TimeZoneModel.model";
-import { IAddTimeZone } from "./dto/IAddTimeZone.dto";
-import { IEditTimeZone } from "./dto/IEditTimeZone.dto";
+import { AddTimeZone } from "./dto/AddTimeZone.dto";
+import { EditTimeZone } from "./dto/EditTimeZone.dto";
 
-export interface ITimeZoneAdapterOptions extends IAdapterOptions {}
+export interface TimeZoneAdapterOptions {}
 
 export default class TimeZoneService extends BaseService<
   TimeZoneModel,
-  ITimeZoneAdapterOptions
+  TimeZoneAdapterOptions
 > {
   tableName(): string {
     return "time_zone";
@@ -16,7 +15,7 @@ export default class TimeZoneService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    _options: ITimeZoneAdapterOptions
+    _options: TimeZoneAdapterOptions
   ): Promise<TimeZoneModel> {
     const timeZone = new TimeZoneModel();
 
@@ -26,13 +25,13 @@ export default class TimeZoneService extends BaseService<
     return timeZone;
   }
 
-  public async add(data: IAddTimeZone): Promise<TimeZoneModel> {
+  public async add(data: AddTimeZone): Promise<TimeZoneModel> {
     return this.baseAdd(data, {});
   }
 
   public async editById(
     timeZoneId: number,
-    data: IEditTimeZone
+    data: EditTimeZone
   ): Promise<TimeZoneModel> {
     return this.baseEditById(timeZoneId, data, {});
   }

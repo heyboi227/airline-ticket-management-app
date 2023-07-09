@@ -1,24 +1,23 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import StatusError from "../../common/StatusError";
 import AirportModel from "./AirportModel.model";
-import { IAddAirport } from "./dto/IAddAirport.dto";
-import { IEditAirport } from "./dto/IEditAirport.dto";
+import { AddAirport } from "./dto/AddAirport.dto";
+import { EditAirport } from "./dto/EditAirport.dto";
 import * as mysql2 from "mysql2/promise";
 
-export interface IAirportAdapterOptions extends IAdapterOptions {
+export interface AirportAdapterOptions {
   showCountry: boolean;
   showTimeZone: boolean;
 }
 
-export const DefaultAirportAdapterOptions: IAirportAdapterOptions = {
+export const DefaultAirportAdapterOptions: AirportAdapterOptions = {
   showCountry: true,
   showTimeZone: true,
 };
 
 export default class AirportService extends BaseService<
   AirportModel,
-  IAirportAdapterOptions
+  AirportAdapterOptions
 > {
   tableName(): string {
     return "airport";
@@ -26,7 +25,7 @@ export default class AirportService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IAirportAdapterOptions
+    options: AirportAdapterOptions
   ): Promise<AirportModel> {
     const airport = new AirportModel();
 
@@ -54,13 +53,13 @@ export default class AirportService extends BaseService<
     return airport;
   }
 
-  public async add(data: IAddAirport): Promise<AirportModel> {
+  public async add(data: AddAirport): Promise<AirportModel> {
     return this.baseAdd(data, DefaultAirportAdapterOptions);
   }
 
   public async editById(
     airportId: number,
-    data: IEditAirport
+    data: EditAirport
   ): Promise<AirportModel> {
     return this.baseEditById(airportId, data, DefaultAirportAdapterOptions);
   }

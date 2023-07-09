@@ -1,11 +1,11 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddAircraftValidator, IAddAircraftDto } from "./dto/IAddAircraft.dto";
+import { AddAircraftValidator, AddAircraftDto } from "./dto/AddAircraft.dto";
 import {
+  EditAircraft,
+  EditAircraftDto,
   EditAircraftValidator,
-  IEditAircraft,
-  IEditAircraftDto,
-} from "./dto/IEditAircraft.dto";
+} from "./dto/EditAircraft.dto";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
 
@@ -81,7 +81,7 @@ export default class AircraftController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddAircraftDto;
+    const body = req.body as AddAircraftDto;
 
     if (!AddAircraftValidator(body)) {
       const safeOutput = escapeHTML(
@@ -112,7 +112,7 @@ export default class AircraftController extends BaseController {
 
   editById(req: Request, res: Response) {
     const aircraftId: number = +req.params?.aid;
-    const data = req.body as IEditAircraftDto;
+    const data = req.body as EditAircraftDto;
 
     if (!EditAircraftValidator(data)) {
       const safeOutput = escapeHTML(
@@ -121,7 +121,7 @@ export default class AircraftController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditAircraft = {};
+    const serviceData: EditAircraft = {};
 
     if (data.aircraftName !== undefined) {
       serviceData.aircraft_name = data.aircraftName;

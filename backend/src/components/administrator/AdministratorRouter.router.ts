@@ -1,13 +1,13 @@
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
-import IRouter from "../../common/IRouter.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
+import Router from "../../common/Router.interface";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 import AdministratorController from "./AdministratorController.controller";
 
-export default class AdministratorRouter implements IRouter {
+export default class AdministratorRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const administratorController: AdministratorController =
       new AdministratorController(resources.services);

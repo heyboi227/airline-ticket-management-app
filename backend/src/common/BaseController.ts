@@ -1,13 +1,13 @@
-import { IServices } from "./IApplicationResources.interface";
+import { Services } from "./ApplicationResources.interface";
 
 export default abstract class BaseController {
-  private serviceInstances: IServices;
+  private serviceInstances: Services;
 
-  constructor(services: IServices) {
+  constructor(services: Services) {
     this.serviceInstances = services;
   }
 
-  protected get services(): IServices {
+  protected get services(): Services {
     return this.serviceInstances;
   }
 }

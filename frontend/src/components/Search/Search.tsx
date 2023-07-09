@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
 import { debounce } from "lodash";
-import IAirport from "../../models/IAirport.model";
+import Airport from "../../models/Airport.model";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -33,7 +33,7 @@ function AirportInput({
   onValueChange,
 }: CombinedAirportProps) {
   const [query, setQuery] = useState<string>("");
-  const [results, setResults] = useState<IAirport[]>([]);
+  const [results, setResults] = useState<Airport[]>([]);
 
   const fetchResults = async (searchQuery: string) => {
     const response = await api(
@@ -55,9 +55,9 @@ function AirportInput({
     } else {
       setResults([]);
     }
-  }, [query]);
+  }, [debouncedFetchResults, query]);
 
-  const handleClick = (result: IAirport) => {
+  const handleClick = (result: Airport) => {
     setQuery(
       result.city +
         ", " +

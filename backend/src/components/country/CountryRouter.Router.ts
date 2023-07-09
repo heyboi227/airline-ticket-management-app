@@ -1,13 +1,13 @@
-import IRouter from "../../common/IRouter.interface";
+import Router from "../../common/Router.interface";
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
 import CountryController from "./CountryController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 
-export default class CountryRouter implements IRouter {
+export default class CountryRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const countryController: CountryController = new CountryController(
       resources.services

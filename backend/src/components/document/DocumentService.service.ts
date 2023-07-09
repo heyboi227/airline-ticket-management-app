@@ -1,21 +1,20 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import DocumentModel from "./DocumentModel.model";
-import { IAddDocument } from "./dto/IAddDocument.dto";
+import { AddDocument } from "./dto/AddDocument.dto";
 
-export interface IDocumentAdapterOptions extends IAdapterOptions {
+export interface DocumentAdapterOptions {
   showCountry: boolean;
   showUser: boolean;
 }
 
-export const DefaultDocumentAdapterOptions: IDocumentAdapterOptions = {
+export const DefaultDocumentAdapterOptions: DocumentAdapterOptions = {
   showCountry: true,
   showUser: true,
 };
 
 export default class DocumentService extends BaseService<
   DocumentModel,
-  IDocumentAdapterOptions
+  DocumentAdapterOptions
 > {
   tableName(): string {
     return "document";
@@ -23,7 +22,7 @@ export default class DocumentService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: IDocumentAdapterOptions
+    options: DocumentAdapterOptions
   ): Promise<DocumentModel> {
     const document = new DocumentModel();
 
@@ -50,7 +49,7 @@ export default class DocumentService extends BaseService<
     return document;
   }
 
-  public async add(data: IAddDocument): Promise<DocumentModel> {
+  public async add(data: AddDocument): Promise<DocumentModel> {
     return this.baseAdd(data, DefaultDocumentAdapterOptions);
   }
 
@@ -82,7 +81,7 @@ export default class DocumentService extends BaseService<
 
   public async getAllByUserId(
     userId: number,
-    options: IDocumentAdapterOptions = DefaultDocumentAdapterOptions
+    options: DocumentAdapterOptions = DefaultDocumentAdapterOptions
   ): Promise<DocumentModel[]> {
     return this.getAllByFieldNameAndValue("user_id", userId, options);
   }

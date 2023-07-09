@@ -1,6 +1,6 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddTicketValidator, IAddTicketDto } from "./dto/IAddTicket.dto";
+import { AddTicketValidator, AddTicketDto } from "./dto/AddTicket.dto";
 import { DefaultTicketAdapterOptions } from "./TicketService.service";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
@@ -105,7 +105,7 @@ export default class TicketController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddTicketDto;
+    const body = req.body as AddTicketDto;
 
     if (!AddTicketValidator(body)) {
       const safeOutput = escapeHTML(JSON.stringify(AddTicketValidator.errors));

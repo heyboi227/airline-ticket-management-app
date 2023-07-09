@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../../../api/api";
-import IUser from "../../../models/IUser.model";
+import User from "../../../models/User.model";
 import AppStore from "../../../stores/AppStore";
 import UserDetailsEditor from "./UserDetailsEditor";
 import UserPasswordChanger from "./UserPasswordChanger";
@@ -10,7 +10,7 @@ import { faAddressBook } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function UserProfile() {
-  const [user, setUser] = useState<IUser>();
+  const [user, setUser] = useState<User>();
 
   function loadUserData() {
     api("get", "/api/user/" + AppStore.getState().auth.id, "user")

@@ -1,12 +1,12 @@
 import { useEffect, useReducer, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../../api/api";
-import ICountry from "../../../models/ICountry.model";
+import Country from "../../../models/Country.model";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-regular-svg-icons";
-import ITimeZone from "../../../models/ITimeZone.model";
+import TimeZone from "../../../models/TimeZone.model";
 
-interface IAddAirportFormState {
+interface AddAirportFormState {
   airportCode: string;
   airportName: string;
   city: string;
@@ -28,9 +28,9 @@ type AddAirportFormAction =
   | TSetTimeZoneId;
 
 function AddAirportFormReducer(
-  oldState: IAddAirportFormState,
+  oldState: AddAirportFormState,
   action: AddAirportFormAction
-): IAddAirportFormState {
+): AddAirportFormState {
   switch (action.type) {
     case "addAirportForm/setAirportCode": {
       return {
@@ -74,8 +74,8 @@ function AddAirportFormReducer(
 
 export default function AdminAirportAdd() {
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [countries, setCountries] = useState<ICountry[]>([]);
-  const [timeZones, setTimeZones] = useState<ITimeZone[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [timeZones, setTimeZones] = useState<TimeZone[]>([]);
 
   const navigate = useNavigate();
 

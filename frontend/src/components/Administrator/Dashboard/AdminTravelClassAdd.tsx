@@ -4,7 +4,7 @@ import { api } from "../../../api/api";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSave } from "@fortawesome/free-regular-svg-icons";
 
-interface IAddTravelClassFormState {
+interface AddTravelClassFormState {
   travelClassName: "Business" | "Economy";
   travelClassSubname: string;
 }
@@ -22,9 +22,9 @@ type TSetTravelClassSubname = {
 type AddTravelClassFormAction = TSetTravelClassName | TSetTravelClassSubname;
 
 function AddTravelClassFormReducer(
-  oldState: IAddTravelClassFormState,
+  oldState: AddTravelClassFormState,
   action: AddTravelClassFormAction
-): IAddTravelClassFormState {
+): AddTravelClassFormState {
   if (action.type === "addTravelClassForm/setTravelClassName") {
     return {
       ...oldState,

@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import IAdministrator from "../../../models/IAdministrator.model";
+import Administrator from "../../../models/Administrator.model";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSquare, faSquareCheck } from "@fortawesome/free-regular-svg-icons";
 import "./AdminAdministratorList.sass";
 
-interface IAdminAdministratorRowProperties {
-  administrator: IAdministrator;
+interface AdminAdministratorRowProperties {
+  administrator: Administrator;
   loadAdministrators: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
+function AdminAdministratorRow(props: AdminAdministratorRowProperties) {
   const [editPasswordVisible, setEditPasswordVisible] =
     useState<boolean>(false);
   const [newPassword, setNewPassword] = useState<string>("");
@@ -130,7 +130,7 @@ function AdminAdministratorRow(props: IAdminAdministratorRowProperties) {
 }
 
 export default function AdminAdministratorList() {
-  const [administrators, setAdministrators] = useState<IAdministrator[]>([]);
+  const [administrators, setAdministrators] = useState<Administrator[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAdministrators() {

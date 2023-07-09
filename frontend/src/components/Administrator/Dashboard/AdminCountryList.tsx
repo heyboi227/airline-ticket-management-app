@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import ICountry from "../../../models/ICountry.model";
+import Country from "../../../models/Country.model";
 import "./AdminList.scss";
 
-interface IAdminCountryRowProperties {
-  country: ICountry;
+interface AdminCountryRowProperties {
+  country: Country;
   loadCountry: () => void;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminCountryRow(props: IAdminCountryRowProperties) {
+function AdminCountryRow(props: AdminCountryRowProperties) {
   const [editCountryNameVisible, setEditCountryNameVisible] =
     useState<boolean>(false);
 
@@ -90,7 +90,7 @@ function AdminCountryRow(props: IAdminCountryRowProperties) {
 }
 
 export default function AdminCountryList() {
-  const [country, setCountry] = useState<ICountry[]>([]);
+  const [country, setCountry] = useState<Country[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadCountry() {

@@ -2,27 +2,27 @@ import { faSave, faSquareMinus } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useState } from "react";
 import { api } from "../../../api/api";
-import IUser from "../../../models/IUser.model";
+import User from "../../../models/User.model";
 import { motion } from "framer-motion";
 
-export interface IUserPasswordChangerProperties {
-  user: IUser;
-  onPasswordChange: (user: IUser) => void;
+export interface UserPasswordChangerProperties {
+  user: User;
+  onPasswordChange: (user: User) => void;
 }
 
-interface IInputData {
+interface InputData {
   value: string;
   isValid: boolean;
 }
 
 export default function UserPasswordChanger(
-  props: IUserPasswordChangerProperties
+  props: UserPasswordChangerProperties
 ) {
-  const [newPassword, setNewPassword] = useState<IInputData>({
+  const [newPassword, setNewPassword] = useState<InputData>({
     value: "",
     isValid: true,
   });
-  const [confirmNewPassword, setConfirmNewPassword] = useState<IInputData>({
+  const [confirmNewPassword, setConfirmNewPassword] = useState<InputData>({
     value: "",
     isValid: true,
   });

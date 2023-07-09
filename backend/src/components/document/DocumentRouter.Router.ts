@@ -1,13 +1,13 @@
-import IRouter from "../../common/IRouter.interface";
+import Router from "../../common/Router.interface";
 import * as express from "express";
-import IApplicationResources from "../../common/IApplicationResources.interface";
+import ApplicationResources from "../../common/ApplicationResources.interface";
 import DocumentController from "./DocumentController.controller";
 import AuthMiddleware from "../../middleware/AuthMiddleware";
 
-export default class DocumentRouter implements IRouter {
+export default class DocumentRouter implements Router {
   public setupRoutes(
     application: express.Application,
-    resources: IApplicationResources
+    resources: ApplicationResources
   ) {
     const documentController: DocumentController = new DocumentController(
       resources.services

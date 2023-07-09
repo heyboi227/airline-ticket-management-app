@@ -1,9 +1,9 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 import DocumentModel from "../document/DocumentModel.model";
 import FlightModel from "../flight/FlightModel.model";
 import UserModel from "../user/UserModel.model";
 
-export default class TicketModel implements IModel {
+export default class TicketModel implements Model {
   ticketId: number;
   ticketNumber: string;
   ticketHolderName: string;

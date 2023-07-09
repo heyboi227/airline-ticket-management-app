@@ -1,17 +1,16 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import TicketModel from "./TicketModel.model";
-import { IAddTicket } from "./dto/IAddTicket.dto";
+import { AddTicket } from "./dto/AddTicket.dto";
 import { DefaultDocumentAdapterOptions } from "../document/DocumentService.service";
 import { DefaultFlightAdapterOptions } from "../flight/FlightService.service";
 
-export interface ITicketAdapterOptions extends IAdapterOptions {
+export interface TicketAdapterOptions {
   showDocument: boolean;
   showUser: boolean;
   showFlight: boolean;
 }
 
-export const DefaultTicketAdapterOptions: ITicketAdapterOptions = {
+export const DefaultTicketAdapterOptions: TicketAdapterOptions = {
   showDocument: true,
   showUser: true,
   showFlight: true,
@@ -19,7 +18,7 @@ export const DefaultTicketAdapterOptions: ITicketAdapterOptions = {
 
 export default class TicketService extends BaseService<
   TicketModel,
-  ITicketAdapterOptions
+  TicketAdapterOptions
 > {
   tableName(): string {
     return "ticket";
@@ -27,7 +26,7 @@ export default class TicketService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    options: ITicketAdapterOptions
+    options: TicketAdapterOptions
   ): Promise<TicketModel> {
     const ticket = new TicketModel();
 
@@ -65,7 +64,7 @@ export default class TicketService extends BaseService<
     return ticket;
   }
 
-  public async add(data: IAddTicket): Promise<TicketModel> {
+  public async add(data: AddTicket): Promise<TicketModel> {
     return this.baseAdd(data, DefaultTicketAdapterOptions);
   }
 
@@ -93,14 +92,14 @@ export default class TicketService extends BaseService<
 
   public async getAllByUserId(
     userId: number,
-    options: ITicketAdapterOptions = DefaultTicketAdapterOptions
+    options: TicketAdapterOptions = DefaultTicketAdapterOptions
   ): Promise<TicketModel[]> {
     return this.getAllByFieldNameAndValue("user_id", userId, options);
   }
 
   public async getAllByFlightId(
     flightId: number,
-    options: ITicketAdapterOptions = DefaultTicketAdapterOptions
+    options: TicketAdapterOptions = DefaultTicketAdapterOptions
   ): Promise<TicketModel[]> {
     return this.getAllByFieldNameAndValue("flight_id", flightId, options);
   }

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
-import IAirport from "../../../models/IAirport.model";
-import ICountry from "../../../models/ICountry.model";
+import Airport from "../../../models/Airport.model";
+import Country from "../../../models/Country.model";
 import "./AdminList.scss";
-import ITimeZone from "../../../models/ITimeZone.model";
+import TimeZone from "../../../models/TimeZone.model";
 import ConfirmAction from "../../../helpers/ConfirmAction";
 
-interface IAdminAirportRowProperties {
-  airport: IAirport;
+interface AdminAirportRowProperties {
+  airport: Airport;
   loadAirports: () => void;
   errorMessage: string;
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAirportRow(props: IAdminAirportRowProperties) {
+function AdminAirportRow(props: AdminAirportRowProperties) {
   const [editAirportCodeVisible, setEditAirportCodeVisible] =
     useState<boolean>(false);
   const [editAirportNameVisible, setEditAirportNameVisible] =
@@ -38,8 +38,8 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
     props.airport.timeZoneId
   );
 
-  const [countries, setCountries] = useState<ICountry[]>([]);
-  const [timeZones, setTimeZones] = useState<ITimeZone[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [timeZones, setTimeZones] = useState<TimeZone[]>([]);
 
   const [airportDeleteRequested, setAirportDeleteRequested] =
     useState<boolean>(false);
@@ -455,7 +455,7 @@ function AdminAirportRow(props: IAdminAirportRowProperties) {
 }
 
 export default function AdminAirportList() {
-  const [airports, setAirports] = useState<IAirport[]>([]);
+  const [airports, setAirports] = useState<Airport[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   function loadAirports() {

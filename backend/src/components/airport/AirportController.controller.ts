@@ -1,11 +1,11 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddAirportValidator, IAddAirportDto } from "./dto/IAddAirport.dto";
+import { AddAirportValidator, AddAirportDto } from "./dto/AddAirport.dto";
 import {
   EditAirportValidator,
-  IEditAirport,
-  IEditAirportDto,
-} from "./dto/IEditAirport.dto";
+  EditAirport,
+  EditAirportDto,
+} from "./dto/EditAirport.dto";
 import { DefaultAirportAdapterOptions } from "./AirportService.service";
 import StatusError from "../../common/StatusError";
 import escapeHTML = require("escape-html");
@@ -133,7 +133,7 @@ export default class AirportController extends BaseController {
   }
 
   add(req: Request, res: Response) {
-    const body = req.body as IAddAirportDto;
+    const body = req.body as AddAirportDto;
 
     if (!AddAirportValidator(body)) {
       const safeOutput = escapeHTML(JSON.stringify(AddAirportValidator.errors));
@@ -177,7 +177,7 @@ export default class AirportController extends BaseController {
 
   editById(req: Request, res: Response) {
     const airportId: number = +req.params?.aid;
-    const data = req.body as IEditAirportDto;
+    const data = req.body as EditAirportDto;
 
     if (!EditAirportValidator(data)) {
       const safeOutput = escapeHTML(
@@ -186,7 +186,7 @@ export default class AirportController extends BaseController {
       return res.status(400).send(safeOutput);
     }
 
-    const serviceData: IEditAirport = {};
+    const serviceData: EditAirport = {};
 
     if (data.airportCode !== undefined) {
       serviceData.airport_code = data.airportCode;

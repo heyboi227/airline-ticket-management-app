@@ -1,7 +1,7 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 import AddressModel from "./AddressModel.model";
 
-export default class UserModel implements IModel {
+export default class UserModel implements Model {
   userId: number;
   email: string;
   passwordHash: string | null;

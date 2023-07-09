@@ -6,6 +6,7 @@ import { srLatn } from "date-fns/locale";
 import DocumentModel from "../../../../../backend/dist/components/document/DocumentModel.model";
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
+import { Random, MersenneTwister19937 } from "random-js";
 
 export default function OrderPage() {
   const location = useLocation();
@@ -24,6 +25,8 @@ export default function OrderPage() {
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const random = new Random(MersenneTwister19937.autoSeed());
 
   function loadUserDocuments() {
     if (AppStore.getState().auth.id !== 0) {
@@ -46,104 +49,113 @@ export default function OrderPage() {
   useEffect(loadUserDocuments, []);
 
   return (
-    <div>
-      <span>{errorMessage}</span>
-      Departure flight : {flights.departFlight.flightCode}
-      <br></br>Return flight : {flights.returnFlight.flightCode}
-      <br></br>
-      Total price: {flights.totalPrice}
-      <div className="col col-xs-12 col-md-4 p-5">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            // doOrder();
-          }}
-        >
-          <div className="form-group mb-3">
-            <div className="input-group">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Passenger's first name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group mb-3">
-            <div className="input-group">
-              <input
-                className="form-control"
-                type="text"
-                placeholder="Passenger's last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="form-group mb-3">
-            <label>Date of birth</label>
-            <LocalizationProvider
-              dateAdapter={AdapterDateFns}
-              adapterLocale={srLatn}
-            >
-              <DateTimePicker
-                label={"Pick a date and time"}
-                value={dateOfBirth}
-                onChange={(e) => {
-                  if (e) setDateOfBirth(e);
-                }}
-                className="form-control"
-              ></DateTimePicker>
-            </LocalizationProvider>
-          </div>
-          {!loggedIn && (
+    <>
+      <div className="row">
+        <div className="col col-xs-12 col-md-4 p-5">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+            }}
+          >
             <div className="form-group mb-3">
-              <div className="input-group">
-                <select
-                  className="form-control"
-                  placeholder="Document type"
-                  value={documentType}
-                  onChange={(e) => setDocumentType(e.target.value)}
-                >
-                  <option value={""}>Choose a document type</option>
-                  <option value={"National ID"}>National ID</option>
-                  <option value={"Passport"}>Passport</option>
-                </select>
-              </div>
               <div className="input-group">
                 <input
                   className="form-control"
                   type="text"
-                  placeholder="Document number"
-                  value={documentNumber}
-                  onChange={(e) => setDocumentNumber(e.target.value)}
+                  placeholder="Passenger's first name"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
             </div>
-          )}
-          {loggedIn && (
             <div className="form-group mb-3">
               <div className="input-group">
-                <select
-                  className="form-select"
-                  value={userDocumentId}
-                  onChange={(e) => setUserDocumentId(+e.target.value)}
-                >
-                  {userDocuments.map((document) => (
-                    <option
-                      value={document.documentId}
-                      key={document.documentId}
-                    >{`${document.documentType} - ${document.documentNumber} (${
-                      document.country!.countryName
-                    })`}</option>
-                  ))}
-                </select>
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Passenger's last name"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                />
               </div>
             </div>
-          )}
-        </form>
+            <div className="form-group mb-3">
+              <label>Date of birth</label>
+              <LocalizationProvider
+                dateAdapter={AdapterDateFns}
+                adapterLocale={srLatn}
+              >
+                <DateTimePicker
+                  label={"Pick a date and time"}
+                  value={dateOfBirth}
+                  onChange={(e) => {
+                    if (e) setDateOfBirth(e);
+                  }}
+                  className="form-control"
+                ></DateTimePicker>
+              </LocalizationProvider>
+            </div>
+            {!loggedIn && (
+              <div className="form-group mb-3">
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    placeholder="Document type"
+                    value={documentType}
+                    onChange={(e) => setDocumentType(e.target.value)}
+                  >
+                    <option value={""}>Choose a document type</option>
+                    <option value={"National ID"}>National ID</option>
+                    <option value={"Passport"}>Passport</option>
+                  </select>
+                </div>
+                <div className="input-group">
+                  <input
+                    className="form-control"
+                    type="text"
+                    placeholder="Document number"
+                    value={documentNumber}
+                    onChange={(e) => setDocumentNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+            {loggedIn && (
+              <div className="form-group mb-3">
+                <div className="input-group">
+                  <select
+                    className="form-select"
+                    value={userDocumentId}
+                    onChange={(e) => setUserDocumentId(+e.target.value)}
+                  >
+                    {userDocuments.map((document) => (
+                      <option
+                        value={document.documentId}
+                        key={document.documentId}
+                      >{`${document.documentType} - ${
+                        document.documentNumber
+                      } (${document.country!.countryName})`}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+          </form>
+        </div>
+        <div className="col col-xs-12 col-md-4 p-5">
+          <span>
+            Ticket price:{" "}
+            {flights.totalPrice -
+              random.integer(
+                flights.totalPrice * 0.05,
+                flights.totalPrice * 0.1
+              )}{" "}
+            RSD
+          </span>
+          <span>Total price: {flights.totalPrice} RSD</span>
+        </div>
       </div>
-    </div>
+      <span>{errorMessage}</span>
+    </>
   );
 }

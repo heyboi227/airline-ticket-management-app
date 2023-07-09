@@ -1,6 +1,6 @@
-import IModel from "../../common/IModel.interface";
+import Model from "../../common/Model.interface";
 
-export default class AdministratorModel implements IModel {
+export default class AdministratorModel implements Model {
   administratorId: number;
   username: string;
   passwordHash?: string;

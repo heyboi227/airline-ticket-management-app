@@ -1,16 +1,15 @@
 import BaseService from "../../common/BaseService";
-import IAdapterOptions from "../../common/IAdapterOptions.interface";
 import StatusError from "../../common/StatusError";
-import { IFlightTravelClass } from "../flight/FlightModel.model";
-import IAddTravelClass from "./dto/IAddTravelClass.dto";
-import IEditTravelClass from "./dto/IEditTravelClass.dto";
+import { FlightTravelClass } from "../flight/FlightModel.model";
+import AddTravelClass from "./dto/AddTravelClass.dto";
+import EditTravelClass from "./dto/EditTravelClass.dto";
 import TravelClassModel from "./TravelClassModel.model";
 
-export interface ITravelClassAdapterOptions extends IAdapterOptions {}
+export interface TravelClassAdapterOptions {}
 
 export default class TravelClassService extends BaseService<
   TravelClassModel,
-  ITravelClassAdapterOptions
+  TravelClassAdapterOptions
 > {
   tableName(): string {
     return "travel_class";
@@ -18,7 +17,7 @@ export default class TravelClassService extends BaseService<
 
   protected async adaptToModel(
     data: any,
-    _options: ITravelClassAdapterOptions
+    _options: TravelClassAdapterOptions
   ): Promise<TravelClassModel> {
     const travelClass = new TravelClassModel();
 
@@ -32,7 +31,7 @@ export default class TravelClassService extends BaseService<
   public async getAllByField(
     fieldName: string,
     fieldValue: number
-  ): Promise<IFlightTravelClass[]> {
+  ): Promise<FlightTravelClass[]> {
     return new Promise((resolve, reject) => {
       this.getAllFromTableByFieldNameAndValue<{
         flight_travel_class_id: number;
@@ -46,7 +45,7 @@ export default class TravelClassService extends BaseService<
             return resolve([]);
           }
 
-          const travelClasses: IFlightTravelClass[] = await Promise.all(
+          const travelClasses: FlightTravelClass[] = await Promise.all(
             result.map(async (row) => {
               const travelClass = await this.getById(row.travel_class_id, {});
 
@@ -72,13 +71,13 @@ export default class TravelClassService extends BaseService<
 
   public async getAllByFlightId(
     flightId: number
-  ): Promise<IFlightTravelClass[]> {
+  ): Promise<FlightTravelClass[]> {
     return this.getAllByField("flight_id", flightId);
   }
 
   public async getAllByTravelClassId(
     travelClassId: number
-  ): Promise<IFlightTravelClass[]> {
+  ): Promise<FlightTravelClass[]> {
     return this.getAllByField("travel_class_id", travelClassId);
   }
 
@@ -138,13 +137,13 @@ export default class TravelClassService extends BaseService<
     });
   }
 
-  public async add(data: IAddTravelClass): Promise<TravelClassModel> {
+  public async add(data: AddTravelClass): Promise<TravelClassModel> {
     return this.baseAdd(data, {});
   }
 
   public async editById(
     travelClassId: number,
-    data: IEditTravelClass
+    data: EditTravelClass
   ): Promise<TravelClassModel> {
     return this.baseEditById(travelClassId, data, {});
   }

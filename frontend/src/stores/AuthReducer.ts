@@ -1,4 +1,4 @@
-export interface IAuthStoreData {
+export interface AuthStoreData {
   role: "visitor" | "user" | "administrator";
   identity: string;
   id: number;
@@ -6,7 +6,7 @@ export interface IAuthStoreData {
   refreshToken: string;
 }
 
-export const DefaultAuthStoreData: IAuthStoreData = {
+export const DefaultAuthStoreData: AuthStoreData = {
   role: "visitor",
   identity: "",
   id: 0,
@@ -14,7 +14,7 @@ export const DefaultAuthStoreData: IAuthStoreData = {
   refreshToken: "",
 };
 
-let InitialAuthStoreData: IAuthStoreData = DefaultAuthStoreData;
+let InitialAuthStoreData: AuthStoreData = DefaultAuthStoreData;
 
 type TUpdateRole = {
   type: "auth.update";
@@ -32,15 +32,15 @@ type TReset = { type: "auth.reset" };
 type TAuthStoreAction = TUpdateRole | TUpdateId | TUpdateStrings | TReset;
 
 export function AuthStoreReducer(
-  state: IAuthStoreData = InitialAuthStoreData,
+  state: AuthStoreData = InitialAuthStoreData,
   action: TAuthStoreAction
-): IAuthStoreData {
+): AuthStoreData {
   switch (action.type) {
     case "auth.update":
-      return { ...state, [action.key]: action.value } as IAuthStoreData;
+      return { ...state, [action.key]: action.value } as AuthStoreData;
     case "auth.reset":
       return { ...DefaultAuthStoreData };
     default:
-      return { ...state } as IAuthStoreData;
+      return { ...state } as AuthStoreData;
   }
 }
