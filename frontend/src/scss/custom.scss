@@ -6,6 +6,7 @@
 $primary: #0718c4;
 body {
   font-family: "Hammersmith One Regular", sans-serif !important;
+  overflow-x: hidden;
 }
 
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";

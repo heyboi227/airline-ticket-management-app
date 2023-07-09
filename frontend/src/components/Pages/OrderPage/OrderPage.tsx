@@ -1,17 +1,60 @@
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { DateTimePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
-import DocumentModel from "../../../../../backend/dist/components/document/DocumentModel.model";
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
 import { Random, MersenneTwister19937 } from "random-js";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
+import Flight from "../../../models/Flight.model";
+import Country from "../../../models/Country.model";
+import Document from "../../../models/Document.model";
 
 export default function OrderPage() {
-  const location = useLocation();
-  const flights = location.state;
+  const flights = {
+    departFlight: {
+      flightId: 1,
+      flightCode: "AS150",
+      departureDateAndTime: "2023-07-09T12:45:00Z",
+      arrivalDateAndTime: "2023-07-09T22:45:00Z",
+      originAirportId: 3,
+      destinationAirportId: 6,
+      travelClasses: [
+        {
+          travelClass: {
+            travelClassId: 2,
+            travelClassName: "Economy",
+            travelClassSubname: "Economy +",
+          },
+          isActive: true,
+          price: 25225.36,
+        },
+      ],
+      aircraftId: 4,
+    } as Flight,
+    returnFlight: {
+      flightId: 2,
+      flightCode: "AS151",
+      departureDateAndTime: "2023-07-10T00:15:00Z",
+      arrivalDateAndTime: "2023-07-10T08:30:00Z",
+      originAirportId: 6,
+      destinationAirportId: 3,
+      travelClasses: [
+        {
+          travelClass: {
+            travelClassId: 2,
+            travelClassName: "Economy",
+            travelClassSubname: "Economy +",
+          },
+          isActive: true,
+          price: 25225.36,
+        },
+      ],
+      aircraftId: 4,
+    } as Flight,
+    totalPrice: 50450.72,
+  };
 
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -20,18 +63,32 @@ export default function OrderPage() {
 
   const [documentType, setDocumentType] = useState<string>("");
   const [documentNumber, setDocumentNumber] = useState<string>("");
+  const [documentCountryId, setDocumentCountryId] = useState<number>(0);
 
-  const [userDocuments, setUserDocuments] = useState<DocumentModel[]>([]);
+  const [gender, setGender] = useState<"Male" | "Female">("Male");
+
+  const [userDocuments, setUserDocuments] = useState<Document[]>([]);
+  const [countries, setCountries] = useState<Country[]>([]);
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const random = new Random(MersenneTwister19937.autoSeed());
-  const randomPrice = random.integer(
-    flights.totalPrice * 0.2,
-    flights.totalPrice * 0.6
-  );
+  const [randomPrice, setRandomPrice] = useState<number>(0);
+
+  function loadCountries() {
+    api("get", "/api/country", "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        setCountries(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
 
   function loadUserDocuments() {
     if (AppStore.getState().auth.id !== 0) {
@@ -51,11 +108,19 @@ export default function OrderPage() {
     }
   }
 
-  useEffect(loadUserDocuments, []);
+  useEffect(loadCountries, []);
+
+  useEffect(() => {
+    const random = new Random(MersenneTwister19937.autoSeed());
+    setRandomPrice(
+      random.integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6)
+    );
+    loadUserDocuments();
+  }, [flights.totalPrice]);
 
   return (
     <>
-      <div className="row">
+      <div className="row offset-md-2 w-100">
         <div className="col col-xs-12 col-md-4 p-5">
           <form
             onSubmit={(e) => {
@@ -90,14 +155,14 @@ export default function OrderPage() {
                 dateAdapter={AdapterDateFns}
                 adapterLocale={srLatn}
               >
-                <DateTimePicker
-                  label={"Pick a date and time"}
+                <DatePicker
+                  label={"Pick a date"}
                   value={dateOfBirth}
                   onChange={(e) => {
                     if (e) setDateOfBirth(e);
                   }}
                   className="form-control"
-                ></DateTimePicker>
+                ></DatePicker>
               </LocalizationProvider>
             </div>
             {!loggedIn && (
@@ -123,6 +188,47 @@ export default function OrderPage() {
                     onChange={(e) => setDocumentNumber(e.target.value)}
                   />
                 </div>
+                <div className="input-group">
+                  <select
+                    className="form-control"
+                    placeholder="Issuing country"
+                    value={documentCountryId}
+                    onChange={(e) => setDocumentCountryId(+e.target.value)}
+                  >
+                    <option value={""}>Choose the issuing country</option>
+                    {countries.map((country) => (
+                      <option key={country.countryId} value={country.countryId}>
+                        {country.countryName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <h6 className="mt-3">Gender</h6>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="male"
+                    onChange={() => setGender("Male")}
+                  />
+                  <label className="form-check-label" htmlFor="male">
+                    Male
+                  </label>
+                </div>
+                <div className="form-check form-check-inline">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    defaultChecked
+                    onChange={() => setGender("Female")}
+                  />
+                  <label className="form-check-label" htmlFor="female">
+                    Female
+                  </label>
+                </div>
               </div>
             )}
             {loggedIn && (
@@ -145,6 +251,7 @@ export default function OrderPage() {
                 </div>
               </div>
             )}
+            <button className="btn btn-primary">Billing information</button>
           </form>
         </div>
         <div className="col col-xs-12 col-md-4 p-5">
