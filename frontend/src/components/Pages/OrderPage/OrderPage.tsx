@@ -10,6 +10,7 @@ import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 import Flight from "../../../models/Flight.model";
 import Country from "../../../models/Country.model";
 import Document from "../../../models/Document.model";
+import User from "../../../models/User.model";
 
 export default function OrderPage() {
   const flights = {
@@ -90,32 +91,53 @@ export default function OrderPage() {
       });
   }
 
-  function loadUserDocuments() {
-    if (AppStore.getState().auth.id !== 0) {
-      setLoggedIn(true);
+  function loadCurrentUser() {
+    api("get", "/api/user/" + AppStore.getState().auth.id, "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
 
-      api("get", "/api/document/user/" + AppStore.getState().auth.id, "user")
-        .then((res) => {
-          if (res.status === "error") {
-            return setErrorMessage(res.data + "");
-          }
-
-          setUserDocuments(res.data);
-        })
-        .catch((error) => {
-          console.error("An error occured: ", error);
-        });
-    }
+        const userData = res.data as User;
+        setFirstName(userData.forename);
+        setLastName(userData.surname);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
   }
 
-  useEffect(loadCountries, []);
+  function loadUserDocuments() {
+    api("get", "/api/document/user/" + AppStore.getState().auth.id, "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        setUserDocuments(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
+  useEffect(() => {
+    if (AppStore.getState().auth.id !== 0) setLoggedIn(true);
+    loadCountries();
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      loadCurrentUser();
+      loadUserDocuments();
+    }
+  }, [loggedIn]);
 
   useEffect(() => {
     const random = new Random(MersenneTwister19937.autoSeed());
     setRandomPrice(
       random.integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6)
     );
-    loadUserDocuments();
   }, [flights.totalPrice]);
 
   return (
@@ -133,7 +155,9 @@ export default function OrderPage() {
                   className="form-control"
                   type="text"
                   placeholder="Passenger's first name"
-                  value={firstName}
+                  value={
+                    loggedIn ? AppStore.getState().auth.identity : firstName
+                  }
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
@@ -210,6 +234,8 @@ export default function OrderPage() {
                     type="radio"
                     name="gender"
                     id="male"
+                    defaultChecked
+                    value={gender}
                     onChange={() => setGender("Male")}
                   />
                   <label className="form-check-label" htmlFor="male">
@@ -222,7 +248,7 @@ export default function OrderPage() {
                     type="radio"
                     name="gender"
                     id="female"
-                    defaultChecked
+                    value={gender}
                     onChange={() => setGender("Female")}
                   />
                   <label className="form-check-label" htmlFor="female">

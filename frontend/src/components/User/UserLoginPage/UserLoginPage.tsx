@@ -17,7 +17,7 @@ export default function UserLoginPage() {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            doLogin("user", password, setError, navigate, email);
+            doLogin("user", password, setError, navigate, undefined, email);
           }}
         >
           <div className="form-group mb-3">
