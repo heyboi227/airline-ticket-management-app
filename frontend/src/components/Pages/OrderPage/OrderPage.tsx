@@ -143,21 +143,20 @@ export default function OrderPage() {
   return (
     <>
       <div className="row offset-md-2 w-100">
-        <div className="col col-xs-12 col-md-4 p-5">
+        <div className="col col-xs-12 col-md-4 p-5 bg-light-subtle">
           <form
             onSubmit={(e) => {
               e.preventDefault();
             }}
           >
+            <h2>Enter passenger details</h2>
             <div className="form-group mb-3">
               <div className="input-group">
                 <input
                   className="form-control"
                   type="text"
                   placeholder="Passenger's first name"
-                  value={
-                    loggedIn ? AppStore.getState().auth.identity : firstName
-                  }
+                  value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
               </div>
@@ -189,7 +188,7 @@ export default function OrderPage() {
                 ></DatePicker>
               </LocalizationProvider>
             </div>
-            {!loggedIn && (
+            {(!loggedIn || (loggedIn && userDocuments.length === 0)) && (
               <div className="form-group mb-3">
                 <div className="input-group">
                   <select
@@ -227,37 +226,9 @@ export default function OrderPage() {
                     ))}
                   </select>
                 </div>
-                <h6 className="mt-3">Gender</h6>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="gender"
-                    id="male"
-                    defaultChecked
-                    value={gender}
-                    onChange={() => setGender("Male")}
-                  />
-                  <label className="form-check-label" htmlFor="male">
-                    Male
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="gender"
-                    id="female"
-                    value={gender}
-                    onChange={() => setGender("Female")}
-                  />
-                  <label className="form-check-label" htmlFor="female">
-                    Female
-                  </label>
-                </div>
               </div>
             )}
-            {loggedIn && (
+            {loggedIn && userDocuments.length !== 0 && (
               <div className="form-group mb-3">
                 <div className="input-group">
                   <select
@@ -265,6 +236,7 @@ export default function OrderPage() {
                     value={userDocumentId}
                     onChange={(e) => setUserDocumentId(+e.target.value)}
                   >
+                    <option value={""}>Choose a document</option>
                     {userDocuments.map((document) => (
                       <option
                         value={document.documentId}
@@ -277,6 +249,36 @@ export default function OrderPage() {
                 </div>
               </div>
             )}
+            <div className="form-group mb-3">
+              <h6 className="mt-3">Gender</h6>
+              <div className="form-check form-check-inline">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="gender"
+                  id="male"
+                  defaultChecked
+                  value={gender}
+                  onChange={() => setGender("Male")}
+                />
+                <label className="form-check-label" htmlFor="male">
+                  Male
+                </label>
+              </div>
+              <div className="form-check form-check-inline">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="gender"
+                  id="female"
+                  value={gender}
+                  onChange={() => setGender("Female")}
+                />
+                <label className="form-check-label" htmlFor="female">
+                  Female
+                </label>
+              </div>
+            </div>
             <button className="btn btn-primary">Billing information</button>
           </form>
         </div>

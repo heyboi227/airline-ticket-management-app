@@ -1,7 +1,6 @@
 import { useState } from "react";
 import MenuAdministrator from "./MenuAdministrator";
-import MenuUser from "./MenuUser";
-import MenuVisitor from "./MenuVisitor";
+import MenuNonAdministrator from "./MenuNonAdministrator";
 import AppStore from "../../stores/AppStore";
 
 export default function Menu() {
@@ -15,8 +14,7 @@ export default function Menu() {
 
   return (
     <>
-      {role === "visitor" && <MenuVisitor />}
-      {role === "user" && <MenuUser />}
+      {role !== "administrator" && <MenuNonAdministrator />}
       {role === "administrator" && <MenuAdministrator />}
     </>
   );

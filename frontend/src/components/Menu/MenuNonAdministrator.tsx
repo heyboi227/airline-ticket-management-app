@@ -5,7 +5,7 @@ import AppStore from "../../stores/AppStore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faWindowClose } from "@fortawesome/free-regular-svg-icons";
 
-export default function MenuVisitor() {
+export default function MenuNonAdministrator() {
   const [role, setRole] = useState<
     "visitor" | "user" | "activeUser" | "administrator"
   >(AppStore.getState().auth.role);
@@ -27,12 +27,6 @@ export default function MenuVisitor() {
         <img src={Logo} alt="The logo of Air Soko" width="150"></img>
       </Link>
 
-      {role === "user" && (
-        <Link className="navbar-brand" to="/">
-          Good day, {AppStore.getState().auth.identity}
-        </Link>
-      )}
-
       <button
         className="navbar-toggler"
         type="button"
@@ -50,25 +44,36 @@ export default function MenuVisitor() {
         id="navbarNavAltMarkup"
       >
         <div className="navbar-nav">
-          <Link className="nav-item nav-link text-light" to="/auth/user/login">
-            Login
-          </Link>
-
-          <Link
-            className="nav-item nav-link text-light"
-            to="/auth/user/register"
-          >
-            Register
-          </Link>
+          {role !== "user" && (
+            <>
+              <Link
+                className="nav-item nav-link text-light"
+                to="/auth/user/login"
+              >
+                Login
+              </Link>
+              <Link
+                className="nav-item nav-link text-light"
+                to="/auth/user/register"
+              >
+                Register
+              </Link>
+            </>
+          )}
 
           {role === "user" && (
-            <div
-              className="nav-item nav-link"
-              style={{ cursor: "pointer" }}
-              onClick={() => doUserLogout()}
-            >
-              <FontAwesomeIcon icon={faWindowClose} /> Logout
-            </div>
+            <>
+              <Link className="nav-item nav-link text-light" to="/">
+                {AppStore.getState().auth.identity}
+              </Link>
+              <div
+                className="nav-item nav-link text-light"
+                style={{ cursor: "pointer" }}
+                onClick={() => doUserLogout()}
+              >
+                <FontAwesomeIcon icon={faWindowClose} /> Logout
+              </div>
+            </>
           )}
         </div>
       </div>
