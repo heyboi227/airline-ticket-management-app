@@ -12,7 +12,7 @@ export default function Footer() {
   return (
     <div className="container-fluid bg-dark text-white">
       <div className="container d-flex justify-content-center">
-        <div className="row w-75 mt-4 mb-4">
+        <div className="row w-100 mt-4 mb-4">
           <div className="col">
             <h1>Company</h1>
             <ul className="list-unstyled">

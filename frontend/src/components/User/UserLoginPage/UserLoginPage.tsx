@@ -12,7 +12,7 @@ export default function UserLoginPage() {
 
   return (
     <MotionDiv>
-      <div className="col col-xs-12 col-md-6 offset-md-3 p-5">
+      <div className="col col-xs-12 col-md-6 offset-md-3 p-5 d-flex flex-column justify-content-center overflow-auto">
         <h1 className="h5 mb-3">Log into your user account</h1>
         <form
           onSubmit={(e) => {

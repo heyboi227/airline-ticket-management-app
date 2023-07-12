@@ -199,8 +199,11 @@ export default function Search() {
   };
 
   return (
-    <div className="container pt-5 pb-5 d-flex justify-content-center align-items-center search">
-      <div className="col-8 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
+    <div
+      className="w-100 d-flex justify-content-center align-items-center search"
+      style={{ padding: "7vw 0" }}
+    >
+      <div className="col-6 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
         <div
           className="row form-group mt-3 mb-3 text-white"
           style={{ width: "fit-content" }}
