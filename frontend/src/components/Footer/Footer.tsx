@@ -13,7 +13,7 @@ export default function Footer() {
     <div className="container-fluid bg-dark text-white">
       <div className="container d-flex justify-content-center">
         <div className="row w-100 mt-4 mb-4">
-          <div className="col">
+          <div className="col" style={{ marginLeft: "5vw" }}>
             <h1>Company</h1>
             <ul className="list-unstyled">
               <li>About us</li>
@@ -22,7 +22,7 @@ export default function Footer() {
               <li>Careers</li>
             </ul>
           </div>
-          <div className="col">
+          <div className="col" style={{ marginLeft: "5vw" }}>
             <h1>Services</h1>
             <ul className="list-unstyled">
               <li>Lost baggage</li>
@@ -30,7 +30,7 @@ export default function Footer() {
               <li>Miles & benefits</li>
             </ul>
           </div>
-          <div className="col">
+          <div className="col" style={{ marginLeft: "5vw" }}>
             <h1>Support</h1>
             <ul className="list-unstyled">
               <li>Contact us</li>

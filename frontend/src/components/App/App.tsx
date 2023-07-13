@@ -1,4 +1,3 @@
-import { Container } from "react-bootstrap";
 import ContactPage from "../Pages/ContactPage/ContactPage";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Menu from "../Menu/Menu";

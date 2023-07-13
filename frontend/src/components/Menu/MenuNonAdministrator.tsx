@@ -63,7 +63,7 @@ export default function MenuNonAdministrator() {
 
           {role === "user" && (
             <>
-              <Link className="nav-item nav-link text-light" to="/">
+              <Link className="nav-item nav-link text-light" to="/profile">
                 {AppStore.getState().auth.identity}
               </Link>
               <div

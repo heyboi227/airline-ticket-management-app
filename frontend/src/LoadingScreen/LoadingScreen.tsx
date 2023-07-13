@@ -2,11 +2,14 @@ import { useState, useEffect } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import "./LoadingScreen.scss";
 import blackLogo from "../static/png/logo-black.png";
+import AppStore from "../stores/AppStore";
 
 export default function LoadingScreen() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (AppStore.getState().auth.id !== 0) return setLoading(false);
+
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2500);
