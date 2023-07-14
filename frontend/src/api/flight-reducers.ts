@@ -146,7 +146,7 @@ export default function FlightFormReducer(
           ...oldState.travelClasses.map((travelClass) => {
             return { ...travelClass };
           }),
-          { travelClassId: action.value, price: 0 },
+          { travelClassId: action.value, price: 0.01 },
         ],
       };
     }

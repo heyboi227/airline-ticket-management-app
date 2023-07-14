@@ -339,16 +339,19 @@ export default function AdminFlightAdd() {
                               step={0.01}
                               value={travelClassData.price}
                               className="form-control form-control-sm"
-                              onChange={(e) =>
-                                dispatchFormStateAction({
-                                  type: "flightForm/setTravelClassPrice",
-                                  value: {
-                                    travelClassId: travelClass.travelClassId,
-                                    price: +e.target.value,
-                                  },
-                                  formType: "add",
-                                })
-                              }
+                              onChange={(e) => {
+                                const value = +e.target.value;
+                                if (value !== 0) {
+                                  dispatchFormStateAction({
+                                    type: "flightForm/setTravelClassPrice",
+                                    value: {
+                                      travelClassId: travelClass.travelClassId,
+                                      price: value,
+                                    },
+                                    formType: "add",
+                                  });
+                                }
+                              }}
                             />
                             <span className="input-group-text">RSD</span>
                           </div>
