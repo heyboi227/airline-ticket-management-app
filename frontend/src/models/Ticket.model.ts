@@ -1,4 +1,4 @@
-import Document from "./Document.model";
+import UserDocument from "./Document.model";
 import User from "./User.model";
 import Flight from "./Flight.model";
 
@@ -13,7 +13,7 @@ export default interface Ticket {
   flightFareCode: string;
   seatNumber: string;
 
-  document?: Document;
+  document?: UserDocument;
   user?: User;
   flight?: Flight;
 }

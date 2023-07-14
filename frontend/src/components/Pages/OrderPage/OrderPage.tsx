@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -9,7 +9,7 @@ import { Random, MersenneTwister19937 } from "random-js";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 import Flight from "../../../models/Flight.model";
 import Country from "../../../models/Country.model";
-import Document from "../../../models/Document.model";
+import UserDocument from "../../../models/Document.model";
 import User from "../../../models/User.model";
 
 export default function OrderPage() {
@@ -68,7 +68,7 @@ export default function OrderPage() {
 
   const [gender, setGender] = useState<"Male" | "Female">("Male");
 
-  const [userDocuments, setUserDocuments] = useState<Document[]>([]);
+  const [userDocuments, setUserDocuments] = useState<UserDocument[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
@@ -76,6 +76,8 @@ export default function OrderPage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const [randomPrice, setRandomPrice] = useState<number>(0);
+
+  const navigate = useNavigate();
 
   function loadCountries() {
     api("get", "/api/country", "user")
@@ -279,7 +281,12 @@ export default function OrderPage() {
                 </label>
               </div>
             </div>
-            <button className="btn btn-primary">Billing information</button>
+            <button
+              className="btn btn-primary"
+              onClick={() => navigate("/order/billing", { replace: true })}
+            >
+              Billing information
+            </button>
           </form>
         </div>
         <div className="col col-xs-12 col-md-4 p-5">
