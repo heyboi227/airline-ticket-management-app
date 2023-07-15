@@ -57,6 +57,19 @@ export default class CountryController extends BaseController {
       });
   }
 
+  getAllBySearchString(req: Request, res: Response) {
+    const searchString: string = req.params?.sstring;
+
+    this.services.country
+      .getAllBySearchString(searchString)
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((error) => {
+        res.status(500).send(error?.message);
+      });
+  }
+
   add(req: Request, res: Response) {
     const body = req.body as AddCountryDto;
 

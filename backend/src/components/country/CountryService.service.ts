@@ -2,6 +2,7 @@ import BaseService from "../../common/BaseService";
 import CountryModel from "./CountryModel.model";
 import { AddCountry } from "./dto/AddCountry.dto";
 import { EditCountry } from "./dto/EditCountry.dto";
+import * as mysql2 from "mysql2/promise";
 
 export interface CountryAdapterOptions {}
 
@@ -52,6 +53,34 @@ export default class CountryService extends BaseService<
         })
         .catch((error) => {
           reject(error?.message);
+        });
+    });
+  }
+
+  public async getAllBySearchString(
+    searchString: string
+  ): Promise<CountryModel[]> {
+    return new Promise<CountryModel[]>((resolve, reject) => {
+      const sql: string =
+        "SELECT * FROM `country` WHERE `country_name` LIKE CONCAT('%', ?, '%');";
+
+      this.db
+        .execute(sql, [searchString])
+        .then(async ([rows]) => {
+          if (rows === undefined) {
+            return resolve([]);
+          }
+
+          const items: CountryModel[] = [];
+
+          for (const row of rows as mysql2.RowDataPacket[]) {
+            items.push(await this.adaptToModel(row, {}));
+          }
+
+          resolve(items);
+        })
+        .catch((error) => {
+          reject(error);
         });
     });
   }

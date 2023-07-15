@@ -55,7 +55,7 @@ function AirportInput({
     } else {
       setResults([]);
     }
-  }, [debouncedFetchResults, query]);
+  }, [query]);
 
   const handleClick = (result: Airport) => {
     setQuery(
