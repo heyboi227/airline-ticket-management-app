@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Flight from "../../../models/Flight.model";
 import { useNavigate } from "react-router-dom";
 import { MersenneTwister19937, Random } from "random-js";
@@ -7,6 +7,7 @@ import Country from "../../../models/Country.model";
 import { api } from "../../../api/api";
 import Config from "../../../config";
 import { debounce } from "lodash";
+import { useRandomNumber } from "../OrderPage/OrderPage";
 
 interface InputProps {
   id: string;
@@ -156,7 +157,7 @@ export default function BillingPage() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const [randomPrice, setRandomPrice] = useState<number>(0);
+  const randomPrice = useRandomNumber();
 
   const navigate = useNavigate();
 
@@ -164,12 +165,13 @@ export default function BillingPage() {
     setCountryId(newCountryId);
   };
 
-  useEffect(() => {
-    const random = new Random(MersenneTwister19937.autoSeed());
-    setRandomPrice(
-      random.integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6)
-    );
-  }, [flights.totalPrice]);
+  const nextInputRef = useRef<HTMLInputElement>(null);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value.length >= e.target.maxLength && nextInputRef.current) {
+      nextInputRef.current.focus();
+    }
+  };
 
   return (
     <>
@@ -188,7 +190,11 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Card number"
                   value={cardNumber}
-                  onChange={(e) => setCardNumber(e.target.value)}
+                  maxLength={16}
+                  onChange={(e) => {
+                    setCardNumber(e.target.value);
+                    handleInputChange(e);
+                  }}
                 />
               </div>
             </div>
@@ -198,15 +204,22 @@ export default function BillingPage() {
                   className="form-control"
                   type="text"
                   placeholder="Card expiry month"
+                  maxLength={2}
                   value={expiryMonth}
-                  onChange={(e) => setExpiryMonth(e.target.value)}
+                  ref={nextInputRef}
+                  onChange={(e) => {
+                    setExpiryMonth(e.target.value);
+                    handleInputChange(e);
+                  }}
                 />
                 /
                 <input
                   className="form-control"
                   type="text"
                   placeholder="Card expiry year"
+                  maxLength={2}
                   value={expiryYear}
+                  ref={nextInputRef}
                   onChange={(e) => setExpiryYear(e.target.value)}
                 />
               </div>
@@ -222,6 +235,8 @@ export default function BillingPage() {
                 />
               </div>
             </div>
+            <br></br>
+            <br></br>
             <div className="form-group mb-3">
               <div className="input-group">
                 <input

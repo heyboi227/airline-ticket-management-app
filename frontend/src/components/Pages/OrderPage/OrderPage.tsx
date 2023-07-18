@@ -1,5 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+  PropsWithChildren,
+  useContext,
+} from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { srLatn } from "date-fns/locale";
@@ -12,51 +18,85 @@ import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/Document.model";
 import User from "../../../models/User.model";
 
-export default function OrderPage() {
-  const flights = {
-    departFlight: {
-      flightId: 1,
-      flightCode: "AS150",
-      departureDateAndTime: "2023-07-09T12:45:00Z",
-      arrivalDateAndTime: "2023-07-09T22:45:00Z",
-      originAirportId: 3,
-      destinationAirportId: 6,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
+const flights = {
+  departFlight: {
+    flightId: 1,
+    flightCode: "AS150",
+    departureDateAndTime: "2023-07-09T12:45:00Z",
+    arrivalDateAndTime: "2023-07-09T22:45:00Z",
+    originAirportId: 3,
+    destinationAirportId: 6,
+    travelClasses: [
+      {
+        travelClass: {
+          travelClassId: 2,
+          travelClassName: "Economy",
+          travelClassSubname: "Economy +",
         },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    returnFlight: {
-      flightId: 2,
-      flightCode: "AS151",
-      departureDateAndTime: "2023-07-10T00:15:00Z",
-      arrivalDateAndTime: "2023-07-10T08:30:00Z",
-      originAirportId: 6,
-      destinationAirportId: 3,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
+        isActive: true,
+        price: 25225.36,
+      },
+    ],
+    aircraftId: 4,
+  } as Flight,
+  returnFlight: {
+    flightId: 2,
+    flightCode: "AS151",
+    departureDateAndTime: "2023-07-10T00:15:00Z",
+    arrivalDateAndTime: "2023-07-10T08:30:00Z",
+    originAirportId: 6,
+    destinationAirportId: 3,
+    travelClasses: [
+      {
+        travelClass: {
+          travelClassId: 2,
+          travelClassName: "Economy",
+          travelClassSubname: "Economy +",
         },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    totalPrice: 50450.72,
-  };
+        isActive: true,
+        price: 25225.36,
+      },
+    ],
+    aircraftId: 4,
+  } as Flight,
+  totalPrice: 50450.72,
+};
 
+const RandomNumberContext = createContext<number>(0);
+
+export function RandomNumberProvider(props: PropsWithChildren) {
+  const [randomNumber, setRandomNumber] = useState<number>(() => {
+    const storedRandomNumber = localStorage.getItem("randomNumber");
+    if (storedRandomNumber !== null) {
+      return parseFloat(storedRandomNumber);
+    } else {
+      const newRandomNumber = new Random(
+        MersenneTwister19937.autoSeed()
+      ).integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6);
+
+      localStorage.setItem("randomNumber", newRandomNumber.toString());
+      return newRandomNumber;
+    }
+  });
+
+  return (
+    <RandomNumberContext.Provider value={randomNumber}>
+      {props.children}
+    </RandomNumberContext.Provider>
+  );
+}
+
+export function useRandomNumber() {
+  const context = useContext(RandomNumberContext);
+  if (context === undefined) {
+    throw new Error(
+      "useRandomNumber must be used within a RandomNumberProvider!"
+    );
+  }
+  return context;
+}
+
+export default function OrderPage() {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
@@ -75,7 +115,7 @@ export default function OrderPage() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const [randomPrice, setRandomPrice] = useState<number>(0);
+  const randomPrice = useRandomNumber();
 
   const navigate = useNavigate();
 
@@ -134,13 +174,6 @@ export default function OrderPage() {
       loadUserDocuments();
     }
   }, [loggedIn]);
-
-  useEffect(() => {
-    const random = new Random(MersenneTwister19937.autoSeed());
-    setRandomPrice(
-      random.integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6)
-    );
-  }, [flights.totalPrice]);
 
   return (
     <>

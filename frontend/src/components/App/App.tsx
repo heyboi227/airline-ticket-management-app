@@ -1,5 +1,5 @@
 import ContactPage from "../Pages/ContactPage/ContactPage";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Route, useLocation, Routes } from "react-router-dom";
 import Menu from "../Menu/Menu";
 import UserLoginPage from "../User/UserLoginPage/UserLoginPage";
 import AdministratorLoginPage from "../Administrator/AdministratorLoginPage/AdministratorLoginPage";
@@ -26,8 +26,9 @@ import AdminFlightAdd from "../Administrator/Dashboard/AdminFlightAdd";
 import AdminFlightEdit from "../Administrator/Dashboard/AdminFlightEdit";
 import AdminTravelClassList from "../Administrator/Dashboard/AdminTravelClassList";
 import AdminTravelClassAdd from "../Administrator/Dashboard/AdminTravelClassAdd";
-import OrderPage from "../Pages/OrderPage/OrderPage";
+import OrderPage, { RandomNumberProvider } from "../Pages/OrderPage/OrderPage";
 import BillingPage from "../Pages/BillingPage/BillingPage";
+import BookingPage from "../Pages/BookingPage/BookingPage";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -45,8 +46,32 @@ function App() {
 
           <Route path="/search/flights" element={<FlightsPage />} />
 
-          <Route path="/order" element={<OrderPage />} />
-          <Route path="/order/billing" element={<BillingPage />} />
+          <Route
+            path="/order"
+            element={
+              <RandomNumberProvider>
+                <OrderPage />
+              </RandomNumberProvider>
+            }
+          />
+
+          <Route
+            path="/order/billing"
+            element={
+              <RandomNumberProvider>
+                <BillingPage />
+              </RandomNumberProvider>
+            }
+          />
+
+          <Route
+            path="/order/booking"
+            element={
+              <RandomNumberProvider>
+                <BookingPage />
+              </RandomNumberProvider>
+            }
+          />
 
           <Route
             path="/auth/administrator/login"
