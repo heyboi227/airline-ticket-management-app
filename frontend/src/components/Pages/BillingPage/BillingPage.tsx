@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Flight from "../../../models/Flight.model";
 import { useNavigate } from "react-router-dom";
-import { MersenneTwister19937, Random } from "random-js";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 import Country from "../../../models/Country.model";
 import { api } from "../../../api/api";
@@ -154,6 +153,7 @@ export default function BillingPage() {
   const [postalCode, setPostalCode] = useState<string>("");
   const [city, setCity] = useState<string>("");
   const [countryId, setCountryId] = useState<number>(0);
+  const [email, setEmail] = useState<string>("");
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -289,6 +289,19 @@ export default function BillingPage() {
                 placeholder={"Country"}
                 onValueChange={handleCountryIdChange}
               />
+            </div>
+            <br></br>
+            <br></br>
+            <div className="form-group mb-3">
+              <div className="input-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
             </div>
             <button
               className="btn btn-primary"

@@ -11,8 +11,6 @@ import * as bcrypt from "bcrypt";
 import EditUser, { EditUserValidator, EditUserDto } from "./dto/EditUser.dto";
 import * as uuid from "uuid";
 import UserModel from "./UserModel.model";
-import * as nodemailer from "nodemailer";
-import * as Mailer from "nodemailer/lib/mailer";
 import { DevConfig } from "../../configs";
 import {
   PasswordResetDto,
@@ -20,9 +18,12 @@ import {
 } from "./dto/PasswordReset.dto";
 import * as generatePassword from "generate-password";
 import StatusError from "../../common/StatusError";
+import EmailController from "../email/EmailController.controller";
 import escapeHTML = require("escape-html");
 
 export default class UserController extends BaseController {
+  emailController: EmailController = new EmailController(this.services);
+
   getAll(_req: Request, res: Response) {
     this.services.user
       .getAll({
@@ -91,7 +92,7 @@ export default class UserController extends BaseController {
         });
       })
       .then((user) => {
-        return this.sendRegistrationEmail(user);
+        return this.emailController.sendRegistrationEmail(user);
       })
       .then(async (user) => {
         await this.services.user.commitChanges();
@@ -105,50 +106,6 @@ export default class UserController extends BaseController {
         await this.services.user.rollbackChanges();
         res.status(500).send(error?.message);
       });
-  }
-
-  private async sendRegistrationEmail(user: UserModel): Promise<UserModel> {
-    return new Promise((resolve, reject) => {
-      const transport = this.getMailTransport();
-
-      const mailOptions: Mailer.Options = {
-        to: user.email,
-        subject: "Account registration",
-        html: `<!doctype html>
-                        <html>
-                            <head><meta charset="utf-8"></head>
-                            <body>
-                                <p>
-                                    Dear ${user.forename} ${user.surname},<br>
-                                    Your account was successfully created.
-                                </p>
-                                <p>
-                                    You must activate you account by clicking on the following link:
-                                </p>
-                                <p style="text-align: center; padding: 10px;">
-                                    <a href="http://localhost:10000/api/user/activate/${user.activationCode}">Activate</a>
-                                </p>
-                            </body>
-                        </html>`,
-      };
-
-      transport
-        .sendMail(mailOptions)
-        .then(() => {
-          transport.close();
-
-          user.activationCode = null;
-
-          resolve(user);
-        })
-        .catch((error) => {
-          transport.close();
-
-          reject({
-            message: error?.message,
-          });
-        });
-    });
   }
 
   passwordResetEmailSend(req: Request, res: Response) {
@@ -202,7 +159,7 @@ export default class UserController extends BaseController {
       })
       .then(async (user) => {
         await this.services.user.commitChanges();
-        return this.sendRecoveryEmail(user);
+        return this.emailController.sendRecoveryEmail(user);
       })
       .then(() => {
         res.send({
@@ -245,7 +202,7 @@ export default class UserController extends BaseController {
       })
       .then(async (user) => {
         await this.services.user.commitChanges();
-        return this.sendActivationEmail(user);
+        return this.emailController.sendActivationEmail(user);
       })
       .then((user) => {
         res.send(user);
@@ -316,7 +273,7 @@ export default class UserController extends BaseController {
               })
               .then(async (user) => {
                 await this.services.user.commitChanges();
-                return this.sendNewPassword(user, newPassword);
+                return this.emailController.sendNewPassword(user, newPassword);
               })
               .then((user) => {
                 resolve({
@@ -343,163 +300,6 @@ export default class UserController extends BaseController {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
       });
-  }
-
-  private getMailTransport() {
-    return nodemailer.createTransport(
-      {
-        host: DevConfig.mail.host,
-        port: DevConfig.mail.port,
-        secure: false,
-        tls: {
-          ciphers: "SSLv3",
-        },
-        debug: DevConfig.mail.debug,
-        auth: {
-          user: DevConfig.mail.email,
-          pass: DevConfig.mail.password,
-        },
-      },
-      {
-        from: DevConfig.mail.email,
-      }
-    );
-  }
-
-  private async sendActivationEmail(user: UserModel): Promise<UserModel> {
-    return new Promise((resolve, reject) => {
-      const transport = this.getMailTransport();
-
-      const mailOptions: Mailer.Options = {
-        to: user.email,
-        subject: "Account activation",
-        html: `<!doctype html>
-                        <html>
-                            <head><meta charset="utf-8"></head>
-                            <body>
-                                <p>
-                                    Dear ${user.forename} ${user.surname},<br>
-                                    Your account was successfully activated.
-                                </p>
-                                <p>
-                                    You can now log into your account using the login form.
-                                </p>
-                            </body>
-                        </html>`,
-      };
-
-      transport
-        .sendMail(mailOptions)
-        .then(() => {
-          transport.close();
-
-          user.activationCode = null;
-          user.passwordResetCode = null;
-
-          resolve(user);
-        })
-        .catch((error) => {
-          transport.close();
-
-          reject({
-            message: error?.message,
-          });
-        });
-    });
-  }
-
-  private async sendNewPassword(
-    user: UserModel,
-    newPassword: string
-  ): Promise<UserModel> {
-    return new Promise((resolve, reject) => {
-      const transport = this.getMailTransport();
-
-      const mailOptions: Mailer.Options = {
-        to: user.email,
-        subject: "New password",
-        html: `<!doctype html>
-                        <html>
-                            <head><meta charset="utf-8"></head>
-                            <body>
-                                <p>
-                                    Dear ${user.forename} ${user.surname},<br>
-                                    Your account password was successfully reset.
-                                </p>
-                                <p>
-                                    Your new password is:<br>
-                                    <pre style="padding: 20px; font-size: 24pt; color: #000; background-color: #eee; border: 1px solid #666;">${newPassword}</pre>
-                                </p>
-                                <p>
-                                    You can now log into your account using the login form.
-                                </p>
-                            </body>
-                        </html>`,
-      };
-
-      transport
-        .sendMail(mailOptions)
-        .then(() => {
-          transport.close();
-
-          user.activationCode = null;
-          user.passwordResetCode = null;
-
-          resolve(user);
-        })
-        .catch((error) => {
-          transport.close();
-
-          reject({
-            message: error?.message,
-          });
-        });
-    });
-  }
-
-  private async sendRecoveryEmail(user: UserModel): Promise<UserModel> {
-    return new Promise((resolve, reject) => {
-      const transport = this.getMailTransport();
-
-      const mailOptions: Mailer.Options = {
-        to: user.email,
-        subject: "Account password reset code",
-        html: `<!doctype html>
-                        <html>
-                            <head><meta charset="utf-8"></head>
-                            <body>
-                                <p>
-                                    Dear ${user.forename} ${user.surname},<br>
-                                    Here is a link you can use to reset your account:
-                                </p>
-                                <p>
-                                    <a href="http://localhost:10000/api/user/reset/${user.passwordResetCode}"
-                                        sryle="display: inline-block; padding: 10px 20px; color: #fff; background-color: #db0002; text-decoration: none;">
-                                        Click here to reset your account
-                                    </a>
-                                </p>
-                            </body>
-                        </html>`,
-      };
-
-      transport
-        .sendMail(mailOptions)
-        .then(() => {
-          transport.close();
-
-          user.activationCode = null;
-          user.passwordResetCode = null;
-
-          resolve(user);
-        })
-        .catch((error) => {
-          transport.close();
-
-          reject({
-            message: error?.message,
-          });
-        });
-    });
   }
 
   editById(req: Request, res: Response) {

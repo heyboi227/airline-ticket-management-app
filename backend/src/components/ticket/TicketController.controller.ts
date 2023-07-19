@@ -3,9 +3,16 @@ import { Request, Response } from "express";
 import { AddTicketValidator, AddTicketDto } from "./dto/AddTicket.dto";
 import { DefaultTicketAdapterOptions } from "./TicketService.service";
 import StatusError from "../../common/StatusError";
+import EmailController from "../email/EmailController.controller";
 import escapeHTML = require("escape-html");
+import {
+  BookingConfirmationDto,
+  BookingConfirmationValidator,
+} from "./dto/BookingConfirmation.dto";
 
 export default class TicketController extends BaseController {
+  emailController: EmailController = new EmailController(this.services);
+
   getById(req: Request, res: Response) {
     const ticketId: number = +req.params?.tid;
 
@@ -65,7 +72,10 @@ export default class TicketController extends BaseController {
   getAllByUserId(req: Request, res: Response) {
     const userId: number = +req.params?.uid;
 
-    if (req.authorization?.role === "user" && req.authorization?.id !== userId) {
+    if (
+      req.authorization?.role === "user" &&
+      req.authorization?.id !== userId
+    ) {
       throw new StatusError(403, "You do not have access to this resource!");
     }
 
@@ -135,6 +145,34 @@ export default class TicketController extends BaseController {
         setTimeout(() => {
           res.status(500).send(error?.message);
         }, 300);
+      });
+  }
+
+  bookingConfirmationEmailSend(req: Request, res: Response) {
+    const data = req.body as BookingConfirmationDto;
+
+    if (!BookingConfirmationValidator(data)) {
+      const safeOutput = escapeHTML(
+        JSON.stringify(BookingConfirmationValidator.errors)
+      );
+      return res.status(400).send(safeOutput);
+    }
+
+    this.services.user
+      .startTransaction()
+      .then(() => {
+        return this.emailController.sendBookingConfirmationEmail(data.email);
+      })
+      .then(() => {
+        res.send({
+          message: "Sent",
+        });
+      })
+      .catch(async (error) => {
+        await this.services.user.rollbackChanges();
+        setTimeout(() => {
+          res.status(error?.status ?? 500).send(error?.message);
+        }, 500);
       });
   }
 }

@@ -42,5 +42,11 @@ export default class TicketRouter implements Router {
       AuthMiddleware.getVerifier("user"),
       ticketController.add.bind(ticketController)
     );
+
+    application.post(
+      "/api/ticket/confirm-booking",
+      AuthMiddleware.getVerifier("user"),
+      ticketController.bookingConfirmationEmailSend.bind(ticketController)
+    );
   }
 }

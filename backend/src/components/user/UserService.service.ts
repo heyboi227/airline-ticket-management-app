@@ -1,6 +1,6 @@
 import BaseService from "../../common/BaseService";
 import UserModel from "./UserModel.model";
-import { AddUser } from "./dto/RegisterUser.dto";
+import { RegisterUser } from "./dto/RegisterUser.dto";
 import EditUser from "./dto/EditUser.dto";
 
 export interface UserAdapterOptions {
@@ -54,7 +54,7 @@ export default class UserService extends BaseService<
     return user;
   }
 
-  public async add(data: AddUser): Promise<UserModel> {
+  public async add(data: RegisterUser): Promise<UserModel> {
     return this.baseAdd(data, {
       removeActivationCode: false,
       removePassword: true,

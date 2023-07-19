@@ -1,7 +1,7 @@
-export default function BookingPage() {
+export default function BookingConfirmationPage() {
   return (
     <div className="container">
-      <h1>Booking Confirmation</h1>
+      <h1>Your booking has been confirmed.</h1>
       <h2>Confirmation Number: Some number lol</h2>
 
       <h3>Passenger Details</h3>

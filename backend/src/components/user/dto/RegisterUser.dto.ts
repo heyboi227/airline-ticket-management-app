@@ -12,7 +12,7 @@ export interface RegisterUserDto {
   surname: string;
 }
 
-export interface AddUser extends ServiceData {
+export interface RegisterUser extends ServiceData {
   email: string;
   password_hash: string;
   forename: string;

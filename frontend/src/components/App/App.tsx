@@ -28,7 +28,7 @@ import AdminTravelClassList from "../Administrator/Dashboard/AdminTravelClassLis
 import AdminTravelClassAdd from "../Administrator/Dashboard/AdminTravelClassAdd";
 import OrderPage, { RandomNumberProvider } from "../Pages/OrderPage/OrderPage";
 import BillingPage from "../Pages/BillingPage/BillingPage";
-import BookingPage from "../Pages/BookingPage/BookingPage";
+import BookingConfirmationPage from "../Pages/BookingConfirmationPage/BookingConfirmationPage";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -68,7 +68,7 @@ function App() {
             path="/order/booking"
             element={
               <RandomNumberProvider>
-                <BookingPage />
+                <BookingConfirmationPage />
               </RandomNumberProvider>
             }
           />
