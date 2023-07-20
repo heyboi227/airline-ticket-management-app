@@ -206,7 +206,10 @@ export default class EmailController extends BaseController {
     });
   }
 
-  async sendBookingConfirmationEmail(email: string): Promise<string> {
+  async sendBookingConfirmationEmail(
+    email: string,
+    bookingNumber: string
+  ): Promise<string> {
     return new Promise((resolve, reject) => {
       const transport = this.getMailTransport();
 
@@ -222,7 +225,7 @@ export default class EmailController extends BaseController {
                                     Your booking was successfully confirmed.
                                 </p>
                                 <p>
-                                    Here are the booking details yada yada yada:
+                                    Your booking confirmation number is: <h1>${bookingNumber}</h1>
                                 </p>
                             </body>
                         </html>`,

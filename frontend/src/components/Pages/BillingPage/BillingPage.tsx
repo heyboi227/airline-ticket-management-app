@@ -159,6 +159,8 @@ export default function BillingPage() {
 
   const randomPrice = useRandomNumber();
 
+  let bookingNumber: string = "";
+
   const navigate = useNavigate();
 
   const handleCountryIdChange = (newCountryId: number) => {
@@ -171,6 +173,35 @@ export default function BillingPage() {
     if (e.target.value.length >= e.target.maxLength && nextInputRef.current) {
       nextInputRef.current.focus();
     }
+  };
+
+  const generateRandomFormattedString = () => {
+    let result = "";
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const numbers = "0123456789";
+
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += letters.charAt(Math.floor(Math.random() * letters.length));
+
+    return result;
+  };
+
+  const doSendBookingEmail = () => {
+    api("post", "/api/ticket/confirm-booking", "user", {
+      email,
+      bookingNumber,
+    }).catch((error) => {
+      setErrorMessage(error?.message ?? "Could not send the email.");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3500);
+    });
   };
 
   return (
@@ -305,7 +336,14 @@ export default function BillingPage() {
             </div>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/order/booking", { replace: true })}
+              onClick={() => {
+                bookingNumber = generateRandomFormattedString();
+                navigate("/order/booking", {
+                  replace: true,
+                  state: { bookingNumber: bookingNumber },
+                });
+                doSendBookingEmail();
+              }}
             >
               Book
             </button>

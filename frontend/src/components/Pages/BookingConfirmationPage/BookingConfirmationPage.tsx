@@ -1,8 +1,13 @@
+import { useLocation } from "react-router-dom";
 export default function BookingConfirmationPage() {
+  const location = useLocation();
+
   return (
     <div className="container">
       <h1>Your booking has been confirmed.</h1>
-      <h2>Confirmation Number: Some number lol</h2>
+      <h2>
+        Confirmation Number: {location.state ? location.state.bookingNumber : 0}
+      </h2>
 
       <h3>Passenger Details</h3>
       {/* Display passenger details here */}

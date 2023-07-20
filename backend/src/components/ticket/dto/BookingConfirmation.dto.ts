@@ -6,6 +6,7 @@ addFormats(ajv);
 
 export interface BookingConfirmationDto {
   email: string;
+  bookingNumber: string;
 }
 
 const BookingConfirmationValidator = ajv.compile({
@@ -15,8 +16,13 @@ const BookingConfirmationValidator = ajv.compile({
       type: "string",
       format: "email",
     },
+    bookingNumber: {
+      type: "string",
+      minLength: 6,
+      maxLength: 6,
+    },
   },
-  required: ["email"],
+  required: ["email", "bookingNumber"],
   additionalProperties: false,
 });
 

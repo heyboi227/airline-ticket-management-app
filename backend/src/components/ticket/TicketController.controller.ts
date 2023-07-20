@@ -161,7 +161,10 @@ export default class TicketController extends BaseController {
     this.services.user
       .startTransaction()
       .then(() => {
-        return this.emailController.sendBookingConfirmationEmail(data.email);
+        return this.emailController.sendBookingConfirmationEmail(
+          data.email,
+          data.bookingNumber
+        );
       })
       .then(() => {
         res.send({
