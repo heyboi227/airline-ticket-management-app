@@ -10,6 +10,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import srLatn from "date-fns/locale/sr-Latn";
 import { convertDateToMySqlDateTime } from "../../helpers/helpers";
+import { TextField } from "@mui/material";
 
 interface InputProps {
   id: string;
@@ -83,6 +84,7 @@ function AirportInput({
           }}
           id={id}
           value={query}
+          required={true}
         />
       </div>
       <div style={{ position: "absolute", zIndex: 2 }}>
@@ -109,10 +111,16 @@ function AirportInput({
 
 function DateInput({ label, onDateChange }: DateInputProps) {
   const [value, setValue] = useState<Date | null>(null);
+  const [error, setError] = useState<boolean>(false);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
     onDateChange(newValue);
+    if (!newValue) {
+      setError(true);
+    } else {
+      setError(false);
+    }
   };
 
   return (
@@ -123,7 +131,9 @@ function DateInput({ label, onDateChange }: DateInputProps) {
         onChange={handleChange}
         className="form-control"
         disablePast={true}
-      ></DatePicker>
+        renderLoading={() => <TextField label="Loading..." />}
+      />
+      {error && <p style={{ color: "red" }}>This field is required.</p>}
     </LocalizationProvider>
   );
 }
@@ -205,89 +215,90 @@ export default function Search() {
     >
       <h1 className="text-light mb-5">Flight search</h1>
       <div className="col-6 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
-        <div
-          className="row form-group mt-3 mb-3 text-white"
-          style={{ width: "fit-content" }}
-        >
-          <div className="col">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="ticket-type"
-                id="one-way"
-                onChange={() => setIsRoundtrip(false)}
-              />
-              <label className="form-check-label" htmlFor="one-way">
-                One-way
-              </label>
-            </div>
-          </div>
-          <div className="col">
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="radio"
-                name="ticket-type"
-                id="roundtrip"
-                defaultChecked
-                onChange={() => setIsRoundtrip(true)}
-              />
-              <label className="form-check-label" htmlFor="roundtrip">
-                Roundtrip
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col">
-            <div className="form-group mt-3 mb-3">
-              <AirportInput
-                id="origin"
-                placeholder="Origin airport"
-                onValueChange={handleOriginAirportIdChange}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <AirportInput
-                id="destination"
-                placeholder="Destination airport"
-                onValueChange={handleDestinationAirportIdChange}
-              />
-            </div>
-          </div>
-          <div className="col">
-            <div className="form-group mt-3 mb-3">
-              <div className="input-group">
-                <DateInput
-                  onDateChange={handleDepartureDateChange}
-                  label="Choose a departure date"
-                ></DateInput>
+        <form onSubmit={doSearchDeparture}>
+          <div
+            className="row form-group mt-3 mb-3 text-white"
+            style={{ width: "fit-content" }}
+          >
+            <div className="col">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="ticket-type"
+                  id="one-way"
+                  onChange={() => setIsRoundtrip(false)}
+                />
+                <label className="form-check-label" htmlFor="one-way">
+                  One-way
+                </label>
               </div>
             </div>
-            {isRoundtrip && (
+            <div className="col">
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  name="ticket-type"
+                  id="roundtrip"
+                  defaultChecked
+                  onChange={() => setIsRoundtrip(true)}
+                />
+                <label className="form-check-label" htmlFor="roundtrip">
+                  Roundtrip
+                </label>
+              </div>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col">
+              <div className="form-group mt-3 mb-3">
+                <AirportInput
+                  id="origin"
+                  placeholder="Origin airport"
+                  onValueChange={handleOriginAirportIdChange}
+                />
+              </div>
               <div className="form-group mb-3">
+                <AirportInput
+                  id="destination"
+                  placeholder="Destination airport"
+                  onValueChange={handleDestinationAirportIdChange}
+                />
+              </div>
+            </div>
+            <div className="col">
+              <div className="form-group mt-3 mb-3">
                 <div className="input-group">
                   <DateInput
-                    onDateChange={handleReturnDateChange}
-                    label="Choose a return date"
+                    onDateChange={handleDepartureDateChange}
+                    label="Choose a departure date"
                   ></DateInput>
                 </div>
               </div>
-            )}
+              {isRoundtrip && (
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <DateInput
+                      onDateChange={handleReturnDateChange}
+                      label="Choose a return date"
+                    ></DateInput>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-        <div>
-          <button
-            type="button"
-            className="btn btn-primary position-absolute"
-            style={{ right: "5%" }}
-            onClick={doSearchDeparture}
-          >
-            Search
-          </button>
-        </div>
-        {error && <p className="text-bg-danger">{error}</p>}
+          <div>
+            <button
+              type="submit"
+              className="btn btn-primary position-absolute"
+              style={{ right: "5%" }}
+            >
+              Search
+            </button>
+          </div>
+          {error && <p className="text-bg-danger">{error}</p>}
+        </form>
       </div>
     </div>
   );
