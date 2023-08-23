@@ -1,5 +1,5 @@
 import "./Search.scss";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
@@ -86,6 +86,16 @@ function AirportInput({
           value={query}
           required={true}
         />
+        {id === "origin" && (
+          <div className="invalid-feedback">
+            Please choose an origin airport.
+          </div>
+        )}
+        {id === "destination" && (
+          <div className="invalid-feedback">
+            Please choose a destination airport.
+          </div>
+        )}
       </div>
       <div style={{ position: "absolute", zIndex: 2 }}>
         {results.length > 0 && (
@@ -173,39 +183,53 @@ export default function Search() {
 
   const navigate = useNavigate();
 
-  const doSearchDeparture = () => {
-    api("post", "/api/flight/search/departure", "user", {
-      originAirportId,
-      destinationAirportId,
-      departureDate: departureDate,
-    })
-      .then((res) => {
-        if (res.status !== "ok") {
-          throw new Error(
-            "Search could not be performed. Reason: " + JSON.stringify(res.data)
-          );
-        }
-        return res;
-      })
-      .then((res) => {
-        navigate("/search/flights", {
-          replace: true,
-          state: [
-            originAirportId,
-            destinationAirportId,
-            departureDate,
-            returnDate,
-            res.data,
-          ],
-        });
-      })
-      .catch((error) => {
-        setError(error?.message ?? "Could not perform the search.");
+  const formRef = useRef<HTMLFormElement | null>(null);
 
-        setTimeout(() => {
-          setError("");
-        }, 3500);
-      });
+  const doSearchDeparture = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const form = formRef.current;
+
+    if (!form) return;
+
+    if (form.checkValidity()) {
+      api("post", "/api/flight/search/departure", "user", {
+        originAirportId,
+        destinationAirportId,
+        departureDate: departureDate,
+      })
+        .then((res) => {
+          if (res.status !== "ok") {
+            throw new Error(
+              "Search could not be performed. Reason: " +
+                JSON.stringify(res.data)
+            );
+          }
+          return res;
+        })
+        .then((res) => {
+          navigate("/search/flights", {
+            replace: true,
+            state: [
+              originAirportId,
+              destinationAirportId,
+              departureDate,
+              returnDate,
+              res.data,
+            ],
+          });
+        })
+        .catch((error) => {
+          setError(error?.message ?? "Could not perform the search.");
+
+          setTimeout(() => {
+            setError("");
+          }, 3500);
+        });
+    } else {
+      form.classList.add("was-validated");
+    }
   };
 
   return (
@@ -215,7 +239,12 @@ export default function Search() {
     >
       <h1 className="text-light mb-5">Flight search</h1>
       <div className="col-6 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
-        <form onSubmit={doSearchDeparture}>
+        <form
+          ref={formRef}
+          onSubmit={doSearchDeparture}
+          noValidate
+          className="needs-valdation"
+        >
           <div
             className="row form-group mt-3 mb-3 text-white"
             style={{ width: "fit-content" }}
