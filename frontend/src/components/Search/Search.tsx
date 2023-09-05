@@ -10,7 +10,6 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import srLatn from "date-fns/locale/sr-Latn";
 import { convertDateToMySqlDateTime } from "../../helpers/helpers";
-import { TextField } from "@mui/material";
 
 interface InputProps {
   id: string;
@@ -24,6 +23,7 @@ interface AirportInputProps {
 interface DateInputProps {
   label: string;
   onDateChange: (date: Date | null) => void;
+  isValid: boolean;
 }
 
 type CombinedAirportProps = InputProps & AirportInputProps;
@@ -119,31 +119,33 @@ function AirportInput({
   );
 }
 
-function DateInput({ label, onDateChange }: DateInputProps) {
+function DateInput({ label, onDateChange, isValid }: DateInputProps) {
   const [value, setValue] = useState<Date | null>(null);
-  const [error, setError] = useState<boolean>(false);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
     onDateChange(newValue);
     if (!newValue) {
-      setError(true);
+      isValid = true;
     } else {
-      setError(false);
+      isValid = false;
     }
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={srLatn}>
-      <DatePicker
-        label={label}
-        value={value}
-        onChange={handleChange}
-        className="form-control"
-        disablePast={true}
-        renderLoading={() => <TextField label="Loading..." />}
-      />
-      {error && <p style={{ color: "red" }}>This field is required.</p>}
+      <div className="input-group">
+        <DatePicker
+          label={label}
+          value={value}
+          onChange={handleChange}
+          className={`form-control ${!isValid ? "is-invalid" : ""}`}
+          disablePast={true}
+        />
+        {!isValid && (
+          <div className="invalid-feedback">Please choose a valid date.</div>
+        )}
+      </div>
     </LocalizationProvider>
   );
 }
@@ -185,6 +187,8 @@ export default function Search() {
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const [isValid, setIsValid] = useState<boolean>(true);
+
   const doSearchDeparture = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -194,6 +198,8 @@ export default function Search() {
     if (!form) return;
 
     if (form.checkValidity()) {
+      setIsValid(true);
+
       api("post", "/api/flight/search/departure", "user", {
         originAirportId,
         destinationAirportId,
@@ -229,6 +235,7 @@ export default function Search() {
         });
     } else {
       form.classList.add("was-validated");
+      setIsValid(false);
     }
   };
 
@@ -239,46 +246,46 @@ export default function Search() {
     >
       <h1 className="text-light mb-5">Flight search</h1>
       <div className="col-6 px-5 py-5 bg-dark bg-opacity-75 rounded-4 position-relative">
+        <div
+          className="row form-group mt-3 mb-3 text-white"
+          style={{ width: "fit-content" }}
+        >
+          <div className="col">
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="ticket-type"
+                id="one-way"
+                onChange={() => setIsRoundtrip(false)}
+              />
+              <label className="form-check-label" htmlFor="one-way">
+                One-way
+              </label>
+            </div>
+          </div>
+          <div className="col">
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="radio"
+                name="ticket-type"
+                id="roundtrip"
+                defaultChecked
+                onChange={() => setIsRoundtrip(true)}
+              />
+              <label className="form-check-label" htmlFor="roundtrip">
+                Roundtrip
+              </label>
+            </div>
+          </div>
+        </div>
         <form
           ref={formRef}
           onSubmit={doSearchDeparture}
           noValidate
           className="needs-valdation"
         >
-          <div
-            className="row form-group mt-3 mb-3 text-white"
-            style={{ width: "fit-content" }}
-          >
-            <div className="col">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="ticket-type"
-                  id="one-way"
-                  onChange={() => setIsRoundtrip(false)}
-                />
-                <label className="form-check-label" htmlFor="one-way">
-                  One-way
-                </label>
-              </div>
-            </div>
-            <div className="col">
-              <div className="form-check">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="ticket-type"
-                  id="roundtrip"
-                  defaultChecked
-                  onChange={() => setIsRoundtrip(true)}
-                />
-                <label className="form-check-label" htmlFor="roundtrip">
-                  Roundtrip
-                </label>
-              </div>
-            </div>
-          </div>
           <div className="row">
             <div className="col">
               <div className="form-group mt-3 mb-3">
@@ -302,6 +309,7 @@ export default function Search() {
                   <DateInput
                     onDateChange={handleDepartureDateChange}
                     label="Choose a departure date"
+                    isValid={isValid}
                   ></DateInput>
                 </div>
               </div>
@@ -311,6 +319,7 @@ export default function Search() {
                     <DateInput
                       onDateChange={handleReturnDateChange}
                       label="Choose a return date"
+                      isValid={isValid}
                     ></DateInput>
                   </div>
                 </div>
