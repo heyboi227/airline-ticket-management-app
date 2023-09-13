@@ -84,7 +84,7 @@ function AirportInput({
           }}
           id={id}
           value={query}
-          required={true}
+          required
         />
         {id === "origin" && (
           <div className="invalid-feedback">

@@ -7,6 +7,7 @@ import { api } from "../../../api/api";
 import Config from "../../../config";
 import { debounce } from "lodash";
 import { useRandomNumber } from "../OrderPage/OrderPage";
+import "./BillingPage.css";
 
 interface InputProps {
   id: string;
@@ -66,6 +67,7 @@ function CountryInput({
           placeholder={placeholder}
           className="form-control"
           type="text"
+          required
           onChange={(e) => {
             const value = e.target.value;
             setQuery(e.target.value);
@@ -79,6 +81,7 @@ function CountryInput({
           id={id}
           value={query}
         />
+        <div className="invalid-feedback">Please enter your country.</div>
       </div>
       <div style={{ position: "absolute", zIndex: 5 }}>
         {results.length > 0 && !queryDone && (
@@ -163,6 +166,10 @@ export default function BillingPage() {
 
   const navigate = useNavigate();
 
+  const formRef = useRef<HTMLFormElement | null>(null);
+
+  const [isValid, setIsValid] = useState<boolean>(true);
+
   const handleCountryIdChange = (newCountryId: number) => {
     setCountryId(newCountryId);
   };
@@ -204,16 +211,40 @@ export default function BillingPage() {
     });
   };
 
+  const doBooking = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const form = formRef.current;
+
+    if (!form) return;
+
+    if (form.checkValidity()) {
+      setIsValid(true);
+
+      bookingNumber = generateRandomFormattedString();
+      navigate("/order/booking", {
+        replace: true,
+        state: { bookingNumber: bookingNumber },
+      });
+      doSendBookingEmail();
+    } else {
+      form.classList.add("was-validated");
+      setIsValid(false);
+    }
+  };
+
   return (
     <>
       <div className="row offset-md-2 w-100">
         <div className="col col-xs-12 col-md-4 p-5 bg-light-subtle">
+          <h2>Enter billing information</h2>
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
+            ref={formRef}
+            onSubmit={doBooking}
+            noValidate
+            className="needs-valdation"
           >
-            <h2>Enter billing information</h2>
             <div className="form-group mb-3">
               <div className="input-group">
                 <input
@@ -221,12 +252,16 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Card number"
                   value={cardNumber}
+                  required
                   maxLength={16}
                   onChange={(e) => {
                     setCardNumber(e.target.value);
                     handleInputChange(e);
                   }}
                 />
+                <div className="invalid-feedback">
+                  Please enter your credit card number.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
@@ -237,6 +272,7 @@ export default function BillingPage() {
                   placeholder="Card expiry month"
                   maxLength={2}
                   value={expiryMonth}
+                  required
                   ref={nextInputRef}
                   onChange={(e) => {
                     setExpiryMonth(e.target.value);
@@ -250,9 +286,13 @@ export default function BillingPage() {
                   placeholder="Card expiry year"
                   maxLength={2}
                   value={expiryYear}
+                  required
                   ref={nextInputRef}
                   onChange={(e) => setExpiryYear(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your card expiry month / year.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
@@ -262,8 +302,12 @@ export default function BillingPage() {
                   type="text"
                   placeholder="CVC code"
                   value={cvcCode}
+                  required
                   onChange={(e) => setCvcCode(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your CVC code.
+                </div>
               </div>
             </div>
             <br></br>
@@ -275,14 +319,18 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Address"
                   value={userAddress}
+                  required
                   onChange={(e) => setUserAddress(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your address.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
               <div className="input-group">
                 <input
-                  className="form-control"
+                  className="form-control no-validation"
                   type="text"
                   placeholder="Address line 2"
                   defaultValue={""}
@@ -299,8 +347,12 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Postal code"
                   value={postalCode}
+                  required
                   onChange={(e) => setPostalCode(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your postal code.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
@@ -310,8 +362,10 @@ export default function BillingPage() {
                   type="text"
                   placeholder="City"
                   value={city}
+                  required
                   onChange={(e) => setCity(e.target.value)}
                 />
+                <div className="invalid-feedback">Please enter your city.</div>
               </div>
             </div>
             <div className="form-group mb-3">
@@ -330,21 +384,15 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Email address"
                   value={email}
+                  required
                   onChange={(e) => setEmail(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your email address.
+                </div>
               </div>
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                bookingNumber = generateRandomFormattedString();
-                navigate("/order/booking", {
-                  replace: true,
-                  state: { bookingNumber: bookingNumber },
-                });
-                doSendBookingEmail();
-              }}
-            >
+            <button type="submit" className="btn btn-primary">
               Book
             </button>
           </form>

@@ -17,6 +17,7 @@ import Flight from "../../../models/Flight.model";
 import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/Document.model";
 import User from "../../../models/User.model";
+import { useRef } from "react";
 
 const flights = {
   departFlight: {
@@ -62,6 +63,12 @@ const flights = {
   totalPrice: 50450.72,
 };
 
+interface DateInputProps {
+  label: string;
+  onDateChange: (date: Date | null) => void;
+  isValid: boolean;
+}
+
 const RandomNumberContext = createContext<number>(0);
 
 export function RandomNumberProvider(props: PropsWithChildren) {
@@ -96,6 +103,37 @@ export function useRandomNumber() {
   return context;
 }
 
+function DateInput({ label, onDateChange, isValid }: DateInputProps) {
+  const [value, setValue] = useState<Date | null>(null);
+
+  const handleChange = (newValue: Date | null) => {
+    setValue(newValue);
+    onDateChange(newValue);
+    if (!newValue) {
+      isValid = true;
+    } else {
+      isValid = false;
+    }
+  };
+
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={srLatn}>
+      <div className="input-group">
+        <DatePicker
+          label={label}
+          value={value}
+          onChange={handleChange}
+          className={`form-control ${!isValid ? "is-invalid" : ""}`}
+          disablePast={true}
+        />
+        {!isValid && (
+          <div className="invalid-feedback">Please choose a valid date.</div>
+        )}
+      </div>
+    </LocalizationProvider>
+  );
+}
+
 export default function OrderPage() {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -113,7 +151,11 @@ export default function OrderPage() {
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
+  const [isValid, setIsValid] = useState<boolean>(true);
+
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const formRef = useRef<HTMLFormElement | null>(null);
 
   const randomPrice = useRandomNumber();
 
@@ -175,14 +217,38 @@ export default function OrderPage() {
     }
   }, [loggedIn]);
 
+  const toBilling = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const form = formRef.current;
+
+    if (!form) return;
+
+    if (form.checkValidity()) {
+      setIsValid(true);
+      navigate("/order/billing", { replace: true });
+    } else {
+      form.classList.add("was-validated");
+      setIsValid(false);
+    }
+  };
+
+  const handleDateOfBirthChange = (date: Date | null) => {
+    if (date) {
+      setDateOfBirth(date);
+    }
+  };
+
   return (
     <>
       <div className="row offset-md-2 w-100">
         <div className="col col-xs-12 col-md-4 p-5 bg-light-subtle">
           <form
-            onSubmit={(e) => {
-              e.preventDefault();
-            }}
+            ref={formRef}
+            onSubmit={toBilling}
+            noValidate
+            className="needs-validation"
           >
             <h2>Enter passenger details</h2>
             <div className="form-group mb-3">
@@ -192,8 +258,12 @@ export default function OrderPage() {
                   type="text"
                   placeholder="Passenger's first name"
                   value={firstName}
+                  required
                   onChange={(e) => setFirstName(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your first name.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
@@ -203,25 +273,20 @@ export default function OrderPage() {
                   type="text"
                   placeholder="Passenger's last name"
                   value={lastName}
+                  required
                   onChange={(e) => setLastName(e.target.value)}
                 />
+                <div className="invalid-feedback">
+                  Please enter your last name.
+                </div>
               </div>
             </div>
             <div className="form-group mb-3">
-              <label>Date of birth</label>
-              <LocalizationProvider
-                dateAdapter={AdapterDateFns}
-                adapterLocale={srLatn}
-              >
-                <DatePicker
-                  label={"Pick a date"}
-                  value={dateOfBirth}
-                  onChange={(e) => {
-                    if (e) setDateOfBirth(e);
-                  }}
-                  className="form-control"
-                ></DatePicker>
-              </LocalizationProvider>
+              <DateInput
+                onDateChange={handleDateOfBirthChange}
+                label="Choose your date of birth"
+                isValid={isValid}
+              ></DateInput>
             </div>
             {(!loggedIn || (loggedIn && userDocuments.length === 0)) && (
               <div className="form-group mb-3">
@@ -230,12 +295,16 @@ export default function OrderPage() {
                     className="form-control"
                     placeholder="Document type"
                     value={documentType}
+                    required
                     onChange={(e) => setDocumentType(e.target.value)}
                   >
                     <option value={""}>Choose a document type</option>
                     <option value={"National ID"}>National ID</option>
                     <option value={"Passport"}>Passport</option>
                   </select>
+                  <div className="invalid-feedback">
+                    Please choose a document type.
+                  </div>
                 </div>
                 <div className="input-group">
                   <input
@@ -243,14 +312,19 @@ export default function OrderPage() {
                     type="text"
                     placeholder="Document number"
                     value={documentNumber}
+                    required
                     onChange={(e) => setDocumentNumber(e.target.value)}
                   />
+                  <div className="invalid-feedback">
+                    Please enter your document number.
+                  </div>
                 </div>
                 <div className="input-group">
                   <select
                     className="form-control"
                     placeholder="Issuing country"
                     value={documentCountryId}
+                    required
                     onChange={(e) => setDocumentCountryId(+e.target.value)}
                   >
                     <option value={""}>Choose the issuing country</option>
@@ -260,6 +334,9 @@ export default function OrderPage() {
                       </option>
                     ))}
                   </select>
+                  <div className="invalid-feedback">
+                    Please choose a document issuing country.
+                  </div>
                 </div>
               </div>
             )}
@@ -314,10 +391,7 @@ export default function OrderPage() {
                 </label>
               </div>
             </div>
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate("/order/billing", { replace: true })}
-            >
+            <button className="btn btn-primary" type="submit">
               Billing information
             </button>
           </form>
