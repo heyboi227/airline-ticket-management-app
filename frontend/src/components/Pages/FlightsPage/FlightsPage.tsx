@@ -881,9 +881,10 @@ export default function FlightsPage() {
                         state: {
                           departFlight: departFlight,
                           returnFlight: returnFlight,
-                          totalPrice:
+                          totalPrice: (
                             Number(selectedDeparturePrice) +
-                            Number(selectedReturnPrice),
+                            Number(selectedReturnPrice)
+                          ).toFixed(2),
                         },
                       });
                     }}

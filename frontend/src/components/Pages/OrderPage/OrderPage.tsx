@@ -5,6 +5,7 @@ import {
   useState,
   PropsWithChildren,
   useContext,
+  useRef,
 } from "react";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -13,55 +14,10 @@ import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
 import { Random, MersenneTwister19937 } from "random-js";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
-import Flight from "../../../models/Flight.model";
 import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/Document.model";
 import User from "../../../models/User.model";
-import { useRef } from "react";
-
-const flights = {
-  departFlight: {
-    flightId: 1,
-    flightCode: "AS150",
-    departureDateAndTime: "2023-07-09T12:45:00Z",
-    arrivalDateAndTime: "2023-07-09T22:45:00Z",
-    originAirportId: 3,
-    destinationAirportId: 6,
-    travelClasses: [
-      {
-        travelClass: {
-          travelClassId: 2,
-          travelClassName: "Economy",
-          travelClassSubname: "Economy +",
-        },
-        isActive: true,
-        price: 25225.36,
-      },
-    ],
-    aircraftId: 4,
-  } as Flight,
-  returnFlight: {
-    flightId: 2,
-    flightCode: "AS151",
-    departureDateAndTime: "2023-07-10T00:15:00Z",
-    arrivalDateAndTime: "2023-07-10T08:30:00Z",
-    originAirportId: 6,
-    destinationAirportId: 3,
-    travelClasses: [
-      {
-        travelClass: {
-          travelClassId: 2,
-          travelClassName: "Economy",
-          travelClassSubname: "Economy +",
-        },
-        isActive: true,
-        price: 25225.36,
-      },
-    ],
-    aircraftId: 4,
-  } as Flight,
-  totalPrice: 50450.72,
-};
+import "./OrderPage.css";
 
 interface DateInputProps {
   label: string;
@@ -72,6 +28,9 @@ interface DateInputProps {
 const RandomNumberContext = createContext<number>(0);
 
 export function RandomNumberProvider(props: PropsWithChildren) {
+  const location = useLocation();
+  const flights = location.state;
+
   const [randomNumber, setRandomNumber] = useState<number>(() => {
     const storedRandomNumber = localStorage.getItem("randomNumber");
     if (storedRandomNumber !== null) {
@@ -160,6 +119,10 @@ export default function OrderPage() {
   const randomPrice = useRandomNumber();
 
   const navigate = useNavigate();
+
+  const location = useLocation();
+
+  const flights = location.state;
 
   function loadCountries() {
     api("get", "/api/country", "user")
@@ -363,7 +326,7 @@ export default function OrderPage() {
             )}
             <div className="form-group mb-3">
               <h6 className="mt-3">Gender</h6>
-              <div className="form-check form-check-inline">
+              <div className="form-check form-check-inline no-validation">
                 <input
                   className="form-check-input"
                   type="radio"
@@ -377,7 +340,7 @@ export default function OrderPage() {
                   Male
                 </label>
               </div>
-              <div className="form-check form-check-inline">
+              <div className="form-check form-check-inline no-validation">
                 <input
                   className="form-check-input"
                   type="radio"
