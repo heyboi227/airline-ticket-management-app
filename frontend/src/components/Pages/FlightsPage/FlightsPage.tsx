@@ -848,8 +848,10 @@ export default function FlightsPage() {
                 <div className="d-flex flex-column justify-content-center align-items-end mt-5">
                   <h2>
                     Price:{" "}
-                    {Number(selectedDeparturePrice) +
-                      Number(selectedReturnPrice)}{" "}
+                    {(
+                      Number(selectedDeparturePrice) +
+                      Number(selectedReturnPrice)
+                    ).toFixed(2)}{" "}
                     RSD
                   </h2>
                   <small>Including taxes + airport fees</small>

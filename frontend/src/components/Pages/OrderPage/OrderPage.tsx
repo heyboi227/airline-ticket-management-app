@@ -31,22 +31,25 @@ export function RandomNumberProvider(props: PropsWithChildren) {
   const location = useLocation();
   const flights = location.state;
 
-  const [randomNumber, setRandomNumber] = useState<number>(() => {
+  const [randomNumber, setRandomNumber] = useState<string>(() => {
     const storedRandomNumber = localStorage.getItem("randomNumber");
     if (storedRandomNumber !== null) {
-      return parseFloat(storedRandomNumber);
+      return storedRandomNumber;
     } else {
-      const newRandomNumber = new Random(
-        MersenneTwister19937.autoSeed()
-      ).integer(flights.totalPrice * 0.2, flights.totalPrice * 0.6);
+      const newRandomNumber = new Random(MersenneTwister19937.autoSeed())
+        .integer(
+          Number(flights.totalPrice) * 0.2,
+          Number(flights.totalPrice) * 0.6
+        )
+        .toFixed(2);
 
-      localStorage.setItem("randomNumber", newRandomNumber.toString());
+      localStorage.setItem("randomNumber", newRandomNumber);
       return newRandomNumber;
     }
   });
 
   return (
-    <RandomNumberContext.Provider value={randomNumber}>
+    <RandomNumberContext.Provider value={Number(randomNumber)}>
       {props.children}
     </RandomNumberContext.Provider>
   );
@@ -83,7 +86,7 @@ function DateInput({ label, onDateChange, isValid }: DateInputProps) {
           value={value}
           onChange={handleChange}
           className={`form-control ${!isValid ? "is-invalid" : ""}`}
-          disablePast={true}
+          disableFuture={true}
         />
         {!isValid && (
           <div className="invalid-feedback">Please choose a valid date.</div>
@@ -190,7 +193,14 @@ export default function OrderPage() {
 
     if (form.checkValidity()) {
       setIsValid(true);
-      navigate("/order/billing", { replace: true });
+      navigate("/order/billing", {
+        replace: true,
+        state: {
+          departFlight: flights.departFlight,
+          returnFlight: flights.returnFlight,
+          totalPrice: flights.totalPrice,
+        },
+      });
     } else {
       form.classList.add("was-validated");
       setIsValid(false);

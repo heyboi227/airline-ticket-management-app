@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import Flight from "../../../models/Flight.model";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 import Country from "../../../models/Country.model";
 import { api } from "../../../api/api";
@@ -103,49 +102,8 @@ function CountryInput({
 }
 
 export default function BillingPage() {
-  const flights = {
-    departFlight: {
-      flightId: 1,
-      flightCode: "AS150",
-      departureDateAndTime: "2023-07-09T12:45:00Z",
-      arrivalDateAndTime: "2023-07-09T22:45:00Z",
-      originAirportId: 3,
-      destinationAirportId: 6,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
-        },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    returnFlight: {
-      flightId: 2,
-      flightCode: "AS151",
-      departureDateAndTime: "2023-07-10T00:15:00Z",
-      arrivalDateAndTime: "2023-07-10T08:30:00Z",
-      originAirportId: 6,
-      destinationAirportId: 3,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
-        },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    totalPrice: 50450.72,
-  };
+  const location = useLocation();
+  const flights = location.state;
 
   const [cardNumber, setCardNumber] = useState<string>("");
   const [expiryMonth, setExpiryMonth] = useState<string>("");
