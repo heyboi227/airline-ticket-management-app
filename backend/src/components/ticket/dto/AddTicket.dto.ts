@@ -10,7 +10,7 @@ export interface AddTicketDto {
   ticketHolderName: string;
   documentId: number;
   price: number;
-  userId: number;
+  userId: number | null;
   flightId: number;
   flightFareCode: string;
   seatNumber: string;
@@ -21,7 +21,7 @@ export interface AddTicket extends ServiceData {
   ticket_holder_name: string;
   document_id: number;
   price: number;
-  user_id: number;
+  user_id: number | null;
   flight_id: number;
   flight_fare_code: string;
   seat_number: string;
@@ -48,6 +48,7 @@ const AddTicketValidator = ajv.compile({
     },
     userId: {
       type: "number",
+      nullable: true,
     },
     flightId: {
       type: "number",

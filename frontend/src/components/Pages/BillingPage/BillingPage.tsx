@@ -7,6 +7,7 @@ import Config from "../../../config";
 import { debounce } from "lodash";
 import { useRandomNumber } from "../OrderPage/OrderPage";
 import "./BillingPage.css";
+import AppStore from "../../../stores/AppStore";
 
 interface InputProps {
   id: string;
@@ -103,7 +104,7 @@ function CountryInput({
 
 export default function BillingPage() {
   const location = useLocation();
-  const flights = location.state;
+  const formData = location.state;
 
   const [cardNumber, setCardNumber] = useState<string>("");
   const [expiryMonth, setExpiryMonth] = useState<string>("");
@@ -140,20 +141,78 @@ export default function BillingPage() {
     }
   };
 
-  const generateRandomFormattedString = () => {
+  const generateRandomBookingConfirmationFormattedString = () => {
     let result = "";
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    const numbers = "0123456789";
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += letters.charAt(Math.floor(Math.random() * letters.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
 
     return result;
+  };
+
+  const generateRandomTicketNumberFormattedString = () => {
+    let result = "";
+
+    const numbers = "0123456789";
+
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
+
+    return result;
+  };
+
+  const doAddTicket = () => {
+    const randomTicketNumberFormattedString =
+      generateRandomTicketNumberFormattedString();
+
+    const ticketData = {
+      ticketHolderName:
+        formData.ticketHolderFirstName + " " + formData.ticketHolderLastName,
+      documentId: 4,
+      userId:
+        AppStore.getState().auth.id !== 0 ? AppStore.getState().auth.id : null,
+      flightFareCode: "3523FA",
+      seatNumber: "13F",
+    };
+
+    const flights: any[] = [
+      {
+        ticketNumber: randomTicketNumberFormattedString,
+        flightId: formData.departFlight.flightId,
+        price: Number(formData.departurePrice),
+        ...ticketData,
+      },
+      {
+        ticketNumber: Number(randomTicketNumberFormattedString + 1).toString(),
+        flightId: formData.returnFlight.flightId,
+        price: Number(formData.returnPrice),
+        ...ticketData,
+      },
+    ];
+
+    const apiCalls = flights.map((flight) => {
+      return api("post", "/api/ticket", "user", {
+        ...flight,
+      });
+    });
+
+    Promise.all(apiCalls).catch((error) => {
+      setErrorMessage(error?.message ?? "Could not generate the ticket.");
+
+      setTimeout(() => {
+        setErrorMessage("");
+      }, 3500);
+    });
   };
 
   const doSendBookingEmail = () => {
@@ -180,11 +239,12 @@ export default function BillingPage() {
     if (form.checkValidity()) {
       setIsValid(true);
 
-      bookingNumber = generateRandomFormattedString();
+      bookingNumber = generateRandomBookingConfirmationFormattedString();
       navigate("/order/booking", {
         replace: true,
         state: { bookingNumber: bookingNumber },
       });
+      doAddTicket();
       doSendBookingEmail();
     } else {
       form.classList.add("was-validated");
@@ -358,21 +418,21 @@ export default function BillingPage() {
         <div className="col col-xs-12 col-md-4 p-5">
           <span>Departure flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={flights.departFlight} />
+          <FlightRowWithoutPrices flight={formData.departFlight} />
           <br></br>
           <br></br>
           <span>Return flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={flights.returnFlight} />
+          <FlightRowWithoutPrices flight={formData.returnFlight} />
           <br></br>
           <br></br>
           <span>
-            <h5>Ticket price: {flights.totalPrice - randomPrice} RSD</h5>
+            <h5>Ticket price: {formData.totalPrice - randomPrice} RSD</h5>
             <h5>Taxes and fees: {randomPrice} RSD</h5>
           </span>
           <br></br>
           <span>
-            <h2>Total price: {flights.totalPrice} RSD</h2>
+            <h2>Total price: {formData.totalPrice} RSD</h2>
           </span>
         </div>
       </div>

@@ -198,7 +198,11 @@ export default function OrderPage() {
         state: {
           departFlight: flights.departFlight,
           returnFlight: flights.returnFlight,
+          departurePrice: flights.departurePrice,
+          returnPrice: flights.returnPrice,
           totalPrice: flights.totalPrice,
+          ticketHolderFirstName: firstName,
+          ticketHolderLastName: lastName,
         },
       });
     } else {

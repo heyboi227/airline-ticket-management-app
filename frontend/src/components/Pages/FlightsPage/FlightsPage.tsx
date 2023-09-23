@@ -883,6 +883,8 @@ export default function FlightsPage() {
                         state: {
                           departFlight: departFlight,
                           returnFlight: returnFlight,
+                          departurePrice: selectedDeparturePrice,
+                          returnPrice: selectedReturnPrice,
                           totalPrice: (
                             Number(selectedDeparturePrice) +
                             Number(selectedReturnPrice)
