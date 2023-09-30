@@ -1,8 +1,9 @@
 import BaseService from "../../common/BaseService";
 import TicketModel from "./TicketModel.model";
-import { AddTicket } from "./dto/AddTicket.dto";
+import { AddTicket, FlightIdSeatNumberSearch } from "./dto/AddTicket.dto";
 import { DefaultDocumentAdapterOptions } from "../document/DocumentService.service";
 import { DefaultFlightAdapterOptions } from "../flight/FlightService.service";
+import * as mysql2 from "mysql2/promise";
 
 export interface TicketAdapterOptions {
   showDocument: boolean;
@@ -102,5 +103,35 @@ export default class TicketService extends BaseService<
     options: TicketAdapterOptions = DefaultTicketAdapterOptions
   ): Promise<TicketModel[]> {
     return this.getAllByFieldNameAndValue("flight_id", flightId, options);
+  }
+
+  public async getAllByFlightIdAndSeatNumber(
+    data: FlightIdSeatNumberSearch
+  ): Promise<TicketModel[]> {
+    return new Promise<TicketModel[]>((resolve, reject) => {
+      const sql: string =
+        "SELECT * from `ticket` where `flight_id` = ? AND `seat_number` = ?;";
+
+      this.db
+        .execute(sql, [data.flight_id, data.seat_number])
+        .then(async ([rows]) => {
+          if (rows === undefined) {
+            return resolve([]);
+          }
+
+          const items: TicketModel[] = [];
+
+          for (const row of rows as mysql2.RowDataPacket[]) {
+            items.push(
+              await this.adaptToModel(row, DefaultTicketAdapterOptions)
+            );
+          }
+
+          resolve(items);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 }

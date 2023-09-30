@@ -27,6 +27,16 @@ export interface AddTicket extends ServiceData {
   seat_number: string;
 }
 
+export interface FlightIdSeatNumberSearchDto {
+  flightId: number;
+  seatNumber: string;
+}
+
+export interface FlightIdSeatNumberSearch extends ServiceData {
+  flight_id: number;
+  seat_number: string;
+}
+
 const AddTicketValidator = ajv.compile({
   type: "object",
   properties: {

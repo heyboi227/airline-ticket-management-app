@@ -1,6 +1,10 @@
 import BaseController from "../../common/BaseController";
 import { Request, Response } from "express";
-import { AddTicketValidator, AddTicketDto } from "./dto/AddTicket.dto";
+import {
+  AddTicketValidator,
+  AddTicketDto,
+  FlightIdSeatNumberSearchDto,
+} from "./dto/AddTicket.dto";
 import { DefaultTicketAdapterOptions } from "./TicketService.service";
 import StatusError from "../../common/StatusError";
 import EmailController from "../email/EmailController.controller";
@@ -111,6 +115,22 @@ export default class TicketController extends BaseController {
         setTimeout(() => {
           res.status(error?.status ?? 500).send(error?.message);
         }, 500);
+      });
+  }
+
+  getAllByFlightIdAndSeatNumber(req: Request, res: Response) {
+    const data = req.body as FlightIdSeatNumberSearchDto;
+
+    this.services.ticket
+      .getAllByFlightIdAndSeatNumber({
+        flight_id: data.flightId,
+        seat_number: data.seatNumber,
+      })
+      .then((result) => {
+        res.send(result);
+      })
+      .catch((error) => {
+        res.status(500).send(error?.message);
       });
   }
 

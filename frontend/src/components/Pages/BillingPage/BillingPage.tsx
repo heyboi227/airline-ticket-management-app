@@ -8,6 +8,11 @@ import { debounce } from "lodash";
 import { useRandomNumber } from "../OrderPage/OrderPage";
 import "./BillingPage.css";
 import AppStore from "../../../stores/AppStore";
+import {
+  generateRandomTicketNumberFormattedString,
+  generateRandomBookingConfirmationFormattedString,
+  generateRandomSeat,
+} from "../../../helpers/stringGenerators";
 
 interface InputProps {
   id: string;
@@ -141,37 +146,7 @@ export default function BillingPage() {
     }
   };
 
-  const generateRandomBookingConfirmationFormattedString = () => {
-    let result = "";
-
-    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-
-    return result;
-  };
-
-  const generateRandomTicketNumberFormattedString = () => {
-    let result = "";
-
-    const numbers = "0123456789";
-
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    result += numbers.charAt(Math.floor(Math.random() * numbers.length));
-
-    return result;
-  };
-
-  const doAddTicket = () => {
+  const doAddTicket = async () => {
     const randomTicketNumberFormattedString =
       generateRandomTicketNumberFormattedString();
 
@@ -181,24 +156,40 @@ export default function BillingPage() {
       documentId: 4,
       userId:
         AppStore.getState().auth.id !== 0 ? AppStore.getState().auth.id : null,
-      flightFareCode: "3523FA",
-      seatNumber: "13F",
+      flightFareCode: generateRandomBookingConfirmationFormattedString(),
     };
 
-    const flights: any[] = [
-      {
-        ticketNumber: randomTicketNumberFormattedString,
-        flightId: formData.departFlight.flightId,
-        price: Number(formData.departurePrice),
-        ...ticketData,
-      },
-      {
-        ticketNumber: Number(randomTicketNumberFormattedString + 1).toString(),
-        flightId: formData.returnFlight.flightId,
-        price: Number(formData.returnPrice),
-        ...ticketData,
-      },
-    ];
+    const generateFlights = async () => {
+      const departSeatNumber = await generateRandomSeat(
+        formData.departFlight.flightId
+      );
+      const returnSeatNumber = await generateRandomSeat(
+        formData.returnFlight.flightId
+      );
+
+      const flights: any[] = [
+        {
+          ticketNumber: randomTicketNumberFormattedString,
+          flightId: formData.departFlight.flightId,
+          price: Number(formData.departurePrice),
+          seatNumber: departSeatNumber,
+          ...ticketData,
+        },
+        {
+          ticketNumber: (
+            Number(randomTicketNumberFormattedString) + 1
+          ).toString(),
+          flightId: formData.returnFlight.flightId,
+          price: Number(formData.returnPrice),
+          seatNumber: returnSeatNumber,
+          ...ticketData,
+        },
+      ];
+
+      return flights;
+    };
+
+    const flights = await generateFlights();
 
     const apiCalls = flights.map((flight) => {
       return api("post", "/api/ticket", "user", {
@@ -207,7 +198,7 @@ export default function BillingPage() {
     });
 
     Promise.all(apiCalls).catch((error) => {
-      setErrorMessage(error?.message ?? "Could not generate the ticket.");
+      setErrorMessage(error?.message ?? "Could not generate the ticket(s).");
 
       setTimeout(() => {
         setErrorMessage("");
