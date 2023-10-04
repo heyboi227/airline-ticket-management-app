@@ -29,6 +29,7 @@ import AdminTravelClassAdd from "../Administrator/Dashboard/AdminTravelClassAdd"
 import OrderPage, { RandomNumberProvider } from "../Pages/OrderPage/OrderPage";
 import BillingPage from "../Pages/BillingPage/BillingPage";
 import BookingConfirmationPage from "../Pages/BookingConfirmationPage/BookingConfirmationPage";
+import UserDocumentsPage from "../User/UserDocumentsPage/UserDocumentsPage";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -85,6 +86,8 @@ function App() {
           />
 
           <Route path="/profile" element={<UserProfile />} />
+          <Route path="/profile/documents" element={<UserDocumentsPage />} />
+
           <Route path="/deactivate" element={<UserDeactivatePage />} />
 
           <Route path="/admin/dashboard" element={<AdminDashboard />} />

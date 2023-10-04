@@ -8,6 +8,7 @@ import UserDetailsEditor from "./UserDetailsEditor";
 import UserPasswordChanger from "./UserPasswordChanger";
 import { faAddressBook } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import UserAddressManager from "./UserAddressManager";
 
 export default function UserProfile() {
   const [user, setUser] = useState<User>();
@@ -67,10 +68,25 @@ export default function UserProfile() {
                     onDataChanged={(user) => setUser(user)}
                   />
                 )}
-                <div className="form-group">
-                  <button className="btn btn-primary">
-                    <FontAwesomeIcon icon={faAddressBook} /> Manage addresses
-                  </button>
+                <div className="form-group mt-2">
+                  <Link className="btn btn-info" to="/profile/documents">
+                    <FontAwesomeIcon icon={faAddressBook} /> Manage documents
+                  </Link>
+                </div>
+                <div className="row mt-3">
+                  <div className="col col-12">
+                    {user && (
+                      <UserAddressManager
+                        user={user}
+                        onAddressChange={(user) => setUser(user)}
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className="form-group mt-5">
+                  <Link className="btn btn-sm btn-danger" to="/deactivate">
+                    Deactivate account
+                  </Link>
                 </div>
               </div>
 
@@ -104,11 +120,7 @@ export default function UserProfile() {
           transition={{
             delay: 0.125,
           }}
-        >
-          <Link className="btn btn-sm btn-danger" to="/deactivate">
-            Deactivate account
-          </Link>
-        </motion.div>
+        ></motion.div>
       </div>
     </>
   );
