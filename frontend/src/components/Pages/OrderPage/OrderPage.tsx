@@ -15,7 +15,7 @@ import AppStore from "../../../stores/AppStore";
 import { Random, MersenneTwister19937 } from "random-js";
 import { FlightRowWithoutPrices } from "../FlightsPage/FlightsPage";
 import Country from "../../../models/Country.model";
-import UserDocument from "../../../models/Document.model";
+import UserDocument from "../../../models/UserDocument.model";
 import User from "../../../models/User.model";
 import "./OrderPage.css";
 

@@ -48,8 +48,10 @@ export default function UserLoginPage() {
             </button>
           </div>
         </form>
-        <span>Forgot your password?</span>&nbsp;
-        <Link to="/auth/user/forgot-password">Click here.</Link>
+        <span>
+          Forgot your password? &nbsp;
+          <Link to="/auth/user/forgot-password">Click here.</Link>
+        </span>
         <br />
         <span>
           <small>

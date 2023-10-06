@@ -1,4 +1,4 @@
-import UserDocument from "./Document.model";
+import UserDocument from "./UserDocument.model";
 import User from "./User.model";
 import Flight from "./Flight.model";
 
