@@ -233,7 +233,14 @@ export default function BillingPage() {
       bookingNumber = generateRandomBookingConfirmationFormattedString();
       navigate("/order/booking", {
         replace: true,
-        state: { bookingNumber: bookingNumber },
+        state: {
+          bookingNumber: bookingNumber,
+          passengerDetails: {
+            firstName: formData.ticketHolderFirstName,
+            lastName: formData.ticketHolderLastName,
+            dateOfBirth: formData.ticketHolderDateOfBirth,
+          },
+        },
       });
       doAddTicket();
       doSendBookingEmail();

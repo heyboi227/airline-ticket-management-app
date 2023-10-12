@@ -18,6 +18,7 @@ import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/UserDocument.model";
 import User from "../../../models/User.model";
 import "./OrderPage.css";
+import Flight from "../../../models/Flight.model";
 
 interface DateInputProps {
   label: string;
@@ -125,7 +126,49 @@ export default function OrderPage() {
 
   const location = useLocation();
 
-  const flights = location.state;
+  const flights = {
+    departFlight: {
+      flightId: 1,
+      flightCode: "AS150",
+      departureDateAndTime: "2023-07-09T12:45:00Z",
+      arrivalDateAndTime: "2023-07-09T22:45:00Z",
+      originAirportId: 3,
+      destinationAirportId: 6,
+      travelClasses: [
+        {
+          travelClass: {
+            travelClassId: 2,
+            travelClassName: "Economy",
+            travelClassSubname: "Economy +",
+          },
+          isActive: true,
+          price: 25225.36,
+        },
+      ],
+      aircraftId: 4,
+    } as Flight,
+    returnFlight: {
+      flightId: 2,
+      flightCode: "AS151",
+      departureDateAndTime: "2023-07-10T00:15:00Z",
+      arrivalDateAndTime: "2023-07-10T08:30:00Z",
+      originAirportId: 6,
+      destinationAirportId: 3,
+      travelClasses: [
+        {
+          travelClass: {
+            travelClassId: 2,
+            travelClassName: "Economy",
+            travelClassSubname: "Economy +",
+          },
+          isActive: true,
+          price: 25225.36,
+        },
+      ],
+      aircraftId: 4,
+    } as Flight,
+    totalPrice: 50450.72,
+  };
 
   function loadCountries() {
     api("get", "/api/country", "user")
@@ -198,11 +241,12 @@ export default function OrderPage() {
         state: {
           departFlight: flights.departFlight,
           returnFlight: flights.returnFlight,
-          departurePrice: flights.departurePrice,
-          returnPrice: flights.returnPrice,
+          departurePrice: flights.departFlight.travelClasses![0].price,
+          returnPrice: flights.returnFlight.travelClasses![0].price,
           totalPrice: flights.totalPrice,
           ticketHolderFirstName: firstName,
           ticketHolderLastName: lastName,
+          ticketHolderDateOfBirth: dateOfBirth,
         },
       });
     } else {

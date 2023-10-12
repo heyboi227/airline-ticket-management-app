@@ -4,13 +4,30 @@ export default function BookingConfirmationPage() {
 
   return (
     <div className="container">
-      <h1>Your booking has been confirmed.</h1>
+      <div className="d-flex flex-column justify-content-center align-items-center">
+        <h1>Success! Your booking has been confirmed.</h1>
+        <h2>Your card has been charged.</h2>
+      </div>
       <h2>
-        Confirmation Number: {location.state ? location.state.bookingNumber : 0}
+        Confirmation Number:{" "}
+        {location.state ? location.state.bookingNumber : "AAAAA"}
       </h2>
 
       <h3>Passenger Details</h3>
-      {/* Display passenger details here */}
+      <ul className="list-unstyled">
+        <li className="list-group-item">
+          First name: {location.state.passengerDetails.firstName}{" "}
+        </li>
+        <li className="list-group-item">
+          Last name: {location.state.passengerDetails.lastName}
+        </li>
+        <li className="list-group-item">
+          Date of birth:{" "}
+          {new Date(
+            location.state.passengerDetails.dateOfBirth
+          ).toLocaleDateString("sr")}
+        </li>
+      </ul>
 
       <h3>Flight Details</h3>
       {/* Display flight details here */}
