@@ -240,6 +240,10 @@ export default function BillingPage() {
             lastName: formData.ticketHolderLastName,
             dateOfBirth: formData.ticketHolderDateOfBirth,
           },
+          flights: {
+            departFlight: formData.departFlight,
+            returnFlight: formData.returnFlight,
+          },
         },
       });
       doAddTicket();

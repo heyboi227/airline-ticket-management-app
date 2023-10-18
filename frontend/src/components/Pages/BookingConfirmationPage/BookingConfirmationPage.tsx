@@ -16,21 +16,64 @@ export default function BookingConfirmationPage() {
       <h3>Passenger Details</h3>
       <ul className="list-unstyled">
         <li className="list-group-item">
-          First name: {location.state.passengerDetails.firstName}{" "}
+          First name:{" "}
+          {location.state ? location.state.passengerDetails.firstName : "Losmi"}{" "}
         </li>
         <li className="list-group-item">
-          Last name: {location.state.passengerDetails.lastName}
+          Last name:{" "}
+          {location.state ? location.state.passengerDetails.lastName : "Losmi"}
         </li>
         <li className="list-group-item">
           Date of birth:{" "}
-          {new Date(
-            location.state.passengerDetails.dateOfBirth
-          ).toLocaleDateString("sr")}
+          {location.state
+            ? new Date(
+                location.state.passengerDetails.dateOfBirth
+              ).toLocaleDateString("sr")
+            : "1999-09-08"}
         </li>
       </ul>
 
       <h3>Flight Details</h3>
-      {/* Display flight details here */}
+      <h4>Departure flight</h4>
+      <ul className="list-unstyled">
+        <li className="list-group-item">
+          {location.state
+            ? location.state.flights.departFlight.flightCode
+            : "AS101"}
+        </li>
+        <li className="list-group-item">
+          Departs:{" "}
+          {location.state
+            ? location.state.flights.departFlight.departureDateAndTime
+            : "1999-09-08"}{" "}
+        </li>
+        <li className="list-group-item">
+          Arrives:{" "}
+          {location.state
+            ? location.state.flights.departFlight.arrivalDateAndTime
+            : "1999-09-08"}{" "}
+        </li>
+      </ul>
+      <h4>Return flight</h4>
+      <ul className="list-unstyled">
+        <li className="list-group-item">
+          {location.state
+            ? location.state.flights.returnFlight.flightCode
+            : "AS102"}
+        </li>
+        <li className="list-group-item">
+          Departs:{" "}
+          {location.state
+            ? location.state.flights.returnFlight.departureDateAndTime
+            : "1999-09-08"}{" "}
+        </li>
+        <li className="list-group-item">
+          Arrives:{" "}
+          {location.state
+            ? location.state.flights.returnFlight.arrivalDateAndTime
+            : "1999-09-08"}{" "}
+        </li>
+      </ul>
 
       <h3>Seat Assignment</h3>
       {/* Display seat assignment here */}
