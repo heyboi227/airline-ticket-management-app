@@ -12,74 +12,100 @@ export default function BookingConfirmationPage() {
         Confirmation Number:{" "}
         {location.state ? location.state.bookingNumber : "AAAAA"}
       </h2>
-
-      <h3>Passenger Details</h3>
-      <ul className="list-unstyled">
-        <li className="list-group-item">
-          First name:{" "}
-          {location.state ? location.state.passengerDetails.firstName : "Losmi"}{" "}
-        </li>
-        <li className="list-group-item">
-          Last name:{" "}
-          {location.state ? location.state.passengerDetails.lastName : "Losmi"}
-        </li>
-        <li className="list-group-item">
-          Date of birth:{" "}
-          {location.state
-            ? new Date(
-                location.state.passengerDetails.dateOfBirth
-              ).toLocaleDateString("sr")
-            : "1999-09-08"}
-        </li>
-      </ul>
-
-      <h3>Flight Details</h3>
-      <h4>Departure flight</h4>
-      <ul className="list-unstyled">
-        <li className="list-group-item">
-          {location.state
-            ? location.state.flights.departFlight.flightCode
-            : "AS101"}
-        </li>
-        <li className="list-group-item">
-          Departs:{" "}
-          {location.state
-            ? location.state.flights.departFlight.departureDateAndTime
-            : "1999-09-08"}{" "}
-        </li>
-        <li className="list-group-item">
-          Arrives:{" "}
-          {location.state
-            ? location.state.flights.departFlight.arrivalDateAndTime
-            : "1999-09-08"}{" "}
-        </li>
-      </ul>
-      <h4>Return flight</h4>
-      <ul className="list-unstyled">
-        <li className="list-group-item">
-          {location.state
-            ? location.state.flights.returnFlight.flightCode
-            : "AS102"}
-        </li>
-        <li className="list-group-item">
-          Departs:{" "}
-          {location.state
-            ? location.state.flights.returnFlight.departureDateAndTime
-            : "1999-09-08"}{" "}
-        </li>
-        <li className="list-group-item">
-          Arrives:{" "}
-          {location.state
-            ? location.state.flights.returnFlight.arrivalDateAndTime
-            : "1999-09-08"}{" "}
-        </li>
-      </ul>
-
-      <h3>Seat Assignment</h3>
-      {/* Display seat assignment here */}
-
-      <h3>Baggage Information</h3>
-      {/* Display baggage information here */}
+      <div className="row">
+        <div className="col">
+          <h3>Passenger Details</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">
+              First name:{" "}
+              {location.state
+                ? location.state.passengerDetails.firstName
+                : "Losmi"}{" "}
+            </li>
+            <li className="list-group-item">
+              Last name:{" "}
+              {location.state
+                ? location.state.passengerDetails.lastName
+                : "Losmi"}
+            </li>
+            <li className="list-group-item">
+              Date of birth:{" "}
+              {location.state
+                ? new Date(
+                    location.state.passengerDetails.dateOfBirth
+                  ).toLocaleDateString("sr")
+                : "1999-09-08"}
+            </li>
+          </ul>
+        </div>
+        <div className="col">
+          <h3>Flight Details</h3>
+          <div className="row">
+            <div className="col">
+              <ul className="list-unstyled">
+                <li className="list-group-item">
+                  {location.state
+                    ? location.state.flights.departFlight.flightCode
+                    : "AS101"}
+                </li>
+                <li className="list-group-item">
+                  Departs:{" "}
+                  {location.state
+                    ? location.state.flights.departFlight.departureDateAndTime
+                    : "1999-09-08"}{" "}
+                </li>
+                <li className="list-group-item">
+                  Arrives:{" "}
+                  {location.state
+                    ? location.state.flights.departFlight.arrivalDateAndTime
+                    : "1999-09-08"}{" "}
+                </li>
+                <li className="list-group-item">Aircraft: Embraer 175</li>
+              </ul>
+            </div>
+            <div className="col">
+              <ul className="list-unstyled">
+                <li className="list-group-item">
+                  {location.state
+                    ? location.state.flights.returnFlight.flightCode
+                    : "AS102"}
+                </li>
+                <li className="list-group-item">
+                  Departs:{" "}
+                  {location.state
+                    ? location.state.flights.returnFlight.departureDateAndTime
+                    : "1999-09-08"}{" "}
+                </li>
+                <li className="list-group-item">
+                  Arrives:{" "}
+                  {location.state
+                    ? location.state.flights.returnFlight.arrivalDateAndTime
+                    : "1999-09-08"}{" "}
+                </li>
+                <li className="list-group-item">Aircraft: Embraer 175</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="row">
+        <div className="col">
+          <h3>Seat Assignment</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">AS101: 13F</li>
+            <li className="list-group-item">AS102: 4A</li>
+          </ul>
+        </div>
+        <div className="col">
+          <h3>Baggage Information</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">Hand baggage: 1 piece included</li>
+            <li className="list-group-item">
+              Checked baggage: 1 piece included
+            </li>
+          </ul>
+        </div>
+      </div>
 
       <h3>Price Breakdown</h3>
       {/* Display price breakdown here */}
