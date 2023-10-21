@@ -146,6 +146,9 @@ export default function BillingPage() {
     }
   };
 
+  const departSeatNumber = generateRandomSeat(formData.departFlight.flightId);
+  const returnSeatNumber = generateRandomSeat(formData.returnFlight.flightId);
+
   const doAddTicket = async () => {
     const randomTicketNumberFormattedString =
       generateRandomTicketNumberFormattedString();
@@ -160,13 +163,6 @@ export default function BillingPage() {
     };
 
     const generateFlights = async () => {
-      const departSeatNumber = await generateRandomSeat(
-        formData.departFlight.flightId
-      );
-      const returnSeatNumber = await generateRandomSeat(
-        formData.returnFlight.flightId
-      );
-
       const flights: any[] = [
         {
           ticketNumber: randomTicketNumberFormattedString,
@@ -194,7 +190,7 @@ export default function BillingPage() {
     const apiCalls = flights.map((flight) => {
       return api("post", "/api/ticket", "user", {
         ...flight,
-      });
+      }).then((response) => {});
     });
 
     Promise.all(apiCalls).catch((error) => {
@@ -234,15 +230,19 @@ export default function BillingPage() {
       navigate("/order/booking", {
         replace: true,
         state: {
-          bookingNumber: bookingNumber,
+          flightDetails: {
+            bookingNumber: bookingNumber,
+            departFlight: formData.departFlight,
+            returnFlight: formData.returnFlight,
+            departureTravelClass: location.state.departureTravelClass,
+            returnTravelClass: location.state.returnTravelClass,
+            departSeat: departSeatNumber,
+            returnSeat: returnSeatNumber,
+          },
           passengerDetails: {
             firstName: formData.ticketHolderFirstName,
             lastName: formData.ticketHolderLastName,
             dateOfBirth: formData.ticketHolderDateOfBirth,
-          },
-          flights: {
-            departFlight: formData.departFlight,
-            returnFlight: formData.returnFlight,
           },
         },
       });

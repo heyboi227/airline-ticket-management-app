@@ -39,6 +39,10 @@ interface FlightRowWithPricesProps {
   setDepartFlight: React.Dispatch<React.SetStateAction<Flight | undefined>>;
   returnFlight: Flight | undefined;
   setReturnFlight: React.Dispatch<React.SetStateAction<Flight | undefined>>;
+  selectedDepartureTravelClass: string;
+  setSelectedDepartureTravelClass: React.Dispatch<React.SetStateAction<string>>;
+  selectedReturnTravelClass: string;
+  setSelectedReturnTravelClass: React.Dispatch<React.SetStateAction<string>>;
   selectedDeparturePrice: number;
   setSelectedDeparturePrice: React.Dispatch<React.SetStateAction<number>>;
   selectedReturnPrice: number;
@@ -318,12 +322,18 @@ const ClassPrices = (props: ClassPricesProps) => {
                         props.flightRowWithPricesProps.setChooseFlightText(
                           "Choose your return flight"
                         );
+                        props.flightRowWithPricesProps.setSelectedDepartureTravelClass(
+                          travelClass.travelClass.travelClassSubname
+                        );
                         props.flightRowWithPricesProps.setSelectedDeparturePrice(
                           travelClass.price
                         );
                       } else {
                         props.flightRowWithPricesProps.setReturnFlight(
                           props.flightRowWithPricesProps.flight
+                        );
+                        props.flightRowWithPricesProps.setSelectedReturnTravelClass(
+                          travelClass.travelClass.travelClassSubname
                         );
                         props.flightRowWithPricesProps.setSelectedReturnPrice(
                           travelClass.price
@@ -525,6 +535,11 @@ export default function FlightsPage() {
   const [returnFlight, setReturnFlight] = useState<Flight | undefined>(
     undefined
   );
+
+  const [selectedDepartureTravelClass, setSelectedDepartureTravelClass] =
+    useState<string>("");
+  const [selectedReturnTravelClass, setSelectedReturnTravelClass] =
+    useState<string>("");
 
   const [selectedDeparturePrice, setSelectedDeparturePrice] =
     useState<number>(0);
@@ -883,6 +898,12 @@ export default function FlightsPage() {
                         state: {
                           departFlight: departFlight,
                           returnFlight: returnFlight,
+                          departureTravelClass: selectedDepartureTravelClass
+                            ? selectedDepartureTravelClass
+                            : "Economy",
+                          returnTravelClass: selectedReturnTravelClass
+                            ? selectedReturnTravelClass
+                            : "Economy",
                           departurePrice: selectedDeparturePrice,
                           returnPrice: selectedReturnPrice,
                           totalPrice: (
@@ -932,6 +953,18 @@ export default function FlightsPage() {
                             setSelectedReturnPrice={setSelectedReturnPrice}
                             areFlightsSelected={areFlightsSelected}
                             setAreFlightsSelected={setAreFlightsSelected}
+                            selectedDepartureTravelClass={
+                              selectedDepartureTravelClass
+                            }
+                            setSelectedDepartureTravelClass={
+                              setSelectedDepartureTravelClass
+                            }
+                            selectedReturnTravelClass={
+                              selectedReturnTravelClass
+                            }
+                            setSelectedReturnTravelClass={
+                              setSelectedReturnTravelClass
+                            }
                           />
                         ))}
                       </>

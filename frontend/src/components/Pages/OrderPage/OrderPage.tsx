@@ -239,14 +239,20 @@ export default function OrderPage() {
       navigate("/order/billing", {
         replace: true,
         state: {
-          departFlight: flights.departFlight,
-          returnFlight: flights.returnFlight,
-          departurePrice: flights.departFlight.travelClasses![0].price,
-          returnPrice: flights.returnFlight.travelClasses![0].price,
-          totalPrice: flights.totalPrice,
-          ticketHolderFirstName: firstName,
-          ticketHolderLastName: lastName,
-          ticketHolderDateOfBirth: dateOfBirth,
+          flightDetails: {
+            departFlight: flights.departFlight,
+            returnFlight: flights.returnFlight,
+            departureTravelClass: location.state.departureTravelClass,
+            returnTravelClass: location.state.returnTravelClass,
+            departurePrice: flights.departFlight.travelClasses![0].price,
+            returnPrice: flights.returnFlight.travelClasses![0].price,
+            totalPrice: flights.totalPrice,
+          },
+          ticketHolderDetails: {
+            ticketHolderFirstName: firstName,
+            ticketHolderLastName: lastName,
+            ticketHolderDateOfBirth: dateOfBirth,
+          },
         },
       });
     } else {
@@ -422,11 +428,13 @@ export default function OrderPage() {
           <br></br>
           <FlightRowWithoutPrices flight={flights.departFlight} />
           <br></br>
+          <span>Class: {location.state.departureFlightClass}</span>
           <br></br>
           <span>Return flight:</span>
           <br></br>
           <FlightRowWithoutPrices flight={flights.returnFlight} />
           <br></br>
+          <span>Class: {location.state.returnFlightClass}</span>
           <br></br>
           <span>
             <h5>Ticket price: {flights.totalPrice - randomPrice} RSD</h5>

@@ -52,15 +52,20 @@ export default function BookingConfirmationPage() {
                   Departs:{" "}
                   {location.state
                     ? location.state.flights.departFlight.departureDateAndTime
-                    : "1999-09-08"}{" "}
+                    : "21.10.2023 10:10"}{" "}
                 </li>
                 <li className="list-group-item">
                   Arrives:{" "}
                   {location.state
                     ? location.state.flights.departFlight.arrivalDateAndTime
-                    : "1999-09-08"}{" "}
+                    : "21.10.2023 11:20"}{" "}
                 </li>
-                <li className="list-group-item">Aircraft: Embraer 175</li>
+                <li className="list-group-item">
+                  Aircraft:{" "}
+                  {location.state
+                    ? location.state.flights.departFlight.aircraft?.aircraftType
+                    : "Embraer 175"}
+                </li>
               </ul>
             </div>
             <div className="col">
@@ -74,15 +79,20 @@ export default function BookingConfirmationPage() {
                   Departs:{" "}
                   {location.state
                     ? location.state.flights.returnFlight.departureDateAndTime
-                    : "1999-09-08"}{" "}
+                    : "22.10.2023 09:50"}{" "}
                 </li>
                 <li className="list-group-item">
                   Arrives:{" "}
                   {location.state
                     ? location.state.flights.returnFlight.arrivalDateAndTime
-                    : "1999-09-08"}{" "}
+                    : "22.10.2023 10:45"}{" "}
                 </li>
-                <li className="list-group-item">Aircraft: Embraer 175</li>
+                <li className="list-group-item">
+                  Aircraft:{" "}
+                  {location.state
+                    ? location.state.flights.departFlight.aircraft?.aircraftType
+                    : "Embraer 175"}
+                </li>
               </ul>
             </div>
           </div>
@@ -92,8 +102,19 @@ export default function BookingConfirmationPage() {
         <div className="col">
           <h3>Seat Assignment</h3>
           <ul className="list-unstyled">
-            <li className="list-group-item">AS101: 13F</li>
-            <li className="list-group-item">AS102: 4A</li>
+            <li className="list-group-item">
+              {" "}
+              {location.state
+                ? location.state.flights.departFlight.flightCode
+                : "AS101"}
+              : {location.state ? location.state.departSeat : "13F"}
+            </li>
+            <li className="list-group-item">
+              {location.state
+                ? location.state.flights.returnFlight.flightCode
+                : "AS102"}
+              : {location.state ? location.state.returnSeat : "13F"}
+            </li>
           </ul>
         </div>
         <div className="col">
