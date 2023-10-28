@@ -35,7 +35,7 @@
     "path-browserify": "^1.0.1",
     "random-js": "^2.1.0",
     "react": "^18.2.0",
-    "react-bootstrap": "^2.9.0",
+    "react-bootstrap": "^2.9.1",
     "react-dom": "^18.2.0",
     "react-loader-spinner": "^5.4.5",
     "react-redux": "^8.1.3",
