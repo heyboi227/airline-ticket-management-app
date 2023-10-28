@@ -128,11 +128,24 @@ export default function BookingConfirmationPage() {
         </div>
       </div>
 
-      <h3>Price Breakdown</h3>
-      {/* Display price breakdown here */}
-
-      <h3>Payment Information</h3>
-      {/* Display payment information here */}
+      <div className="row">
+        <div className="col">
+          <h3>Price Breakdown</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">Base price: 12512.53 RSD</li>
+            <li className="list-group-item">Taxes and fees: 6435.24 RSD</li>
+            <li className="list-group-item">Total price: 18947.77 RSD</li>
+          </ul>
+        </div>
+        <div className="col">
+          <h3>Payment Information</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">Card number: XXXXXXXXXXXX5462</li>
+            <li className="list-group-item">Status: succesful</li>
+            <li className="list-group-item">Made on: 2023-10-28 14:20</li>
+          </ul>
+        </div>
+      </div>
 
       <h3>Cancellation/Change Policy</h3>
       {/* Display cancellation/change policy here */}
