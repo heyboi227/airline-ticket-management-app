@@ -126,49 +126,7 @@ export default function OrderPage() {
 
   const location = useLocation();
 
-  const flights = {
-    departFlight: {
-      flightId: 1,
-      flightCode: "AS150",
-      departureDateAndTime: "2023-07-09T12:45:00Z",
-      arrivalDateAndTime: "2023-07-09T22:45:00Z",
-      originAirportId: 3,
-      destinationAirportId: 6,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
-        },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    returnFlight: {
-      flightId: 2,
-      flightCode: "AS151",
-      departureDateAndTime: "2023-07-10T00:15:00Z",
-      arrivalDateAndTime: "2023-07-10T08:30:00Z",
-      originAirportId: 6,
-      destinationAirportId: 3,
-      travelClasses: [
-        {
-          travelClass: {
-            travelClassId: 2,
-            travelClassName: "Economy",
-            travelClassSubname: "Economy +",
-          },
-          isActive: true,
-          price: 25225.36,
-        },
-      ],
-      aircraftId: 4,
-    } as Flight,
-    totalPrice: 50450.72,
-  };
+  const formData = location.state;
 
   function loadCountries() {
     api("get", "/api/country", "user")
@@ -240,13 +198,13 @@ export default function OrderPage() {
         replace: true,
         state: {
           flightDetails: {
-            departFlight: flights.departFlight,
-            returnFlight: flights.returnFlight,
+            departFlight: formData.departFlight,
+            returnFlight: formData.returnFlight,
             departureTravelClass: location.state.departureTravelClass,
             returnTravelClass: location.state.returnTravelClass,
-            departurePrice: flights.departFlight.travelClasses![0].price,
-            returnPrice: flights.returnFlight.travelClasses![0].price,
-            totalPrice: flights.totalPrice,
+            departurePrice: formData.departFlight.travelClasses![0].price,
+            returnPrice: formData.returnFlight.travelClasses![0].price,
+            totalPrice: formData.totalPrice,
           },
           ticketHolderDetails: {
             ticketHolderFirstName: firstName,
@@ -426,23 +384,23 @@ export default function OrderPage() {
         <div className="col col-xs-12 col-md-4 p-5">
           <span>Departure flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={flights.departFlight} />
+          <FlightRowWithoutPrices flight={formData.departFlight} />
           <br></br>
           <span>Class: {location.state.departureFlightClass}</span>
           <br></br>
           <span>Return flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={flights.returnFlight} />
+          <FlightRowWithoutPrices flight={formData.returnFlight} />
           <br></br>
           <span>Class: {location.state.returnFlightClass}</span>
           <br></br>
           <span>
-            <h5>Ticket price: {flights.totalPrice - randomPrice} RSD</h5>
+            <h5>Ticket price: {formData.totalPrice - randomPrice} RSD</h5>
             <h5>Taxes and fees: {randomPrice} RSD</h5>
           </span>
           <br></br>
           <span>
-            <h2>Total price: {flights.totalPrice} RSD</h2>
+            <h2>Total price: {formData.totalPrice} RSD</h2>
           </span>
         </div>
       </div>

@@ -122,6 +122,9 @@ export default function BillingPage() {
   const [countryId, setCountryId] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
 
+  const [departSeatNumber, setDepartSeatNumber] = useState<string | null>(null);
+  const [returnSeatNumber, setReturnSeatNumber] = useState<string | null>(null);
+
   const [errorMessage, setErrorMessage] = useState<string>("");
 
   const randomPrice = useRandomNumber();
@@ -146,8 +149,24 @@ export default function BillingPage() {
     }
   };
 
-  const departSeatNumber = generateRandomSeat(formData.departFlight.flightId);
-  const returnSeatNumber = generateRandomSeat(formData.returnFlight.flightId);
+  useEffect(() => {
+    const generateSeats = async () => {
+      const departSeat = await generateRandomSeat(
+        formData.flightDetails.departFlight.flightId
+      );
+      const returnSeat = await generateRandomSeat(
+        formData.flightDetails.returnFlight.flightId
+      );
+
+      setDepartSeatNumber(departSeat);
+      setReturnSeatNumber(returnSeat);
+    };
+
+    generateSeats();
+  }, [
+    formData.flightDetails.departFlight.flightId,
+    formData.flightDetails.returnFlight.flightId,
+  ]);
 
   const doAddTicket = async () => {
     const randomTicketNumberFormattedString =
@@ -155,7 +174,9 @@ export default function BillingPage() {
 
     const ticketData = {
       ticketHolderName:
-        formData.ticketHolderFirstName + " " + formData.ticketHolderLastName,
+        formData.ticketHolderDetails.ticketHolderFirstName +
+        " " +
+        formData.ticketHolderDetails.ticketHolderLastName,
       documentId: 4,
       userId:
         AppStore.getState().auth.id !== 0 ? AppStore.getState().auth.id : null,
@@ -166,8 +187,8 @@ export default function BillingPage() {
       const flights: any[] = [
         {
           ticketNumber: randomTicketNumberFormattedString,
-          flightId: formData.departFlight.flightId,
-          price: Number(formData.departurePrice),
+          flightId: formData.flightDetails.departFlight.flightId,
+          price: Number(formData.flightDetails.departurePrice),
           seatNumber: departSeatNumber,
           ...ticketData,
         },
@@ -175,8 +196,8 @@ export default function BillingPage() {
           ticketNumber: (
             Number(randomTicketNumberFormattedString) + 1
           ).toString(),
-          flightId: formData.returnFlight.flightId,
-          price: Number(formData.returnPrice),
+          flightId: formData.flightDetails.returnFlight.flightId,
+          price: Number(formData.flightDetails.returnPrice),
           seatNumber: returnSeatNumber,
           ...ticketData,
         },
@@ -232,17 +253,17 @@ export default function BillingPage() {
         state: {
           flightDetails: {
             bookingNumber: bookingNumber,
-            departFlight: formData.departFlight,
-            returnFlight: formData.returnFlight,
+            departFlight: formData.flightDetails.departFlight,
+            returnFlight: formData.flightDetails.returnFlight,
             departureTravelClass: location.state.departureTravelClass,
             returnTravelClass: location.state.returnTravelClass,
             departSeat: departSeatNumber,
             returnSeat: returnSeatNumber,
           },
           passengerDetails: {
-            firstName: formData.ticketHolderFirstName,
-            lastName: formData.ticketHolderLastName,
-            dateOfBirth: formData.ticketHolderDateOfBirth,
+            firstName: formData.ticketHolderDetails.ticketHolderFirstName,
+            lastName: formData.ticketHolderDetails.ticketHolderLastName,
+            dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
           },
         },
       });
@@ -420,21 +441,28 @@ export default function BillingPage() {
         <div className="col col-xs-12 col-md-4 p-5">
           <span>Departure flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={formData.departFlight} />
+          <FlightRowWithoutPrices
+            flight={formData.flightDetails.departFlight}
+          />
           <br></br>
           <br></br>
           <span>Return flight:</span>
           <br></br>
-          <FlightRowWithoutPrices flight={formData.returnFlight} />
+          <FlightRowWithoutPrices
+            flight={formData.flightDetails.returnFlight}
+          />
           <br></br>
           <br></br>
           <span>
-            <h5>Ticket price: {formData.totalPrice - randomPrice} RSD</h5>
+            <h5>
+              Ticket price: {formData.flightDetails.totalPrice - randomPrice}{" "}
+              RSD
+            </h5>
             <h5>Taxes and fees: {randomPrice} RSD</h5>
           </span>
           <br></br>
           <span>
-            <h2>Total price: {formData.totalPrice} RSD</h2>
+            <h2>Total price: {formData.flightDetails.totalPrice} RSD</h2>
           </span>
         </div>
       </div>

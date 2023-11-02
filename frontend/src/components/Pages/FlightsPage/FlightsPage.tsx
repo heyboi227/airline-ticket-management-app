@@ -898,12 +898,8 @@ export default function FlightsPage() {
                         state: {
                           departFlight: departFlight,
                           returnFlight: returnFlight,
-                          departureTravelClass: selectedDepartureTravelClass
-                            ? selectedDepartureTravelClass
-                            : "Economy",
-                          returnTravelClass: selectedReturnTravelClass
-                            ? selectedReturnTravelClass
-                            : "Economy",
+                          departureTravelClass: selectedDepartureTravelClass,
+                          returnTravelClass: selectedReturnTravelClass,
                           departurePrice: selectedDeparturePrice,
                           returnPrice: selectedReturnPrice,
                           totalPrice: (

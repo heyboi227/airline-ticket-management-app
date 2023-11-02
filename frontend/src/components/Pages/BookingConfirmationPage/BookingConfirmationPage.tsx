@@ -10,8 +10,7 @@ export default function BookingConfirmationPage() {
           <h2>Your card has been charged.</h2>
         </div>
         <h2>
-          Confirmation Number:{" "}
-          {location.state ? location.state.bookingNumber : "AAAAA"}
+          Confirmation Number: {location.state.flightDetails.bookingNumber}
         </h2>
         <div className="row">
           <div className="col">
@@ -45,56 +44,56 @@ export default function BookingConfirmationPage() {
               <div className="col">
                 <ul className="list-unstyled">
                   <li className="list-group-item">
-                    {location.state
-                      ? location.state.flights.departFlight.flightCode
-                      : "AS101"}
+                    {location.state.flightDetails.departFlight.flightCode}
                   </li>
                   <li className="list-group-item">
                     Departs:{" "}
-                    {location.state
-                      ? location.state.flights.departFlight.departureDateAndTime
-                      : "21.10.2023 10:10"}{" "}
+                    {
+                      location.state.flightDetails.departFlight
+                        .departureDateAndTime
+                    }{" "}
                   </li>
                   <li className="list-group-item">
                     Arrives:{" "}
-                    {location.state
-                      ? location.state.flights.departFlight.arrivalDateAndTime
-                      : "21.10.2023 11:20"}{" "}
+                    {
+                      location.state.flightDetails.departFlight
+                        .arrivalDateAndTime
+                    }{" "}
                   </li>
                   <li className="list-group-item">
                     Aircraft:{" "}
-                    {location.state
-                      ? location.state.flights.departFlight.aircraft
-                          ?.aircraftType
-                      : "Embraer 175"}
+                    {
+                      location.state.flightDetails.departFlight.aircraft
+                        .aircraftName
+                    }
                   </li>
                 </ul>
               </div>
               <div className="col">
                 <ul className="list-unstyled">
                   <li className="list-group-item">
-                    {location.state
-                      ? location.state.flights.returnFlight.flightCode
-                      : "AS102"}
+                    {location.state.flightDetails.returnFlight.flightCode}
                   </li>
                   <li className="list-group-item">
                     Departs:{" "}
-                    {location.state
-                      ? location.state.flights.returnFlight.departureDateAndTime
-                      : "22.10.2023 09:50"}{" "}
+                    {
+                      location.state.flightDetails.returnFlight
+                        .departureDateAndTime
+                    }{" "}
                   </li>
                   <li className="list-group-item">
                     Arrives:{" "}
-                    {location.state
-                      ? location.state.flights.returnFlight.arrivalDateAndTime
-                      : "22.10.2023 10:45"}{" "}
+                    {
+                      location.state.flightDetails.returnFlight
+                        .arrivalDateAndTime
+                    }{" "}
                   </li>
                   <li className="list-group-item">
                     Aircraft:{" "}
-                    {location.state
-                      ? location.state.flights.departFlight.aircraft
-                          ?.aircraftType
-                      : "Embraer 175"}
+                    {
+                      location.state.flightDetails.departFlight.aircraft
+                        .aircraftName
+                    }
                   </li>
                 </ul>
               </div>
@@ -107,16 +106,12 @@ export default function BookingConfirmationPage() {
             <ul className="list-unstyled">
               <li className="list-group-item">
                 {" "}
-                {location.state
-                  ? location.state.flights.departFlight.flightCode
-                  : "AS101"}
-                : {location.state ? location.state.departSeat : "13F"}
+                {location.state.flightDetails.departFlight.flightCode}:{" "}
+                {location.state.flightDetails.departSeat}
               </li>
               <li className="list-group-item">
-                {location.state
-                  ? location.state.flights.returnFlight.flightCode
-                  : "AS102"}
-                : {location.state ? location.state.returnSeat : "13F"}
+                {location.state.flightDetails.returnFlight.flightCode}:{" "}
+                {location.state.flightDetails.returnSeat}
               </li>
             </ul>
           </div>
