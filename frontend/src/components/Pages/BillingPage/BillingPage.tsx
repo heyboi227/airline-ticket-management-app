@@ -127,7 +127,9 @@ export default function BillingPage() {
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  const randomPrice = useRandomNumber();
+  const taxesAndFeesPrice = useRandomNumber();
+
+  const basePrice = formData.flightDetails.totalPrice - taxesAndFeesPrice;
 
   let bookingNumber: string = "";
 
@@ -208,10 +210,10 @@ export default function BillingPage() {
 
     const flights = await generateFlights();
 
-    const apiCalls = flights.map((flight) => {
-      return api("post", "/api/ticket", "user", {
+    const apiCalls = flights.map(async (flight) => {
+      await api("post", "/api/ticket", "user", {
         ...flight,
-      }).then((response) => {});
+      });
     });
 
     Promise.all(apiCalls).catch((error) => {
@@ -255,20 +257,28 @@ export default function BillingPage() {
             bookingNumber: bookingNumber,
             departFlight: formData.flightDetails.departFlight,
             returnFlight: formData.flightDetails.returnFlight,
-            departureTravelClass: location.state.departureTravelClass,
-            returnTravelClass: location.state.returnTravelClass,
+            departureTravelClass: formData.flightDetails.departureTravelClass,
+            returnTravelClass: formData.flightDetails.returnTravelClass,
             departSeat: departSeatNumber,
             returnSeat: returnSeatNumber,
+            basePrice: basePrice,
+            taxesAndFeesPrice: taxesAndFeesPrice,
+            totalPrice: formData.flightDetails.totalPrice,
           },
           passengerDetails: {
             firstName: formData.ticketHolderDetails.ticketHolderFirstName,
             lastName: formData.ticketHolderDetails.ticketHolderLastName,
             dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
           },
+          paymentDetails: {
+            cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
+            paymentTimestamp: new Date().toISOString(),
+          },
         },
       });
       doAddTicket();
       doSendBookingEmail();
+      localStorage.removeItem("randomNumber");
     } else {
       form.classList.add("was-validated");
       setIsValid(false);
@@ -342,6 +352,7 @@ export default function BillingPage() {
                   className="form-control"
                   type="text"
                   placeholder="CVC code"
+                  maxLength={3}
                   value={cvcCode}
                   required
                   onChange={(e) => setCvcCode(e.target.value)}
@@ -454,11 +465,8 @@ export default function BillingPage() {
           <br></br>
           <br></br>
           <span>
-            <h5>
-              Ticket price: {formData.flightDetails.totalPrice - randomPrice}{" "}
-              RSD
-            </h5>
-            <h5>Taxes and fees: {randomPrice} RSD</h5>
+            <h5>Ticket price: {basePrice} RSD</h5>
+            <h5>Taxes and fees: {taxesAndFeesPrice} RSD</h5>
           </span>
           <br></br>
           <span>

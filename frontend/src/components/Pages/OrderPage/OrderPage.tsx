@@ -3,6 +3,7 @@ import {
   createContext,
   useEffect,
   useState,
+  useMemo,
   PropsWithChildren,
   useContext,
   useRef,
@@ -18,7 +19,6 @@ import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/UserDocument.model";
 import User from "../../../models/User.model";
 import "./OrderPage.css";
-import Flight from "../../../models/Flight.model";
 
 interface DateInputProps {
   label: string;
@@ -28,29 +28,31 @@ interface DateInputProps {
 
 const RandomNumberContext = createContext<number>(0);
 
-export function RandomNumberProvider(props: PropsWithChildren) {
+export function RandomNumberProvider(props: Readonly<PropsWithChildren>) {
   const location = useLocation();
   const flights = location.state;
 
-  const [randomNumber, setRandomNumber] = useState<string>(() => {
-    const storedRandomNumber = localStorage.getItem("randomNumber");
-    if (storedRandomNumber !== null) {
-      return storedRandomNumber;
-    } else {
-      const newRandomNumber = new Random(MersenneTwister19937.autoSeed())
-        .integer(
-          Number(flights.totalPrice) * 0.2,
-          Number(flights.totalPrice) * 0.6
-        )
-        .toFixed(2);
-
-      localStorage.setItem("randomNumber", newRandomNumber);
-      return newRandomNumber;
-    }
-  });
+  const randomNumber = useMemo(
+    () => () => {
+      const storedRandomNumber = localStorage.getItem("randomNumber");
+      if (storedRandomNumber !== null) {
+        return parseFloat(storedRandomNumber);
+      } else {
+        const random = new Random(MersenneTwister19937.autoSeed());
+        const totalPrice =
+          flights.totalPrice || flights.flightDetails.totalPrice;
+        const min = Number(totalPrice) * 0.2 * 100;
+        const max = Number(totalPrice) * 0.6 * 100;
+        const newRandomNumber = random.integer(min, max) / 100;
+        localStorage.setItem("randomNumber", newRandomNumber.toFixed(2));
+        return parseFloat(newRandomNumber.toFixed(2));
+      }
+    },
+    [flights]
+  );
 
   return (
-    <RandomNumberContext.Provider value={Number(randomNumber)}>
+    <RandomNumberContext.Provider value={randomNumber()}>
       {props.children}
     </RandomNumberContext.Provider>
   );
@@ -66,7 +68,7 @@ export function useRandomNumber() {
   return context;
 }
 
-function DateInput({ label, onDateChange, isValid }: DateInputProps) {
+function DateInput({ label, onDateChange, isValid }: Readonly<DateInputProps>) {
   const [value, setValue] = useState<Date | null>(null);
 
   const handleChange = (newValue: Date | null) => {
@@ -120,7 +122,7 @@ export default function OrderPage() {
 
   const formRef = useRef<HTMLFormElement | null>(null);
 
-  const randomPrice = useRandomNumber();
+  const taxesAndFeesPrice = useRandomNumber();
 
   const navigate = useNavigate();
 
@@ -200,10 +202,10 @@ export default function OrderPage() {
           flightDetails: {
             departFlight: formData.departFlight,
             returnFlight: formData.returnFlight,
-            departureTravelClass: location.state.departureTravelClass,
-            returnTravelClass: location.state.returnTravelClass,
-            departurePrice: formData.departFlight.travelClasses![0].price,
-            returnPrice: formData.returnFlight.travelClasses![0].price,
+            departureTravelClass: formData.departureTravelClass,
+            returnTravelClass: formData.returnTravelClass,
+            departurePrice: formData.departurePrice,
+            returnPrice: formData.returnPrice,
             totalPrice: formData.totalPrice,
           },
           ticketHolderDetails: {
@@ -395,8 +397,11 @@ export default function OrderPage() {
           <span>Class: {location.state.returnFlightClass}</span>
           <br></br>
           <span>
-            <h5>Ticket price: {formData.totalPrice - randomPrice} RSD</h5>
-            <h5>Taxes and fees: {randomPrice} RSD</h5>
+            <h5>
+              Ticket price:{" "}
+              {(formData.totalPrice - taxesAndFeesPrice).toFixed(2)} RSD
+            </h5>
+            <h5>Taxes and fees: {taxesAndFeesPrice} RSD</h5>
           </span>
           <br></br>
           <span>
