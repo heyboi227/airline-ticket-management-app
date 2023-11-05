@@ -9,7 +9,7 @@ interface AdminTravelClassRowProperties {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminTravelClassRow(props: AdminTravelClassRowProperties) {
+function AdminTravelClassRow(props: Readonly<AdminTravelClassRowProperties>) {
   const [editTravelClassNameVisible, setEditTravelClassNameVisible] =
     useState<boolean>(false);
   const [editTravelClassSubnameVisible, setEditTravelClassSubnameVisible] =
@@ -67,8 +67,7 @@ function AdminTravelClassRow(props: AdminTravelClassRowProperties) {
   }
 
   return (
-    <>
-      <tr>
+    <tr>
         <td>{props.travelClass.travelClassId}</td>
         <td>
           {!editTravelClassNameVisible && (
@@ -176,7 +175,6 @@ function AdminTravelClassRow(props: AdminTravelClassRowProperties) {
           )}
         </td>
       </tr>
-    </>
   );
 }
 
