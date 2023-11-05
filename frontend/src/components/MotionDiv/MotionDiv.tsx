@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { PropsWithChildren } from "react";
 
-export default function MotionDiv(props: PropsWithChildren) {
+export default function MotionDiv(props: Readonly<PropsWithChildren>) {
   return (
     <motion.div
       className="row"
