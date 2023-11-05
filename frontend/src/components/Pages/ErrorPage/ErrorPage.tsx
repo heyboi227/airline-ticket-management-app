@@ -5,7 +5,7 @@ interface ErrorPageProps {
   message?: string;
 }
 
-export default function ErrorPage(props: ErrorPageProps) {
+export default function ErrorPage(props: Readonly<ErrorPageProps>) {
   return (
     <div className={`container-fluid ${styles.container}`}>
       <h1 className={`display-1 ${styles.errorCode}`}>
