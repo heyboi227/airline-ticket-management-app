@@ -5,7 +5,7 @@ interface FlightReviewProps {
   flight: Flight;
 }
 
-export default function FlightReview(props: FlightReviewProps) {
+export default function FlightReview(props: Readonly<FlightReviewProps>) {
   return (
     <Card>
       <CardContent>
