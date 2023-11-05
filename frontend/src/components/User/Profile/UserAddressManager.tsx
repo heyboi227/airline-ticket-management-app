@@ -11,7 +11,7 @@ interface UserAddressManagerProperties {
     onAddressChange: (user: User) => void;
 }
 
-export default function UserAddressManager(props: UserAddressManagerProperties) {
+export default function UserAddressManager(props: Readonly<UserAddressManagerProperties>) {
     const [ newAddressFormShowing, setNewAddressFormShowing ] = useState<boolean>(false);
 
     return (

@@ -1,41 +1,56 @@
-import { faSave, faWindowClose } from "@fortawesome/free-regular-svg-icons";
+import {
+  faCheckSquare,
+  faSquare,
+  faSave,
+  faWindowClose,
+} from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import { useState } from "react";
 import { api } from "../../../api/api";
+import Address from "../../../models/Address.model";
 import User from "../../../models/User.model";
-import { motion } from "framer-motion";
 
-interface UserAddressAdderProperties {
+interface UserAddressEditorProperties {
+  address: Address;
   onAddressChange: (user: User) => void;
-  onClose: () => void;
+  setEditing: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export default function UserAddressAdder(props: Readonly<UserAddressAdderProperties>) {
-  const [streetAndNumber, setStreetAndNumber] = useState<string>("");
-  const [city, setCity] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+export default function UserAddressEditor(
+  props: Readonly<UserAddressEditorProperties>
+) {
+  const [streetAndNumber, setStreetAndNumber] = useState<string>(
+    props.address.streetAndNumber
+  );
+  const [city, setCity] = useState<string>(props.address.city);
+  const [phoneNumber, setPhoneNumber] = useState<string>(
+    props.address.phoneNumber
+  );
+  const [isActive, setIsActive] = useState<boolean>(props.address.isActive);
   const [error, setError] = useState<string>("");
 
   function resetAndClose() {
-    setStreetAndNumber("");
-    setCity("");
-    setPhoneNumber("");
-
-    props.onClose();
+    setStreetAndNumber(props.address.streetAndNumber);
+    setCity(props.address.city);
+    setPhoneNumber(props.address.phoneNumber);
+    setIsActive(props.address.isActive);
+    props.setEditing(false);
   }
 
   function saveChanges() {
     const data = {
-      streetAndNmber: streetAndNumber,
+      streetAndNumber: streetAndNumber,
       city: city,
       phoneNumber: phoneNumber,
+      isActive: isActive,
     };
 
-    api("post", "/api/user/address", "user", data)
+    api("put", "/api/user/address/" + props.address.addressId, "user", data)
       .then((res) => {
         if (res.status !== "ok") {
           throw new Error(
-            "Error adding an address. Reason: " + JSON.stringify(res.data)
+            "Error chaging address. Reason: " + JSON.stringify(res.data)
           );
         }
 
@@ -43,6 +58,7 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
       })
       .then((address) => {
         props.onAddressChange(address.user);
+        props.setEditing(false);
       })
       .catch((error) => {
         setError(error?.message);
@@ -105,7 +121,15 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
             </div>
           </div>
 
-          <div className="col col-12 col-lg-2 form-group"></div>
+          <div className="col col-12 col-lg-2 form-group">
+            <label>Status</label>
+            <div className="input-group d-block">
+              <button onClick={() => setIsActive(!isActive)}>
+                <FontAwesomeIcon icon={isActive ? faCheckSquare : faSquare} />{" "}
+                {isActive ? "Active" : "Inactive"}
+              </button>
+            </div>
+          </div>
 
           <div className="col col-12 col-lg-3 form-group">
             <div className="row mt-4">
