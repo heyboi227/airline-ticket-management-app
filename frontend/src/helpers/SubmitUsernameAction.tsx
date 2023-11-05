@@ -10,7 +10,7 @@ export interface SubmitUsernameActionProperties {
 }
 
 export default function SubmitUsernameAction(
-  props: SubmitUsernameActionProperties
+  props: Readonly<SubmitUsernameActionProperties>
 ) {
   return (
     <Modal

@@ -7,7 +7,7 @@ export interface RegisterUserActionProperties {
 }
 
 export default function RegisterUserAction(
-  props: RegisterUserActionProperties
+  props: Readonly<RegisterUserActionProperties>
 ) {
   return (
     <Modal

@@ -1,6 +1,6 @@
 export function localDateFormat(date: string): string {
   const dateInstance = new Date(date);
-  return dateInstance.toLocaleDateString();
+  return dateInstance.toLocaleDateString("sr-RS");
 }
 
 export function localDateTimeFormat(date: string): string {

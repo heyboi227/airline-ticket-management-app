@@ -7,7 +7,7 @@ export interface ConfirmActionProperties {
   onNo: () => void;
 }
 
-export default function ConfirmAction(props: ConfirmActionProperties) {
+export default function ConfirmAction(props: Readonly<ConfirmActionProperties>) {
   return (
     <Modal
       size="lg"

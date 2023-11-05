@@ -12,7 +12,7 @@ import {
   generateRandomTicketNumberFormattedString,
   generateRandomBookingConfirmationFormattedString,
   generateRandomSeat,
-} from "../../../helpers/stringGenerators";
+} from "../../../helpers/generators";
 
 interface InputProps {
   id: string;
