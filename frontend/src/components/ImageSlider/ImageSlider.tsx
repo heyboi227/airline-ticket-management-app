@@ -17,7 +17,7 @@ interface SliderProps {
   }[];
 }
 
-export default function ImageSlider(props: SliderProps) {
+export default function ImageSlider(props: Readonly<SliderProps>) {
   const [index, setIndex] = useState<number>(0);
 
   const handleSelect = (selectedIndex: number) => {
