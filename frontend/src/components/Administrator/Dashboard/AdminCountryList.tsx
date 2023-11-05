@@ -9,7 +9,7 @@ interface AdminCountryRowProperties {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminCountryRow(props: AdminCountryRowProperties) {
+function AdminCountryRow(props: Readonly<AdminCountryRowProperties>) {
   const [editCountryNameVisible, setEditCountryNameVisible] =
     useState<boolean>(false);
 
@@ -35,8 +35,7 @@ function AdminCountryRow(props: AdminCountryRowProperties) {
   }
 
   return (
-    <>
-      <tr>
+    <tr>
         <td>{props.country.countryId}</td>
         <td>
           {!editCountryNameVisible && (
@@ -85,7 +84,6 @@ function AdminCountryRow(props: AdminCountryRowProperties) {
           )}
         </td>
       </tr>
-    </>
   );
 }
 
