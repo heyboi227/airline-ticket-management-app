@@ -28,9 +28,11 @@ export default function LoadingScreen(props: Readonly<LoadingScreenProps>) {
       } d-flex flex-column align-items-center`}
     >
       {props.loadingLogoImage}
-      <Spinner animation="border" role="status">
-        <span className="sr-only">Loading...</span>
-      </Spinner>
+      <output>
+        <Spinner animation="border">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </output>
     </div>
   );
 }
