@@ -11,7 +11,9 @@ interface AdminAdministratorRowProperties {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAdministratorRow(props: AdminAdministratorRowProperties) {
+function AdminAdministratorRow(
+  props: Readonly<AdminAdministratorRowProperties>
+) {
   const [editPasswordVisible, setEditPasswordVisible] =
     useState<boolean>(false);
   const [newPassword, setNewPassword] = useState<string>("");
@@ -76,9 +78,9 @@ function AdminAdministratorRow(props: AdminAdministratorRowProperties) {
       <td>
         <div
           className="btn-group"
-          onClick={() => {
-            doToggleAdministratorActiveState();
-          }}
+          tabIndex={0}
+          onClick={() => doToggleAdministratorActiveState()}
+          onKeyUp={() => doToggleAdministratorActiveState()}
         >
           <div className={"btn btn-sm" + activeSideClass}>
             <FontAwesomeIcon icon={faSquareCheck} />
