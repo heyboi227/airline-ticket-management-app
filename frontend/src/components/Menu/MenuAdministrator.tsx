@@ -32,13 +32,13 @@ export default function MenuAdministrator() {
           <Link className="nav-item nav-link" to="/admin/dashboard">
             Dashboard
           </Link>
-          <div
+          <button
             className="nav-item nav-link"
             style={{ cursor: "pointer" }}
             onClick={() => doAdministratorLogout()}
           >
             Logout
-          </div>
+          </button>
         </div>
       </div>
     </nav>

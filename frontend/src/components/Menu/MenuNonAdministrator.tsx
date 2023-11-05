@@ -66,13 +66,13 @@ export default function MenuNonAdministrator() {
               <Link className="nav-item nav-link text-light" to="/profile">
                 {AppStore.getState().auth.identity}
               </Link>
-              <div
+              <button
                 className="nav-item nav-link text-light"
                 style={{ cursor: "pointer" }}
                 onClick={() => doUserLogout()}
               >
                 <FontAwesomeIcon icon={faWindowClose} /> Logout
-              </div>
+              </button>
             </>
           )}
         </div>
