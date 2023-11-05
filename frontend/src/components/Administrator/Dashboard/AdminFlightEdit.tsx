@@ -36,23 +36,6 @@ export default function AdminFlightEdit() {
     initialFlightFormState
   );
 
-  const loadFlight = () => {
-    api("get", "/api/flight/" + flightId, "administrator")
-      .then((res) => {
-        if (res.status !== "ok") {
-          throw new Error("Could not load this flight!");
-        }
-
-        return res.data as Flight;
-      })
-      .then((flight) => {
-        setFlight(flight);
-      })
-      .catch((error) => {
-        setErrorMessage(error?.message ?? "Unknown error!");
-      });
-  };
-
   const loadAirports = () => {
     api("get", "/api/airport/", "administrator")
       .then((res) => {
@@ -126,8 +109,24 @@ export default function AdminFlightEdit() {
 
   useEffect(() => {
     setErrorMessage("");
+    const loadFlight = () => {
+      api("get", "/api/flight/" + flightId, "administrator")
+        .then((res) => {
+          if (res.status !== "ok") {
+            throw new Error("Could not load this flight!");
+          }
+
+          return res.data as Flight;
+        })
+        .then((flight) => {
+          setFlight(flight);
+        })
+        .catch((error) => {
+          setErrorMessage(error?.message ?? "Unknown error!");
+        });
+    };
     loadFlight();
-  }, [params.fid]);
+  }, [flightId, params.fid]);
 
   useEffect(() => {
     dispatchFormStateAction({
