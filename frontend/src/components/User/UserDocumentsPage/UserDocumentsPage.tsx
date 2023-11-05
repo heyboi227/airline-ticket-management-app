@@ -35,8 +35,7 @@ export default function UserDocumentsPage() {
         </p>
       )}
       {!errorMessage && documents.length !== 0 && (
-        <>
-          <table className="table table-sm table-hover document-list">
+        <table className="table table-sm table-hover document-list">
             <thead>
               <tr>
                 <th>Issuing country</th>
@@ -79,7 +78,6 @@ export default function UserDocumentsPage() {
               ))}
             </tbody>
           </table>
-        </>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ import { api } from "../../../api/api";
 export default function UserPasswordResetPage() {
   const [email, setEmail] = useState<string>("");
   const [error, setError] = useState<string>("");
-  const [sent, setSent] = useState<boolean>(false);
+  const [isSent, setIsSent] = useState<boolean>(false);
 
   const doSendPasswordResetLink = () => {
     api("post", "/api/user/reset-password", "user", {
@@ -51,7 +51,7 @@ export default function UserPasswordResetPage() {
       <div className="d-flex flex-column justify-content-center align-items-center">
         <div className="d-flex flex-column justify-content-center align-items-center mt-5">
           <h1>Reset your password</h1>
-          {sent && (
+          {isSent && (
             <div className="d-flex flex-column justify-content-center align-items-center mt-3">
               <p>
                 Thank you. You will recieve a mail containing the password reset
@@ -59,7 +59,7 @@ export default function UserPasswordResetPage() {
               </p>
             </div>
           )}
-          {!sent && (
+          {!isSent && (
             <div className="d-flex flex-column justify-content-center align-items-center mt-3">
               <p>
                 Please enter your email below in order to recieve a password
@@ -69,7 +69,7 @@ export default function UserPasswordResetPage() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   doSendPasswordResetLink();
-                  setSent(true);
+                  setIsSent(true);
                 }}
               >
                 <div className="form-group mb-3">
