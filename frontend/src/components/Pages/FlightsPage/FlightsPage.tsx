@@ -82,7 +82,7 @@ const TabTitle = (props: TabTitleProps) => {
   );
 };
 
-function ClassPricesDrawer(props: ClassPricesDrawerProps) {
+function ClassPricesDrawer(props: Readonly<ClassPricesDrawerProps>) {
   const [isOpenPricesHovered, setIsOpenPricesHovered] =
     useState<boolean>(false);
 
@@ -95,52 +95,47 @@ function ClassPricesDrawer(props: ClassPricesDrawerProps) {
   };
 
   return (
-    <>
-      <div className="card" style={{ width: "18rem" }}>
-        <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
-          <h2 className="card-title">{props.travelClassName}</h2>
-          {props.flight.travelClasses?.filter((travelClass) =>
-            travelClass.travelClass.travelClassName.includes(
-              props.travelClassName
-            )
-          ).length !== 0 ? (
-            <p className="card-text">
-              From{" "}
-              <span style={{ fontSize: "1.5vw" }}>
-                {props.flight.travelClasses
-                  ?.filter((travelClass) =>
-                    travelClass.travelClass.travelClassName.includes(
-                      props.travelClassName
-                    )
+    <div className="card" style={{ width: "18rem" }}>
+      <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
+        <h2 className="card-title">{props.travelClassName}</h2>
+        {props.flight.travelClasses?.filter((travelClass) =>
+          travelClass.travelClass.travelClassName.includes(
+            props.travelClassName
+          )
+        ).length !== 0 ? (
+          <p className="card-text">
+            From{" "}
+            <span style={{ fontSize: "1.5vw" }}>
+              {props.flight.travelClasses
+                ?.filter((travelClass) =>
+                  travelClass.travelClass.travelClassName.includes(
+                    props.travelClassName
                   )
-                  .map((travelClass) => travelClass.price)
-                  .reduce((smallestPrice: number, currentPrice: number) => {
-                    return currentPrice < smallestPrice
-                      ? currentPrice
-                      : smallestPrice;
-                  }, Infinity)}{" "}
-                RSD
-              </span>
-            </p>
-          ) : (
-            <p>N/A</p>
-          )}
-        </div>
-        <div
-          className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
-            isOpenPricesHovered ? "hover-background" : ""
-          }`}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          onClick={props.handleToggle}
-        >
-          <FontAwesomeIcon
-            icon={faCaretSquareDown}
-            style={{ fontSize: "2vw" }}
-          />
-        </div>
+                )
+                .map((travelClass) => travelClass.price)
+                .reduce((smallestPrice: number, currentPrice: number) => {
+                  return currentPrice < smallestPrice
+                    ? currentPrice
+                    : smallestPrice;
+                }, Infinity)}{" "}
+              RSD
+            </span>
+          </p>
+        ) : (
+          <p>N/A</p>
+        )}
       </div>
-    </>
+      <button
+        className={`card-footer text-bg-primary d-flex justify-content-center open-prices ${
+          isOpenPricesHovered ? "hover-background" : ""
+        }`}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onClick={props.handleToggle}
+      >
+        <FontAwesomeIcon icon={faCaretSquareDown} style={{ fontSize: "2vw" }} />
+      </button>
+    </div>
   );
 }
 
@@ -299,7 +294,7 @@ const ClassPrices = (props: ClassPricesProps) => {
                       </h1>
                     </div>
                   </div>
-                  <div
+                  <button
                     className={`card-footer text-bg-primary d-flex justify-content-center select-price ${
                       selectPriceHoveredIndex === index
                         ? "hover-background"
@@ -348,7 +343,7 @@ const ClassPrices = (props: ClassPricesProps) => {
                     onMouseLeave={handleMouseLeave}
                   >
                     Select
-                  </div>
+                  </button>
                 </div>
               ))}
           </motion.div>
@@ -358,7 +353,7 @@ const ClassPrices = (props: ClassPricesProps) => {
   );
 };
 
-function FlightDetails(props: FlightRowProps) {
+function FlightDetails(props: Readonly<FlightRowProps>) {
   return (
     <>
       <div className="card-body d-flex flex-row justify-content-between w-100 my-0 mx-auto align-items-center">
@@ -434,36 +429,36 @@ function FlightDetails(props: FlightRowProps) {
   );
 }
 
-export function FlightRowWithoutPrices(flightRowProps: FlightRowProps) {
+export function FlightRowWithoutPrices(
+  flightRowProps: Readonly<FlightRowProps>
+) {
   return <FlightDetails flight={flightRowProps.flight} />;
 }
 
-function FlightRow(props: FlightRowProps) {
+function FlightRow(props: Readonly<FlightRowProps>) {
   const classConfig = [
     { className: "Economy", handler: props.handleToggleEconomy },
     { className: "Business", handler: props.handleToggleBusiness },
   ];
 
   return (
-    <>
-      <div className="container-fluid d-flex flex-row my-5">
-        <div className="card p-3 w-50 p-3">
-          <FlightDetails flight={props.flight} />
-        </div>
-        {classConfig.map((config) => (
-          <ClassPricesDrawer
-            key={config.className}
-            travelClassName={config.className}
-            flight={props.flight}
-            handleToggle={config.handler}
-          />
-        ))}
+    <div className="container-fluid d-flex flex-row my-5">
+      <div className="card p-3 w-50 p-3">
+        <FlightDetails flight={props.flight} />
       </div>
-    </>
+      {classConfig.map((config) => (
+        <ClassPricesDrawer
+          key={config.className}
+          travelClassName={config.className}
+          flight={props.flight}
+          handleToggle={config.handler}
+        />
+      ))}
+    </div>
   );
 }
 
-function FlightRowWithPrices(props: FlightRowWithPricesProps) {
+function FlightRowWithPrices(props: Readonly<FlightRowWithPricesProps>) {
   const [isEconomyVisible, setIsEconomyVisible] = useState<boolean>(false);
   const [isBusinessVisible, setIsBusinessVisible] = useState<boolean>(false);
 
@@ -694,17 +689,17 @@ export default function FlightsPage() {
     return minPriceInFlight;
   };
 
-  const findLowestPrice = (flights: Flight[]) => {
-    const lowestPrice = flights.reduce((minPrice, flight) => {
-      return Math.min(minPrice, findLowestPriceInFlight(flight)!);
-    }, Infinity);
-
-    return lowestPrice;
-  };
-
   useEffect(() => localStorage.removeItem("randomNumber"), []);
 
   useEffect(() => {
+    const findLowestPrice = (flights: Flight[]) => {
+      const lowestPrice = flights.reduce((minPrice, flight) => {
+        return Math.min(minPrice, findLowestPriceInFlight(flight)!);
+      }, Infinity);
+
+      return lowestPrice;
+    };
+
     const getMinimalPrice = async (
       directionDate: string,
       flightDirection: string
@@ -930,44 +925,38 @@ export default function FlightsPage() {
                   )}
                   {!isLoading && (
                     <div className="fade" style={contentStyle}>
-                      <>
-                        {flightData.map((flight) => (
-                          <FlightRowWithPrices
-                            flight={flight}
-                            key={flight.flightId}
-                            setFlightDirection={setFlightDirection}
-                            setChooseFlightText={setChooseFlightText}
-                            setChosenDate={setChosenDate}
-                            flightDirection={flightDirection}
-                            chooseFlightText={chooseFlightText}
-                            chosenDate={chosenDate}
-                            departFlight={departFlight}
-                            setDepartFlight={setDepartFlight}
-                            returnFlight={returnFlight}
-                            setReturnFlight={setReturnFlight}
-                            selectedDeparturePrice={selectedDeparturePrice}
-                            setSelectedDeparturePrice={
-                              setSelectedDeparturePrice
-                            }
-                            selectedReturnPrice={selectedReturnPrice}
-                            setSelectedReturnPrice={setSelectedReturnPrice}
-                            areFlightsSelected={areFlightsSelected}
-                            setAreFlightsSelected={setAreFlightsSelected}
-                            selectedDepartureTravelClass={
-                              selectedDepartureTravelClass
-                            }
-                            setSelectedDepartureTravelClass={
-                              setSelectedDepartureTravelClass
-                            }
-                            selectedReturnTravelClass={
-                              selectedReturnTravelClass
-                            }
-                            setSelectedReturnTravelClass={
-                              setSelectedReturnTravelClass
-                            }
-                          />
-                        ))}
-                      </>
+                      {flightData.map((flight) => (
+                        <FlightRowWithPrices
+                          flight={flight}
+                          key={flight.flightId}
+                          setFlightDirection={setFlightDirection}
+                          setChooseFlightText={setChooseFlightText}
+                          setChosenDate={setChosenDate}
+                          flightDirection={flightDirection}
+                          chooseFlightText={chooseFlightText}
+                          chosenDate={chosenDate}
+                          departFlight={departFlight}
+                          setDepartFlight={setDepartFlight}
+                          returnFlight={returnFlight}
+                          setReturnFlight={setReturnFlight}
+                          selectedDeparturePrice={selectedDeparturePrice}
+                          setSelectedDeparturePrice={setSelectedDeparturePrice}
+                          selectedReturnPrice={selectedReturnPrice}
+                          setSelectedReturnPrice={setSelectedReturnPrice}
+                          areFlightsSelected={areFlightsSelected}
+                          setAreFlightsSelected={setAreFlightsSelected}
+                          selectedDepartureTravelClass={
+                            selectedDepartureTravelClass
+                          }
+                          setSelectedDepartureTravelClass={
+                            setSelectedDepartureTravelClass
+                          }
+                          selectedReturnTravelClass={selectedReturnTravelClass}
+                          setSelectedReturnTravelClass={
+                            setSelectedReturnTravelClass
+                          }
+                        />
+                      ))}
                     </div>
                   )}
                 </div>
