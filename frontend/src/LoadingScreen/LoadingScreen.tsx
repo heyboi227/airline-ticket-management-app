@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import "./LoadingScreen.scss";
-import blackLogo from "../static/png/logo-black.png";
 import AppStore from "../stores/AppStore";
 
-export default function LoadingScreen() {
+interface LoadingScreenProps {
+  loadingTime: number;
+  loadingLogoImage: React.ReactNode;
+}
+
+export default function LoadingScreen(props: Readonly<LoadingScreenProps>) {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -12,10 +16,10 @@ export default function LoadingScreen() {
 
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500);
+    }, props.loadingTime);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [props.loadingTime]);
 
   return (
     <div
@@ -23,11 +27,7 @@ export default function LoadingScreen() {
         loading ? "show" : "hide"
       } d-flex flex-column align-items-center`}
     >
-      <img
-        src={blackLogo}
-        alt="Air Soko black text logo"
-        className="loading-logo"
-      />
+      {props.loadingLogoImage}
       <Spinner animation="border" role="status">
         <span className="sr-only">Loading...</span>
       </Spinner>

@@ -5,6 +5,7 @@ import firstSliderImage from "../../static/3.jpg";
 import secondSliderImage from "../../static/2.jpg";
 import thirdSliderImage from "../../static/1.jpg";
 import LoadingScreen from "../../LoadingScreen/LoadingScreen";
+import blackLogo from "../../static/png/logo-black.png";
 
 export default function HomePage() {
   const items = [
@@ -38,7 +39,16 @@ export default function HomePage() {
 
   return (
     <>
-      <LoadingScreen />
+      <LoadingScreen
+        loadingTime={2500}
+        loadingLogoImage={
+          <img
+            src={blackLogo}
+            alt="Air Soko black text logo"
+            className="loading-logo"
+          />
+        }
+      />
       <div className="landing-page-header">
         <div className="w-50 d-flex flex-column justify-content-start align-items-center">
           <div className="d-flex flex-column justify-content-start align-items-center ms-5 intro-text">

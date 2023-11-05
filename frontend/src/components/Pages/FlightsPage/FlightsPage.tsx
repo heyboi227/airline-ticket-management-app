@@ -20,6 +20,7 @@ import { Circles } from "react-loader-spinner";
 import "./transitions.css";
 import "./tabs-transition.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
+import LoadingScreen from "../../../LoadingScreen/LoadingScreen";
 
 interface FlightRowProps {
   flight: Flight;
@@ -701,6 +702,8 @@ export default function FlightsPage() {
     return lowestPrice;
   };
 
+  useEffect(() => localStorage.removeItem("randomNumber"), []);
+
   useEffect(() => {
     const getMinimalPrice = async (
       directionDate: string,
@@ -787,6 +790,7 @@ export default function FlightsPage() {
 
   return (
     <Container>
+      <LoadingScreen loadingTime={200} loadingLogoImage={undefined} />
       <Tabs
         activeKey={activeTab}
         className="d-flex flex-row justify-content-center align-items-center"

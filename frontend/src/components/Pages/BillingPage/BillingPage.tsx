@@ -143,11 +143,26 @@ export default function BillingPage() {
     setCountryId(newCountryId);
   };
 
-  const nextInputRef = useRef<HTMLInputElement>(null);
+  const cardNumberRef = useRef<HTMLInputElement>(null);
+  const expiryMonthRef = useRef<HTMLInputElement>(null);
+  const expiryYearRef = useRef<HTMLInputElement>(null);
+  const cvcCodeRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value.length >= e.target.maxLength && nextInputRef.current) {
-      nextInputRef.current.focus();
+    if (e.target.value.length >= e.target.maxLength) {
+      switch (e.target.placeholder) {
+        case "Card number":
+          expiryMonthRef.current?.focus();
+          break;
+        case "Card expiry month":
+          expiryYearRef.current?.focus();
+          break;
+        case "Card expiry year":
+          cvcCodeRef.current?.focus();
+          break;
+        default:
+          break;
+      }
     }
   };
 
@@ -303,6 +318,7 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Card number"
                   value={cardNumber}
+                  ref={cardNumberRef}
                   required
                   maxLength={16}
                   onChange={(e) => {
@@ -324,7 +340,7 @@ export default function BillingPage() {
                   maxLength={2}
                   value={expiryMonth}
                   required
-                  ref={nextInputRef}
+                  ref={expiryMonthRef}
                   onChange={(e) => {
                     setExpiryMonth(e.target.value);
                     handleInputChange(e);
@@ -338,8 +354,11 @@ export default function BillingPage() {
                   maxLength={2}
                   value={expiryYear}
                   required
-                  ref={nextInputRef}
-                  onChange={(e) => setExpiryYear(e.target.value)}
+                  ref={expiryYearRef}
+                  onChange={(e) => {
+                    setExpiryYear(e.target.value);
+                    handleInputChange(e);
+                  }}
                 />
                 <div className="invalid-feedback">
                   Please enter your card expiry month / year.
@@ -354,8 +373,12 @@ export default function BillingPage() {
                   placeholder="CVC code"
                   maxLength={3}
                   value={cvcCode}
+                  ref={cvcCodeRef}
                   required
-                  onChange={(e) => setCvcCode(e.target.value)}
+                  onChange={(e) => {
+                    setCvcCode(e.target.value);
+                    handleInputChange(e);
+                  }}
                 />
                 <div className="invalid-feedback">
                   Please enter your CVC code.
