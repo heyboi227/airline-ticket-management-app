@@ -16,7 +16,7 @@ interface InputData {
 }
 
 export default function UserPasswordChanger(
-  props: UserPasswordChangerProperties
+  props: Readonly<UserPasswordChangerProperties>
 ) {
   const [newPassword, setNewPassword] = useState<InputData>({
     value: "",
@@ -47,7 +47,7 @@ export default function UserPasswordChanger(
       isValid: true,
     });
 
-    if (!e.target.value.trim().match(/^.{6,32}$/)) {
+    if (!RegExp(/^.{6,32}$/).exec(e.target.value.trim())) {
       setNewPassword({
         value: e.target.value,
         isValid: false,
@@ -61,7 +61,7 @@ export default function UserPasswordChanger(
       isValid: true,
     });
 
-    if (!e.target.value.trim().match(/^.{6,32}$/)) {
+    if (!RegExp(/^.{6,32}$/).exec(e.target.value.trim())) {
       setConfirmNewPassword({
         value: e.target.value,
         isValid: false,

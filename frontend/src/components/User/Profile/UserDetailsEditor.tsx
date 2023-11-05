@@ -16,7 +16,7 @@ interface InputData {
   isValid: boolean;
 }
 
-export default function UserDetailsEditor(props: UserDetailsEditorProperties) {
+export default function UserDetailsEditor(props: Readonly<UserDetailsEditorProperties>) {
   const [forename, setForename] = useState<InputData>({
     value: props.user.forename,
     isValid: true,
