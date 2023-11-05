@@ -13,7 +13,7 @@ interface AdminAirportRowProperties {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAirportRow(props: AdminAirportRowProperties) {
+function AdminAirportRow(props: Readonly<AdminAirportRowProperties>) {
   const [editAirportCodeVisible, setEditAirportCodeVisible] =
     useState<boolean>(false);
   const [editAirportNameVisible, setEditAirportNameVisible] =
@@ -172,8 +172,7 @@ function AdminAirportRow(props: AdminAirportRowProperties) {
   }
 
   return (
-    <>
-      <tr>
+    <tr>
         <td>{props.airport.airportId}</td>
         <td>
           {!editAirportCodeVisible && (
@@ -450,7 +449,6 @@ function AdminAirportRow(props: AdminAirportRowProperties) {
           )}
         </td>
       </tr>
-    </>
   );
 }
 
