@@ -10,7 +10,7 @@ interface AdminAircraftRowProperties {
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function AdminAircraftRow(props: AdminAircraftRowProperties) {
+function AdminAircraftRow(props: Readonly<AdminAircraftRowProperties>) {
   const [editAircraftTypeVisible, setEditAircraftTypeVisible] =
     useState<boolean>(false);
   const [editAircraftNameVisible, setEditAircraftNameVisible] =
@@ -75,8 +75,7 @@ function AdminAircraftRow(props: AdminAircraftRowProperties) {
   }
 
   return (
-    <>
-      <tr>
+    <tr>
         <td>{props.aircraft.aircraftId}</td>
         <td>
           {!editAircraftTypeVisible && (
@@ -195,7 +194,6 @@ function AdminAircraftRow(props: AdminAircraftRowProperties) {
           )}
         </td>
       </tr>
-    </>
   );
 }
 
