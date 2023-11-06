@@ -1,5 +1,5 @@
 import "./Search.scss";
-import { useEffect, useState, useRef, SetStateAction } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../api/api";
 import Config from "../../config";
@@ -23,8 +23,8 @@ interface AirportInputProps {
 interface DateInputProps {
   label: string;
   onDateChange: (date: Date | null) => void;
+  onDateValidation: (date: Date | null) => void;
   isValid: boolean;
-  setIsValid: React.Dispatch<SetStateAction<boolean>>;
 }
 
 type CombinedAirportProps = InputProps & AirportInputProps;
@@ -47,9 +47,9 @@ function AirportInput({
     setResults(response.data);
   };
 
-  const debouncedFetchResults = debounce(fetchResults, 300);
-
   useEffect(() => {
+    const debouncedFetchResults = debounce(fetchResults, 300);
+
     if (query) {
       debouncedFetchResults(query)?.catch((error) =>
         console.error("An error occured: ", error)
@@ -57,7 +57,7 @@ function AirportInput({
     } else {
       setResults([]);
     }
-  }, [debouncedFetchResults, query]);
+  }, [query]);
 
   const handleClick = (result: Airport) => {
     setQuery(
@@ -102,13 +102,19 @@ function AirportInput({
         {results.length > 0 && (
           <ul className="list-group">
             {results.map((result) => (
-              <li key={result.airportId} className="list-group-item">
-                <button onClick={() => handleClick(result)}>
-                  {result.city}, {result.country?.countryName} (
-                  {result.airportCode})
-                  <br />
-                  <small>{result.airportName}</small>
-                </button>
+              <li
+                key={result.airportId}
+                className="list-group-item"
+                tabIndex={0}
+                onClick={() => handleClick(result)}
+                onKeyUp={(e) => {
+                  if (e.key === "Enter") handleClick(result);
+                }}
+              >
+                {result.city}, {result.country?.countryName} (
+                {result.airportCode})
+                <br />
+                <small>{result.airportName}</small>
               </li>
             ))}
           </ul>
@@ -124,11 +130,7 @@ function DateInput(props: Readonly<DateInputProps>) {
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
     props.onDateChange(newValue);
-    if (!newValue) {
-      props.setIsValid(true);
-    } else {
-      props.setIsValid(false);
-    }
+    props.onDateValidation(newValue);
   };
 
   return (
@@ -176,6 +178,11 @@ export default function Search() {
     if (date) {
       setReturnDate(convertDateToMySqlDateTime(date));
     }
+  };
+
+  const handleDateValidation = (date: Date | null) => {
+    const isValid: boolean = date !== null;
+    setIsValid(isValid);
   };
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
@@ -309,7 +316,7 @@ export default function Search() {
                     onDateChange={handleDepartureDateChange}
                     label="Choose a departure date"
                     isValid={isValid}
-                    setIsValid={setIsValid}
+                    onDateValidation={handleDateValidation}
                   ></DateInput>
                 </div>
               </div>
@@ -320,7 +327,7 @@ export default function Search() {
                       onDateChange={handleReturnDateChange}
                       label="Choose a return date"
                       isValid={isValid}
-                      setIsValid={setIsValid}
+                      onDateValidation={handleDateValidation}
                     ></DateInput>
                   </div>
                 </div>
