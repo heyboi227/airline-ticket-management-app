@@ -44,9 +44,9 @@ function CountryInput({
     setResults(response.data);
   };
 
-  const debouncedFetchResults = debounce(fetchResults, 300);
-
   useEffect(() => {
+    const debouncedFetchResults = debounce(fetchResults, 300);
+
     if (query) {
       debouncedFetchResults(query)?.catch((error) =>
         console.error("An error occured: ", error)
@@ -54,7 +54,7 @@ function CountryInput({
     } else {
       setResults([]);
     }
-  }, [debouncedFetchResults, query]);
+  }, [query]);
 
   const handleClick = (result: Country) => {
     setQuery(result.countryName);
@@ -145,6 +145,7 @@ export default function BillingPage() {
   const expiryMonthRef = useRef<HTMLInputElement>(null);
   const expiryYearRef = useRef<HTMLInputElement>(null);
   const cvcCodeRef = useRef<HTMLInputElement>(null);
+  const addressRef = useRef<HTMLInputElement>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length >= e.target.maxLength) {
@@ -157,6 +158,9 @@ export default function BillingPage() {
           break;
         case "Card expiry year":
           cvcCodeRef.current?.focus();
+          break;
+        case "CVC code":
+          addressRef.current?.focus();
           break;
         default:
           break;
@@ -392,6 +396,7 @@ export default function BillingPage() {
                   type="text"
                   placeholder="Address"
                   value={userAddress}
+                  ref={addressRef}
                   required
                   onChange={(e) => setUserAddress(e.target.value)}
                 />
