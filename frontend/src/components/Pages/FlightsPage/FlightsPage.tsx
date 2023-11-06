@@ -241,7 +241,7 @@ const ClassPrices = (props: ClassPricesProps) => {
   return (
     <div
       className={
-        props.visibility ? "class-prices-visible" : "class-prices-hidden"
+        props.visibility ? "class-prices-visible my-5" : "class-prices-hidden"
       }
     >
       <AnimatePresence>
