@@ -6,8 +6,11 @@ import secondSliderImage from "../../static/2.jpg";
 import thirdSliderImage from "../../static/1.jpg";
 import LoadingScreen from "../../LoadingScreen/LoadingScreen";
 import blackLogo from "../../static/png/logo-black.png";
+import { useEffect } from "react";
 
 export default function HomePage() {
+  useEffect(() => sessionStorage.setItem("firstTimeLoading", "false"), []);
+
   const items = [
     {
       image: firstSliderImage,
@@ -39,16 +42,18 @@ export default function HomePage() {
 
   return (
     <>
-      <LoadingScreen
-        loadingTime={2500}
-        loadingLogoImage={
-          <img
-            src={blackLogo}
-            alt="Air Soko black text logo"
-            className="loading-logo"
-          />
-        }
-      />
+      {!sessionStorage.getItem("firstTimeLoading") && (
+        <LoadingScreen
+          loadingTime={2500}
+          loadingLogoImage={
+            <img
+              src={blackLogo}
+              alt="Air Soko black text logo"
+              className="loading-logo"
+            />
+          }
+        />
+      )}
       <div className="landing-page-header">
         <div className="w-50 d-flex flex-column justify-content-start align-items-center">
           <div className="d-flex flex-column justify-content-start align-items-center ms-5 intro-text">
