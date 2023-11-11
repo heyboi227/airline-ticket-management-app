@@ -309,21 +309,27 @@ const ClassPrices = (props: ClassPricesProps) => {
                         props.flightRowWithPricesProps.setDepartFlight(
                           props.flightRowWithPricesProps.flight
                         );
-                        props.flightRowWithPricesProps.setFlightDirection(
-                          "return"
-                        );
-                        props.flightRowWithPricesProps.setChosenDate(
-                          new Date(location.state[3])
-                        );
-                        props.flightRowWithPricesProps.setChooseFlightText(
-                          "Choose your return flight"
-                        );
                         props.flightRowWithPricesProps.setSelectedDepartureTravelClass(
                           travelClass.travelClass.travelClassSubname
                         );
                         props.flightRowWithPricesProps.setSelectedDeparturePrice(
                           travelClass.price
                         );
+                        if (!location.state.isRoundtrip) {
+                          props.flightRowWithPricesProps.setAreFlightsSelected(
+                            true
+                          );
+                        } else {
+                          props.flightRowWithPricesProps.setChosenDate(
+                            new Date(location.state.returnDate)
+                          );
+                          props.flightRowWithPricesProps.setFlightDirection(
+                            "return"
+                          );
+                          props.flightRowWithPricesProps.setChooseFlightText(
+                            "Choose your return flight"
+                          );
+                        }
                       } else {
                         props.flightRowWithPricesProps.setReturnFlight(
                           props.flightRowWithPricesProps.flight
@@ -516,7 +522,7 @@ function FlightRowWithPrices(props: Readonly<FlightRowWithPricesProps>) {
 export default function FlightsPage() {
   const location = useLocation();
   const [flightData, setFlightData] = useState<Flight[]>(
-    location.state[4] || []
+    location.state.flightData || null
   );
 
   const [flightDirection, setFlightDirection] = useState<string>("departure");
@@ -550,7 +556,7 @@ export default function FlightsPage() {
   const [error, setError] = useState<string>("");
 
   const [chosenDate, setChosenDate] = useState<Date>(
-    new Date(location.state[2])
+    new Date(location.state.departureDate)
   );
 
   const handleChosenDateChange = (date: Date) => {
@@ -580,30 +586,34 @@ export default function FlightsPage() {
   useEffect(() => {
     async function fetchData(directionDate: string) {
       setIsLoading(true);
+      let originAirportId: number, destinationAirportId: number;
+      if (location.state.isRoundtrip) {
+        if (flightDirection === "departure") {
+          originAirportId = location.state.originAirportId;
+          destinationAirportId = location.state.destinationAirportId;
+        } else {
+          originAirportId = location.state.destinationAirportId;
+          destinationAirportId = location.state.originAirportId;
+        }
+      } else {
+        originAirportId = location.state.originAirportId;
+        destinationAirportId = location.state.destinationAirportId;
+      }
+
+      const dateKey =
+        flightDirection === "departure" ? "departureDate" : "returnDate";
+      const formattedDate = convertDateToMySqlDateTime(
+        new Date(directionDate)
+      ).slice(0, 10);
+
       const flightDataResponse = await api(
         "post",
         `/api/flight/search/${flightDirection}`,
         "user",
         {
-          originAirportId:
-            flightDirection === "departure"
-              ? location.state[0]
-              : location.state[1],
-          destinationAirportId:
-            flightDirection === "departure"
-              ? location.state[1]
-              : location.state[0],
-          ...(flightDirection === "departure"
-            ? {
-                departureDate: convertDateToMySqlDateTime(
-                  new Date(directionDate)
-                ).slice(0, 10),
-              }
-            : {
-                returnDate: convertDateToMySqlDateTime(
-                  new Date(directionDate)
-                ).slice(0, 10),
-              }),
+          originAirportId,
+          destinationAirportId,
+          [dateKey]: formattedDate,
         }
       );
 
@@ -662,9 +672,13 @@ export default function FlightsPage() {
     directionDate: string
   ) => ({
     originAirportId:
-      flightDirection === "departure" ? locationState[0] : locationState[1],
+      flightDirection === "departure"
+        ? locationState.originAirportId
+        : locationState.destinationAirportId,
     destinationAirportId:
-      flightDirection === "departure" ? locationState[1] : locationState[0],
+      flightDirection === "departure"
+        ? locationState.destinationAirportId
+        : locationState.originAirportId,
     ...(flightDirection === "departure"
       ? {
           departureDate: convertDateToMySqlDateTime(
@@ -758,7 +772,7 @@ export default function FlightsPage() {
     );
   }, [chosenDate, dateRange, flightDirection, location.state]);
 
-  const currentDate = new Date(location.state[2]);
+  const currentDate = new Date(location.state.departureDate);
 
   const [activeTab, setActiveTab] = useState<string>(
     currentDate.toDateString()
@@ -785,10 +799,7 @@ export default function FlightsPage() {
 
   return (
     <Container>
-      <LoadingScreen
-        loadingTime={200}
-        loadingLogoImage={undefined}
-      />
+      <LoadingScreen loadingTime={200} loadingLogoImage={undefined} />
       <Tabs
         activeKey={activeTab}
         className="d-flex flex-row justify-content-center align-items-center"
@@ -834,7 +845,7 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected departure flight:{" "}
-                      {new Date(location.state[2]).toDateString()}
+                      {new Date(location.state.departureDate).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
@@ -850,7 +861,7 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected return flight:{" "}
-                      {new Date(location.state[3]).toDateString()}
+                      {new Date(location.state.returnDate).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
@@ -861,7 +872,7 @@ export default function FlightsPage() {
                   </div>
                 )}
               </div>
-              {selectedDeparturePrice !== 0 && selectedReturnPrice !== 0 && (
+              {(selectedDeparturePrice !== 0 || selectedReturnPrice !== 0) && (
                 <div className="d-flex flex-column justify-content-center align-items-end mt-5">
                   <h2>
                     Price:{" "}
@@ -908,6 +919,7 @@ export default function FlightsPage() {
                             Number(selectedDeparturePrice) +
                             Number(selectedReturnPrice)
                           ).toFixed(2),
+                          isRoundtrip: location.state.isRoundtrip,
                         },
                       });
                     }}

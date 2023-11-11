@@ -223,13 +223,14 @@ export default function Search() {
         .then((res) => {
           navigate("/search/flights", {
             replace: true,
-            state: [
-              originAirportId,
-              destinationAirportId,
-              departureDate,
-              returnDate,
-              res.data,
-            ],
+            state: {
+              originAirportId: originAirportId,
+              destinationAirportId: destinationAirportId,
+              departureDate: departureDate,
+              returnDate: returnDate,
+              isRoundtrip: isRoundtrip,
+              flightData: res.data,
+            },
           });
         })
         .catch((error) => {

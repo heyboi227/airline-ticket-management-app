@@ -138,7 +138,6 @@ export default function AdminAirportAdd() {
   }, []);
 
   const doAddAirport = () => {
-    console.log(formState);
     api("post", "/api/airport", "administrator", formState)
       .then((res) => {
         if (res.status !== "ok") {

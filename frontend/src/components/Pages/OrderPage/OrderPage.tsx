@@ -384,18 +384,24 @@ export default function OrderPage() {
           </form>
         </div>
         <div className="col col-xs-12 col-md-4 p-5">
-          <span>Departure flight:</span>
-          <br></br>
-          <FlightRowWithoutPrices flight={formData.departFlight} />
-          <br></br>
-          <span>Class: {location.state.departureFlightClass}</span>
-          <br></br>
-          <span>Return flight:</span>
-          <br></br>
-          <FlightRowWithoutPrices flight={formData.returnFlight} />
-          <br></br>
-          <span>Class: {location.state.returnFlightClass}</span>
-          <br></br>
+          <div>
+            <span>Departure flight:</span>
+            <br></br>
+            <FlightRowWithoutPrices flight={formData.departFlight} />
+            <br></br>
+            <span>Class: {location.state.departureFlightClass}</span>
+            <br></br>
+          </div>
+          {formData.isRoundtrip && (
+            <div>
+              <span>Return flight:</span>
+              <br></br>
+              <FlightRowWithoutPrices flight={formData.returnFlight} />
+              <br></br>
+              <span>Class: {location.state.returnFlightClass}</span>
+              <br></br>
+            </div>
+          )}
           <span>
             <h5>
               Ticket price:{" "}

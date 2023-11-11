@@ -40,7 +40,6 @@ export default function AdminCountryAdd() {
   );
 
   const doAddCountry = () => {
-    console.log(formState);
     api("post", "/api/country", "administrator", formState)
       .then((res) => {
         if (res.status !== "ok") {

@@ -54,7 +54,6 @@ export default function AdminTravelClassAdd() {
   );
 
   const doAddTravelClass = () => {
-    console.log(formState);
     api("post", "/api/travel-class", "administrator", formState)
       .then((res) => {
         if (res.status !== "ok") {

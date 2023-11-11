@@ -58,7 +58,6 @@ export default function AdminAircraftAdd() {
   );
 
   const doAddAircraft = () => {
-    console.log(formState);
     api("post", "/api/aircraft", "administrator", formState)
       .then((res) => {
         if (res.status !== "ok") {
