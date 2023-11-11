@@ -42,18 +42,16 @@ export default function HomePage() {
 
   return (
     <>
-      {!sessionStorage.getItem("firstTimeLoading") && (
-        <LoadingScreen
-          loadingTime={2500}
-          loadingLogoImage={
-            <img
-              src={blackLogo}
-              alt="Air Soko black text logo"
-              className="loading-logo"
-            />
-          }
-        />
-      )}
+      <LoadingScreen
+        loadingTime={!sessionStorage.getItem("firstTimeLoading") ? 2500 : 250}
+        loadingLogoImage={
+          <img
+            src={blackLogo}
+            alt="Air Soko black text logo"
+            className="loading-logo"
+          />
+        }
+      />
       <div className="landing-page-header">
         <div className="w-50 d-flex flex-column justify-content-start align-items-center">
           <div className="d-flex flex-column justify-content-start align-items-center ms-5 intro-text">
