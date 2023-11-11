@@ -15,6 +15,7 @@ import AirportService from "./components/airport/AirportService.service";
 import DocumentService from "./components/document/DocumentService.service";
 import TicketService from "./components/ticket/TicketService.service";
 import TimeZoneService from "./components/time_zone/TimeZoneService.service";
+import { convertDateToMySqlDateTime } from "../../frontend/src/helpers/helpers";
 
 async function main() {
   const config: Config = DevConfig;
@@ -157,7 +158,7 @@ async function main() {
 
   async function updateFlightStatus() {
     try {
-      const currentDate = new Date().toISOString().slice(0, 10);
+      const currentDate = convertDateToMySqlDateTime(new Date());
 
       const query =
         "UPDATE `flight_travel_class` SET `is_active` = 0 WHERE `flight_id` IN (SELECT `flight_id` FROM `flight` WHERE `departure_date_and_time` < ? OR `arrival_date_and_time` < ?);";
