@@ -92,10 +92,14 @@ function CountryInput({
         {results.length > 0 && !queryDone && (
           <ul className="list-group">
             {results.map((result) => (
-              <li key={result.countryId} className="list-group-item">
-                <button onClick={() => handleClick(result)}>
-                  {result.countryName}
-                </button>
+              <li
+                key={result.countryId}
+                tabIndex={0}
+                className="list-group-item"
+                onClick={() => handleClick(result)}
+                onKeyUp={() => handleClick(result)}
+              >
+                {result.countryName}
               </li>
             ))}
           </ul>
