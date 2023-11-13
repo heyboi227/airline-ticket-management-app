@@ -10,6 +10,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import srLatn from "date-fns/locale/sr-Latn";
 import { convertDateToMySqlDateTime } from "../../helpers/helpers";
+import { isTodayTabDisabled } from "../Pages/FlightsPage/FlightsPage";
+import Flight from "../../models/Flight.model";
 
 interface InputProps {
   id: string;
@@ -25,6 +27,7 @@ interface DateInputProps {
   onDateChange: (date: Date | null) => void;
   onDateValidation: (date: Date | null) => void;
   isValid: boolean;
+  disableToday: boolean;
 }
 
 type CombinedAirportProps = InputProps & AirportInputProps;
@@ -126,11 +129,21 @@ function AirportInput({
 
 function DateInput(props: Readonly<DateInputProps>) {
   const [value, setValue] = useState<Date | null>(null);
+  const [disableToday, setDisableToday] = useState<boolean>(false);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);
     props.onDateChange(newValue);
     props.onDateValidation(newValue);
+  };
+
+  const shouldDisableDate = (date: Date | null) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    return date
+      ? props.disableToday && date.toDateString() === today.toDateString()
+      : false;
   };
 
   return (
@@ -142,6 +155,7 @@ function DateInput(props: Readonly<DateInputProps>) {
           onChange={handleChange}
           className={`form-control ${!props.isValid ? "is-invalid" : ""}`}
           disablePast={true}
+          shouldDisableDate={shouldDisableDate}
         />
         {!props.isValid && (
           <div className="invalid-feedback">Please choose a valid date.</div>
@@ -186,6 +200,8 @@ export default function Search() {
   };
 
   const [isRoundtrip, setIsRoundtrip] = useState<boolean>(true);
+
+  const [shouldDisableToday, setShouldDisableToday] = useState<boolean>(false);
 
   const [error, setError] = useState<string>("");
 
@@ -245,6 +261,27 @@ export default function Search() {
       setIsValid(false);
     }
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await api(
+        "post",
+        "/api/flight/search/departure",
+        "user",
+        {
+          originAirportId: originAirportId,
+          destinationAirportId: destinationAirportId,
+          departureDate: new Date().toISOString().slice(0, 10),
+        }
+      );
+      if (isTodayTabDisabled(response.data as Flight[])) {
+        setShouldDisableToday(true);
+      } else {
+        setShouldDisableToday(false);
+      }
+    };
+    if (originAirportId !== 0 && destinationAirportId !== 0) fetchData();
+  }, [originAirportId, destinationAirportId]);
 
   return (
     <div
@@ -318,6 +355,7 @@ export default function Search() {
                     label="Choose a departure date"
                     isValid={isValid}
                     onDateValidation={handleDateValidation}
+                    disableToday={shouldDisableToday}
                   ></DateInput>
                 </div>
               </div>
@@ -329,6 +367,7 @@ export default function Search() {
                       label="Choose a return date"
                       isValid={isValid}
                       onDateValidation={handleDateValidation}
+                      disableToday={shouldDisableToday}
                     ></DateInput>
                   </div>
                 </div>

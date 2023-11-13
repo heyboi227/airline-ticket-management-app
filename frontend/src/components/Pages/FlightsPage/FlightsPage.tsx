@@ -519,6 +519,29 @@ function FlightRowWithPrices(props: Readonly<FlightRowWithPricesProps>) {
   );
 }
 
+export const isTodayTabDisabled = (flightData: Flight[]) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const todaysFlights = flightData.filter(
+    (flight) =>
+      new Date(flight.departureDateAndTime).toDateString() ===
+      today.toDateString()
+  );
+
+  if (todaysFlights.length === 0) return true;
+
+  const lastFlightTime = new Date(
+    Math.max(
+      ...todaysFlights.map((flight) =>
+        new Date(flight.departureDateAndTime).getTime()
+      )
+    )
+  );
+
+  return new Date() > lastFlightTime;
+};
+
 export default function FlightsPage() {
   const location = useLocation();
   const [flightData, setFlightData] = useState<Flight[]>(
@@ -832,13 +855,21 @@ export default function FlightsPage() {
               title={
                 <TabTitle
                   title={
-                    !isDisabled
+                    !(
+                      isDisabled ||
+                      (formattedDate === formatDate(new Date()) &&
+                        isTodayTabDisabled(flightData))
+                    )
                       ? `${formattedDate} ${minimalPrice} RSD`
                       : `${formattedDate}`
                   }
                 ></TabTitle>
               }
-              disabled={isDisabled}
+              disabled={
+                isDisabled ||
+                (formattedDate === formatDate(new Date()) &&
+                  isTodayTabDisabled(flightData))
+              }
             >
               <div className="d-flex flex-row justify-content-center align-items-center mt-2">
                 {departFlight && (
