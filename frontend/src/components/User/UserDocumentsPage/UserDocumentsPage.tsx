@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import Document from "../../../models/UserDocument.model";
-import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit } from "@fortawesome/free-regular-svg-icons";
 import AppStore from "../../../stores/AppStore";
 
 export default function UserDocumentsPage() {
