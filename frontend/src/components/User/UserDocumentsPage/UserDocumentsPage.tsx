@@ -36,48 +36,43 @@ export default function UserDocumentsPage() {
       )}
       {!errorMessage && documents.length !== 0 && (
         <table className="table table-sm table-hover document-list">
-            <thead>
-              <tr>
-                <th>Issuing country</th>
-                <th>Document type</th>
-                <th>Document number</th>
-                <th>Actions</th>
+          <thead>
+            <tr>
+              <th>Issuing country</th>
+              <th>Document type</th>
+              <th>Document number</th>
+              <th>Expiration date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {documents.map((document) => (
+              <tr key={"document-" + document.documentId}>
+                <td>
+                  <div className="row">
+                    <span className="col col-6">
+                      {document.country?.countryName}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  <div className="row">
+                    <span className="col col-8">{document.documentType}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="row">
+                    <span className="col col-8">{document.documentNumber}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="row">
+                    <span className="col col-8">2023-11-17</span>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {documents.map((document) => (
-                <tr key={"document-" + document.documentId}>
-                  <td>
-                    <div className="row">
-                      <span className="col col-6">
-                        {document.country?.countryName}
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="row">
-                      <span className="col col-8">{document.documentType}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="row">
-                      <span className="col col-8">
-                        {document.documentNumber}
-                      </span>
-                    </div>
-                  </td>
-                  <td>
-                    <Link
-                      to={"/api/document/" + document.documentId}
-                      className="btn btn-sm btn-danger"
-                    >
-                      <FontAwesomeIcon icon={faEdit} /> Delete
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );
