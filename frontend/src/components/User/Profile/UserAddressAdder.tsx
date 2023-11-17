@@ -1,19 +1,26 @@
 import { faSave, faWindowClose } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import User from "../../../models/User.model";
 import { motion } from "framer-motion";
+import Country from "../../../models/Country.model";
 
 interface UserAddressAdderProperties {
   onAddressChange: (user: User) => void;
   onClose: () => void;
 }
 
-export default function UserAddressAdder(props: Readonly<UserAddressAdderProperties>) {
+export default function UserAddressAdder(
+  props: Readonly<UserAddressAdderProperties>
+) {
   const [streetAndNumber, setStreetAndNumber] = useState<string>("");
+  const [zipCode, setZipCode] = useState<string>("");
   const [city, setCity] = useState<string>("");
+  const [countryId, setCountryId] = useState<number>(0);
   const [phoneNumber, setPhoneNumber] = useState<string>("");
+
+  const [countries, setCountries] = useState<Country[]>([]);
   const [error, setError] = useState<string>("");
 
   function resetAndClose() {
@@ -50,6 +57,22 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
       });
   }
 
+  function loadCountries() {
+    api("get", "/api/country", "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setError(res.data + "");
+        }
+
+        setCountries(res.data);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
+  useEffect(() => loadCountries(), []);
+
   return (
     <motion.div
       className="row"
@@ -82,8 +105,21 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
           </div>
         </div>
 
-        <div className="row mb-4">
-          <div className="col col-12 col-lg-3 form-group">
+        <div className="row mb-3">
+          <div className="col col-12 col-lg-6 form-group">
+            <label>ZIP code</label>
+            <div className="input-group">
+              <input
+                className="form-control"
+                value={zipCode}
+                onChange={(e) => setZipCode(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="row mb-3">
+          <div className="col col-12 col-lg-6 form-group">
             <label>City</label>
             <div className="input-group">
               <input
@@ -94,24 +130,44 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
             </div>
           </div>
 
-          <div className="col col-12 col-lg-4 form-group">
-            <label>Phone number</label>
+          <div className="col col-12 col-lg-6 form-group">
+            <label>Country</label>
             <div className="input-group">
-              <input
+              <select
                 className="form-control"
-                value={phoneNumber}
-                onChange={(e) => setPhoneNumber(e.target.value)}
-              />
+                placeholder="Country"
+                value={countryId}
+                required
+                onChange={(e) => setCountryId(+e.target.value)}
+              >
+                <option value={""}>Choose the country</option>
+                {countries.map((country) => (
+                  <option key={country.countryId} value={country.countryId}>
+                    {country.countryName}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 
-          <div className="col col-12 col-lg-2 form-group"></div>
+          <div className="row mb-4">
+            <div className="col col-12 col-lg-6 form-group">
+              <label>Phone number</label>
+              <div className="input-group">
+                <input
+                  className="form-control"
+                  value={phoneNumber}
+                  onChange={(e) => setPhoneNumber(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
 
-          <div className="col col-12 col-lg-3 form-group">
+          <div className="col col-12 col-lg-4 form-group">
             <div className="row mt-4">
               <div className="col col-6">
                 <button
-                  className="btn btn-sm btn-primary w-100"
+                  className="btn btn-sm btn-primary"
                   onClick={() => saveChanges()}
                 >
                   <FontAwesomeIcon icon={faSave} /> Save
@@ -120,7 +176,7 @@ export default function UserAddressAdder(props: Readonly<UserAddressAdderPropert
 
               <div className="col col-6">
                 <button
-                  className="btn btn-sm btn-secondary w-100"
+                  className="btn btn-sm btn-secondary"
                   onClick={() => resetAndClose()}
                 >
                   <FontAwesomeIcon icon={faWindowClose} /> Close
