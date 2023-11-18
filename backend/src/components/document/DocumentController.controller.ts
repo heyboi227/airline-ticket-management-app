@@ -78,7 +78,10 @@ export default class DocumentController extends BaseController {
   getAllByUserId(req: Request, res: Response) {
     const userId: number = +req.params?.uid;
 
-    if (req.authorization?.role === "user" && req.authorization?.id !== userId) {
+    if (
+      req.authorization?.role === "user" &&
+      req.authorization?.id !== userId
+    ) {
       throw new StatusError(403, "You do not have access to this resource!");
     }
 
@@ -115,6 +118,8 @@ export default class DocumentController extends BaseController {
           country_id: body.countryId,
           document_number: body.documentNumber,
           document_type: body.documentType,
+          issued_date: body.documentIssuingDate,
+          expiry_date: body.documentExpirationDate,
           user_id: body.userId,
         });
       })

@@ -108,6 +108,12 @@ export default function OrderPage() {
   const [documentType, setDocumentType] = useState<string>("");
   const [documentNumber, setDocumentNumber] = useState<string>("");
   const [documentCountryId, setDocumentCountryId] = useState<number>(0);
+  const [documentIssuingDate, setDocumentIssuingDate] = useState<Date>(
+    new Date()
+  );
+  const [documentExpirationDate, setDocumentExpirationDate] = useState<Date>(
+    new Date()
+  );
 
   const [gender, setGender] = useState<"Male" | "Female">("Male");
 
@@ -174,6 +180,32 @@ export default function OrderPage() {
       });
   }
 
+  function doAddUserDocument() {
+    api("post", "/api/document", "user", {
+      countryId: documentCountryId,
+      documentType: documentType,
+      documentNumber: documentNumber,
+      documentIssuingDate: documentIssuingDate.toISOString().slice(0, 10),
+      documentExpirationDate: documentExpirationDate.toISOString().slice(0, 10),
+      userId: AppStore.getState().auth.id,
+    })
+      .then((res) => {
+        if (res.status !== "ok") {
+          throw new Error(
+            "Could not add this item! Reason: " +
+              res?.data
+                ?.map(
+                  (error: any) => error?.instancePath + " " + error?.message
+                )
+                .join(", ")
+          );
+        }
+      })
+      .catch((error) => {
+        setErrorMessage(error?.message ?? "Unknown error!");
+      });
+  }
+
   useEffect(() => {
     if (AppStore.getState().auth.id !== 0) setLoggedIn(true);
     loadCountries();
@@ -196,6 +228,7 @@ export default function OrderPage() {
 
     if (form.checkValidity()) {
       setIsValid(true);
+      if (AppStore.getState().auth.id !== 0) doAddUserDocument();
       navigate("/order/billing", {
         replace: true,
         state: {
@@ -221,9 +254,19 @@ export default function OrderPage() {
     }
   };
 
-  const handleDateOfBirthChange = (date: Date | null) => {
+  const handleDateChange = (date: Date | null, dateType: string) => {
     if (date) {
-      setDateOfBirth(date);
+      switch (dateType) {
+        case "dateOfBirth":
+          setDateOfBirth(date);
+          break;
+        case "documentIssuingDate":
+          setDocumentIssuingDate(date);
+          break;
+        case "documentExpirationDate":
+          setDocumentExpirationDate(date);
+          break;
+      }
     }
   };
 
@@ -270,8 +313,8 @@ export default function OrderPage() {
             </div>
             <div className="form-group mb-3">
               <DateInput
-                onDateChange={handleDateOfBirthChange}
-                label="Choose your date of birth"
+                onDateChange={(date) => handleDateChange(date, "dateOfBirth")}
+                label="Date of birth"
                 isValid={isValid}
               ></DateInput>
             </div>
@@ -324,6 +367,24 @@ export default function OrderPage() {
                   <div className="invalid-feedback">
                     Please choose a document issuing country.
                   </div>
+                </div>
+                <div className="form-group mb-3">
+                  <DateInput
+                    onDateChange={(date) =>
+                      handleDateChange(date, "documentIssuingDate")
+                    }
+                    label="Document issuing date"
+                    isValid={isValid}
+                  ></DateInput>
+                </div>
+                <div className="form-group mb-3">
+                  <DateInput
+                    onDateChange={(date) =>
+                      handleDateChange(date, "documentExpiryDate")
+                    }
+                    label="Document expiration date"
+                    isValid={isValid}
+                  ></DateInput>
                 </div>
               </div>
             )}
