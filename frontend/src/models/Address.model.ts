@@ -5,7 +5,7 @@ export default interface Address {
   addressId: number;
   userId: number;
   streetAndNumber: string;
-  zipCode: number;
+  zipCode: string;
   city: string;
   countryId: number;
   phoneNumber: string;

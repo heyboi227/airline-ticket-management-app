@@ -7,16 +7,17 @@ addFormats(ajv);
 
 export interface AddAddressDto {
   streetAndNumber: string;
-  zipCode: number;
+  zipCode: string;
   city: string;
   countryId: number;
   phoneNumber: string;
+  userId: number;
 }
 
 export interface AddAddress extends ServiceData {
   user_id: number;
   street_and_number: string;
-  zip_code: number;
+  zip_code: string;
   city: string;
   country_id: number;
   phone_number: string;
@@ -31,7 +32,9 @@ const AddAddressValidator = ajv.compile({
       maxLength: 255,
     },
     zipCode: {
-      type: "integer",
+      type: "string",
+      minLength: 2,
+      maxLength: 10,
     },
     city: {
       type: "string",
@@ -45,8 +48,18 @@ const AddAddressValidator = ajv.compile({
       type: "string",
       pattern: "\\+[0-9]{8,23}",
     },
+    userId: {
+      type: "integer",
+    },
   },
-  required: ["streetAndNumber", "zipCode", "city", "countryId", "phoneNumber"],
+  required: [
+    "streetAndNumber",
+    "zipCode",
+    "city",
+    "countryId",
+    "phoneNumber",
+    "userId",
+  ],
   additionalProperties: false,
 });
 

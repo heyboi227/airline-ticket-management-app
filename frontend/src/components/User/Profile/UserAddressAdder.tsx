@@ -5,6 +5,7 @@ import { api } from "../../../api/api";
 import User from "../../../models/User.model";
 import { motion } from "framer-motion";
 import Country from "../../../models/Country.model";
+import AppStore from "../../../stores/AppStore";
 
 interface UserAddressAdderProperties {
   onAddressChange: (user: User) => void;
@@ -33,10 +34,15 @@ export default function UserAddressAdder(
 
   function saveChanges() {
     const data = {
-      streetAndNmber: streetAndNumber,
+      streetAndNumber: streetAndNumber,
+      zipCode: zipCode,
       city: city,
+      countryId: countryId,
       phoneNumber: phoneNumber,
+      userId: AppStore.getState().auth.id,
     };
+
+    console.log(data);
 
     api("post", "/api/user/address", "user", data)
       .then((res) => {

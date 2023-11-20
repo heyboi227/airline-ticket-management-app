@@ -7,7 +7,7 @@ export default class AddressModel implements Model {
   userId: number;
 
   streetAndNumber: string;
-  zipCode: number;
+  zipCode: string;
   city: string;
   countryId: number;
   phoneNumber: string;

@@ -360,7 +360,6 @@ export default class UserController extends BaseController {
 
   addAddress(req: Request, res: Response) {
     const data = req.body as AddAddressDto;
-    const userId = req.authorization?.id;
 
     if (!AddAddressValidator(data)) {
       const safeOutput = escapeHTML(JSON.stringify(AddAddressValidator.errors));
@@ -377,7 +376,7 @@ export default class UserController extends BaseController {
             city: data.city,
             country_id: data.countryId,
             phone_number: data.phoneNumber,
-            user_id: userId,
+            user_id: data.userId,
           },
           {
             loadUserData: true,
