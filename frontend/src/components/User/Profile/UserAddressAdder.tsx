@@ -39,10 +39,7 @@ export default function UserAddressAdder(
       city: city,
       countryId: countryId,
       phoneNumber: phoneNumber,
-      userId: AppStore.getState().auth.id,
     };
-
-    console.log(data);
 
     api("post", "/api/user/address", "user", data)
       .then((res) => {

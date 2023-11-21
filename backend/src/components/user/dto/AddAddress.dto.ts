@@ -11,7 +11,6 @@ export interface AddAddressDto {
   city: string;
   countryId: number;
   phoneNumber: string;
-  userId: number;
 }
 
 export interface AddAddress extends ServiceData {
@@ -48,9 +47,6 @@ const AddAddressValidator = ajv.compile({
       type: "string",
       pattern: "\\+[0-9]{8,23}",
     },
-    userId: {
-      type: "integer",
-    },
   },
   required: [
     "streetAndNumber",
@@ -58,7 +54,6 @@ const AddAddressValidator = ajv.compile({
     "city",
     "countryId",
     "phoneNumber",
-    "userId",
   ],
   additionalProperties: false,
 });
