@@ -209,6 +209,8 @@ export default function OrderPage() {
                 .join(", ")
           );
         }
+
+        setUserDocumentId(res.data.documentId);
       })
       .catch((error) => {
         setErrorMessage(error?.message ?? "Unknown error!");
@@ -249,11 +251,13 @@ export default function OrderPage() {
             departurePrice: formData.departurePrice,
             returnPrice: formData.returnPrice,
             totalPrice: formData.totalPrice,
+            isRoundtrip: formData.isRoundtrip,
           },
           ticketHolderDetails: {
             ticketHolderFirstName: firstName,
             ticketHolderLastName: lastName,
             ticketHolderDateOfBirth: dateOfBirth,
+            ticketHolderDocumentId: userDocumentId,
           },
         },
       });
