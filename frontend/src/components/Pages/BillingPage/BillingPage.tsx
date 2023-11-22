@@ -177,18 +177,20 @@ export default function BillingPage() {
       const departSeat = await generateRandomSeat(
         formData.flightDetails.departFlight.flightId
       );
-      const returnSeat = await generateRandomSeat(
-        formData.flightDetails.returnFlight.flightId
-      );
-
       setDepartSeatNumber(departSeat);
-      setReturnSeatNumber(returnSeat);
+
+      if (formData.flightDetails.returnFlight) {
+        const returnSeat = await generateRandomSeat(
+          formData.flightDetails.returnFlight.flightId
+        );
+        setReturnSeatNumber(returnSeat);
+      }
     };
 
     generateSeats();
   }, [
     formData.flightDetails.departFlight.flightId,
-    formData.flightDetails.returnFlight.flightId,
+    formData.flightDetails.returnFlight,
   ]);
 
   const doAddTicket = async () => {
@@ -200,7 +202,7 @@ export default function BillingPage() {
         formData.ticketHolderDetails.ticketHolderFirstName +
         " " +
         formData.ticketHolderDetails.ticketHolderLastName,
-      documentId: 4,
+      documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
       userId:
         AppStore.getState().auth.id !== 0 ? AppStore.getState().auth.id : null,
       flightFareCode: generateRandomBookingConfirmationFormattedString(),
@@ -215,15 +217,19 @@ export default function BillingPage() {
           seatNumber: departSeatNumber,
           ...ticketData,
         },
-        {
-          ticketNumber: (
-            Number(randomTicketNumberFormattedString) + 1
-          ).toString(),
-          flightId: formData.flightDetails.returnFlight.flightId,
-          price: Number(formData.flightDetails.returnPrice),
-          seatNumber: returnSeatNumber,
-          ...ticketData,
-        },
+        ...(formData.isRoundtrip
+          ? [
+              {
+                ticketNumber: (
+                  Number(randomTicketNumberFormattedString) + 1
+                ).toString(),
+                flightId: formData.flightDetails.returnFlight.flightId,
+                price: Number(formData.flightDetails.returnPrice),
+                seatNumber: returnSeatNumber,
+                ...ticketData,
+              },
+            ]
+          : []),
       ];
 
       return flights;
@@ -277,14 +283,21 @@ export default function BillingPage() {
           flightDetails: {
             bookingNumber: bookingNumber,
             departFlight: formData.flightDetails.departFlight,
-            returnFlight: formData.flightDetails.returnFlight,
+            returnFlight: formData.flightDetails.isRoundtrip
+              ? formData.flightDetails.returnFlight
+              : undefined,
             departureTravelClass: formData.flightDetails.departureTravelClass,
-            returnTravelClass: formData.flightDetails.returnTravelClass,
+            returnTravelClass: formData.flightDetails.isRoundtrip
+              ? formData.flightDetails.returnTravelClass
+              : undefined,
             departSeat: departSeatNumber,
-            returnSeat: returnSeatNumber,
+            returnSeat: formData.flightDetails.isRoundtrip
+              ? returnSeatNumber
+              : undefined,
             basePrice: basePrice,
             taxesAndFeesPrice: taxesAndFeesPrice,
             totalPrice: formData.flightDetails.totalPrice,
+            isRoundtrip: formData.flightDetails.isRoundtrip,
           },
           passengerDetails: {
             firstName: formData.ticketHolderDetails.ticketHolderFirstName,
@@ -487,13 +500,17 @@ export default function BillingPage() {
           />
           <br></br>
           <br></br>
-          <span>Return flight:</span>
-          <br></br>
-          <FlightRowWithoutPrices
-            flight={formData.flightDetails.returnFlight}
-          />
-          <br></br>
-          <br></br>
+          {formData.flightDetails.returnFlight && (
+            <>
+              <span>Return flight:</span>
+              <br></br>
+              <FlightRowWithoutPrices
+                flight={formData.flightDetails.returnFlight}
+              />
+              <br></br>
+              <br></br>
+            </>
+          )}
           <span>
             <h5>Ticket price: {basePrice} RSD</h5>
             <h5>Taxes and fees: {taxesAndFeesPrice} RSD</h5>

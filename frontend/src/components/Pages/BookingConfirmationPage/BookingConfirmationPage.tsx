@@ -64,31 +64,36 @@ export default function BookingConfirmationPage() {
                 </li>
               </ul>
             </div>
-            <div className="col">
-              <ul className="list-unstyled">
-                <li className="list-group-item">
-                  {location.state.flightDetails.returnFlight.flightCode}
-                </li>
-                <li className="list-group-item">
-                  Departs:{" "}
-                  {
-                    location.state.flightDetails.returnFlight
-                      .departureDateAndTime
-                  }{" "}
-                </li>
-                <li className="list-group-item">
-                  Arrives:{" "}
-                  {location.state.flightDetails.returnFlight.arrivalDateAndTime}{" "}
-                </li>
-                <li className="list-group-item">
-                  Aircraft:{" "}
-                  {
-                    location.state.flightDetails.departFlight.aircraft
-                      .aircraftName
-                  }
-                </li>
-              </ul>
-            </div>
+            {formData.flightDetails.isRoundtrip && (
+              <div className="col">
+                <ul className="list-unstyled">
+                  <li className="list-group-item">
+                    {location.state.flightDetails.returnFlight.flightCode}
+                  </li>
+                  <li className="list-group-item">
+                    Departs:{" "}
+                    {
+                      location.state.flightDetails.returnFlight
+                        .departureDateAndTime
+                    }{" "}
+                  </li>
+                  <li className="list-group-item">
+                    Arrives:{" "}
+                    {
+                      location.state.flightDetails.returnFlight
+                        .arrivalDateAndTime
+                    }{" "}
+                  </li>
+                  <li className="list-group-item">
+                    Aircraft:{" "}
+                    {
+                      location.state.flightDetails.departFlight.aircraft
+                        .aircraftName
+                    }
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -101,10 +106,12 @@ export default function BookingConfirmationPage() {
               {location.state.flightDetails.departFlight.flightCode}:{" "}
               {location.state.flightDetails.departSeat}
             </li>
-            <li className="list-group-item">
-              {location.state.flightDetails.returnFlight.flightCode}:{" "}
-              {location.state.flightDetails.returnSeat}
-            </li>
+            {formData.flightDetails.isRoundtrip && (
+              <li className="list-group-item">
+                {location.state.flightDetails.returnFlight.flightCode}:{" "}
+                {location.state.flightDetails.returnSeat}
+              </li>
+            )}
           </ul>
         </div>
         <div className="col">
