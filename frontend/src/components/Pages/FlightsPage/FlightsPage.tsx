@@ -822,7 +822,7 @@ export default function FlightsPage() {
 
   return (
     <Container>
-      <LoadingScreen loadingTime={200} loadingLogoImage={undefined} />
+      <LoadingScreen loadingTime={2000} loadingLogoImage={undefined} />
       <Tabs
         activeKey={activeTab}
         className="d-flex flex-row justify-content-center align-items-center"
