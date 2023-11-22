@@ -39,19 +39,16 @@ export default class TicketRouter implements Router {
 
     application.post(
       "/api/ticket",
-      AuthMiddleware.getVerifier("user"),
       ticketController.add.bind(ticketController)
     );
 
     application.post(
       "/api/ticket/confirm-booking",
-      AuthMiddleware.getVerifier("user"),
       ticketController.bookingConfirmationEmailSend.bind(ticketController)
     );
 
     application.post(
       "/api/ticket/search",
-      AuthMiddleware.getVerifier("administrator", "user"),
       ticketController.getAllByFlightIdAndSeatNumber.bind(ticketController)
     );
   }

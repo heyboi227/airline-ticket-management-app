@@ -15,7 +15,6 @@ export default class CountryRouter implements Router {
 
     application.get(
       "/api/country",
-      AuthMiddleware.getVerifier("administrator", "user"),
       countryController.getAll.bind(countryController)
     );
 
@@ -51,7 +50,6 @@ export default class CountryRouter implements Router {
 
     application.get(
       "/api/country/search/:sstring",
-      AuthMiddleware.getVerifier("administrator", "user"),
       countryController.getAllBySearchString.bind(countryController)
     );
   }

@@ -33,13 +33,11 @@ export default class FlightRouter implements Router {
 
     application.post(
       "/api/flight/search/departure",
-      AuthMiddleware.getVerifier("administrator", "user"),
       flightController.getAllByDepartureDateSearchQuery.bind(flightController)
     );
 
     application.post(
       "/api/flight/search/return",
-      AuthMiddleware.getVerifier("administrator", "user"),
       flightController.getAllByReturnDateSearchQuery.bind(flightController)
     );
 
