@@ -112,7 +112,7 @@ export default function OrderPage() {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
-  const [userDocumentId, setUserDocumentId] = useState<number>(0);
+  const [userDocumentId, setUserDocumentId] = useState<number | null>(null);
 
   const [documentType, setDocumentType] = useState<string>("");
   const [documentNumber, setDocumentNumber] = useState<string>("");
@@ -258,6 +258,14 @@ export default function OrderPage() {
             ticketHolderLastName: lastName,
             ticketHolderDateOfBirth: dateOfBirth,
             ticketHolderDocumentId: userDocumentId,
+            ticketHolderDocumentType: documentType,
+            ticketHolderDocumentNumber: documentNumber,
+            ticketHolderDocumentIssuingDate: documentIssuingDate
+              .toISOString()
+              .slice(0, 10),
+            ticketHolderDocumentExpirationDate: documentExpirationDate
+              .toISOString()
+              .slice(0, 10),
           },
         },
       });
@@ -414,7 +422,7 @@ export default function OrderPage() {
                 <div className="input-group">
                   <select
                     className="form-select"
-                    value={userDocumentId}
+                    value={userDocumentId ?? 0}
                     onChange={(e) => setUserDocumentId(+e.target.value)}
                   >
                     <option value={""}>Choose a document</option>

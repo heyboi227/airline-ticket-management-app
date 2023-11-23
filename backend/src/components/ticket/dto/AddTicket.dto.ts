@@ -8,7 +8,7 @@ addFormats(ajv);
 export interface AddTicketDto {
   ticketNumber: string;
   ticketHolderName: string;
-  documentId: number;
+  documentId: number | null;
   price: number;
   userId: number | null;
   flightId: number;
@@ -19,7 +19,7 @@ export interface AddTicketDto {
 export interface AddTicket extends ServiceData {
   ticket_number: string;
   ticket_holder_name: string;
-  document_id: number;
+  document_id: number | null;
   price: number;
   user_id: number | null;
   flight_id: number;
@@ -52,6 +52,7 @@ const AddTicketValidator = ajv.compile({
     },
     documentId: {
       type: "number",
+      nullable: true,
     },
     price: {
       type: "number",

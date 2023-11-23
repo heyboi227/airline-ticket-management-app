@@ -148,6 +148,23 @@ export default function BookingConfirmationPage() {
           </ul>
         </div>
         <div className="col">
+          <h3>Travel Document Information</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">
+              Document type: {formData.passengerDetails.documentType}
+            </li>
+            <li className="list-group-item">
+              Document number: {formData.passengerDetails.documentNumber}
+            </li>
+            <li className="list-group-item">
+              Issued on: {formData.passengerDetails.documentIssuingDate}
+            </li>
+            <li className="list-group-item">
+              Expires on: {formData.passengerDetails.documentExpirationDate}
+            </li>
+          </ul>
+        </div>
+        <div className="col">
           <h3>Payment Information</h3>
           <ul className="list-unstyled">
             <li className="list-group-item">

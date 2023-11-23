@@ -303,6 +303,14 @@ export default function BillingPage() {
             firstName: formData.ticketHolderDetails.ticketHolderFirstName,
             lastName: formData.ticketHolderDetails.ticketHolderLastName,
             dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
+            documentId: formData.ticketHolderDetails.ticketHolderUserDocumentId,
+            documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
+            documentNumber:
+              formData.ticketHolderDetails.ticketHolderDocumentNumber,
+            documentIssuingDate:
+              formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
+            documentExpirationDate:
+              formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
           },
           paymentDetails: {
             cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
