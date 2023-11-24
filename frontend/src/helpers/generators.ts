@@ -27,7 +27,19 @@ export const generateRandomTicketNumberFormattedString = () => {
   result += numbers.charAt(Math.floor(Math.random() * numbers.length));
   result += numbers.charAt(Math.floor(Math.random() * numbers.length));
 
-  return result;
+  let incrementedResult = () => {
+    const resultArray = result.split("");
+
+    if (resultArray[0] === "0") {
+      return (
+        parseFloat(resultArray.slice(1, resultArray.length - 1).join("")) + 1
+      ).toString();
+    }
+
+    return (parseFloat(resultArray.join("")) + 1).toString();
+  };
+
+  return [result, incrementedResult()];
 };
 
 const generateRandomSeatNumberFormattedString = () => {

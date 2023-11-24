@@ -211,18 +211,16 @@ export default function BillingPage() {
     const generateFlights = async () => {
       const flights: any[] = [
         {
-          ticketNumber: randomTicketNumberFormattedString,
+          ticketNumber: randomTicketNumberFormattedString[0],
           flightId: formData.flightDetails.departFlight.flightId,
           price: Number(formData.flightDetails.departurePrice),
           seatNumber: departSeatNumber,
           ...ticketData,
         },
-        ...(formData.isRoundtrip
+        ...(formData.flightDetails.isRoundtrip
           ? [
               {
-                ticketNumber: (
-                  Number(randomTicketNumberFormattedString) + 1
-                ).toString(),
+                ticketNumber: randomTicketNumberFormattedString[1],
                 flightId: formData.flightDetails.returnFlight.flightId,
                 price: Number(formData.flightDetails.returnPrice),
                 seatNumber: returnSeatNumber,
