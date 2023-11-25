@@ -408,7 +408,7 @@ export default function OrderPage() {
                 <div className="form-group mb-3">
                   <DateInput
                     onDateChange={(date) =>
-                      handleDateChange(date, "documentExpiryDate")
+                      handleDateChange(date, "documentExpirationDate")
                     }
                     label="Document expiration date"
                     isValid={isValid}
