@@ -971,38 +971,44 @@ export default function FlightsPage() {
                   )}
                   {!isLoading && (
                     <div className="fade" style={contentStyle}>
-                      {flightData.map((flight) => (
-                        <FlightRowWithPrices
-                          flight={flight}
-                          key={flight.flightId}
-                          setFlightDirection={setFlightDirection}
-                          setChooseFlightText={setChooseFlightText}
-                          setChosenDate={setChosenDate}
-                          flightDirection={flightDirection}
-                          chooseFlightText={chooseFlightText}
-                          chosenDate={chosenDate}
-                          departFlight={departFlight}
-                          setDepartFlight={setDepartFlight}
-                          returnFlight={returnFlight}
-                          setReturnFlight={setReturnFlight}
-                          selectedDeparturePrice={selectedDeparturePrice}
-                          setSelectedDeparturePrice={setSelectedDeparturePrice}
-                          selectedReturnPrice={selectedReturnPrice}
-                          setSelectedReturnPrice={setSelectedReturnPrice}
-                          areFlightsSelected={areFlightsSelected}
-                          setAreFlightsSelected={setAreFlightsSelected}
-                          selectedDepartureTravelClass={
-                            selectedDepartureTravelClass
-                          }
-                          setSelectedDepartureTravelClass={
-                            setSelectedDepartureTravelClass
-                          }
-                          selectedReturnTravelClass={selectedReturnTravelClass}
-                          setSelectedReturnTravelClass={
-                            setSelectedReturnTravelClass
-                          }
-                        />
-                      ))}
+                      {flightData
+                        .filter((flight) => flight.travelClasses?.length !== 0)
+                        .map((flight) => (
+                          <FlightRowWithPrices
+                            flight={flight}
+                            key={flight.flightId}
+                            setFlightDirection={setFlightDirection}
+                            setChooseFlightText={setChooseFlightText}
+                            setChosenDate={setChosenDate}
+                            flightDirection={flightDirection}
+                            chooseFlightText={chooseFlightText}
+                            chosenDate={chosenDate}
+                            departFlight={departFlight}
+                            setDepartFlight={setDepartFlight}
+                            returnFlight={returnFlight}
+                            setReturnFlight={setReturnFlight}
+                            selectedDeparturePrice={selectedDeparturePrice}
+                            setSelectedDeparturePrice={
+                              setSelectedDeparturePrice
+                            }
+                            selectedReturnPrice={selectedReturnPrice}
+                            setSelectedReturnPrice={setSelectedReturnPrice}
+                            areFlightsSelected={areFlightsSelected}
+                            setAreFlightsSelected={setAreFlightsSelected}
+                            selectedDepartureTravelClass={
+                              selectedDepartureTravelClass
+                            }
+                            setSelectedDepartureTravelClass={
+                              setSelectedDepartureTravelClass
+                            }
+                            selectedReturnTravelClass={
+                              selectedReturnTravelClass
+                            }
+                            setSelectedReturnTravelClass={
+                              setSelectedReturnTravelClass
+                            }
+                          />
+                        ))}
                     </div>
                   )}
                 </div>
