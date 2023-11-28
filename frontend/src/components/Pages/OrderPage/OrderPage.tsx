@@ -260,12 +260,18 @@ export default function OrderPage() {
             ticketHolderDocumentId: userDocumentId,
             ticketHolderDocumentType: documentType,
             ticketHolderDocumentNumber: documentNumber,
-            ticketHolderDocumentIssuingDate: documentIssuingDate
-              .toISOString()
-              .slice(0, 10),
-            ticketHolderDocumentExpirationDate: documentExpirationDate
-              .toISOString()
-              .slice(0, 10),
+            ticketHolderDocumentIssuingDate:
+              documentIssuingDate.toLocaleDateString("sr", {
+                year: "numeric",
+                month: "numeric",
+                day: "2-digit",
+              }),
+            ticketHolderDocumentExpirationDate:
+              documentExpirationDate.toLocaleDateString("sr", {
+                year: "numeric",
+                month: "numeric",
+                day: "2-digit",
+              }),
           },
         },
       });
