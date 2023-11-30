@@ -189,6 +189,25 @@ export default function OrderPage() {
       });
   }
 
+  function setActiveDocument(userDocumentId: number) {
+    api("get", "/api/document/" + userDocumentId, "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        console.log(res.data);
+        setUserDocumentId(res.data.documentId);
+        setDocumentType(res.data.documentType);
+        setDocumentNumber(res.data.documentNumber);
+        setDocumentIssuingDate(new Date(res.data.documentIssuingDate));
+        setDocumentExpirationDate(new Date(res.data.documentExpirationDate));
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
+
   function doAddUserDocument() {
     api("post", "/api/document", "user", {
       countryId: documentCountryId,
@@ -239,7 +258,8 @@ export default function OrderPage() {
 
     if (form.checkValidity()) {
       setIsValid(true);
-      if (AppStore.getState().auth.id !== 0) doAddUserDocument();
+      if (AppStore.getState().auth.id !== 0 && userDocuments.length === 0)
+        doAddUserDocument();
       navigate("/order/billing", {
         replace: true,
         state: {
@@ -256,7 +276,11 @@ export default function OrderPage() {
           ticketHolderDetails: {
             ticketHolderFirstName: firstName,
             ticketHolderLastName: lastName,
-            ticketHolderDateOfBirth: dateOfBirth,
+            ticketHolderDateOfBirth: dateOfBirth.toLocaleDateString("sr", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+            }),
             ticketHolderDocumentId: userDocumentId,
             ticketHolderDocumentType: documentType,
             ticketHolderDocumentNumber: documentNumber,
@@ -264,13 +288,13 @@ export default function OrderPage() {
               documentIssuingDate.toLocaleDateString("sr", {
                 year: "numeric",
                 month: "numeric",
-                day: "2-digit",
+                day: "numeric",
               }),
             ticketHolderDocumentExpirationDate:
               documentExpirationDate.toLocaleDateString("sr", {
                 year: "numeric",
                 month: "numeric",
-                day: "2-digit",
+                day: "numeric",
               }),
           },
         },
@@ -429,7 +453,7 @@ export default function OrderPage() {
                   <select
                     className="form-select"
                     value={userDocumentId ?? 0}
-                    onChange={(e) => setUserDocumentId(+e.target.value)}
+                    onChange={(e) => setActiveDocument(+e.target.value)}
                   >
                     <option value={""}>Choose a document</option>
                     {userDocuments.map((document) => (
