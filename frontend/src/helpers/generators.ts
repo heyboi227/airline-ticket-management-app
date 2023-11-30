@@ -31,9 +31,7 @@ export const generateRandomTicketNumberFormattedString = () => {
     const resultArray = result.split("");
 
     if (resultArray[0] === "0") {
-      return (
-        parseFloat(resultArray.slice(1, resultArray.length - 1).join("")) + 1
-      ).toString();
+      return "0" + (parseFloat(resultArray.slice(1).join("")) + 1).toString();
     }
 
     return (parseFloat(resultArray.join("")) + 1).toString();
