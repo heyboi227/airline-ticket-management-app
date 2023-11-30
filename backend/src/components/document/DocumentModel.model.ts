@@ -7,6 +7,8 @@ export default class DocumentModel implements Model {
   countryId: number;
   documentType: "Passport" | "National ID";
   documentNumber: string;
+  documentIssuingDate: string;
+  documentExpirationDate: string;
   userId: number;
 
   country?: CountryModel = null;

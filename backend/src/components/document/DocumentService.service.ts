@@ -30,6 +30,8 @@ export default class DocumentService extends BaseService<
     document.countryId = +data?.country_id;
     document.documentType = data?.document_type;
     document.documentNumber = data?.document_number;
+    document.documentIssuingDate = data?.issued_date;
+    document.documentExpirationDate = data?.expiry_date;
     document.userId = +data?.user_id;
 
     if (options.showCountry) {
