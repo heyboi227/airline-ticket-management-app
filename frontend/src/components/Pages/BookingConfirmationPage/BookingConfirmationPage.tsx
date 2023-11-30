@@ -9,30 +9,19 @@ export default function BookingConfirmationPage() {
         <h1>Success! Your booking has been confirmed.</h1>
         <h2>Your card has been charged.</h2>
       </div>
-      <h2>Confirmation Number: {location.state.flightDetails.bookingNumber}</h2>
+      <h2>Confirmation Number: {formData.flightDetails.bookingNumber}</h2>
       <div className="row">
         <div className="col">
           <h3>Passenger Details</h3>
           <ul className="list-unstyled">
             <li className="list-group-item">
-              First name:{" "}
-              {location.state
-                ? location.state.passengerDetails.firstName
-                : "Losmi"}{" "}
+              First name: {formData.passengerDetails.firstName}
             </li>
             <li className="list-group-item">
-              Last name:{" "}
-              {location.state
-                ? location.state.passengerDetails.lastName
-                : "Losmi"}
+              Last name: {formData.passengerDetails.lastName}
             </li>
             <li className="list-group-item">
-              Date of birth:{" "}
-              {location.state
-                ? new Date(
-                    location.state.passengerDetails.dateOfBirth
-                  ).toLocaleDateString("sr")
-                : "1999-09-08"}
+              Date of birth: {formData.passengerDetails.dateOfBirth}
             </li>
           </ul>
         </div>
@@ -42,25 +31,37 @@ export default function BookingConfirmationPage() {
             <div className="col">
               <ul className="list-unstyled">
                 <li className="list-group-item">
-                  {location.state.flightDetails.departFlight.flightCode}
+                  {formData.flightDetails.departFlight.flightCode}
                 </li>
                 <li className="list-group-item">
                   Departs:{" "}
-                  {
-                    location.state.flightDetails.departFlight
-                      .departureDateAndTime
-                  }{" "}
+                  {new Date(
+                    formData.flightDetails.departFlight.departureDateAndTime
+                  ).toLocaleDateString("sr", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour12: false,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
                 </li>
                 <li className="list-group-item">
                   Arrives:{" "}
-                  {location.state.flightDetails.departFlight.arrivalDateAndTime}{" "}
+                  {new Date(
+                    formData.flightDetails.departFlight.arrivalDateAndTime
+                  ).toLocaleDateString("sr", {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour12: false,
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}{" "}
                 </li>
                 <li className="list-group-item">
                   Aircraft:{" "}
-                  {
-                    location.state.flightDetails.departFlight.aircraft
-                      .aircraftName
-                  }
+                  {formData.flightDetails.departFlight.aircraft.aircraftName}
                 </li>
               </ul>
             </div>
@@ -68,28 +69,37 @@ export default function BookingConfirmationPage() {
               <div className="col">
                 <ul className="list-unstyled">
                   <li className="list-group-item">
-                    {location.state.flightDetails.returnFlight.flightCode}
+                    {formData.flightDetails.returnFlight.flightCode}
                   </li>
                   <li className="list-group-item">
                     Departs:{" "}
-                    {
-                      location.state.flightDetails.returnFlight
-                        .departureDateAndTime
-                    }{" "}
+                    {new Date(
+                      formData.flightDetails.returnFlight.departureDateAndTime
+                    ).toLocaleDateString("sr", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
                   </li>
                   <li className="list-group-item">
                     Arrives:{" "}
-                    {
-                      location.state.flightDetails.returnFlight
-                        .arrivalDateAndTime
-                    }{" "}
+                    {new Date(
+                      formData.flightDetails.returnFlight.arrivalDateAndTime
+                    ).toLocaleDateString("sr", {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour12: false,
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}{" "}
                   </li>
                   <li className="list-group-item">
                     Aircraft:{" "}
-                    {
-                      location.state.flightDetails.departFlight.aircraft
-                        .aircraftName
-                    }
+                    {formData.flightDetails.departFlight.aircraft.aircraftName}
                   </li>
                 </ul>
               </div>
@@ -103,13 +113,13 @@ export default function BookingConfirmationPage() {
           <ul className="list-unstyled">
             <li className="list-group-item">
               {" "}
-              {location.state.flightDetails.departFlight.flightCode}:{" "}
-              {location.state.flightDetails.departSeat}
+              {formData.flightDetails.departFlight.flightCode}:{" "}
+              {formData.flightDetails.departSeat}
             </li>
             {formData.flightDetails.isRoundtrip && (
               <li className="list-group-item">
-                {location.state.flightDetails.returnFlight.flightCode}:{" "}
-                {location.state.flightDetails.returnSeat}
+                {formData.flightDetails.returnFlight.flightCode}:{" "}
+                {formData.flightDetails.returnSeat}
               </li>
             )}
           </ul>

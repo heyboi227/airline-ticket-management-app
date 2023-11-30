@@ -312,7 +312,14 @@ export default function BillingPage() {
           },
           paymentDetails: {
             cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
-            paymentTimestamp: new Date().toISOString(),
+            paymentTimestamp: new Date().toLocaleDateString("sr", {
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }),
           },
         },
       });
