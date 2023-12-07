@@ -946,10 +946,12 @@ export default function FlightsPage() {
                           returnTravelClass: selectedReturnTravelClass,
                           departurePrice: selectedDeparturePrice,
                           returnPrice: selectedReturnPrice,
-                          totalPrice: (
-                            Number(selectedDeparturePrice) +
-                            Number(selectedReturnPrice)
-                          ).toFixed(2),
+                          totalPrice: parseFloat(
+                            (
+                              Number(selectedDeparturePrice) +
+                              Number(selectedReturnPrice)
+                            ).toFixed(2)
+                          ),
                           isRoundtrip: location.state.isRoundtrip,
                         },
                       });

@@ -254,6 +254,46 @@ export default function BillingPage() {
     api("post", "/api/ticket/confirm-booking", "user", {
       email,
       bookingNumber,
+      flightDetails: {
+        departFlight: formData.flightDetails.departFlight,
+        ...(formData.flightDetails.returnFlight
+          ? { returnFlight: formData.flightDetails.returnFlight }
+          : undefined),
+        departureTravelClass: formData.flightDetails.departureTravelClass,
+        ...(formData.flightDetails.returnTravelClass
+          ? { returnTravelClass: formData.flightDetails.returnTravelClass }
+          : undefined),
+        basePrice,
+        taxesAndFeesPrice,
+        totalPrice: formData.flightDetails.totalPrice,
+      },
+      seatDetails: {
+        departSeat: departSeatNumber,
+        ...(returnSeatNumber ? { returnSeat: returnSeatNumber } : undefined),
+      },
+      ticketHolderDetails: {
+        firstName: formData.ticketHolderDetails.ticketHolderFirstName,
+        lastName: formData.ticketHolderDetails.ticketHolderLastName,
+        dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
+        documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
+        documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
+        documentNumber: formData.ticketHolderDetails.ticketHolderDocumentNumber,
+        documentIssuingDate:
+          formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
+        documentExpirationDate:
+          formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
+      },
+      paymentDetails: {
+        cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
+        paymentTimestamp: new Date().toLocaleDateString("sr", {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+        }),
+      },
     }).catch((error) => {
       setErrorMessage(error?.message ?? "Could not send the email.");
 
