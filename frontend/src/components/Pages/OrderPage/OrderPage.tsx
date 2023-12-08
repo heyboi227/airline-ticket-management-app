@@ -19,6 +19,7 @@ import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/UserDocument.model";
 import User from "../../../models/User.model";
 import "./OrderPage.css";
+import { numbersToLetters } from "../../../helpers/helpers";
 
 interface DateInputProps {
   label: string;
@@ -129,6 +130,24 @@ export default function OrderPage() {
   const [userDocuments, setUserDocuments] = useState<UserDocument[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const formData = location.state;
+
+  const [passengers, setPassengers] = useState(() =>
+    Array.from({ length: formData.numberOfPassengers }, () => ({
+      firstName: "",
+      lastName: "",
+      dateOfBirth: new Date(),
+      userDocumentId: 0,
+      documentType: "",
+      documentNumber: "",
+      documentIssuingDate: new Date(),
+      documentExpirationDate: new Date(),
+    }))
+  );
+
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   const [isValid, setIsValid] = useState<boolean>(true);
@@ -138,12 +157,6 @@ export default function OrderPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const taxesAndFeesPrice = useRandomNumber();
-
-  const navigate = useNavigate();
-
-  const location = useLocation();
-
-  const formData = location.state;
 
   function loadCountries() {
     api("get", "/api/country", "user")
@@ -248,15 +261,27 @@ export default function OrderPage() {
     }
   }, [loggedIn]);
 
-  const toBilling = (event: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => console.log(formData), [formData]);
+
+  const validateAllPassengerForms = (
+    event: React.FormEvent<HTMLFormElement>,
+    form: HTMLFormElement | null
+  ) => {
     event.preventDefault();
     event.stopPropagation();
 
-    const form = formRef.current;
-
     if (!form) return;
 
-    if (form.checkValidity()) {
+    return form.checkValidity();
+  };
+
+  const toBilling = () => {
+    const syntheticEvent = new Event("submit", {
+      bubbles: true,
+      cancelable: true,
+    }) as unknown as React.FormEvent<HTMLFormElement>;
+
+    if (validateAllPassengerForms(syntheticEvent, formRef.current)) {
       setIsValid(true);
       if (AppStore.getState().auth.id !== 0 && userDocuments.length === 0)
         doAddUserDocument();
@@ -273,235 +298,232 @@ export default function OrderPage() {
             totalPrice: formData.totalPrice,
             isRoundtrip: formData.isRoundtrip,
           },
-          ticketHolderDetails: {
-            ticketHolderFirstName: firstName,
-            ticketHolderLastName: lastName,
-            ticketHolderDateOfBirth: dateOfBirth.toLocaleDateString("sr", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            }),
-            ticketHolderDocumentId: userDocumentId,
-            ticketHolderDocumentType: documentType,
-            ticketHolderDocumentNumber: documentNumber,
-            ticketHolderDocumentIssuingDate:
-              documentIssuingDate.toLocaleDateString("sr", {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              }),
-            ticketHolderDocumentExpirationDate:
-              documentExpirationDate.toLocaleDateString("sr", {
-                year: "numeric",
-                month: "numeric",
-                day: "numeric",
-              }),
-          },
+          passengers: passengers,
         },
       });
     } else {
-      form.classList.add("was-validated");
+      if (formRef.current) formRef.current.classList.add("was-validated");
       setIsValid(false);
     }
   };
 
-  const handleDateChange = (date: Date | null, dateType: string) => {
-    if (date) {
-      switch (dateType) {
-        case "dateOfBirth":
-          setDateOfBirth(date);
-          break;
-        case "documentIssuingDate":
-          setDocumentIssuingDate(date);
-          break;
-        case "documentExpirationDate":
-          setDocumentExpirationDate(date);
-          break;
-      }
-    }
+  const handlePassengerUpdate = (index: number, field: string, value: any) => {
+    setPassengers((current) =>
+      current.map((passenger, i) =>
+        i === index ? { ...passenger, [field]: value } : passenger
+      )
+    );
   };
 
   return (
     <>
       <div className="row offset-md-2 w-100">
         <div className="col col-xs-12 col-md-4 p-5 bg-light-subtle">
-          <form
-            ref={formRef}
-            onSubmit={toBilling}
-            noValidate
-            className="needs-validation"
-          >
-            <h2>Enter passenger details</h2>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Passenger's first name"
-                  value={firstName}
-                  required
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-                <div className="invalid-feedback">
-                  Please enter your first name.
-                </div>
-              </div>
-            </div>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Passenger's last name"
-                  value={lastName}
-                  required
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-                <div className="invalid-feedback">
-                  Please enter your last name.
-                </div>
-              </div>
-            </div>
-            <div className="form-group mb-3">
-              <DateInput
-                onDateChange={(date) => handleDateChange(date, "dateOfBirth")}
-                label="Date of birth"
-                isValid={isValid}
-                disableFuture={true}
-              ></DateInput>
-            </div>
-            {(!loggedIn || (loggedIn && userDocuments.length === 0)) && (
-              <>
-                <div className="form-group mb-3">
-                  <div className="input-group">
-                    <select
-                      className="form-control"
-                      placeholder="Document type"
-                      value={documentType}
-                      required
-                      onChange={(e) => setDocumentType(e.target.value)}
-                    >
-                      <option value={""}>Choose a document type</option>
-                      <option value={"National ID"}>National ID</option>
-                      <option value={"Passport"}>Passport</option>
-                    </select>
-                    <div className="invalid-feedback">
-                      Please choose a document type.
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <input
-                      className="form-control"
-                      type="text"
-                      placeholder="Document number"
-                      value={documentNumber}
-                      required
-                      onChange={(e) => setDocumentNumber(e.target.value)}
-                    />
-                    <div className="invalid-feedback">
-                      Please enter your document number.
-                    </div>
-                  </div>
-                  <div className="input-group">
-                    <select
-                      className="form-control"
-                      placeholder="Issuing country"
-                      value={documentCountryId}
-                      required
-                      onChange={(e) => setDocumentCountryId(+e.target.value)}
-                    >
-                      <option value={""}>Choose the issuing country</option>
-                      {countries.map((country) => (
-                        <option
-                          key={country.countryId}
-                          value={country.countryId}
-                        >
-                          {country.countryName}
-                        </option>
-                      ))}
-                    </select>
-                    <div className="invalid-feedback">
-                      Please choose a document issuing country.
-                    </div>
-                  </div>
-                </div>
-                <div className="form-group mb-3">
-                  <DateInput
-                    onDateChange={(date) =>
-                      handleDateChange(date, "documentIssuingDate")
-                    }
-                    label="Document issuing date"
-                    isValid={isValid}
-                    disableFuture={true}
-                  ></DateInput>
-                </div>
-                <div className="form-group mb-3">
-                  <DateInput
-                    onDateChange={(date) =>
-                      handleDateChange(date, "documentExpirationDate")
-                    }
-                    label="Document expiration date"
-                    isValid={isValid}
-                    disablePast={true}
-                  ></DateInput>
-                </div>
-              </>
-            )}
-            {loggedIn && userDocuments.length !== 0 && (
+          {passengers.map((passenger, index) => (
+            <form
+              ref={formRef}
+              key={index}
+              noValidate
+              className="needs-validation"
+            >
+              <h2>Enter details for {numbersToLetters[index]} passenger:</h2>
               <div className="form-group mb-3">
                 <div className="input-group">
-                  <select
-                    className="form-select"
-                    value={userDocumentId ?? 0}
-                    onChange={(e) => setActiveDocument(+e.target.value)}
-                  >
-                    <option value={""}>Choose a document</option>
-                    {userDocuments.map((document) => (
-                      <option
-                        value={document.documentId}
-                        key={document.documentId}
-                      >{`${document.documentType} - ${
-                        document.documentNumber
-                      } (${document.country!.countryName})`}</option>
-                    ))}
-                  </select>
+                  <input
+                    className="form-control"
+                    type="text"
+                    placeholder="Passenger's first name"
+                    value={passenger.firstName}
+                    required
+                    onChange={(e) =>
+                      handlePassengerUpdate(index, "firstName", e.target.value)
+                    }
+                  />
+                  <div className="invalid-feedback">
+                    Please enter your first name.
+                  </div>
                 </div>
               </div>
-            )}
-            <div className="form-group mb-3">
-              <h6 className="mt-3">Gender</h6>
-              <div className="form-check form-check-inline no-validation">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="gender"
-                  id="male"
-                  defaultChecked
-                  value={gender}
-                  onChange={() => setGender("Male")}
-                />
-                <label className="form-check-label" htmlFor="male">
-                  Male
-                </label>
+              <div className="form-group mb-3">
+                <div className="input-group">
+                  <input
+                    className="form-control"
+                    type="text"
+                    placeholder="Passenger's last name"
+                    value={passenger.lastName}
+                    required
+                    onChange={(e) =>
+                      handlePassengerUpdate(index, "lastName", e.target.value)
+                    }
+                  />
+                  <div className="invalid-feedback">
+                    Please enter your last name.
+                  </div>
+                </div>
               </div>
-              <div className="form-check form-check-inline no-validation">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="gender"
-                  id="female"
-                  value={gender}
-                  onChange={() => setGender("Female")}
-                />
-                <label className="form-check-label" htmlFor="female">
-                  Female
-                </label>
+              <div className="form-group mb-3">
+                <DateInput
+                  onDateChange={(date) =>
+                    handlePassengerUpdate(index, "dateOfBirth", date)
+                  }
+                  label="Date of birth"
+                  isValid={isValid}
+                  disableFuture={true}
+                ></DateInput>
               </div>
-            </div>
-            <button className="btn btn-primary" type="submit">
-              Billing information
-            </button>
-          </form>
+              {(!loggedIn || (loggedIn && userDocuments.length === 0)) && (
+                <>
+                  <div className="form-group mb-3">
+                    <div className="input-group">
+                      <select
+                        className="form-control"
+                        placeholder="Document type"
+                        value={passenger.documentType}
+                        required
+                        onChange={(e) =>
+                          handlePassengerUpdate(
+                            index,
+                            "documentType",
+                            e.target.value
+                          )
+                        }
+                      >
+                        <option value={""}>Choose a document type</option>
+                        <option value={"National ID"}>National ID</option>
+                        <option value={"Passport"}>Passport</option>
+                      </select>
+                      <div className="invalid-feedback">
+                        Please choose a document type.
+                      </div>
+                    </div>
+                    <div className="input-group">
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Document number"
+                        value={passenger.documentNumber}
+                        required
+                        onChange={(e) =>
+                          handlePassengerUpdate(
+                            index,
+                            "documentNumber",
+                            e.target.value
+                          )
+                        }
+                      />
+                      <div className="invalid-feedback">
+                        Please enter your document number.
+                      </div>
+                    </div>
+                    <div className="input-group">
+                      <select
+                        className="form-control"
+                        placeholder="Issuing country"
+                        value={documentCountryId}
+                        required
+                        onChange={(e) => setDocumentCountryId(+e.target.value)}
+                      >
+                        <option value={""}>Choose the issuing country</option>
+                        {countries.map((country) => (
+                          <option
+                            key={country.countryId}
+                            value={country.countryId}
+                          >
+                            {country.countryName}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="invalid-feedback">
+                        Please choose a document issuing country.
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-group mb-3">
+                    <DateInput
+                      onDateChange={(date) =>
+                        handlePassengerUpdate(
+                          index,
+                          "documentIssuingDate",
+                          date
+                        )
+                      }
+                      label="Document issuing date"
+                      isValid={isValid}
+                      disableFuture={true}
+                    ></DateInput>
+                  </div>
+                  <div className="form-group mb-3">
+                    <DateInput
+                      onDateChange={(date) =>
+                        handlePassengerUpdate(
+                          index,
+                          "documentExpirationDate",
+                          date
+                        )
+                      }
+                      label="Document expiration date"
+                      isValid={isValid}
+                      disablePast={true}
+                    ></DateInput>
+                  </div>
+                </>
+              )}
+              {loggedIn && userDocuments.length !== 0 && (
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <select
+                      className="form-select"
+                      value={userDocumentId ?? 0}
+                      onChange={(e) => setActiveDocument(+e.target.value)}
+                    >
+                      <option value={""}>Choose a document</option>
+                      {userDocuments.map((document) => (
+                        <option
+                          value={document.documentId}
+                          key={document.documentId}
+                        >{`${document.documentType} - ${
+                          document.documentNumber
+                        } (${document.country!.countryName})`}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+              <div className="form-group mb-3">
+                <h6 className="mt-3">Gender</h6>
+                <div className="form-check form-check-inline no-validation">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="male"
+                    defaultChecked
+                    value={gender}
+                    onChange={() => setGender("Male")}
+                  />
+                  <label className="form-check-label" htmlFor="male">
+                    Male
+                  </label>
+                </div>
+                <div className="form-check form-check-inline no-validation">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="female"
+                    value={gender}
+                    onChange={() => setGender("Female")}
+                  />
+                  <label className="form-check-label" htmlFor="female">
+                    Female
+                  </label>
+                </div>
+              </div>
+            </form>
+          ))}
+          <button className="btn btn-primary" onClick={toBilling}>
+            Billing information
+          </button>
         </div>
         <div className="col col-xs-12 col-md-4 p-5">
           <div className="mb-4">

@@ -119,3 +119,12 @@ export function subtractTime(
 
   return `${formattedHours}:${formattedMinutes}`;
 }
+
+export const numbersToLetters: string[] = [
+  "first",
+  "second",
+  "third",
+  "fourth",
+  "fifth",
+  "sixth",
+];

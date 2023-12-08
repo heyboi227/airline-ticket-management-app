@@ -172,6 +172,8 @@ export default function Search() {
   const [departureDate, setDepartureDate] = useState<string>("");
   const [returnDate, setReturnDate] = useState<string>("");
 
+  const [numberOfPassengers, setNumberOfPassengers] = useState<number>(1);
+
   const handleOriginAirportIdChange = (newOriginAirportId: number) => {
     setOriginAirportId(newOriginAirportId);
   };
@@ -245,6 +247,7 @@ export default function Search() {
               departureDate: departureDate,
               returnDate: returnDate,
               isRoundtrip: isRoundtrip,
+              numberOfPassengers: numberOfPassengers,
               flightData: res.data,
             },
           });
@@ -294,7 +297,7 @@ export default function Search() {
           className="row form-group mt-3 mb-3 text-white"
           style={{ width: "fit-content" }}
         >
-          <div className="col">
+          <div className="col d-flex flex-row align-items-center justify-content-center gap-2">
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -308,7 +311,7 @@ export default function Search() {
               </label>
             </div>
           </div>
-          <div className="col">
+          <div className="col d-flex flex-row align-items-center justify-content-center gap-2">
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -321,6 +324,23 @@ export default function Search() {
               <label className="form-check-label" htmlFor="roundtrip">
                 Roundtrip
               </label>
+            </div>
+          </div>
+          <div className="col">
+            <div className="form-group d-flex flex-row align-items-center justify-content-center gap-2">
+              <span>Adults:</span>
+              <input
+                className="form-control"
+                style={{ width: "fit-content" }}
+                type="number"
+                min={1}
+                max={6}
+                onChange={(e) => {
+                  setNumberOfPassengers(+e.target.value);
+                }}
+                id="numberOfPassengers"
+                value={numberOfPassengers}
+              />
             </div>
           </div>
         </div>

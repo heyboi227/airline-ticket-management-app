@@ -95,7 +95,7 @@ function ClassPricesDrawer(props: Readonly<ClassPricesDrawerProps>) {
   };
 
   return (
-    <div className="card" style={{ width: "18rem" }}>
+    <div className="card" style={{ width: "max-content" }}>
       <div className="card-body mt-3 d-flex flex-column justify-content-start align-items-center">
         <h2 className="card-title">{props.travelClassName}</h2>
         {props.flight.travelClasses?.filter((travelClass) =>
@@ -120,6 +120,7 @@ function ClassPricesDrawer(props: Readonly<ClassPricesDrawerProps>) {
                 }, Infinity)}{" "}
               RSD
             </span>
+            &nbsp;/ person
           </p>
         ) : (
           <p>N/A</p>
@@ -153,6 +154,8 @@ const ClassPrices = (props: ClassPricesProps) => {
   };
 
   const location = useLocation();
+
+  const formData = location.state;
 
   const renderTextForSubTravelClasses = (subTravelClass: string) => {
     switch (subTravelClass) {
@@ -275,7 +278,7 @@ const ClassPrices = (props: ClassPricesProps) => {
               .map((travelClass, index) => (
                 <div
                   className="card"
-                  style={{ width: "25rem", height: "30vw" }}
+                  style={{ width: "25rem", height: "32vw" }}
                   key={travelClass.travelClass.travelClassId}
                 >
                   <div
@@ -289,9 +292,21 @@ const ClassPrices = (props: ClassPricesProps) => {
                       {renderTextForSubTravelClasses(
                         travelClass.travelClass.travelClassSubname
                       )}
-                      <h1 style={{ position: "absolute", bottom: 0 }}>
-                        {travelClass.price} RSD
-                      </h1>
+                      <div
+                        style={{ position: "absolute", bottom: 0 }}
+                        className="d-flex flex-column justify-content-center align-items-start"
+                      >
+                        <h1 className="mb-3">{travelClass.price} RSD</h1>
+                        <h4>
+                          Total price:{" "}
+                          {parseFloat(
+                            (
+                              travelClass.price * formData.numberOfPassengers
+                            ).toFixed(2)
+                          )}{" "}
+                          RSD
+                        </h4>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -315,13 +330,13 @@ const ClassPrices = (props: ClassPricesProps) => {
                         props.flightRowWithPricesProps.setSelectedDeparturePrice(
                           travelClass.price
                         );
-                        if (!location.state.isRoundtrip) {
+                        if (!formData.isRoundtrip) {
                           props.flightRowWithPricesProps.setAreFlightsSelected(
                             true
                           );
                         } else {
                           props.flightRowWithPricesProps.setChosenDate(
-                            new Date(location.state.returnDate)
+                            new Date(formData.returnDate)
                           );
                           props.flightRowWithPricesProps.setFlightDirection(
                             "return"
@@ -544,8 +559,10 @@ export const isTodayTabDisabled = (flightData: Flight[]) => {
 
 export default function FlightsPage() {
   const location = useLocation();
+  const formData = location.state;
+
   const [flightData, setFlightData] = useState<Flight[]>(
-    location.state.flightData || null
+    formData.flightData || null
   );
 
   const [flightDirection, setFlightDirection] = useState<string>("departure");
@@ -579,7 +596,7 @@ export default function FlightsPage() {
   const [error, setError] = useState<string>("");
 
   const [chosenDate, setChosenDate] = useState<Date>(
-    new Date(location.state.departureDate)
+    new Date(formData.departureDate)
   );
 
   const handleChosenDateChange = (date: Date) => {
@@ -610,17 +627,17 @@ export default function FlightsPage() {
     async function fetchData(directionDate: string) {
       setIsLoading(true);
       let originAirportId: number, destinationAirportId: number;
-      if (location.state.isRoundtrip) {
+      if (formData.isRoundtrip) {
         if (flightDirection === "departure") {
-          originAirportId = location.state.originAirportId;
-          destinationAirportId = location.state.destinationAirportId;
+          originAirportId = formData.originAirportId;
+          destinationAirportId = formData.destinationAirportId;
         } else {
-          originAirportId = location.state.destinationAirportId;
-          destinationAirportId = location.state.originAirportId;
+          originAirportId = formData.destinationAirportId;
+          destinationAirportId = formData.originAirportId;
         }
       } else {
-        originAirportId = location.state.originAirportId;
-        destinationAirportId = location.state.destinationAirportId;
+        originAirportId = formData.originAirportId;
+        destinationAirportId = formData.destinationAirportId;
       }
 
       const dateKey =
@@ -666,7 +683,7 @@ export default function FlightsPage() {
         setError("");
       }, 3500);
     });
-  }, [chosenDate, flightDirection, location.state]);
+  }, [chosenDate, flightDirection, formData]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -688,6 +705,8 @@ export default function FlightsPage() {
       });
     }
   }, [isLoading]);
+
+  useEffect(() => console.log(formData), [formData]);
 
   const buildApiRequestData = (
     flightDirection: string,
@@ -746,7 +765,7 @@ export default function FlightsPage() {
           "post",
           `/api/flight/search/${flightDirection}`,
           "user",
-          buildApiRequestData(flightDirection, location.state, directionDate)
+          buildApiRequestData(flightDirection, formData, directionDate)
         );
 
         if (res.status !== "ok") {
@@ -793,9 +812,9 @@ export default function FlightsPage() {
     updateMinimalPrices().catch((error) =>
       console.error("An error occured: ", error)
     );
-  }, [chosenDate, dateRange, flightDirection, location.state]);
+  }, [chosenDate, dateRange, flightDirection, formData]);
 
-  const currentDate = new Date(location.state.departureDate);
+  const currentDate = new Date(formData.departureDate);
 
   const [activeTab, setActiveTab] = useState<string>(
     currentDate.toDateString()
@@ -876,13 +895,14 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected departure flight:{" "}
-                      {new Date(location.state.departureDate).toDateString()}
+                      {new Date(formData.departureDate).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
                         <FlightRowWithoutPrices flight={departFlight} />
                         <h2 className="text-end">
-                          {selectedDeparturePrice} RSD
+                          {selectedDeparturePrice * formData.numberOfPassengers}{" "}
+                          RSD
                         </h2>
                       </div>
                     </div>
@@ -892,12 +912,15 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected return flight:{" "}
-                      {new Date(location.state.returnDate).toDateString()}
+                      {new Date(formData.returnDate).toDateString()}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
                         <FlightRowWithoutPrices flight={returnFlight} />
-                        <h2 className="text-end">{selectedReturnPrice} RSD</h2>
+                        <h2 className="text-end">
+                          {selectedReturnPrice * formData.numberOfPassengers}{" "}
+                          RSD
+                        </h2>
                       </div>
                     </div>
                   </div>
@@ -908,8 +931,9 @@ export default function FlightsPage() {
                   <h2>
                     Price:{" "}
                     {(
-                      Number(selectedDeparturePrice) +
-                      Number(selectedReturnPrice)
+                      (Number(selectedDeparturePrice) +
+                        Number(selectedReturnPrice)) *
+                      formData.numberOfPassengers
                     ).toFixed(2)}{" "}
                     RSD
                   </h2>
@@ -944,15 +968,20 @@ export default function FlightsPage() {
                           returnFlight: returnFlight,
                           departureTravelClass: selectedDepartureTravelClass,
                           returnTravelClass: selectedReturnTravelClass,
-                          departurePrice: selectedDeparturePrice,
-                          returnPrice: selectedReturnPrice,
+                          departurePrice:
+                            selectedDeparturePrice *
+                            formData.numberOfPassengers,
+                          returnPrice:
+                            selectedReturnPrice * formData.numberOfPassengers,
                           totalPrice: parseFloat(
                             (
-                              Number(selectedDeparturePrice) +
-                              Number(selectedReturnPrice)
+                              (Number(selectedDeparturePrice) +
+                                Number(selectedReturnPrice)) *
+                              formData.numberOfPassengers
                             ).toFixed(2)
                           ),
-                          isRoundtrip: location.state.isRoundtrip,
+                          isRoundtrip: formData.isRoundtrip,
+                          numberOfPassengers: formData.numberOfPassengers,
                         },
                       });
                     }}
