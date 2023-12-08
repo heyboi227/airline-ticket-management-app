@@ -129,7 +129,6 @@ function AirportInput({
 
 function DateInput(props: Readonly<DateInputProps>) {
   const [value, setValue] = useState<Date | null>(null);
-  const [disableToday, setDisableToday] = useState<boolean>(false);
 
   const handleChange = (newValue: Date | null) => {
     setValue(newValue);

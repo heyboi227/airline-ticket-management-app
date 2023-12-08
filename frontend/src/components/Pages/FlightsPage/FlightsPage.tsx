@@ -706,8 +706,6 @@ export default function FlightsPage() {
     }
   }, [isLoading]);
 
-  useEffect(() => console.log(formData), [formData]);
-
   const buildApiRequestData = (
     flightDirection: string,
     locationState: any,

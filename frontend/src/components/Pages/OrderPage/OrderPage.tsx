@@ -208,8 +208,7 @@ export default function OrderPage() {
         if (res.status === "error") {
           return setErrorMessage(res.data + "");
         }
-
-        console.log(res.data);
+        
         setUserDocumentId(res.data.documentId);
         setDocumentType(res.data.documentType);
         setDocumentNumber(res.data.documentNumber);
@@ -260,8 +259,6 @@ export default function OrderPage() {
       loadUserDocuments();
     }
   }, [loggedIn]);
-
-  useEffect(() => console.log(formData), [formData]);
 
   const validateAllPassengerForms = (
     event: React.FormEvent<HTMLFormElement>,
