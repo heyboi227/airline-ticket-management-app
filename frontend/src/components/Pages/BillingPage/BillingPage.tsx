@@ -124,6 +124,8 @@ export default function BillingPage() {
   const [countryId, setCountryId] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
 
+  const [passengers, setPassengers] = useState<any[]>(formData.passengers);
+
   const [departSeatNumber, setDepartSeatNumber] = useState<string | null>(null);
   const [returnSeatNumber, setReturnSeatNumber] = useState<string | null>(null);
 
@@ -140,6 +142,14 @@ export default function BillingPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const [isValid, setIsValid] = useState<boolean>(true);
+
+  const handlePassengerUpdate = (index: number, field: string, value: any) => {
+    setPassengers((current) =>
+      current.map((passenger, i) =>
+        i === index ? { ...passenger, [field]: value } : passenger
+      )
+    );
+  };
 
   const handleCountryIdChange = (newCountryId: number) => {
     setCountryId(newCountryId);
@@ -174,17 +184,19 @@ export default function BillingPage() {
 
   useEffect(() => {
     const generateSeats = async () => {
-      const departSeat = await generateRandomSeat(
-        formData.flightDetails.departFlight.flightId
-      );
-      setDepartSeatNumber(departSeat);
-
-      if (formData.flightDetails.returnFlight) {
-        const returnSeat = await generateRandomSeat(
-          formData.flightDetails.returnFlight.flightId
+      passengers.forEach(async (_passenger, index) => {
+        const departSeat = await generateRandomSeat(
+          formData.flightDetails.departFlight.flightId
         );
-        setReturnSeatNumber(returnSeat);
-      }
+        handlePassengerUpdate(index, "departSeat", departSeat);
+
+        if (formData.flightDetails.returnFlight) {
+          const returnSeat = await generateRandomSeat(
+            formData.flightDetails.returnFlight.flightId
+          );
+          handlePassengerUpdate(index, "returnSeat", returnSeat);
+        }
+      });
     };
 
     generateSeats();
@@ -194,59 +206,64 @@ export default function BillingPage() {
   ]);
 
   const doAddTicket = async () => {
-    const randomTicketNumberFormattedString =
-      generateRandomTicketNumberFormattedString();
+    const randomBookingConfirmationFormattedString =
+      generateRandomBookingConfirmationFormattedString();
 
-    const ticketData = {
-      ticketHolderName:
-        formData.ticketHolderDetails.ticketHolderFirstName +
-        " " +
-        formData.ticketHolderDetails.ticketHolderLastName,
-      documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
-      userId:
-        AppStore.getState().auth.id !== 0 ? AppStore.getState().auth.id : null,
-      flightFareCode: generateRandomBookingConfirmationFormattedString(),
-    };
+    passengers.forEach(async (passenger) => {
+      const randomTicketNumberFormattedString =
+        generateRandomTicketNumberFormattedString();
 
-    const generateFlights = async () => {
-      const flights: any[] = [
-        {
-          ticketNumber: randomTicketNumberFormattedString[0],
-          flightId: formData.flightDetails.departFlight.flightId,
-          price: Number(formData.flightDetails.departurePrice),
-          seatNumber: departSeatNumber,
-          ...ticketData,
-        },
-        ...(formData.flightDetails.isRoundtrip
-          ? [
-              {
-                ticketNumber: randomTicketNumberFormattedString[1],
-                flightId: formData.flightDetails.returnFlight.flightId,
-                price: Number(formData.flightDetails.returnPrice),
-                seatNumber: returnSeatNumber,
-                ...ticketData,
-              },
-            ]
-          : []),
-      ];
+      const ticketData = {
+        ticketHolderName: passenger.firstName + " " + passenger.lastName,
+        documentId:
+          passenger.userDocumentId !== 0 ? passenger.userDocumentId : null,
+        userId:
+          AppStore.getState().auth.id !== 0
+            ? AppStore.getState().auth.id
+            : null,
+        flightFareCode: randomBookingConfirmationFormattedString,
+      };
 
-      return flights;
-    };
+      const generateFlights = async () => {
+        const flights: any[] = [
+          {
+            ticketNumber: randomTicketNumberFormattedString[0],
+            flightId: formData.flightDetails.departFlight.flightId,
+            price: Number(formData.flightDetails.departurePrice),
+            seatNumber: passenger.departSeat,
+            ...ticketData,
+          },
+          ...(formData.flightDetails.isRoundtrip
+            ? [
+                {
+                  ticketNumber: randomTicketNumberFormattedString[1],
+                  flightId: formData.flightDetails.returnFlight.flightId,
+                  price: Number(formData.flightDetails.returnPrice),
+                  seatNumber: passenger.returnSeat,
+                  ...ticketData,
+                },
+              ]
+            : []),
+        ];
 
-    const flights = await generateFlights();
+        return flights;
+      };
 
-    const apiCalls = flights.map(async (flight) => {
-      await api("post", "/api/ticket", "user", {
-        ...flight,
+      const flights = await generateFlights();
+
+      const apiCalls = flights.map(async (flight) => {
+        await api("post", "/api/ticket", "user", {
+          ...flight,
+        });
       });
-    });
 
-    Promise.all(apiCalls).catch((error) => {
-      setErrorMessage(error?.message ?? "Could not generate the ticket(s).");
+      Promise.all(apiCalls).catch((error) => {
+        setErrorMessage(error?.message ?? "Could not generate the ticket(s).");
 
-      setTimeout(() => {
-        setErrorMessage("");
-      }, 3500);
+        setTimeout(() => {
+          setErrorMessage("");
+        }, 3500);
+      });
     });
   };
 
@@ -271,18 +288,18 @@ export default function BillingPage() {
         departSeat: departSeatNumber,
         ...(returnSeatNumber ? { returnSeat: returnSeatNumber } : undefined),
       },
-      ticketHolderDetails: {
-        firstName: formData.ticketHolderDetails.ticketHolderFirstName,
-        lastName: formData.ticketHolderDetails.ticketHolderLastName,
-        dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
-        documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
-        documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
-        documentNumber: formData.ticketHolderDetails.ticketHolderDocumentNumber,
-        documentIssuingDate:
-          formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
-        documentExpirationDate:
-          formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
-      },
+      // ticketHolderDetails: {
+      //   firstName: formData.ticketHolderDetails.ticketHolderFirstName,
+      //   lastName: formData.ticketHolderDetails.ticketHolderLastName,
+      //   dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
+      //   documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
+      //   documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
+      //   documentNumber: formData.ticketHolderDetails.ticketHolderDocumentNumber,
+      //   documentIssuingDate:
+      //     formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
+      //   documentExpirationDate:
+      //     formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
+      // },
       paymentDetails: {
         cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
         paymentTimestamp: new Date().toLocaleDateString("sr", {
@@ -337,19 +354,19 @@ export default function BillingPage() {
             totalPrice: formData.flightDetails.totalPrice,
             isRoundtrip: formData.flightDetails.isRoundtrip,
           },
-          passengerDetails: {
-            firstName: formData.ticketHolderDetails.ticketHolderFirstName,
-            lastName: formData.ticketHolderDetails.ticketHolderLastName,
-            dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
-            documentId: formData.ticketHolderDetails.ticketHolderUserDocumentId,
-            documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
-            documentNumber:
-              formData.ticketHolderDetails.ticketHolderDocumentNumber,
-            documentIssuingDate:
-              formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
-            documentExpirationDate:
-              formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
-          },
+          // passengerDetails: {
+          //   firstName: formData.ticketHolderDetails.ticketHolderFirstName,
+          //   lastName: formData.ticketHolderDetails.ticketHolderLastName,
+          //   dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
+          //   documentId: formData.ticketHolderDetails.ticketHolderUserDocumentId,
+          //   documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
+          //   documentNumber:
+          //     formData.ticketHolderDetails.ticketHolderDocumentNumber,
+          //   documentIssuingDate:
+          //     formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
+          //   documentExpirationDate:
+          //     formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
+          // },
           paymentDetails: {
             cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
             paymentTimestamp: new Date().toLocaleDateString("sr", {

@@ -115,7 +115,9 @@ export default function OrderPage() {
   const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
   const [userDocumentId, setUserDocumentId] = useState<number | null>(null);
 
-  const [documentType, setDocumentType] = useState<string>("");
+  const [documentType, setDocumentType] = useState<"National ID" | "Passport">(
+    "Passport"
+  );
   const [documentNumber, setDocumentNumber] = useState<string>("");
   const [documentCountryId, setDocumentCountryId] = useState<number>(0);
   const [documentIssuingDate, setDocumentIssuingDate] = useState<Date>(
@@ -141,10 +143,12 @@ export default function OrderPage() {
       lastName: "",
       dateOfBirth: new Date(),
       userDocumentId: 0,
-      documentType: "",
+      documentType: "Passport",
       documentNumber: "",
+      documentCountryId: 0,
       documentIssuingDate: new Date(),
       documentExpirationDate: new Date(),
+      gender: "Male",
     }))
   );
 
@@ -208,10 +212,11 @@ export default function OrderPage() {
         if (res.status === "error") {
           return setErrorMessage(res.data + "");
         }
-        
+
         setUserDocumentId(res.data.documentId);
         setDocumentType(res.data.documentType);
         setDocumentNumber(res.data.documentNumber);
+        setDocumentCountryId(res.data.documentCountryId);
         setDocumentIssuingDate(new Date(res.data.documentIssuingDate));
         setDocumentExpirationDate(new Date(res.data.documentExpirationDate));
       })
@@ -416,9 +421,15 @@ export default function OrderPage() {
                       <select
                         className="form-control"
                         placeholder="Issuing country"
-                        value={documentCountryId}
+                        value={passenger.documentCountryId}
                         required
-                        onChange={(e) => setDocumentCountryId(+e.target.value)}
+                        onChange={(e) =>
+                          handlePassengerUpdate(
+                            index,
+                            "documentCountryId",
+                            +e.target.value
+                          )
+                        }
                       >
                         <option value={""}>Choose the issuing country</option>
                         {countries.map((country) => (
@@ -492,11 +503,13 @@ export default function OrderPage() {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="gender"
+                    name={"gender-" + index}
                     id="male"
                     defaultChecked
                     value={gender}
-                    onChange={() => setGender("Male")}
+                    onChange={(e) =>
+                      handlePassengerUpdate(index, "gender", "Male")
+                    }
                   />
                   <label className="form-check-label" htmlFor="male">
                     Male
@@ -506,10 +519,12 @@ export default function OrderPage() {
                   <input
                     className="form-check-input"
                     type="radio"
-                    name="gender"
+                    name={"gender-" + index}
                     id="female"
                     value={gender}
-                    onChange={() => setGender("Female")}
+                    onChange={(e) =>
+                      handlePassengerUpdate(index, "gender", "Female")
+                    }
                   />
                   <label className="form-check-label" htmlFor="female">
                     Female
