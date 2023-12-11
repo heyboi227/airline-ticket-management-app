@@ -19,7 +19,10 @@ import Country from "../../../models/Country.model";
 import UserDocument from "../../../models/UserDocument.model";
 import User from "../../../models/User.model";
 import "./OrderPage.css";
-import { numbersToLetters } from "../../../helpers/helpers";
+import {
+  convertDateToMySqlDateTime,
+  numbersToLetters,
+} from "../../../helpers/helpers";
 
 interface DateInputProps {
   label: string;
@@ -110,25 +113,6 @@ function DateInput({
 }
 
 export default function OrderPage() {
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [dateOfBirth, setDateOfBirth] = useState<Date>(new Date());
-  const [userDocumentId, setUserDocumentId] = useState<number | null>(null);
-
-  const [documentType, setDocumentType] = useState<"National ID" | "Passport">(
-    "Passport"
-  );
-  const [documentNumber, setDocumentNumber] = useState<string>("");
-  const [documentCountryId, setDocumentCountryId] = useState<number>(0);
-  const [documentIssuingDate, setDocumentIssuingDate] = useState<Date>(
-    new Date()
-  );
-  const [documentExpirationDate, setDocumentExpirationDate] = useState<Date>(
-    new Date()
-  );
-
-  const [gender, setGender] = useState<"Male" | "Female">("Male");
-
   const [userDocuments, setUserDocuments] = useState<UserDocument[]>([]);
   const [countries, setCountries] = useState<Country[]>([]);
 
@@ -184,8 +168,8 @@ export default function OrderPage() {
         }
 
         const userData = res.data as User;
-        setFirstName(userData.forename);
-        setLastName(userData.surname);
+        handlePassengerUpdate(0, "firstName", userData.forename);
+        handlePassengerUpdate(0, "lastName", userData.surname);
       })
       .catch((error) => {
         console.error("An error occured: ", error);
@@ -213,25 +197,40 @@ export default function OrderPage() {
           return setErrorMessage(res.data + "");
         }
 
-        setUserDocumentId(res.data.documentId);
-        setDocumentType(res.data.documentType);
-        setDocumentNumber(res.data.documentNumber);
-        setDocumentCountryId(res.data.documentCountryId);
-        setDocumentIssuingDate(new Date(res.data.documentIssuingDate));
-        setDocumentExpirationDate(new Date(res.data.documentExpirationDate));
+        return res.data;
+      })
+      .then((res: UserDocument) => {
+        handlePassengerUpdate(0, "userDocumentId", res.documentId);
+        handlePassengerUpdate(0, "documentType", res.documentType);
+        handlePassengerUpdate(0, "documentNumber", res.documentNumber);
+        handlePassengerUpdate(0, "countryId", res.countryId);
+        handlePassengerUpdate(
+          0,
+          "documentIssuingDate",
+          res.documentIssuingDate
+        );
+        handlePassengerUpdate(
+          0,
+          "documentExpirationDate",
+          res.documentExpirationDate
+        );
       })
       .catch((error) => {
         console.error("An error occured: ", error);
       });
   }
 
-  function doAddUserDocument() {
+  function doAddUserDocument(passenger: any) {
     api("post", "/api/document", "user", {
-      countryId: documentCountryId,
-      documentType: documentType,
-      documentNumber: documentNumber,
-      documentIssuingDate: documentIssuingDate.toISOString().slice(0, 10),
-      documentExpirationDate: documentExpirationDate.toISOString().slice(0, 10),
+      countryId: passenger.documentCountryId,
+      documentType: passenger.documentType,
+      documentNumber: passenger.documentNumber,
+      documentIssuingDate: convertDateToMySqlDateTime(
+        passenger.documentIssuingDate
+      ).slice(0, 10),
+      documentExpirationDate: convertDateToMySqlDateTime(
+        passenger.documentIssuingDate
+      ).slice(0, 10),
       userId: AppStore.getState().auth.id,
     })
       .then((res) => {
@@ -246,7 +245,7 @@ export default function OrderPage() {
           );
         }
 
-        setUserDocumentId(res.data.documentId);
+        handlePassengerUpdate(0, "userDocumentId", res.data.documentId);
       })
       .catch((error) => {
         setErrorMessage(error?.message ?? "Unknown error!");
@@ -277,7 +276,7 @@ export default function OrderPage() {
     return form.checkValidity();
   };
 
-  const toBilling = () => {
+  const toBilling = (passenger: any) => {
     const syntheticEvent = new Event("submit", {
       bubbles: true,
       cancelable: true,
@@ -286,7 +285,7 @@ export default function OrderPage() {
     if (validateAllPassengerForms(syntheticEvent, formRef.current)) {
       setIsValid(true);
       if (AppStore.getState().auth.id !== 0 && userDocuments.length === 0)
-        doAddUserDocument();
+        doAddUserDocument(passenger);
       navigate("/order/billing", {
         replace: true,
         state: {
@@ -373,115 +372,115 @@ export default function OrderPage() {
                   disableFuture={true}
                 ></DateInput>
               </div>
-              {(!loggedIn || (loggedIn && userDocuments.length === 0)) && (
-                <>
-                  <div className="form-group mb-3">
-                    <div className="input-group">
-                      <select
-                        className="form-control"
-                        placeholder="Document type"
-                        value={passenger.documentType}
-                        required
-                        onChange={(e) =>
-                          handlePassengerUpdate(
-                            index,
-                            "documentType",
-                            e.target.value
-                          )
-                        }
-                      >
-                        <option value={""}>Choose a document type</option>
-                        <option value={"National ID"}>National ID</option>
-                        <option value={"Passport"}>Passport</option>
-                      </select>
-                      <div className="invalid-feedback">
-                        Please choose a document type.
+              {!loggedIn ||
+                (loggedIn && userDocuments.length === 0) ||
+                (index > 0 && (
+                  <>
+                    <div className="form-group mb-3">
+                      <div className="input-group">
+                        <select
+                          className="form-control"
+                          value={passenger.documentType}
+                          required
+                          onChange={(e) =>
+                            handlePassengerUpdate(
+                              index,
+                              "documentType",
+                              e.target.value
+                            )
+                          }
+                        >
+                          <option value={""}>Choose a document type</option>
+                          <option value={"National ID"}>National ID</option>
+                          <option value={"Passport"}>Passport</option>
+                        </select>
+                        <div className="invalid-feedback">
+                          Please choose a document type.
+                        </div>
+                      </div>
+                      <div className="input-group">
+                        <input
+                          className="form-control"
+                          type="text"
+                          placeholder="Document number"
+                          value={passenger.documentNumber}
+                          required
+                          onChange={(e) =>
+                            handlePassengerUpdate(
+                              index,
+                              "documentNumber",
+                              e.target.value
+                            )
+                          }
+                        />
+                        <div className="invalid-feedback">
+                          Please enter your document number.
+                        </div>
+                      </div>
+                      <div className="input-group">
+                        <select
+                          className="form-control"
+                          value={passenger.documentCountryId}
+                          required
+                          onChange={(e) =>
+                            handlePassengerUpdate(
+                              index,
+                              "documentCountryId",
+                              +e.target.value
+                            )
+                          }
+                        >
+                          <option value={""}>Choose the issuing country</option>
+                          {countries.map((country) => (
+                            <option
+                              key={country.countryId}
+                              value={country.countryId}
+                            >
+                              {country.countryName}
+                            </option>
+                          ))}
+                        </select>
+                        <div className="invalid-feedback">
+                          Please choose a document issuing country.
+                        </div>
                       </div>
                     </div>
-                    <div className="input-group">
-                      <input
-                        className="form-control"
-                        type="text"
-                        placeholder="Document number"
-                        value={passenger.documentNumber}
-                        required
-                        onChange={(e) =>
+                    <div className="form-group mb-3">
+                      <DateInput
+                        onDateChange={(date) =>
                           handlePassengerUpdate(
                             index,
-                            "documentNumber",
-                            e.target.value
+                            "documentIssuingDate",
+                            date
                           )
                         }
-                      />
-                      <div className="invalid-feedback">
-                        Please enter your document number.
-                      </div>
+                        label="Document issuing date"
+                        isValid={isValid}
+                        disableFuture={true}
+                      ></DateInput>
                     </div>
-                    <div className="input-group">
-                      <select
-                        className="form-control"
-                        placeholder="Issuing country"
-                        value={passenger.documentCountryId}
-                        required
-                        onChange={(e) =>
+                    <div className="form-group mb-3">
+                      <DateInput
+                        onDateChange={(date) =>
                           handlePassengerUpdate(
                             index,
-                            "documentCountryId",
-                            +e.target.value
+                            "documentExpirationDate",
+                            date
                           )
                         }
-                      >
-                        <option value={""}>Choose the issuing country</option>
-                        {countries.map((country) => (
-                          <option
-                            key={country.countryId}
-                            value={country.countryId}
-                          >
-                            {country.countryName}
-                          </option>
-                        ))}
-                      </select>
-                      <div className="invalid-feedback">
-                        Please choose a document issuing country.
-                      </div>
+                        label="Document expiration date"
+                        isValid={isValid}
+                        disablePast={true}
+                      ></DateInput>
                     </div>
-                  </div>
-                  <div className="form-group mb-3">
-                    <DateInput
-                      onDateChange={(date) =>
-                        handlePassengerUpdate(
-                          index,
-                          "documentIssuingDate",
-                          date
-                        )
-                      }
-                      label="Document issuing date"
-                      isValid={isValid}
-                      disableFuture={true}
-                    ></DateInput>
-                  </div>
-                  <div className="form-group mb-3">
-                    <DateInput
-                      onDateChange={(date) =>
-                        handlePassengerUpdate(
-                          index,
-                          "documentExpirationDate",
-                          date
-                        )
-                      }
-                      label="Document expiration date"
-                      isValid={isValid}
-                      disablePast={true}
-                    ></DateInput>
-                  </div>
-                </>
-              )}
-              {loggedIn && userDocuments.length !== 0 && (
+                  </>
+                ))}
+              {loggedIn && userDocuments.length !== 0 && index === 0 && (
                 <div className="form-group mb-3">
                   <div className="input-group">
                     <select
                       className="form-select"
-                      value={userDocumentId ?? 0}
+                      value={passenger.userDocumentId}
                       onChange={(e) => setActiveDocument(+e.target.value)}
                     >
                       <option value={""}>Choose a document</option>
@@ -506,8 +505,8 @@ export default function OrderPage() {
                     name={"gender-" + index}
                     id="male"
                     defaultChecked
-                    value={gender}
-                    onChange={(e) =>
+                    value={passenger.gender}
+                    onChange={() =>
                       handlePassengerUpdate(index, "gender", "Male")
                     }
                   />
@@ -521,8 +520,8 @@ export default function OrderPage() {
                     type="radio"
                     name={"gender-" + index}
                     id="female"
-                    value={gender}
-                    onChange={(e) =>
+                    value={passenger.gender}
+                    onChange={() =>
                       handlePassengerUpdate(index, "gender", "Female")
                     }
                   />
@@ -533,7 +532,10 @@ export default function OrderPage() {
               </div>
             </form>
           ))}
-          <button className="btn btn-primary" onClick={toBilling}>
+          <button
+            className="btn btn-primary"
+            onClick={() => toBilling(passengers[0])}
+          >
             Billing information
           </button>
         </div>

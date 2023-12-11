@@ -138,7 +138,6 @@ export default function UserAddressAdder(
             <div className="input-group">
               <select
                 className="form-control"
-                placeholder="Country"
                 value={countryId}
                 required
                 onChange={(e) => setCountryId(+e.target.value)}
