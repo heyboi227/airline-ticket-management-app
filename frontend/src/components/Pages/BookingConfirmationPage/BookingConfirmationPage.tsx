@@ -13,17 +13,24 @@ export default function BookingConfirmationPage() {
       <div className="row">
         <div className="col">
           <h3>Passenger Details</h3>
-          <ul className="list-unstyled">
-            <li className="list-group-item">
-              First name: {formData.passengerDetails.firstName}
-            </li>
-            <li className="list-group-item">
-              Last name: {formData.passengerDetails.lastName}
-            </li>
-            <li className="list-group-item">
-              Date of birth: {formData.passengerDetails.dateOfBirth}
-            </li>
-          </ul>
+          {formData.passengers.map((passenger: any, index: number) => (
+            <ul className="list-unstyled" key={"passenger-" + index}>
+              <li className="list-group-item">
+                First name: {passenger.firstName}
+              </li>
+              <li className="list-group-item">
+                Last name: {passenger.lastName}
+              </li>
+              <li className="list-group-item">
+                Date of birth:{" "}
+                {passenger.dateOfBirth.toLocaleDateString("sr", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })}
+              </li>
+            </ul>
+          ))}
         </div>
         <div className="col">
           <h3>Flight Details</h3>
@@ -110,19 +117,23 @@ export default function BookingConfirmationPage() {
       <div className="row">
         <div className="col">
           <h3>Seat Assignment</h3>
-          <ul className="list-unstyled">
-            <li className="list-group-item">
-              {" "}
-              {formData.flightDetails.departFlight.flightCode}:{" "}
-              {formData.flightDetails.departSeat}
-            </li>
-            {formData.flightDetails.isRoundtrip && (
-              <li className="list-group-item">
-                {formData.flightDetails.returnFlight.flightCode}:{" "}
-                {formData.flightDetails.returnSeat}
-              </li>
-            )}
-          </ul>
+          {formData.passengers.map((passenger: any, index: number) => (
+            <>
+              <span>{passenger.firstName + " " + passenger.lastName}:</span>
+              <ul className="list-unstyled" key={"passenger-" + index}>
+                <li className="list-group-item">
+                  {formData.flightDetails.departFlight.flightCode}:{" "}
+                  {passenger.departSeat}
+                </li>
+                {formData.flightDetails.isRoundtrip && (
+                  <li className="list-group-item">
+                    {formData.flightDetails.returnFlight.flightCode}:{" "}
+                    {passenger.returnSeat}
+                  </li>
+                )}
+              </ul>
+            </>
+          ))}
         </div>
         <div className="col">
           <h3>Baggage Information</h3>
@@ -159,20 +170,32 @@ export default function BookingConfirmationPage() {
         </div>
         <div className="col">
           <h3>Travel Document Information</h3>
-          <ul className="list-unstyled">
-            <li className="list-group-item">
-              Document type: {formData.passengerDetails.documentType}
-            </li>
-            <li className="list-group-item">
-              Document number: {formData.passengerDetails.documentNumber}
-            </li>
-            <li className="list-group-item">
-              Issued on: {formData.passengerDetails.documentIssuingDate}
-            </li>
-            <li className="list-group-item">
-              Expires on: {formData.passengerDetails.documentExpirationDate}
-            </li>
-          </ul>
+          {formData.passengers.map((passenger: any, index: number) => (
+            <ul className="list-unstyled" key={"passenger-" + index}>
+              <li className="list-group-item">
+                Document type: {passenger.documentType}
+              </li>
+              <li className="list-group-item">
+                Document number: {passenger.documentNumber}
+              </li>
+              <li className="list-group-item">
+                Issued on:{" "}
+                {passenger.documentIssuingDate.toLocaleDateString("sr", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })}
+              </li>
+              <li className="list-group-item">
+                Expires on:{" "}
+                {passenger.documentExpirationDate.toLocaleDateString("sr", {
+                  year: "numeric",
+                  month: "numeric",
+                  day: "numeric",
+                })}
+              </li>
+            </ul>
+          ))}
         </div>
         <div className="col">
           <h3>Payment Information</h3>

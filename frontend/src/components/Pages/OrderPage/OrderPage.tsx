@@ -207,12 +207,12 @@ export default function OrderPage() {
         handlePassengerUpdate(
           0,
           "documentIssuingDate",
-          res.documentIssuingDate
+          new Date(res.documentIssuingDate)
         );
         handlePassengerUpdate(
           0,
           "documentExpirationDate",
-          res.documentExpirationDate
+          new Date(res.documentExpirationDate)
         );
       })
       .catch((error) => {
@@ -229,7 +229,7 @@ export default function OrderPage() {
         passenger.documentIssuingDate
       ).slice(0, 10),
       documentExpirationDate: convertDateToMySqlDateTime(
-        passenger.documentIssuingDate
+        passenger.documentExpirationDate
       ).slice(0, 10),
       userId: AppStore.getState().auth.id,
     })

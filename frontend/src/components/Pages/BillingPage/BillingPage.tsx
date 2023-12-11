@@ -284,22 +284,13 @@ export default function BillingPage() {
         taxesAndFeesPrice,
         totalPrice: formData.flightDetails.totalPrice,
       },
-      seatDetails: {
+      passengers: passengers.map((passenger) => ({
+        ...passenger,
         departSeat: departSeatNumber,
-        ...(returnSeatNumber ? { returnSeat: returnSeatNumber } : undefined),
-      },
-      // ticketHolderDetails: {
-      //   firstName: formData.ticketHolderDetails.ticketHolderFirstName,
-      //   lastName: formData.ticketHolderDetails.ticketHolderLastName,
-      //   dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
-      //   documentId: formData.ticketHolderDetails.ticketHolderDocumentId,
-      //   documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
-      //   documentNumber: formData.ticketHolderDetails.ticketHolderDocumentNumber,
-      //   documentIssuingDate:
-      //     formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
-      //   documentExpirationDate:
-      //     formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
-      // },
+        returnSeat: returnSeatNumber
+          ? { returnSeat: returnSeatNumber }
+          : undefined,
+      })),
       paymentDetails: {
         cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
         paymentTimestamp: new Date().toLocaleDateString("sr", {
@@ -354,19 +345,7 @@ export default function BillingPage() {
             totalPrice: formData.flightDetails.totalPrice,
             isRoundtrip: formData.flightDetails.isRoundtrip,
           },
-          // passengerDetails: {
-          //   firstName: formData.ticketHolderDetails.ticketHolderFirstName,
-          //   lastName: formData.ticketHolderDetails.ticketHolderLastName,
-          //   dateOfBirth: formData.ticketHolderDetails.ticketHolderDateOfBirth,
-          //   documentId: formData.ticketHolderDetails.ticketHolderUserDocumentId,
-          //   documentType: formData.ticketHolderDetails.ticketHolderDocumentType,
-          //   documentNumber:
-          //     formData.ticketHolderDetails.ticketHolderDocumentNumber,
-          //   documentIssuingDate:
-          //     formData.ticketHolderDetails.ticketHolderDocumentIssuingDate,
-          //   documentExpirationDate:
-          //     formData.ticketHolderDetails.ticketHolderDocumentExpirationDate,
-          // },
+          passengers: passengers,
           paymentDetails: {
             cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
             paymentTimestamp: new Date().toLocaleDateString("sr", {
