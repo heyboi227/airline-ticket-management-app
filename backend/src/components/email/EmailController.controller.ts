@@ -235,26 +235,21 @@ export default class EmailController extends BaseController {
                                 <div className="row">
                                 <div className="col">
                                   <h3>Passenger Details</h3>
+                                  ${bookingConfirmationData.passengers.map(
+                                    (passenger) => `
                                   <ul className="list-unstyled">
                                     <li className="list-group-item">
-                                      First name: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails.firstName
-                                      }
+                                      First name: ${passenger.firstName}
                                     </li>
                                     <li className="list-group-item">
-                                      Last name: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails.lastName
-                                      }
+                                      Last name: ${passenger.lastName}
                                     </li>
                                     <li className="list-group-item">
-                                      Date of birth: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails.dateOfBirth
-                                      }
+                                      Date of birth: ${passenger.dateOfBirth}
                                     </li>
                                   </ul>
+                                `
+                                  )}
                                 </div>
                                 <div className="col">
                                   <h3>Flight Details</h3>
@@ -323,28 +318,33 @@ export default class EmailController extends BaseController {
                               <div className="row">
                                 <div className="col">
                                   <h3>Seat Assignment</h3>
+                                  ${bookingConfirmationData.passengers.map(
+                                    (passenger) => `
                                   <ul className="list-unstyled">
                                     <li className="list-group-item">
                                     &nbsp;
-                                      ${
-                                        bookingConfirmationData.flightDetails
-                                          .departFlight.flightCode
-                                      }:&nbsp;
-                                      ${
-                                        bookingConfirmationData.seatDetails
-                                          .departSeat
-                                      }
+                                    ${
+                                      bookingConfirmationData.flightDetails
+                                        .departFlight.flightCode
+                                    }:&nbsp;
+                                    ${passenger.departSeat}
                                     </li>
                                     ${
-                                      bookingConfirmationData.seatDetails
-                                        .returnSeat
+                                      passenger.returnSeat
                                         ? `
                                       <li className="list-group-item">
-                                        ${bookingConfirmationData.flightDetails.returnFlight.flightCode}:&nbsp;${bookingConfirmationData.seatDetails.returnSeat}
+                                        ${bookingConfirmationData.flightDetails.returnFlight.flightCode}:&nbsp;${passenger.returnSeat}
                                       </li>
                                     `
                                         : ""
                                     }
+                                  </ul>
+                                `
+                                  )}
+                                  <ul className="list-unstyled">
+                                    <li className="list-group-item">
+
+                                   
                                   </ul>
                                 </div>
                                 <div className="col">
@@ -395,34 +395,24 @@ export default class EmailController extends BaseController {
                                 </div>
                                 <div className="col">
                                   <h3>Travel Document Information</h3>
-                                  <ul className="list-unstyled">
+                                  ${bookingConfirmationData.passengers.map(
+                                    (
+                                      passenger
+                                    ) => `<ul className="list-unstyled">
                                     <li className="list-group-item">
-                                      Document type: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails.documentType
-                                      }
+                                      Document type: ${passenger.documentType}
                                     </li>
                                     <li className="list-group-item">
-                                      Document number: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails.documentNumber
-                                      }
+                                      Document number: ${passenger.documentNumber}
                                     </li>
                                     <li className="list-group-item">
-                                      Issued on: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails
-                                          .documentIssuingDate
-                                      }
+                                      Issued on: ${passenger.documentIssuingDate}
                                     </li>
                                     <li className="list-group-item">
-                                      Expires on: ${
-                                        bookingConfirmationData
-                                          .ticketHolderDetails
-                                          .documentExpirationDate
-                                      }
+                                      Expires on: ${passenger.documentExpirationDate}
                                     </li>
-                                  </ul>
+                                  </ul>`
+                                  )}
                                 </div>
                                 <div className="col">
                                   <h3>Payment Information</h3>

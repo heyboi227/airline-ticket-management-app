@@ -124,10 +124,13 @@ export default function BillingPage() {
   const [countryId, setCountryId] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
 
-  const [passengers, setPassengers] = useState<any[]>(formData.passengers);
-
-  const [departSeatNumber, setDepartSeatNumber] = useState<string | null>(null);
-  const [returnSeatNumber, setReturnSeatNumber] = useState<string | null>(null);
+  const [passengers, setPassengers] = useState<any[]>(
+    formData.passengers.map((passenger: any) => ({
+      ...passenger,
+      departSeat: "",
+      returnSeat: "",
+    }))
+  );
 
   const [errorMessage, setErrorMessage] = useState<string>("");
 
@@ -207,7 +210,9 @@ export default function BillingPage() {
 
   const doAddTicket = async () => {
     const randomBookingConfirmationFormattedString =
-      generateRandomBookingConfirmationFormattedString();
+      generateRandomBookingConfirmationFormattedString(
+        formData.flightDetails.departFlight.originAirport.airportCode
+      );
 
     passengers.forEach(async (passenger) => {
       const randomTicketNumberFormattedString =
@@ -284,13 +289,7 @@ export default function BillingPage() {
         taxesAndFeesPrice,
         totalPrice: formData.flightDetails.totalPrice,
       },
-      passengers: passengers.map((passenger) => ({
-        ...passenger,
-        departSeat: departSeatNumber,
-        returnSeat: returnSeatNumber
-          ? { returnSeat: returnSeatNumber }
-          : undefined,
-      })),
+      passengers: passengers,
       paymentDetails: {
         cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
         paymentTimestamp: new Date().toLocaleDateString("sr", {
@@ -322,7 +321,9 @@ export default function BillingPage() {
     if (form.checkValidity()) {
       setIsValid(true);
 
-      bookingNumber = generateRandomBookingConfirmationFormattedString();
+      bookingNumber = generateRandomBookingConfirmationFormattedString(
+        formData.flightDetails.departFlight.originAirport.airportCode
+      );
       navigate("/order/booking", {
         replace: true,
         state: {
@@ -335,10 +336,6 @@ export default function BillingPage() {
             departureTravelClass: formData.flightDetails.departureTravelClass,
             returnTravelClass: formData.flightDetails.isRoundtrip
               ? formData.flightDetails.returnTravelClass
-              : undefined,
-            departSeat: departSeatNumber,
-            returnSeat: formData.flightDetails.isRoundtrip
-              ? returnSeatNumber
               : undefined,
             basePrice: basePrice,
             taxesAndFeesPrice: taxesAndFeesPrice,

@@ -17,20 +17,20 @@ export interface BookingConfirmationDto {
     taxesAndFeesPrice: number;
     totalPrice: number;
   };
-  seatDetails: {
-    departSeat: string;
-    returnSeat?: string;
-  };
-  ticketHolderDetails: {
+  passengers: {
     firstName: string;
     lastName: string;
     dateOfBirth: string;
-    documentId: number | null;
-    documentType: "National ID" | "Passport";
+    userDocumentId: number;
+    documentType: "Passport" | "National ID";
     documentNumber: string;
+    documentCountryId: number;
     documentIssuingDate: string;
     documentExpirationDate: string;
-  };
+    gender: "Male" | "Female";
+    departSeat: string;
+    returnSeat?: string;
+  }[];
   paymentDetails: {
     cardNumber: string;
     paymentTimestamp: string;
@@ -69,38 +69,38 @@ const BookingConfirmationValidator = ajv.compile({
       ],
       additionalProperties: false,
     },
-    seatDetails: {
-      type: "object",
-      properties: {
-        departSeat: { type: "string" },
-        returnSeat: { type: "string" },
+    passengers: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          firstName: { type: "string" },
+          lastName: { type: "string" },
+          dateOfBirth: { type: "string" },
+          userDocumentId: { type: "integer" },
+          documentType: { type: "string", enum: ["Passport", "National ID"] },
+          documentNumber: { type: "string" },
+          documentCountryId: { type: "integer" },
+          documentIssuingDate: { type: "string" },
+          documentExpirationDate: { type: "string" },
+          gender: { type: "string", enum: ["Male", "Female"] },
+          departSeat: { type: "string" },
+          returnSeat: { type: "string" },
+        },
+        required: [
+          "firstName",
+          "lastName",
+          "dateOfBirth",
+          "userDocumentId",
+          "documentType",
+          "documentNumber",
+          "documentCountryId",
+          "documentIssuingDate",
+          "documentExpirationDate",
+          "gender",
+          "departSeat",
+        ],
       },
-      required: ["departSeat"],
-      additionalProperties: false,
-    },
-    ticketHolderDetails: {
-      type: "object",
-      properties: {
-        firstName: { type: "string" },
-        lastName: { type: "string" },
-        dateOfBirth: { type: "string" },
-        documentId: { type: "number", nullable: true },
-        documentType: { type: "string" },
-        documentNumber: { type: "string" },
-        documentIssuingDate: { type: "string" },
-        documentExpirationDate: { type: "string" },
-      },
-      required: [
-        "firstName",
-        "lastName",
-        "dateOfBirth",
-        "documentId",
-        "documentType",
-        "documentNumber",
-        "documentIssuingDate",
-        "documentExpirationDate",
-      ],
-      additionalProperties: false,
     },
     paymentDetails: {
       type: "object",
@@ -116,8 +116,7 @@ const BookingConfirmationValidator = ajv.compile({
     "email",
     "bookingNumber",
     "flightDetails",
-    "seatDetails",
-    "ticketHolderDetails",
+    "passengers",
     "paymentDetails",
   ],
   additionalProperties: false,

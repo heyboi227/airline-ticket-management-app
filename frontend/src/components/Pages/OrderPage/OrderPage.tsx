@@ -372,109 +372,109 @@ export default function OrderPage() {
                   disableFuture={true}
                 ></DateInput>
               </div>
-              {!loggedIn ||
+              {(!loggedIn ||
                 (loggedIn && userDocuments.length === 0) ||
-                (index > 0 && (
-                  <>
-                    <div className="form-group mb-3">
-                      <div className="input-group">
-                        <select
-                          className="form-control"
-                          value={passenger.documentType}
-                          required
-                          onChange={(e) =>
-                            handlePassengerUpdate(
-                              index,
-                              "documentType",
-                              e.target.value
-                            )
-                          }
-                        >
-                          <option value={""}>Choose a document type</option>
-                          <option value={"National ID"}>National ID</option>
-                          <option value={"Passport"}>Passport</option>
-                        </select>
-                        <div className="invalid-feedback">
-                          Please choose a document type.
-                        </div>
-                      </div>
-                      <div className="input-group">
-                        <input
-                          className="form-control"
-                          type="text"
-                          placeholder="Document number"
-                          value={passenger.documentNumber}
-                          required
-                          onChange={(e) =>
-                            handlePassengerUpdate(
-                              index,
-                              "documentNumber",
-                              e.target.value
-                            )
-                          }
-                        />
-                        <div className="invalid-feedback">
-                          Please enter your document number.
-                        </div>
-                      </div>
-                      <div className="input-group">
-                        <select
-                          className="form-control"
-                          value={passenger.documentCountryId}
-                          required
-                          onChange={(e) =>
-                            handlePassengerUpdate(
-                              index,
-                              "documentCountryId",
-                              +e.target.value
-                            )
-                          }
-                        >
-                          <option value={""}>Choose the issuing country</option>
-                          {countries.map((country) => (
-                            <option
-                              key={country.countryId}
-                              value={country.countryId}
-                            >
-                              {country.countryName}
-                            </option>
-                          ))}
-                        </select>
-                        <div className="invalid-feedback">
-                          Please choose a document issuing country.
-                        </div>
-                      </div>
-                    </div>
-                    <div className="form-group mb-3">
-                      <DateInput
-                        onDateChange={(date) =>
+                index > 0) && (
+                <>
+                  <div className="form-group mb-3">
+                    <div className="input-group">
+                      <select
+                        className="form-control"
+                        value={passenger.documentType}
+                        required
+                        onChange={(e) =>
                           handlePassengerUpdate(
                             index,
-                            "documentIssuingDate",
-                            date
+                            "documentType",
+                            e.target.value
                           )
                         }
-                        label="Document issuing date"
-                        isValid={isValid}
-                        disableFuture={true}
-                      ></DateInput>
+                      >
+                        <option value={""}>Choose a document type</option>
+                        <option value={"National ID"}>National ID</option>
+                        <option value={"Passport"}>Passport</option>
+                      </select>
+                      <div className="invalid-feedback">
+                        Please choose a document type.
+                      </div>
                     </div>
-                    <div className="form-group mb-3">
-                      <DateInput
-                        onDateChange={(date) =>
+                    <div className="input-group">
+                      <input
+                        className="form-control"
+                        type="text"
+                        placeholder="Document number"
+                        value={passenger.documentNumber}
+                        required
+                        onChange={(e) =>
                           handlePassengerUpdate(
                             index,
-                            "documentExpirationDate",
-                            date
+                            "documentNumber",
+                            e.target.value
                           )
                         }
-                        label="Document expiration date"
-                        isValid={isValid}
-                        disablePast={true}
-                      ></DateInput>
+                      />
+                      <div className="invalid-feedback">
+                        Please enter your document number.
+                      </div>
                     </div>
-                  </>
-                ))}
+                    <div className="input-group">
+                      <select
+                        className="form-control"
+                        value={passenger.documentCountryId}
+                        required
+                        onChange={(e) =>
+                          handlePassengerUpdate(
+                            index,
+                            "documentCountryId",
+                            +e.target.value
+                          )
+                        }
+                      >
+                        <option value={""}>Choose the issuing country</option>
+                        {countries.map((country) => (
+                          <option
+                            key={country.countryId}
+                            value={country.countryId}
+                          >
+                            {country.countryName}
+                          </option>
+                        ))}
+                      </select>
+                      <div className="invalid-feedback">
+                        Please choose a document issuing country.
+                      </div>
+                    </div>
+                  </div>
+                  <div className="form-group mb-3">
+                    <DateInput
+                      onDateChange={(date) =>
+                        handlePassengerUpdate(
+                          index,
+                          "documentIssuingDate",
+                          date
+                        )
+                      }
+                      label="Document issuing date"
+                      isValid={isValid}
+                      disableFuture={true}
+                    ></DateInput>
+                  </div>
+                  <div className="form-group mb-3">
+                    <DateInput
+                      onDateChange={(date) =>
+                        handlePassengerUpdate(
+                          index,
+                          "documentExpirationDate",
+                          date
+                        )
+                      }
+                      label="Document expiration date"
+                      isValid={isValid}
+                      disablePast={true}
+                    ></DateInput>
+                  </div>
+                </>
+              )}
               {loggedIn && userDocuments.length !== 0 && index === 0 && (
                 <div className="form-group mb-3">
                   <div className="input-group">

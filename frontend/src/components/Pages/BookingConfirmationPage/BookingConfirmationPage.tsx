@@ -1,3 +1,4 @@
+import React from "react";
 import { useLocation, Link } from "react-router-dom";
 export default function BookingConfirmationPage() {
   const location = useLocation();
@@ -118,9 +119,9 @@ export default function BookingConfirmationPage() {
         <div className="col">
           <h3>Seat Assignment</h3>
           {formData.passengers.map((passenger: any, index: number) => (
-            <>
+            <React.Fragment key={"passenger-" + index}>
               <span>{passenger.firstName + " " + passenger.lastName}:</span>
-              <ul className="list-unstyled" key={"passenger-" + index}>
+              <ul className="list-unstyled">
                 <li className="list-group-item">
                   {formData.flightDetails.departFlight.flightCode}:{" "}
                   {passenger.departSeat}
@@ -132,7 +133,7 @@ export default function BookingConfirmationPage() {
                   </li>
                 )}
               </ul>
-            </>
+            </React.Fragment>
           ))}
         </div>
         <div className="col">

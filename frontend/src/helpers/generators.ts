@@ -4,12 +4,11 @@ const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const numbers = "0123456789";
 const chars = letters + numbers;
 
-export const generateRandomBookingConfirmationFormattedString = () => {
-  let result = "";
+export const generateRandomBookingConfirmationFormattedString = (
+  departureAirportCode: string
+) => {
+  let result = departureAirportCode;
 
-  result += chars.charAt(Math.floor(Math.random() * chars.length));
-  result += chars.charAt(Math.floor(Math.random() * chars.length));
-  result += chars.charAt(Math.floor(Math.random() * chars.length));
   result += chars.charAt(Math.floor(Math.random() * chars.length));
   result += chars.charAt(Math.floor(Math.random() * chars.length));
   result += chars.charAt(Math.floor(Math.random() * chars.length));
