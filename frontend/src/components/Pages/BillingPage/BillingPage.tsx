@@ -13,6 +13,8 @@ import {
   generateRandomBookingConfirmationFormattedString,
   generateRandomSeat,
 } from "../../../helpers/generators";
+import User from "../../../models/User.model";
+import Address from "../../../models/Address.model";
 
 interface InputProps {
   id: string;
@@ -124,6 +126,10 @@ export default function BillingPage() {
   const [countryId, setCountryId] = useState<number>(0);
   const [email, setEmail] = useState<string>("");
 
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+
+  const [userAddresses, setUserAddresses] = useState<Address[]>([]);
+
   const [passengers, setPassengers] = useState<any[]>(
     formData.passengers.map((passenger: any) => ({
       ...passenger,
@@ -145,6 +151,23 @@ export default function BillingPage() {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const [isValid, setIsValid] = useState<boolean>(true);
+
+  function loadUserAddresses() {
+    api("get", "/api/user/" + AppStore.getState().auth.id, "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        return res.data;
+      })
+      .then((user: User) => {
+        setUserAddresses(user.addresses);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
 
   const handlePassengerUpdate = (index: number, field: string, value: any) => {
     setPassengers((current) =>
@@ -204,9 +227,19 @@ export default function BillingPage() {
 
     generateSeats();
   }, [
-    formData.flightDetails.departFlight.flightId,
+    formData.flightDetails.departFlight,
     formData.flightDetails.returnFlight,
   ]);
+
+  useEffect(() => {
+    if (AppStore.getState().auth.id !== 0) setLoggedIn(true);
+  }, []);
+
+  useEffect(() => {
+    if (loggedIn) {
+      loadUserAddresses();
+    }
+  }, [loggedIn]);
 
   const doAddTicket = async () => {
     const randomBookingConfirmationFormattedString =
@@ -452,70 +485,95 @@ export default function BillingPage() {
             </div>
             <br></br>
             <br></br>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Address"
-                  value={userAddress}
-                  ref={addressRef}
-                  required
-                  onChange={(e) => setUserAddress(e.target.value)}
-                />
-                <div className="invalid-feedback">
-                  Please enter your address.
+            {!loggedIn && (
+              <>
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Address"
+                      value={userAddress}
+                      ref={addressRef}
+                      required
+                      onChange={(e) => setUserAddress(e.target.value)}
+                    />
+                    <div className="invalid-feedback">
+                      Please enter your address.
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control no-validation"
+                      type="text"
+                      placeholder="Address line 2"
+                      defaultValue={""}
+                      onChange={(e) =>
+                        setUserAddress(userAddress + " " + e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Postal code"
+                      value={postalCode}
+                      required
+                      onChange={(e) => setPostalCode(e.target.value)}
+                    />
+                    <div className="invalid-feedback">
+                      Please enter your postal code.
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="City"
+                      value={city}
+                      required
+                      onChange={(e) => setCity(e.target.value)}
+                    />
+                    <div className="invalid-feedback">
+                      Please enter your city.
+                    </div>
+                  </div>
+                </div>
+                <div className="form-group mb-3">
+                  <CountryInput
+                    id={"country"}
+                    placeholder={"Country"}
+                    onValueChange={handleCountryIdChange}
+                  />
+                </div>
+              </>
+            )}
+            {loggedIn && (
+              <div className="form-group mb-3">
+                <div className="input-group">
+                  <select
+                    className="form-select"
+                    value={userAddress}
+                    onChange={(e) => setUserAddress(e.target.value)}
+                  >
+                    <option value={""}>Choose an address</option>
+                    {userAddresses.map((address) => (
+                      <option
+                        value={address.addressId}
+                        key={address.addressId}
+                      >{`${address.streetAndNumber} ${address.zipCode} ${address.city}, ${address.country?.countryName}`}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
-            </div>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control no-validation"
-                  type="text"
-                  placeholder="Address line 2"
-                  defaultValue={""}
-                  onChange={(e) =>
-                    setUserAddress(userAddress + " " + e.target.value)
-                  }
-                />
-              </div>
-            </div>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Postal code"
-                  value={postalCode}
-                  required
-                  onChange={(e) => setPostalCode(e.target.value)}
-                />
-                <div className="invalid-feedback">
-                  Please enter your postal code.
-                </div>
-              </div>
-            </div>
-            <div className="form-group mb-3">
-              <div className="input-group">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="City"
-                  value={city}
-                  required
-                  onChange={(e) => setCity(e.target.value)}
-                />
-                <div className="invalid-feedback">Please enter your city.</div>
-              </div>
-            </div>
-            <div className="form-group mb-3">
-              <CountryInput
-                id={"country"}
-                placeholder={"Country"}
-                onValueChange={handleCountryIdChange}
-              />
-            </div>
+            )}
             <br></br>
             <br></br>
             <div className="form-group mb-3">
