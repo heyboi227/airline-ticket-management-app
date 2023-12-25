@@ -7,6 +7,8 @@ addFormats(ajv);
 
 export interface BookingConfirmationDto {
   email: string;
+  cardHolderFirstName: string;
+  cardHolderLastName: string;
   bookingNumber: string;
   flightDetails: {
     departFlight: FlightModel;
@@ -44,6 +46,8 @@ const BookingConfirmationValidator = ajv.compile({
       type: "string",
       format: "email",
     },
+    cardHolderFirstName: { type: "string" },
+    cardHolderLastName: { type: "string" },
     bookingNumber: {
       type: "string",
       minLength: 6,
@@ -114,6 +118,8 @@ const BookingConfirmationValidator = ajv.compile({
   },
   required: [
     "email",
+    "cardHolderFirstName",
+    "cardHolderLastName",
     "bookingNumber",
     "flightDetails",
     "passengers",
