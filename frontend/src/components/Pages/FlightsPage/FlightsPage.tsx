@@ -893,7 +893,7 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected departure flight:{" "}
-                      {new Date(formData.departureDate).toDateString()}
+                      {departFlight.departureDateAndTime.slice(0, 10)}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
@@ -910,7 +910,7 @@ export default function FlightsPage() {
                   <div className="d-flex flex-column flex-fill justify-content-center align-items-start">
                     <p>
                       Selected return flight:{" "}
-                      {new Date(formData.returnDate).toDateString()}
+                      {returnFlight.departureDateAndTime.slice(0, 10)}
                     </p>
                     <div className="container-fluid d-flex flex-row">
                       <div className="card p-3">
