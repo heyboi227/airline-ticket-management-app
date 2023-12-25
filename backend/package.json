@@ -42,7 +42,7 @@
     "magic-bytes.js": "^1.7.0",
     "mysql2": "^3.6.5",
     "nodemailer": "^6.9.7",
-    "sharp": "^0.33.0",
+    "sharp": "^0.33.1",
     "uuid": "^9.0.1"
   }
 }
