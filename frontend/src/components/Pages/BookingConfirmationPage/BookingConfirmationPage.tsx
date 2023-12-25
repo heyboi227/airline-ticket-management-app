@@ -40,6 +40,16 @@ export default function BookingConfirmationPage() {
               <ul className="list-unstyled">
                 <li className="list-group-item">
                   {formData.flightDetails.departFlight.flightCode}
+                  {": "}
+                  {
+                    formData.flightDetails.departFlight.originAirport
+                      ?.airportCode
+                  }{" "}
+                  -{" "}
+                  {
+                    formData.flightDetails.departFlight.destinationAirport
+                      ?.airportCode
+                  }
                 </li>
                 <li className="list-group-item">
                   Departs:{" "}
@@ -78,6 +88,16 @@ export default function BookingConfirmationPage() {
                 <ul className="list-unstyled">
                   <li className="list-group-item">
                     {formData.flightDetails.returnFlight.flightCode}
+                    {": "}
+                    {
+                      formData.flightDetails.returnFlight.originAirport
+                        ?.airportCode
+                    }{" "}
+                    -{" "}
+                    {
+                      formData.flightDetails.returnFlight.destinationAirport
+                        ?.airportCode
+                    }
                   </li>
                   <li className="list-group-item">
                     Departs:{" "}
