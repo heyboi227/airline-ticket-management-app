@@ -115,6 +115,8 @@ export default function BillingPage() {
   const location = useLocation();
   const formData = location.state;
 
+  const [cardHolderFirstName, setCardHolderFirstName] = useState<string>("");
+  const [cardHolderLastName, setCardHolderLastName] = useState<string>("");
   const [cardNumber, setCardNumber] = useState<string>("");
   const [expiryMonth, setExpiryMonth] = useState<string>("");
   const [expiryYear, setExpiryYear] = useState<string>("");
@@ -238,8 +240,10 @@ export default function BillingPage() {
   useEffect(() => {
     if (loggedIn) {
       loadUserAddresses();
+      setCardHolderFirstName(formData.passengers[0].firstName);
+      setCardHolderLastName(formData.passengers[0].lastName);
     }
-  }, [loggedIn]);
+  }, [formData.passengers, loggedIn]);
 
   const doAddTicket = async () => {
     const randomBookingConfirmationFormattedString =
@@ -308,6 +312,8 @@ export default function BillingPage() {
   const doSendBookingEmail = () => {
     api("post", "/api/ticket/confirm-booking", "user", {
       email,
+      cardHolderFirstName,
+      cardHolderLastName,
       bookingNumber,
       flightDetails: {
         departFlight: formData.flightDetails.departFlight,
@@ -409,6 +415,40 @@ export default function BillingPage() {
             noValidate
             className="needs-valdation"
           >
+            <div className="form-group mb-3">
+              <div className="input-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Card holder first name"
+                  value={cardHolderFirstName}
+                  required
+                  onChange={(e) => {
+                    setCardHolderFirstName(e.target.value);
+                  }}
+                />
+                <div className="invalid-feedback">
+                  Please enter your first name.
+                </div>
+              </div>
+            </div>
+            <div className="form-group mb-3">
+              <div className="input-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Card holder last name"
+                  value={cardHolderLastName}
+                  required
+                  onChange={(e) => {
+                    setCardHolderLastName(e.target.value);
+                  }}
+                />
+                <div className="invalid-feedback">
+                  Please enter your last name.
+                </div>
+              </div>
+            </div>
             <div className="form-group mb-3">
               <div className="input-group">
                 <input

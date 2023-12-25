@@ -179,13 +179,13 @@ export default function BookingConfirmationPage() {
           <h3>Price Breakdown</h3>
           <ul className="list-unstyled">
             <li className="list-group-item">
-              Base price: {formData.flightDetails.basePrice} RSD
+              Base price: {formData.flightDetails.basePrice.toFixed(2)} RSD
             </li>
             <li className="list-group-item">
-              Taxes and fees: {formData.flightDetails.taxesAndFeesPrice} RSD
+              Taxes and fees: {formData.flightDetails.taxesAndFeesPrice.toFixed(2)} RSD
             </li>
             <li className="list-group-item">
-              Total price: {formData.flightDetails.totalPrice} RSD
+              Total price: {formData.flightDetails.totalPrice.toFixed(2)} RSD
             </li>
           </ul>
         </div>
