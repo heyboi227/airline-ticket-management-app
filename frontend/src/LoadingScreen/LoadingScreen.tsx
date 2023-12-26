@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import "./LoadingScreen.scss";
 import AppStore from "../stores/AppStore";
+import { useLocation } from "react-router-dom";
 
 interface LoadingScreenProps {
   loadingTime: number;
@@ -11,15 +12,18 @@ interface LoadingScreenProps {
 export default function LoadingScreen(props: Readonly<LoadingScreenProps>) {
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    if (AppStore.getState().auth.id !== 0) return setLoading(false);
+  const location = useLocation();
 
+  useEffect(() => {
     const timer = setTimeout(() => {
       setLoading(false);
     }, props.loadingTime);
 
     return () => clearTimeout(timer);
-  }, [props.loadingTime]);
+  }, [location.pathname, props.loadingTime]);
+
+  if (AppStore.getState().auth.id !== 0 && location.pathname === "/")
+    return null;
 
   return (
     <div
