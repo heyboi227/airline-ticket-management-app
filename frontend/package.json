@@ -43,7 +43,7 @@
     "react-scripts": "5.0.1",
     "react-spinners": "^0.13.8",
     "react-transition-group": "^4.4.5",
-    "redux": "^5.0.0",
+    "redux": "^5.0.1",
     "sass": "^1.69.5",
     "stream-browserify": "^3.0.0",
     "typescript": "^5.3.3",
