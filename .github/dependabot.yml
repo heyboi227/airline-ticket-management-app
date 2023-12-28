@@ -15,5 +15,5 @@ updates:
     schedule:
       interval: "daily"
     ignore:
-      - dependency_name: "date-fns"
+      - dependency-name: "date-fns"
         versions: ["^3.0.0"]
