@@ -12,7 +12,7 @@ import escapeHTML = require("escape-html");
 import {
   BookingConfirmationDto,
   BookingConfirmationValidator,
-} from "./dto/BookingConfirmation.dto";
+} from "../email/BookingConfirmation.dto";
 
 export default class TicketController extends BaseController {
   emailController: EmailController = new EmailController(this.services);

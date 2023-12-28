@@ -1,6 +1,6 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import FlightModel from "../../flight/FlightModel.model";
+import FlightModel from "../flight/FlightModel.model";
 
 const ajv = new Ajv();
 addFormats(ajv);

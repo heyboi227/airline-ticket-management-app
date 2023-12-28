@@ -1,6 +1,6 @@
 import BaseController from "../../common/BaseController";
 import { DevConfig } from "../../configs";
-import { BookingConfirmationDto } from "../ticket/dto/BookingConfirmation.dto";
+import { BookingConfirmationDto } from "./BookingConfirmation.dto";
 import UserModel from "../user/UserModel.model";
 import * as nodemailer from "nodemailer";
 import * as Mailer from "nodemailer/lib/mailer";
