@@ -182,7 +182,8 @@ export default function BookingConfirmationPage() {
               Base price: {formData.flightDetails.basePrice.toFixed(2)} RSD
             </li>
             <li className="list-group-item">
-              Taxes and fees: {formData.flightDetails.taxesAndFeesPrice.toFixed(2)} RSD
+              Taxes and fees:{" "}
+              {formData.flightDetails.taxesAndFeesPrice.toFixed(2)} RSD
             </li>
             <li className="list-group-item">
               Total price: {formData.flightDetails.totalPrice.toFixed(2)} RSD
@@ -217,6 +218,31 @@ export default function BookingConfirmationPage() {
               </li>
             </ul>
           ))}
+        </div>
+      </div>
+
+      <div className="row">
+        <div className="col">
+          <h3>Billing address information</h3>
+          <ul className="list-unstyled">
+            <li className="list-group-item">
+              Street and number:{" "}
+              {formData.billingAddressDetails.billingAddressStreetAndNumber}
+            </li>
+            <li className="list-group-item">
+              ZIP code: {formData.billingAddressDetails.billingAddressZipCode}
+            </li>
+            <li className="list-group-item">
+              City: {formData.billingAddressDetails.billingAddressCity}
+            </li>
+            <li className="list-group-item">
+              Country: {formData.billingAddressDetails.billingAddressCountry}
+            </li>
+            <li className="list-group-item">
+              Phone number:{" "}
+              {formData.billingAddressDetails.billingAddressPhoneNumber}
+            </li>
+          </ul>
         </div>
         <div className="col">
           <h3>Payment Information</h3>

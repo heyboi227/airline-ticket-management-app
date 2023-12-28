@@ -268,7 +268,7 @@ export default class EmailController extends BaseController {
                        }
                     </li>
                     <li class="list-group-item">
-                       Departs:&nbsp;
+                       Departs:
                        ${new Date(
                          bookingConfirmationData.flightDetails.departFlight.departureDateAndTime
                        ).toLocaleDateString("sr", {
@@ -278,10 +278,10 @@ export default class EmailController extends BaseController {
                          hour12: false,
                          hour: "2-digit",
                          minute: "2-digit",
-                       })}&nbsp;
+                       })}
                     </li>
                     <li class="list-group-item">
-                       Arrives:&nbsp;
+                       Arrives:
                        ${new Date(
                          bookingConfirmationData.flightDetails.departFlight.arrivalDateAndTime
                        ).toLocaleDateString("sr", {
@@ -291,10 +291,10 @@ export default class EmailController extends BaseController {
                          hour12: false,
                          hour: "2-digit",
                          minute: "2-digit",
-                       })}&nbsp;
+                       })}
                     </li>
                     <li class="list-group-item">
-                       Aircraft:&nbsp;
+                       Aircraft:
                        ${
                          bookingConfirmationData.flightDetails.departFlight
                            .aircraft.aircraftName
@@ -312,7 +312,7 @@ export default class EmailController extends BaseController {
                        }
                     </li>
                     <li class="list-group-item">
-                       Departs:&nbsp;
+                       Departs:
                        ${new Date(
                          bookingConfirmationData.flightDetails.returnFlight.departureDateAndTime
                        ).toLocaleDateString("sr", {
@@ -322,10 +322,10 @@ export default class EmailController extends BaseController {
                          hour12: false,
                          hour: "2-digit",
                          minute: "2-digit",
-                       })}&nbsp;
+                       })}
                     </li>
                     <li class="list-group-item">
-                       Arrives:&nbsp;${new Date(
+                       Arrives:${new Date(
                          bookingConfirmationData.flightDetails.returnFlight.arrivalDateAndTime
                        ).toLocaleDateString("sr", {
                          year: "numeric",
@@ -334,10 +334,10 @@ export default class EmailController extends BaseController {
                          hour12: false,
                          hour: "2-digit",
                          minute: "2-digit",
-                       })}&nbsp;
+                       })}
                     </li>
                     <li class="list-group-item">
-                       Aircraft:&nbsp;${
+                       Aircraft:${
                          bookingConfirmationData.flightDetails.returnFlight
                            .aircraft.aircraftName
                        }
@@ -356,14 +356,14 @@ export default class EmailController extends BaseController {
                        ${
                          bookingConfirmationData.flightDetails.departFlight
                            .flightCode
-                       }:&nbsp;
+                       }:
                        ${passenger.departSeat}
                     </li>
                     ${
                       passenger.returnSeat
                         ? `
                     <li class="list-group-item">
-                       ${bookingConfirmationData.flightDetails.returnFlight.flightCode}:&nbsp;${passenger.returnSeat}
+                       ${bookingConfirmationData.flightDetails.returnFlight.flightCode}:${passenger.returnSeat}
                     </li>
                     `
                         : ""
@@ -440,28 +440,58 @@ export default class EmailController extends BaseController {
                  </ul>
                  `
                  )}
-                 <h3>Payment Information</h3>
-                 <ul class="list-unstyled">
-                    <li class="list-group-item">
-                       Card number: ${
-                         bookingConfirmationData.paymentDetails.cardNumber
+              </div>
+              <div>
+                 <h3>Billing address information</h3>
+                 <ul className="list-unstyled">
+                    <li className="list-group-item">
+                       Street and number:
+                       ${
+                         bookingConfirmationData.billingAddressDetails
+                           .billingAddressStreetAndNumber
                        }
                     </li>
-                    <li class="list-group-item">Status: succesful</li>
-                    <li class="list-group-item">
-                       Made on: ${new Date(
-                         bookingConfirmationData.paymentDetails.paymentTimestamp
-                       ).toLocaleDateString("sr", {
-                         year: "numeric",
-                         month: "numeric",
-                         day: "numeric",
-                         hour12: false,
-                         hour: "2-digit",
-                         minute: "2-digit",
-                         second: "2-digit",
-                       })}
+                    <li className="list-group-item">
+                       ZIP code: ${
+                         bookingConfirmationData.billingAddressDetails
+                           .billingAddressZipCode
+                       }
+                    </li>
+                    <li className="list-group-item">
+                       City: ${
+                         bookingConfirmationData.billingAddressDetails
+                           .billingAddressCity
+                       }
+                    </li>
+                    <li className="list-group-item">
+                       Country: ${
+                         bookingConfirmationData.billingAddressDetails
+                           .billingAddressCountry
+                       }
+                    </li>
+                    <li className="list-group-item">
+                       Phone number:
+                       ${
+                         bookingConfirmationData.billingAddressDetails
+                           .billingAddressPhoneNumber
+                       }
                     </li>
                  </ul>
+              </div>
+              <h3>Payment Information</h3>
+              <ul class="list-unstyled">
+                 <li class="list-group-item">
+                    Card number: ${
+                      bookingConfirmationData.paymentDetails.cardNumber
+                    }
+                 </li>
+                 <li class="list-group-item">Status: succesful</li>
+                 <li class="list-group-item">
+                    Made on: ${
+                      bookingConfirmationData.paymentDetails.paymentTimestamp
+                    }
+                 </li>
+              </ul>
               </div>
               <div>
                  <h3>Cancellation/Change Policy</h3>

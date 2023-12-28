@@ -297,15 +297,17 @@ const ClassPrices = (props: ClassPricesProps) => {
                         className="d-flex flex-column justify-content-center align-items-start"
                       >
                         <h1 className="mb-3">{travelClass.price} RSD</h1>
-                        <h4>
-                          Total price:{" "}
-                          {parseFloat(
-                            (
-                              travelClass.price * formData.numberOfPassengers
-                            ).toFixed(2)
-                          )}{" "}
-                          RSD
-                        </h4>
+                        {formData.numberOfPassengers > 1 && (
+                          <h4>
+                            Total price:{" "}
+                            {parseFloat(
+                              (
+                                travelClass.price * formData.numberOfPassengers
+                              ).toFixed(2)
+                            )}{" "}
+                            RSD
+                          </h4>
+                        )}
                       </div>
                     </div>
                   </div>

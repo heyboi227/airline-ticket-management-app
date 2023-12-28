@@ -22,7 +22,7 @@ interface InputProps {
 }
 
 interface CountryInputProps {
-  onValueChange: (value: number) => void;
+  onValueChange: (value: string) => void;
 }
 
 type CombinedCountryProps = InputProps & CountryInputProps;
@@ -61,8 +61,8 @@ function CountryInput({
   const handleClick = (result: Country) => {
     setQuery(result.countryName);
 
-    const countryId = result.countryId;
-    onValueChange(countryId);
+    const countryName = result.countryName;
+    onValueChange(countryName);
 
     setQueryDone(true);
   };
@@ -122,13 +122,16 @@ export default function BillingPage() {
   const [expiryYear, setExpiryYear] = useState<string>("");
   const [cvcCode, setCvcCode] = useState<string>("");
 
-  const [userAddress, setUserAddress] = useState<string>("");
-  const [postalCode, setPostalCode] = useState<string>("");
+  const [streetAndNumber, setStreetAndNumber] = useState<string>("");
+  const [zipCode, setZipCode] = useState<string>("");
   const [city, setCity] = useState<string>("");
-  const [countryId, setCountryId] = useState<number>(0);
+  const [selectedCountryName, setSelectedCountryName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
   const [loggedIn, setLoggedIn] = useState<boolean>(false);
+
+  const [selectedAddressId, setSelectedAddressId] = useState<number>(0);
 
   const [userAddresses, setUserAddresses] = useState<Address[]>([]);
 
@@ -179,8 +182,8 @@ export default function BillingPage() {
     );
   };
 
-  const handleCountryIdChange = (newCountryId: number) => {
-    setCountryId(newCountryId);
+  const handleSelectedCountryNameChange = (newSelectedCountryName: string) => {
+    setSelectedCountryName(newSelectedCountryName);
   };
 
   const cardNumberRef = useRef<HTMLInputElement>(null);
@@ -329,6 +332,13 @@ export default function BillingPage() {
         totalPrice: formData.flightDetails.totalPrice,
       },
       passengers: passengers,
+      billingAddressDetails: {
+        billingAddressStreetAndNumber: streetAndNumber,
+        billingAddressZipCode: zipCode,
+        billingAddressCity: city,
+        billingAddressCountry: selectedCountryName,
+        billingAddressPhoneNumber: phoneNumber,
+      },
       paymentDetails: {
         cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
         paymentTimestamp: new Date().toLocaleDateString("sr", {
@@ -382,6 +392,13 @@ export default function BillingPage() {
             isRoundtrip: formData.flightDetails.isRoundtrip,
           },
           passengers: passengers,
+          billingAddressDetails: {
+            billingAddressStreetAndNumber: streetAndNumber,
+            billingAddressZipCode: zipCode,
+            billingAddressCity: city,
+            billingAddressCountry: selectedCountryName,
+            billingAddressPhoneNumber: phoneNumber,
+          },
           paymentDetails: {
             cardNumber: cardNumber.replace(/\d{1,12}/, "************"),
             paymentTimestamp: new Date().toLocaleDateString("sr", {
@@ -403,6 +420,36 @@ export default function BillingPage() {
       setIsValid(false);
     }
   };
+
+  function setActiveAddress(userId: number, addressId: number) {
+    api("get", "/api/user/" + userId, "user")
+      .then((res) => {
+        if (res.status === "error") {
+          return setErrorMessage(res.data + "");
+        }
+
+        return res.data;
+      })
+      .then((user: User) => {
+        return user.addresses;
+      })
+      .then((addresses) => {
+        return addresses.find(
+          (userAddress) => userAddress.addressId === addressId
+        );
+      })
+      .then((userAddress) => {
+        setSelectedAddressId(addressId);
+        setStreetAndNumber(userAddress!.streetAndNumber);
+        setZipCode(userAddress!.zipCode);
+        setCity(userAddress!.city);
+        setSelectedCountryName(userAddress!.country!.countryName);
+        setPhoneNumber(userAddress!.phoneNumber);
+      })
+      .catch((error) => {
+        console.error("An error occured: ", error);
+      });
+  }
 
   return (
     <>
@@ -533,10 +580,10 @@ export default function BillingPage() {
                       className="form-control"
                       type="text"
                       placeholder="Address"
-                      value={userAddress}
+                      value={streetAndNumber}
                       ref={addressRef}
                       required
-                      onChange={(e) => setUserAddress(e.target.value)}
+                      onChange={(e) => setStreetAndNumber(e.target.value)}
                     />
                     <div className="invalid-feedback">
                       Please enter your address.
@@ -551,7 +598,9 @@ export default function BillingPage() {
                       placeholder="Address line 2"
                       defaultValue={""}
                       onChange={(e) =>
-                        setUserAddress(userAddress + " " + e.target.value)
+                        setStreetAndNumber(
+                          streetAndNumber + " " + e.target.value
+                        )
                       }
                     />
                   </div>
@@ -562,9 +611,9 @@ export default function BillingPage() {
                       className="form-control"
                       type="text"
                       placeholder="Postal code"
-                      value={postalCode}
+                      value={zipCode}
                       required
-                      onChange={(e) => setPostalCode(e.target.value)}
+                      onChange={(e) => setZipCode(e.target.value)}
                     />
                     <div className="invalid-feedback">
                       Please enter your postal code.
@@ -590,8 +639,23 @@ export default function BillingPage() {
                   <CountryInput
                     id={"country"}
                     placeholder={"Country"}
-                    onValueChange={handleCountryIdChange}
+                    onValueChange={handleSelectedCountryNameChange}
                   />
+                </div>
+                <div className="form-group mb-3">
+                  <div className="input-group">
+                    <input
+                      className="form-control"
+                      type="text"
+                      placeholder="Phone number"
+                      value={phoneNumber}
+                      required
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                    />
+                    <div className="invalid-feedback">
+                      Please enter your phone number.
+                    </div>
+                  </div>
                 </div>
               </>
             )}
@@ -600,8 +664,13 @@ export default function BillingPage() {
                 <div className="input-group">
                   <select
                     className="form-select"
-                    value={userAddress}
-                    onChange={(e) => setUserAddress(e.target.value)}
+                    value={selectedAddressId}
+                    onChange={(e) =>
+                      setActiveAddress(
+                        AppStore.getState().auth.id,
+                        +e.target.value
+                      )
+                    }
                   >
                     <option value={""}>Choose an address</option>
                     {userAddresses.map((address) => (

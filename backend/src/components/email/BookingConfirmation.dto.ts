@@ -33,6 +33,13 @@ export interface BookingConfirmationDto {
     departSeat: string;
     returnSeat?: string;
   }[];
+  billingAddressDetails: {
+    billingAddressStreetAndNumber: string;
+    billingAddressZipCode: string;
+    billingAddressCity: string;
+    billingAddressCountry: string;
+    billingAddressPhoneNumber: string;
+  };
   paymentDetails: {
     cardNumber: string;
     paymentTimestamp: string;
@@ -106,6 +113,24 @@ const BookingConfirmationValidator = ajv.compile({
         ],
       },
     },
+    billingAddressDetails: {
+      type: "object",
+      properties: {
+        billingAddressStreetAndNumber: { type: "string" },
+        billingAddressZipCode: { type: "string" },
+        billingAddressCity: { type: "string" },
+        billingAddressCountry: { type: "string" },
+        billingAddressPhoneNumber: { type: "string" },
+      },
+      required: [
+        "billingAddressStreetAndNumber",
+        "billingAddressZipCode",
+        "billingAddressCity",
+        "billingAddressCountry",
+        "billingAddressPhoneNumber",
+      ],
+      additionalProperties: false,
+    },
     paymentDetails: {
       type: "object",
       properties: {
@@ -123,6 +148,7 @@ const BookingConfirmationValidator = ajv.compile({
     "bookingNumber",
     "flightDetails",
     "passengers",
+    "billingAddressDetails",
     "paymentDetails",
   ],
   additionalProperties: false,
