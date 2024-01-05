@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "c323631b-c5ba-4078-b6ff-21f79c25b3a8",
+		"_postman_id": "307256ef-2bb8-41a7-8450-f355fad99b99",
 		"name": "Diplomski app",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12805701"
 	},
 	"item": [
 		{
@@ -20,6 +21,45 @@
 							],
 							"path": [
 								"api",
+								"administrator"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single administrator by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator/1",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a single administrator by username",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/administrator/username/administrator",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"administrator",
+								"username",
 								"administrator"
 							]
 						}
@@ -48,25 +88,6 @@
 							"path": [
 								"api",
 								"administrator"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get a single administrator",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_PATH}}/api/administrator/1",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"administrator",
-								"1"
 							]
 						}
 					},
@@ -152,7 +173,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a single aircraft",
+					"name": "Get a single aircraft by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -217,7 +238,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"type\": \"Wide-body\",\r\n    \"name\": \"Airbus A380\"\r\n}",
+							"raw": "{\r\n    \"aircraftType\": \"Wide-body\",\r\n    \"aircraftName\": \"Airbus A380\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -244,7 +265,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"type\": \"Narrow-body\",\r\n    \"name\": \"Airbus A319-191\"\r\n}",
+							"raw": "{\r\n    \"aircraftType\": \"Narrow-body\",\r\n    \"aircraftName\": \"Airbus A319-191\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -308,7 +329,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a single airport",
+					"name": "Get a single airport by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -433,7 +454,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"airportCode\": \"TIV\",\r\n    \"name\": \"Tivat\",\r\n    \"city\": \"Tivat\",\r\n    \"countryId\": 115\r\n}",
+							"raw": "{\r\n    \"airportCode\": \"TIV\",\r\n    \"airportName\": \"Tivat\",\r\n    \"city\": \"Tivat\",\r\n    \"countryId\": 115\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -460,7 +481,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"airportCode\": \"LHR\",\r\n    \"name\": \"London Heathrow\",\r\n    \"city\": \"London\"\r\n}",
+							"raw": "{\r\n    \"airportCode\": \"LHR\",\r\n    \"airportName\": \"London Heathrow\",\r\n    \"city\": \"London\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -636,103 +657,6 @@
 			]
 		},
 		{
-			"name": "Bag",
-			"item": [
-				{
-					"name": "Get all bags",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_PATH}}/api/bag",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"bag"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get a single bag",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{API_PATH}}/api/bag/1",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"bag",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Add a single bag",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Special bag\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/bag",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"bag"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Edit a single bag",
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Extra special bag\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/bag/3",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"bag",
-								"3"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "Country",
 			"item": [
 				{
@@ -754,7 +678,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a single country",
+					"name": "Get a single country by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -799,7 +723,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Liberland\"\r\n}",
+							"raw": "{\r\n    \"countryName\": \"Liberland\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -826,7 +750,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Republic of Liberland\"\r\n}",
+							"raw": "{\r\n    \"countryName\": \"Republic of Liberland\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -890,19 +814,19 @@
 					"response": []
 				},
 				{
-					"name": "Get a single document",
+					"name": "Get a single document by id",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/document/1",
+							"raw": "{{API_PATH}}/api/document/4",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"document",
-								"1"
+								"4"
 							]
 						}
 					},
@@ -914,7 +838,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/document/number/1",
+							"raw": "{{API_PATH}}/api/document/number/007430880",
 							"host": [
 								"{{API_PATH}}"
 							],
@@ -922,7 +846,27 @@
 								"api",
 								"document",
 								"number",
-								"1"
+								"007430880"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all documents by user id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PATH}}/api/document/user/4",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"document",
+								"user",
+								"4"
 							]
 						}
 					},
@@ -935,7 +879,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"countryId\": 153,\r\n    \"type\": \"National ID\",\r\n    \"documentNumber\": \"007430880\",\r\n    \"userId\": 3\r\n}",
+							"raw": "{\r\n    \"countryId\": 153,\r\n    \"documentType\": \"National ID\",\r\n    \"documentNumber\": \"007430880\",\r\n    \"userId\": 3\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1013,7 +957,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2023-04-01\",\r\n    \"returnDateAndTime\": \"2023-04-01\"\r\n}",
+							"raw": "{\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 2,\r\n    \"departureDate\": \"2023-11-13\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1021,14 +965,15 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/flight/search",
+							"raw": "{{API_PATH}}/api/flight/search/departure",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"flight",
-								"search"
+								"search",
+								"departure"
 							]
 						}
 					},
@@ -1241,6 +1186,34 @@
 					"response": []
 				},
 				{
+					"name": "Get all tickets by flight id and seat number",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"flightId\": 84,\r\n    \"seatNumber\": \"13A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/ticket/search",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"ticket",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add a single ticket",
 					"request": {
 						"method": "POST",
@@ -1393,14 +1366,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/user/2",
+							"raw": "{{API_PATH}}/api/user/12",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"user",
-								"2"
+								"12"
 							]
 						}
 					},
@@ -1537,7 +1510,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"streetAndNumber\": \"Bulevar Arsenija Carnojevica 182\",\r\n    \"zipCode\": 11070,\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\"\r\n}",
+							"raw": "{\r\n    \"streetAndNumber\": \"Bulevar Arsenija Carnojevica 182\",\r\n    \"zipCode\": \"11070\",\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\",\r\n    \"userId\": 12\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1628,12 +1601,12 @@
 		},
 		{
 			"key": "USER_AUTH_TOKEN",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlkIjoyLCJpZGVudGl0eSI6Ik1pbG9zIEpla25pYyIsImlhdCI6MTY2MDM4MTA4MywiZXhwIjoxNjYwNDY3NDgzLCJpc3MiOiJTaW5naWR1bnVtIFVuaXZlcnNpdHkifQ.CyMuNMbJxdFAXML3x2neU5zmAOAljJV_FBUD-MnCyk0f03qKHCx_2PHNDsrxc5aEUmlea9U8Wj6Uhfveeu8vHeXM1PdwzjZ5GFJ7qsafNmvQix9bLzkvUcgun1eSm5Wq6-hF4XLtihIinoiqNLlXEF0RZttqirRTrjOe2RP6i0IN8m6IDYps7CbzRcB_TsdQiD_RCrv6wd6Ssk8NuxBfM2GsXTiuT70pX-7spR7N74QO2nPv1TzSQgoSvo9M4S6ZiTgXV2mlM_U9DsfnI3MyG2_m1OG4jFb0tPxku67RYZrgU1IlWRRE0y7h13R6UkbPv7nt3WvWsLuluLXigiVc1Q",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlkIjoxMiwiaWRlbnRpdHkiOiJNaWxvxaEgSmVrbmnEhyIsImlhdCI6MTcwMzUxMDYxOSwiZXhwIjoxNzAzNTk3MDE5LCJpc3MiOiJTaW5naWR1bnVtIFVuaXZlcnNpdHkifQ.GL6mRXIjhqy1KHvQfZB_k0AsnWZCv8s6KrIOe7mJGDb-dr0Ngsq7cETX3FekE-vSPnEATccg9u2l3_xjImwVzUWfZn270z4fI6kOtmDm0NsTj9rthkCASRWq6j76RxkSZc8A2CermKpFYCwGcZ3kRf-WXQzV3o2UVmqFD7NhnZM_A1rijv6yUhATrMrvbAhQSwQzN5ZHsYIxRFp6EaP9DbX3ZJc3XjZRtFnAaxUVjbMGxnZz2sA7fO3JuElxv6WX398TjLhJ1XYUKTyqKF-aDTSIesKckTJtUMlxhO1jPHc4HZT38VwYZCbllL3PxtD0qvndbCgUSstRTCQl4gK0B3y9c0uj1lozY0s4t-VjHEqJzFuRW1hn3LajSGDm_q1Cq3dxfRJb_r8veWdcc9LeeUhRSDWIhCtKDp1tABi-b6PL6-rn3Lb8OtUfwvYr9VopNS7nX6-sJ8G2D5XxeJMUjt4k8nIHSUlO6bb_z77PPH-GF8tXJWmLNWu_t5JKXhjhGqVxzPULIrMj9PCrf6ZNwrPtsVXlkCFRBmbi0NIDiX_2om-V26ZTls0GxQklC0oPsqbdj9ehnDNECnq-Pp2fYXiu8X3vCrzgB1FaimwDvz0dssXGeIGHzZXwjazHvhwpEDmRXSPsHml2wn7nfKQ8y3N45yJpLpthqIifDHBwjBA",
 			"type": "default"
 		},
 		{
 			"key": "ADMIN_AUTH_TOKEN",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE2NjUwNzQxMjksImV4cCI6MTY2NTE2MDUyOSwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.ByLIBNijwW6jM6S7GNoZt2Wd8YaQciDCu8I2bAqEzkn4mdgGhTDBc-qcTtPEi2wjvd29jjJTKtuPSTL6sz57O3socORgpeeQxZ0Sk2Cmb90e1mKMiUKIu2mD28NQzoq3_iCnNxca6Qu-6XQTDnMf8mEDkIUtdh0wrAfrwgozHfSQiJJl-7YmR8BE90gMgi14m9eBJsJL9uLzdpZqbXBPL97hivIGj0zIcX5EkZXMdkc3Z1da0UZ4msrYSLMDExykpLRPfI8aBvu0zNNM-JSrjvTXTynqsQnifg07Os9dTimuSo0iPhjfWfTDc3ZLboKc6ylty6lc79lnYzLUU6trYA",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE3MDQ0NzI3MTgsImV4cCI6MTcwNDU1OTExOCwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.JDpXJgPeZ7tXWXMRsYE65Rg_ZVqH7WRB1ilaV4IBQaGjIaVsjkR5HpVXXjvKSsUNTg4gB6UcRD4_baaBum--gwrO7NNYOOzOMtfAoe6ZBCu2ARCnZ1LjaPDjl976lbqEasNVzJqvTW4SRP21TvCpFAKdOvjvB3EVFLqdff67gZXlqRA7PeUlJLDjV-GoOcot1bnhhqNzZM-bN61Bk6WaOhbgHVp0oJWQQOvo8b4lLeEK_SPKc8H0vKD9sqWKflfQZ1w8DfZWS3TM9mdOA0svQIWOhuA65On57qpC1HmLFohl4ZROSRbZtuAEtga6sWnqIPl5O5tCuDPPmh2vXkDEEfhu3TftlDEPlJ3MHhloyz3uppDLUiR-9jALKe3TXxgOeyoCKKtU8b6zhzpqtm4BrE74mIp9Ta1TBDfKjTPb3XzBHnIsV9v1EN-jOEHmo68EI6Oo2i-ZoyxBkG3l6WwNnWfD7ZS082uqrOawEQrmU4pyK_pIZOUcmFthYerN2RLH41B2aJFegmXmn7XFJRtWLtUeqBDrghpOo0rjX0Gpyt8s14x0YSxyrnTtB_M3CAWhN8CScoTiHd2r7L1H3qdsWyuSWj3CW3Vh9oPzRQkow4dqGewsMw0sdnoyEDilJPWc37ATnv-ciMGrHfaHOT34rBquF6xGhptMghZxLc_xneE",
 			"type": "default"
 		}
 	]
