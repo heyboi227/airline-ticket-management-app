@@ -6,11 +6,13 @@ import EditUser from "./dto/EditUser.dto";
 export interface UserAdapterOptions {
   removePassword: boolean;
   removeActivationCode: boolean;
+  removePasswordResetCode: boolean;
 }
 
 export const DefaultUserAdapterOptions: UserAdapterOptions = {
   removePassword: false,
   removeActivationCode: false,
+  removePasswordResetCode: false,
 };
 
 export default class UserService extends BaseService<
@@ -46,6 +48,10 @@ export default class UserService extends BaseService<
       user.activationCode = null;
     }
 
+    if (options.removePasswordResetCode) {
+      user.passwordResetCode = null;
+    }
+
     user.addresses = await this.services.address.getAllByUserId(user.userId, {
       loadUserData: false,
       loadCountryData: true,
@@ -58,6 +64,7 @@ export default class UserService extends BaseService<
     return this.baseAdd(data, {
       removeActivationCode: false,
       removePassword: true,
+      removePasswordResetCode: true,
     });
   }
 
@@ -67,6 +74,7 @@ export default class UserService extends BaseService<
     options: UserAdapterOptions = {
       removePassword: true,
       removeActivationCode: true,
+      removePasswordResetCode: true,
     }
   ): Promise<UserModel> {
     return this.baseEditById(userId, data, options);

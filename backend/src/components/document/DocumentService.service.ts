@@ -45,6 +45,7 @@ export default class DocumentService extends BaseService<
       document.user = await this.services.user.getById(document.userId, {
         removeActivationCode: true,
         removePassword: true,
+        removePasswordResetCode: true,
       });
     }
 

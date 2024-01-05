@@ -38,11 +38,11 @@ export default class CountryController extends BaseController {
       });
   }
 
-  getByName(req: Request, res: Response) {
-    const name: string = req.params?.cname;
+  getByCountryName(req: Request, res: Response) {
+    const countryName: string = req.params?.cname;
 
     this.services.country
-      .getByName(name)
+      .getByCountryName(countryName)
       .then((result) => {
         if (result === null) {
           throw new StatusError(404, "The country is not found!");

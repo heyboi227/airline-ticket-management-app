@@ -42,11 +42,11 @@ export default class AircraftController extends BaseController {
       });
   }
 
-  getAllByType(req: Request, res: Response) {
-    const type: string = req.params?.atype;
+  getAllByAircraftType(req: Request, res: Response) {
+    const aircraftType: string = req.params?.atype;
 
     this.services.aircraft
-      .getAllByType(type)
+      .getAllByAircraftType(aircraftType)
       .then((result) => {
         if (result === null) {
           throw new StatusError(404, "The aircraft are not found!");
@@ -61,11 +61,11 @@ export default class AircraftController extends BaseController {
       });
   }
 
-  getByName(req: Request, res: Response) {
-    const name: string = req.params?.aname;
+  getByAircraftName(req: Request, res: Response) {
+    const aircraftName: string = req.params?.aname;
 
     this.services.aircraft
-      .getByName(name)
+      .getByAircraftName(aircraftName)
       .then((result) => {
         if (result === null) {
           throw new StatusError(404, "The aircraft is not found!");

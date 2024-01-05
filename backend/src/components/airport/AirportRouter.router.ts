@@ -34,7 +34,7 @@ export default class AirportRouter implements Router {
     application.get(
       "/api/airport/name/:aname",
       AuthMiddleware.getVerifier("administrator", "user"),
-      airportController.getByName.bind(airportController)
+      airportController.getByAirportName.bind(airportController)
     );
 
     application.get(

@@ -41,9 +41,9 @@ export default class CountryService extends BaseService<
     return this.baseDeleteById(countryId);
   }
 
-  public async getByName(name: string): Promise<CountryModel | null> {
+  public async getByCountryName(countryName: string): Promise<CountryModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", name, {})
+      this.getAllByFieldNameAndValue("country_name", countryName, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

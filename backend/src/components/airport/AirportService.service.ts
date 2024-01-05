@@ -105,9 +105,13 @@ export default class AirportService extends BaseService<
     });
   }
 
-  public async getByName(name: string): Promise<AirportModel | null> {
+  public async getByAirportName(airportName: string): Promise<AirportModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", name, DefaultAirportAdapterOptions)
+      this.getAllByFieldNameAndValue(
+        "airport_name",
+        airportName,
+        DefaultAirportAdapterOptions
+      )
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

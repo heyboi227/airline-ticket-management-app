@@ -41,9 +41,9 @@ export default class AircraftService extends BaseService<
     return this.baseDeleteById(aircraftId);
   }
 
-  public async getAllByType(type: string): Promise<AircraftModel[]> {
+  public async getAllByAircraftType(aircraftType: string): Promise<AircraftModel[]> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("type", type, {})
+      this.getAllByFieldNameAndValue("aircraft_type", aircraftType, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve([]);
@@ -57,9 +57,9 @@ export default class AircraftService extends BaseService<
     });
   }
 
-  public async getByName(name: string): Promise<AircraftModel | null> {
+  public async getByAircraftName(aircraftName: string): Promise<AircraftModel | null> {
     return new Promise((resolve, reject) => {
-      this.getAllByFieldNameAndValue("name", name, {})
+      this.getAllByFieldNameAndValue("aircraft_name", aircraftName, {})
         .then((result) => {
           if (result.length === 0) {
             return resolve(null);

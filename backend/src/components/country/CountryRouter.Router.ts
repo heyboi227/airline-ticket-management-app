@@ -27,7 +27,7 @@ export default class CountryRouter implements Router {
     application.get(
       "/api/country/name/:cname",
       AuthMiddleware.getVerifier("administrator", "user"),
-      countryController.getByName.bind(countryController)
+      countryController.getByCountryName.bind(countryController)
     );
 
     application.post(

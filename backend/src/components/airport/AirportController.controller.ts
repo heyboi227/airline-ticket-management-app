@@ -62,11 +62,11 @@ export default class AirportController extends BaseController {
       });
   }
 
-  getByName(req: Request, res: Response) {
-    const name: string = req.params?.aname;
+  getByAirportName(req: Request, res: Response) {
+    const airportName: string = req.params?.aname;
 
     this.services.airport
-      .getByName(name)
+      .getByAirportName(airportName)
       .then((result) => {
         if (result === null) {
           throw new StatusError(404, "The airport is not found!");

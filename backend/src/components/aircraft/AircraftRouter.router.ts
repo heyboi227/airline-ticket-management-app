@@ -28,13 +28,13 @@ export default class AircraftRouter implements Router {
     application.get(
       "/api/aircraft/type/:atype",
       AuthMiddleware.getVerifier("administrator", "user"),
-      aircraftController.getAllByType.bind(aircraftController)
+      aircraftController.getAllByAircraftType.bind(aircraftController)
     );
 
     application.get(
       "/api/aircraft/name/:aname",
       AuthMiddleware.getVerifier("administrator", "user"),
-      aircraftController.getByName.bind(aircraftController)
+      aircraftController.getByAircraftName.bind(aircraftController)
     );
 
     application.post(
