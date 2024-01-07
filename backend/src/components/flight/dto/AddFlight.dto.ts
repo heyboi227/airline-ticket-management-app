@@ -18,16 +18,10 @@ export interface AddFlightDto {
   }[];
 }
 
-export interface FlightDepartureSearchDto {
+export interface FlightSearchDto {
   originAirportId: number;
   destinationAirportId: number;
-  departureDate: string;
-}
-
-export interface FlightReturnSearchDto {
-  originAirportId: number;
-  destinationAirportId: number;
-  returnDate: string;
+  flightDate: string;
 }
 
 export interface AddFlight extends ServiceData {
@@ -39,16 +33,10 @@ export interface AddFlight extends ServiceData {
   aircraft_id: number;
 }
 
-export interface DepartureFlightSearch extends ServiceData {
+export interface FlightSearch extends ServiceData {
   origin_airport_id: number;
   destination_airport_id: number;
   departure_date: string;
-}
-
-export interface ReturnFlightSearch extends ServiceData {
-  origin_airport_id: number;
-  destination_airport_id: number;
-  return_date: string;
 }
 
 export interface FlightTravelClass extends ServiceData {

@@ -3,8 +3,7 @@ import { Request, Response } from "express";
 import {
   AddFlightValidator,
   AddFlightDto,
-  FlightDepartureSearchDto,
-  FlightReturnSearchDto,
+  FlightSearchDto,
 } from "./dto/AddFlight.dto";
 import {
   EditFlightValidator,
@@ -75,31 +74,14 @@ export default class FlightController extends BaseController {
       });
   }
 
-  getAllByDepartureDateSearchQuery(req: Request, res: Response) {
-    const searchData = req.body as FlightDepartureSearchDto;
+  getAllByDateSearchQuery(req: Request, res: Response) {
+    const searchData = req.body as FlightSearchDto;
 
     this.services.flight
-      .getAllByDepartureDateSearchQuery({
+      .getAllByDateSearchQuery({
         origin_airport_id: searchData.originAirportId,
         destination_airport_id: searchData.destinationAirportId,
-        departure_date: searchData.departureDate,
-      })
-      .then((result) => {
-        res.send(result);
-      })
-      .catch((error) => {
-        res.status(500).send(error?.message);
-      });
-  }
-
-  getAllByReturnDateSearchQuery(req: Request, res: Response) {
-    const searchData = req.body as FlightReturnSearchDto;
-
-    this.services.flight
-      .getAllByReturnDateSearchQuery({
-        origin_airport_id: searchData.originAirportId,
-        destination_airport_id: searchData.destinationAirportId,
-        return_date: searchData.returnDate,
+        departure_date: searchData.flightDate,
       })
       .then((result) => {
         res.send(result);

@@ -223,10 +223,10 @@ export default function Search() {
     if (form.checkValidity()) {
       setIsValid(true);
 
-      api("post", "/api/flight/search/departure", "user", {
+      api("post", "/api/flight/search", "user", {
         originAirportId,
         destinationAirportId,
-        departureDate: departureDate,
+        flightDate: departureDate,
       })
         .then((res) => {
           if (res.status !== "ok") {
@@ -266,16 +266,11 @@ export default function Search() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await api(
-        "post",
-        "/api/flight/search/departure",
-        "user",
-        {
-          originAirportId: originAirportId,
-          destinationAirportId: destinationAirportId,
-          departureDate: new Date().toISOString().slice(0, 10),
-        }
-      );
+      const response = await api("post", "/api/flight/search", "user", {
+        originAirportId: originAirportId,
+        destinationAirportId: destinationAirportId,
+        flightDate: new Date().toISOString().slice(0, 10),
+      });
       if (isTodayTabDisabled(response.data as Flight[])) {
         setShouldDisableToday(true);
       } else {

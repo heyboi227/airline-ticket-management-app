@@ -3,8 +3,7 @@ import { DefaultAirportAdapterOptions } from "../airport/AirportService.service"
 import FlightModel, { FlightTravelClass } from "./FlightModel.model";
 import {
   AddFlight,
-  DepartureFlightSearch,
-  ReturnFlightSearch,
+  FlightSearch,
   FlightTravelClass as DtoFlightTravelClass,
 } from "./dto/AddFlight.dto";
 import { EditFlight } from "./dto/EditFlight.dto";
@@ -179,8 +178,8 @@ export default class FlightService extends BaseService<
     });
   }
 
-  public async getAllByDepartureDateSearchQuery(
-    data: DepartureFlightSearch
+  public async getAllByDateSearchQuery(
+    data: FlightSearch
   ): Promise<FlightModel[]> {
     return new Promise<FlightModel[]>((resolve, reject) => {
       const sql: string =
@@ -189,41 +188,6 @@ export default class FlightService extends BaseService<
         data.origin_airport_id,
         data.destination_airport_id,
         data.departure_date,
-      ];
-
-      this.db
-        .execute(sql, values)
-        .then(async ([rows]) => {
-          if (rows === undefined) {
-            return resolve([]);
-          }
-
-          const items: FlightModel[] = [];
-
-          for (const row of rows as mysql2.RowDataPacket[]) {
-            items.push(
-              await this.adaptToModel(row, DefaultFlightAdapterOptions)
-            );
-          }
-
-          resolve(items);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  }
-
-  public async getAllByReturnDateSearchQuery(
-    data: ReturnFlightSearch
-  ): Promise<FlightModel[]> {
-    return new Promise<FlightModel[]>((resolve, reject) => {
-      const sql: string =
-        "SELECT * from `flight` where `origin_airport_id` = ? AND `destination_airport_id` = ? AND DATE(`departure_date_and_time`) = ?;";
-      const values = [
-        data.origin_airport_id,
-        data.destination_airport_id,
-        data.return_date,
       ];
 
       this.db

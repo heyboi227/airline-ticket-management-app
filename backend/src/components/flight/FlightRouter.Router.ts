@@ -32,13 +32,8 @@ export default class FlightRouter implements Router {
     );
 
     application.post(
-      "/api/flight/search/departure",
-      flightController.getAllByDepartureDateSearchQuery.bind(flightController)
-    );
-
-    application.post(
-      "/api/flight/search/return",
-      flightController.getAllByReturnDateSearchQuery.bind(flightController)
+      "/api/flight/search",
+      flightController.getAllByDateSearchQuery.bind(flightController)
     );
 
     application.post(

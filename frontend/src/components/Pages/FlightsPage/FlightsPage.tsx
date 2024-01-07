@@ -629,33 +629,29 @@ export default function FlightsPage() {
     async function fetchData(directionDate: string) {
       setIsLoading(true);
       let originAirportId: number, destinationAirportId: number;
+
+      originAirportId = formData.originAirportId;
+      destinationAirportId = formData.destinationAirportId;
+
       if (formData.isRoundtrip) {
-        if (flightDirection === "departure") {
-          originAirportId = formData.originAirportId;
-          destinationAirportId = formData.destinationAirportId;
-        } else {
+        if (flightDirection !== "departure") {
           originAirportId = formData.destinationAirportId;
           destinationAirportId = formData.originAirportId;
         }
-      } else {
-        originAirportId = formData.originAirportId;
-        destinationAirportId = formData.destinationAirportId;
       }
 
-      const dateKey =
-        flightDirection === "departure" ? "departureDate" : "returnDate";
       const formattedDate = convertDateToMySqlDateTime(
         new Date(directionDate)
       ).slice(0, 10);
 
       const flightDataResponse = await api(
         "post",
-        `/api/flight/search/${flightDirection}`,
+        "/api/flight/search",
         "user",
         {
           originAirportId,
           destinationAirportId,
-          [dateKey]: formattedDate,
+          flightDate: formattedDate,
         }
       );
 
@@ -711,7 +707,7 @@ export default function FlightsPage() {
   const buildApiRequestData = (
     flightDirection: string,
     locationState: any,
-    directionDate: string
+    flightDate: string
   ) => ({
     originAirportId:
       flightDirection === "departure"
@@ -721,18 +717,7 @@ export default function FlightsPage() {
       flightDirection === "departure"
         ? locationState.destinationAirportId
         : locationState.originAirportId,
-    ...(flightDirection === "departure"
-      ? {
-          departureDate: convertDateToMySqlDateTime(
-            new Date(directionDate)
-          ).slice(0, 10),
-        }
-      : {
-          returnDate: convertDateToMySqlDateTime(new Date(directionDate)).slice(
-            0,
-            10
-          ),
-        }),
+    flightDate: convertDateToMySqlDateTime(new Date(flightDate)).slice(0, 10),
   });
 
   const findLowestPriceInFlight = (flight: Flight) => {
@@ -757,15 +742,15 @@ export default function FlightsPage() {
     };
 
     const getMinimalPrice = async (
-      directionDate: string,
+      flightDate: string,
       flightDirection: string
     ): Promise<number> => {
       try {
         const res = await api(
           "post",
-          `/api/flight/search/${flightDirection}`,
+          "/api/flight/search",
           "user",
-          buildApiRequestData(flightDirection, formData, directionDate)
+          buildApiRequestData(flightDirection, formData, flightDate)
         );
 
         if (res.status !== "ok") {
