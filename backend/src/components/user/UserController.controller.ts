@@ -29,6 +29,7 @@ export default class UserController extends BaseController {
       .getAll({
         removePassword: true,
         removeActivationCode: true,
+        removePasswordResetCode: true,
       })
       .then((result) => {
         res.send(result);
@@ -53,6 +54,7 @@ export default class UserController extends BaseController {
       .getById(userId, {
         removePassword: true,
         removeActivationCode: true,
+        removePasswordResetCode: true,
       })
       .then((result) => {
         if (result === null) {
@@ -124,6 +126,7 @@ export default class UserController extends BaseController {
         return this.services.user.getByEmail(data.email, {
           removeActivationCode: false,
           removePassword: true,
+          removePasswordResetCode: false,
         });
       })
       .then((result) => {
@@ -154,6 +157,7 @@ export default class UserController extends BaseController {
           {
             removeActivationCode: true,
             removePassword: true,
+            removePasswordResetCode: false,
           }
         );
       })
@@ -183,6 +187,7 @@ export default class UserController extends BaseController {
         return this.services.user.getByActivationCode(activationCode, {
           removeActivationCode: true,
           removePassword: true,
+          removePasswordResetCode: true,
         });
       })
       .then((result) => {
@@ -224,6 +229,7 @@ export default class UserController extends BaseController {
         return this.services.user.getByPasswordResetCode(passwordResetCode, {
           removeActivationCode: false,
           removePassword: true,
+          removePasswordResetCode: false,
         });
       })
       .then((result) => {
@@ -268,6 +274,7 @@ export default class UserController extends BaseController {
                   {
                     removeActivationCode: true,
                     removePassword: true,
+                    removePasswordResetCode: false,
                   }
                 );
               })

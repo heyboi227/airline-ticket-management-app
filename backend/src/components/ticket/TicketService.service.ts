@@ -52,6 +52,7 @@ export default class TicketService extends BaseService<
       ticket.user = await this.services.user.getById(ticket.userId, {
         removeActivationCode: true,
         removePassword: true,
+        removePasswordResetCode: true,
       });
     }
 
