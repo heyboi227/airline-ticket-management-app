@@ -43,7 +43,7 @@ export default class TicketRouter implements Router {
     );
 
     application.post(
-      "/api/ticket/confirm-booking",
+      "/api/confirm-booking",
       ticketController.bookingConfirmationEmailSend.bind(ticketController)
     );
 

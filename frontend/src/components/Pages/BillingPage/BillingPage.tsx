@@ -313,7 +313,7 @@ export default function BillingPage() {
   };
 
   const doSendBookingEmail = () => {
-    api("post", "/api/ticket/confirm-booking", "user", {
+    api("post", "/api/confirm-booking", "user", {
       email,
       cardHolderFirstName,
       cardHolderLastName,
@@ -331,7 +331,7 @@ export default function BillingPage() {
         taxesAndFeesPrice,
         totalPrice: formData.flightDetails.totalPrice,
       },
-      passengers: passengers,
+      passengers,
       billingAddressDetails: {
         billingAddressStreetAndNumber: streetAndNumber,
         billingAddressZipCode: zipCode,
