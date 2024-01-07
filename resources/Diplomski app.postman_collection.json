@@ -930,6 +930,38 @@
 			]
 		},
 		{
+			"name": "Email",
+			"item": [
+				{
+					"name": "Send booking confirmation email",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"milosjeknic@hotmail.rs\",\r\n    \"cardHolderFirstName\": \"Milos\",\r\n    \"cardHolderLastName\": \"Jeknic\",\r\n    \"bookingNumber\": \"BEG2D0\",\r\n    \"flightDetails\": {\r\n        \"departFlight\": {\r\n            \"travelClasses\": [],\r\n            \"originAirport\": {\r\n                \"airportId\": 1,\r\n                \"airportCode\": \"BEG\",\r\n                \"airportName\": \"Nikola Tesla\",\r\n                \"city\": \"Belgrade\",\r\n                \"countryId\": 153,\r\n                \"timeZoneId\": 277,\r\n                \"country\": {\r\n                    \"countryId\": 153,\r\n                    \"countryName\": \"Serbia\"\r\n                },\r\n                \"timeZone\": {\r\n                    \"timeZoneId\": 277,\r\n                    \"timeZoneName\": \"Europe/Belgrade\"\r\n                }\r\n            },\r\n            \"destinationAirport\": {\r\n                \"airportId\": 3,\r\n                \"airportCode\": \"LHR\",\r\n                \"airportName\": \"Heathrow\",\r\n                \"city\": \"London\",\r\n                \"countryId\": 185,\r\n                \"timeZoneId\": 291,\r\n                \"country\": {\r\n                    \"countryId\": 185,\r\n                    \"countryName\": \"United Kingdom\"\r\n                },\r\n                \"timeZone\": {\r\n                    \"timeZoneId\": 291,\r\n                    \"timeZoneName\": \"Europe/London\"\r\n                }\r\n            },\r\n            \"aircraft\": {\r\n                \"aircraftId\": 2,\r\n                \"aircraftType\": \"Narrow-body\",\r\n                \"aircraftName\": \"Airbus A319-100\"\r\n            },\r\n            \"flightId\": 1,\r\n            \"flightCode\": \"AS100\",\r\n            \"originAirportId\": 1,\r\n            \"destinationAirportId\": 3,\r\n            \"departureDateAndTime\": \"2023-04-01T14:00:00.000Z\",\r\n            \"arrivalDateAndTime\": \"2023-04-01T17:00:00.000Z\",\r\n            \"aircraftId\": 2\r\n        },\r\n        \"returnFlight\": {\r\n            \"travelClasses\": [],\r\n            \"originAirport\": {\r\n                \"airportId\": 1,\r\n                \"airportCode\": \"BEG\",\r\n                \"airportName\": \"Nikola Tesla\",\r\n                \"city\": \"Belgrade\",\r\n                \"countryId\": 153,\r\n                \"timeZoneId\": 277,\r\n                \"country\": {\r\n                    \"countryId\": 153,\r\n                    \"countryName\": \"Serbia\"\r\n                },\r\n                \"timeZone\": {\r\n                    \"timeZoneId\": 277,\r\n                    \"timeZoneName\": \"Europe/Belgrade\"\r\n                }\r\n            },\r\n            \"destinationAirport\": {\r\n                \"airportId\": 3,\r\n                \"airportCode\": \"LHR\",\r\n                \"airportName\": \"Heathrow\",\r\n                \"city\": \"London\",\r\n                \"countryId\": 185,\r\n                \"timeZoneId\": 291,\r\n                \"country\": {\r\n                    \"countryId\": 185,\r\n                    \"countryName\": \"United Kingdom\"\r\n                },\r\n                \"timeZone\": {\r\n                    \"timeZoneId\": 291,\r\n                    \"timeZoneName\": \"Europe/London\"\r\n                }\r\n            },\r\n            \"aircraft\": {\r\n                \"aircraftId\": 2,\r\n                \"aircraftType\": \"Narrow-body\",\r\n                \"aircraftName\": \"Airbus A319-100\"\r\n            },\r\n            \"flightId\": 1,\r\n            \"flightCode\": \"AS100\",\r\n            \"originAirportId\": 1,\r\n            \"destinationAirportId\": 3,\r\n            \"departureDateAndTime\": \"2023-04-01T14:00:00.000Z\",\r\n            \"arrivalDateAndTime\": \"2023-04-01T17:00:00.000Z\",\r\n            \"aircraftId\": 2\r\n        },\r\n        \"departureTravelClass\": \"Economy\",\r\n        \"returnTravelClass\": \"Economy\",\r\n        \"basePrice\": 4235.43,\r\n        \"taxesAndFeesPrice\": 2123.43,\r\n        \"totalPrice\": 6358.86\r\n    },\r\n    \"passengers\": [\r\n        {\r\n            \"firstName\": \"Milos\",\r\n            \"lastName\": \"Jeknic\",\r\n            \"dateOfBirth\": \"Wed Sep 08 1999 00:00:00 GMT+0200 (Central European Summer Time)\",\r\n            \"userDocumentId\": 0,\r\n            \"documentType\": \"Passport\",\r\n            \"documentNumber\": \"2352323\",\r\n            \"documentCountryId\": 153,\r\n            \"documentIssuingDate\": \"Mon Jun 17 2013 01:00:00 GMT+0200 (Central European Summer Time)\",\r\n            \"documentExpirationDate\": \"Sat Jun 17 2023 01:00:00 GMT+0200 (Central European Summer Time)\",\r\n            \"gender\": \"Male\",\r\n            \"departSeat\": \"11A\",\r\n            \"returnSeat\": \"12F\"\r\n        }\r\n    ],\r\n    \"billingAddressDetails\": {\r\n        \"billingAddressStreetAndNumber\": \"Bulevar Arsenija Carnojevica 86\",\r\n        \"billingAddressZipCode\": \"11150\",\r\n        \"billingAddressCity\": \"Belgrade\",\r\n        \"billingAddressCountry\": \"Serbia\",\r\n        \"billingAddressPhoneNumber\": \"+381641373276\"\r\n    },\r\n    \"paymentDetails\": {\r\n        \"cardNumber\": \"************5740\",\r\n        \"paymentTimestamp\": \"Sat Jun 17 2023 01:00:00 GMT+0200 (Central European Summer Time)\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/confirm-booking",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"confirm-booking"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
 			"name": "Flight",
 			"item": [
 				{
@@ -951,36 +983,7 @@
 					"response": []
 				},
 				{
-					"name": "Get all flights by search query",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 2,\r\n    \"departureDate\": \"2023-11-13\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{API_PATH}}/api/flight/search/departure",
-							"host": [
-								"{{API_PATH}}"
-							],
-							"path": [
-								"api",
-								"flight",
-								"search",
-								"departure"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get a single flight",
+					"name": "Get a single flight by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1019,13 +1022,41 @@
 					"response": []
 				},
 				{
+					"name": "Get all flights by search query",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"originAirportId\": 2,\r\n    \"destinationAirportId\": 1,\r\n    \"flightDate\": \"2024-01-11\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PATH}}/api/flight/search",
+							"host": [
+								"{{API_PATH}}"
+							],
+							"path": [
+								"api",
+								"flight",
+								"search"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Add a single flight",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"flightCode\": \"AS301\",\r\n    \"originAirportId\": 10,\r\n    \"destinationAirportId\": 1,\r\n    \"departureDateAndTime\": \"2023-04-05 20:45:00\",\r\n    \"arrivalDateAndTime\": \"2023-04-06 05:35:00\",\r\n    \"aircraftId\": 1,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 0.01\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 0.01\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 25424.24\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 44123.15\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"flightCode\": \"AS301\",\r\n    \"originAirportId\": 10,\r\n    \"destinationAirportId\": 1,\r\n    \"departureDateAndTime\": \"2023-04-05 20:45:00\",\r\n    \"arrivalDateAndTime\": \"2023-04-06 05:35:00\",\r\n    \"aircraftId\": 1,\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 25424.24\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 44123.15\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1052,7 +1083,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"bags\": [\r\n        {\r\n            \"bagId\": 1,\r\n            \"price\": 12000\r\n        },\r\n        {\r\n            \"bagId\": 2,\r\n            \"price\": 25000\r\n        }\r\n    ],\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"flightCode\": \"JU900\",\r\n    \"originAirportId\": 1,\r\n    \"destinationAirportId\": 3,\r\n    \"departureDateAndTime\": \"2022-10-22 14:30:00\",\r\n    \"arrivalDateAndTime\": \"2022-10-22 16:25:00\",\r\n    \"aircraftId\": 4,\r\n    \"travelClasses\": [\r\n        {\r\n            \"travelClassId\": 4,\r\n            \"price\": 10000\r\n        },\r\n        {\r\n            \"travelClassId\": 2,\r\n            \"price\": 35000\r\n        }\r\n    ]\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1060,14 +1091,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/flight/3",
+							"raw": "{{API_PATH}}/api/flight/1",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"flight",
-								"3"
+								"1"
 							]
 						}
 					},
@@ -1107,7 +1138,7 @@
 			"name": "Ticket",
 			"item": [
 				{
-					"name": "Get a single ticket",
+					"name": "Get a single ticket by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1151,7 +1182,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{API_PATH}}/api/ticket/user/1",
+							"raw": "{{API_PATH}}/api/ticket/user/4",
 							"host": [
 								"{{API_PATH}}"
 							],
@@ -1159,7 +1190,7 @@
 								"api",
 								"ticket",
 								"user",
-								"1"
+								"4"
 							]
 						}
 					},
@@ -1220,7 +1251,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"ticketNumber\": \"241242\",\r\n    \"ticketHolderName\": \"Milos Jeknic\",\r\n    \"documentId\": 4,\r\n    \"price\": 22000,\r\n    \"userId\": 3,\r\n    \"flightId\": 1,\r\n    \"seatNumber\": \"22F\"\r\n}",
+							"raw": "{\r\n    \"ticketNumber\": \"241242\",\r\n    \"ticketHolderName\": \"Milos Jeknic\",\r\n    \"documentId\": 4,\r\n    \"price\": 22000,\r\n    \"userId\": 3,\r\n    \"flightId\": 1,\r\n    \"flightFareCode\": \"2F3SE3\",\r\n    \"seatNumber\": \"22F\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1264,7 +1295,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a single travel class",
+					"name": "Get a single travel class by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1289,7 +1320,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Premium extra business class\"\r\n}",
+							"raw": "{\r\n    \"travelClassName\": \"Business\",\r\n    \"travelClassSubname\": \"Premium extra business class\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1316,7 +1347,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Premium business class\"\r\n}",
+							"raw": "{\r\n    \"travelClassName\": \"Business\",\r\n    \"travelClassSubname\": \"Premium business class\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1324,14 +1355,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{API_PATH}}/api/travel-class/6",
+							"raw": "{{API_PATH}}/api/travel-class/7",
 							"host": [
 								"{{API_PATH}}"
 							],
 							"path": [
 								"api",
 								"travel-class",
-								"6"
+								"7"
 							]
 						}
 					},
@@ -1361,7 +1392,7 @@
 					"response": []
 				},
 				{
-					"name": "Get a single user",
+					"name": "Get a single user by id",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -1510,7 +1541,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"streetAndNumber\": \"Bulevar Arsenija Carnojevica 182\",\r\n    \"zipCode\": \"11070\",\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\",\r\n    \"userId\": 12\r\n}",
+							"raw": "{\r\n    \"streetAndNumber\": \"Bulevar Arsenija Carnojevica 182\",\r\n    \"zipCode\": \"11070\",\r\n    \"city\": \"Belgrade\",\r\n    \"countryId\": 153,\r\n    \"phoneNumber\": \"+3816111111111\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1606,7 +1637,7 @@
 		},
 		{
 			"key": "ADMIN_AUTH_TOKEN",
-			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE3MDQ0NzI3MTgsImV4cCI6MTcwNDU1OTExOCwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.JDpXJgPeZ7tXWXMRsYE65Rg_ZVqH7WRB1ilaV4IBQaGjIaVsjkR5HpVXXjvKSsUNTg4gB6UcRD4_baaBum--gwrO7NNYOOzOMtfAoe6ZBCu2ARCnZ1LjaPDjl976lbqEasNVzJqvTW4SRP21TvCpFAKdOvjvB3EVFLqdff67gZXlqRA7PeUlJLDjV-GoOcot1bnhhqNzZM-bN61Bk6WaOhbgHVp0oJWQQOvo8b4lLeEK_SPKc8H0vKD9sqWKflfQZ1w8DfZWS3TM9mdOA0svQIWOhuA65On57qpC1HmLFohl4ZROSRbZtuAEtga6sWnqIPl5O5tCuDPPmh2vXkDEEfhu3TftlDEPlJ3MHhloyz3uppDLUiR-9jALKe3TXxgOeyoCKKtU8b6zhzpqtm4BrE74mIp9Ta1TBDfKjTPb3XzBHnIsV9v1EN-jOEHmo68EI6Oo2i-ZoyxBkG3l6WwNnWfD7ZS082uqrOawEQrmU4pyK_pIZOUcmFthYerN2RLH41B2aJFegmXmn7XFJRtWLtUeqBDrghpOo0rjX0Gpyt8s14x0YSxyrnTtB_M3CAWhN8CScoTiHd2r7L1H3qdsWyuSWj3CW3Vh9oPzRQkow4dqGewsMw0sdnoyEDilJPWc37ATnv-ciMGrHfaHOT34rBquF6xGhptMghZxLc_xneE",
+			"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW5pc3RyYXRvciIsImlkIjoxLCJpZGVudGl0eSI6ImFkbWluaXN0cmF0b3IiLCJpYXQiOjE3MDQ2NTA2ODAsImV4cCI6MTcwNDczNzA4MCwiaXNzIjoiU2luZ2lkdW51bSBVbml2ZXJzaXR5In0.LOECfyelVOArPwCMYXM3wLM402MuThUnqePtyTZ1R5pBn3N2DfU-eTi2YHmPA8JWElx-1fK90SaeXJbGme24a9vSMH29427aqk7-KdKqQj5BjRAoYSkhOpbV7qCjeo0IhgUy54IBEcYiStlFSJ0aBZf7HIFbbGwaspbehrDi6w6zWW1Q6yRxVhBxW2mrVJH3zt7LVZ_QkLDFrWYafOEt1AWjMK6qTXv01CRTSkJc3oGkWVvVKDQKhKlRa9vj6bOk5r771xr38OzLaRflCf0KXm9Q4pI34sdZf_QOtXbsG663lchN9bOlQqJ5SJRN807yCfhzKO0KuLTSwxPecJdpM9SkJCO-VFZ3RcBnMX4iPNL586zfrCEGf1b01oaHNM1ewbwdHGtuRKnVkDk1oKGr-0dAD-rIxDjzVhRtkMH3svqUqPMbjEsEnjz2WDHhYnUFBQuRGY59hKNs6zwyeoo8VxdmI3NbTVeHQZlkaS3AzZXR-cmsZzjZIr7eWArK8_q78q5iOEVAs0pH6ySV8HKzVDM5XmR6ZkWgAaHzLhL9eI-6QDieirnuFvWTUNro-LQtT9TOUYU4EBurmW6d3SYl5ItqzoFj3pbu8OCXa1vPKAU_aLIFZ_cIaK2zeq7DpS8tLRzX_Sm3xKCLbIhszJ386Mjrf17h8GC68JO1xRYhZ8o",
 			"type": "default"
 		}
 	]
