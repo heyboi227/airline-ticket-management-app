@@ -1,0 +1,32 @@
+name: Dependabot Updates
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  dependabot-update:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Ruby Environment
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 3.3.0
+
+      - name: Install Dependabot CLI
+        run: gem install dependabot
+
+      - name: Run Dependabot Update
+        run: dependabot update --allow dirty --auto-merge=always --prerelease
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "heyboi227"
+          git config --global user.email "milosjeknic@hotmail.rs"
+          git add .
+          git commit -m "Automated Dependabot Updates"
+          git push origin HEAD:main
