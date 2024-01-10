@@ -16,7 +16,7 @@ jobs:
           ruby-version: 3.3
 
       - name: Install Dependabot CLI
-        run: gem install dependabot
+        run: gem install dependabot-core
 
       - name: Run Dependabot Update
         run: dependabot update --allow dirty --auto-merge=always --prerelease
