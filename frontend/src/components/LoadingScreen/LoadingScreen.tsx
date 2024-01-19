@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Spinner from "react-bootstrap/Spinner";
 import "./LoadingScreen.scss";
-import AppStore from "../stores/AppStore";
+import AppStore from "../../stores/AppStore";
 import { useLocation } from "react-router-dom";
 
 interface LoadingScreenProps {

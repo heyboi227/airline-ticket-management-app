@@ -20,7 +20,7 @@ import { Circles } from "react-loader-spinner";
 import "./transitions.css";
 import "./tabs-transition.css";
 import { CSSTransition, TransitionGroup } from "react-transition-group";
-import LoadingScreen from "../../../LoadingScreen/LoadingScreen";
+import LoadingScreen from "../../LoadingScreen/LoadingScreen";
 
 interface FlightRowProps {
   flight: Flight;

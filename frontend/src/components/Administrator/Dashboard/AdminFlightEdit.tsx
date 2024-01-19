@@ -13,7 +13,7 @@ import { parseISO } from "date-fns";
 import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import FlightFormReducer, {
   initialFlightFormState,
-} from "../../../api/flight-reducers";
+} from "../../../helpers/flight-reducers";
 
 export interface AdminFlightEditUrlParams
   extends Record<string, string | undefined> {

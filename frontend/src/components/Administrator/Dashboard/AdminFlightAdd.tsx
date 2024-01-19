@@ -18,7 +18,7 @@ import { convertDateToMySqlDateTime } from "../../../helpers/helpers";
 import { faBackward } from "@fortawesome/free-solid-svg-icons";
 import FlightFormReducer, {
   initialFlightFormState,
-} from "../../../api/flight-reducers";
+} from "../../../helpers/flight-reducers";
 
 export default function AdminFlightAdd() {
   const [errorMessage, setErrorMessage] = useState<string>("");

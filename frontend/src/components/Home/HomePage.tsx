@@ -4,7 +4,7 @@ import "./HomePage.scss";
 import firstSliderImage from "../../static/3.jpg";
 import secondSliderImage from "../../static/2.jpg";
 import thirdSliderImage from "../../static/1.jpg";
-import LoadingScreen from "../../LoadingScreen/LoadingScreen";
+import LoadingScreen from "../LoadingScreen/LoadingScreen";
 import blackLogo from "../../static/png/logo-black.png";
 import { useEffect } from "react";
 
