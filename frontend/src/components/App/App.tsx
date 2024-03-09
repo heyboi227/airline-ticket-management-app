@@ -30,6 +30,7 @@ import OrderPage, { RandomNumberProvider } from "../Pages/OrderPage/OrderPage";
 import BillingPage from "../Pages/BillingPage/BillingPage";
 import BookingConfirmationPage from "../Pages/BookingConfirmationPage/BookingConfirmationPage";
 import UserDocumentsPage from "../User/UserDocumentsPage/UserDocumentsPage";
+import UserTicketsPage from "../User/UserTicketsPage/UserTicketsPage";
 
 function NotFound() {
   return <ErrorPage statusCode={404} message="Page not found." />;
@@ -87,6 +88,7 @@ function App() {
 
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/profile/documents" element={<UserDocumentsPage />} />
+          <Route path="/profile/tickets" element={<UserTicketsPage />}/>
 
           <Route path="/deactivate" element={<UserDeactivatePage />} />
 

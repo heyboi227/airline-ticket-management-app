@@ -69,8 +69,11 @@ export default function UserProfile() {
                   />
                 )}
                 <div className="form-group mt-2">
-                  <Link className="btn btn-info" to="/profile/documents">
+                  <Link className="btn btn-primary me-2" to="/profile/documents">
                     <FontAwesomeIcon icon={faAddressBook} /> Manage documents
+                  </Link>
+                  <Link className="btn btn-info" to="/profile/tickets">
+                    <FontAwesomeIcon icon={faAddressBook} /> Manage tickets
                   </Link>
                 </div>
                 <div className="row mt-3">

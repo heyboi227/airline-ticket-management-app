@@ -1,77 +1,71 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../api/api";
 import AppStore from "../../../stores/AppStore";
-import UserDocument from "../../../models/UserDocument.model";
+import Ticket from "../../../models/Ticket.model";
 
-export default function UserDocumentsPage() {
-  const [documents, setDocuments] = useState<UserDocument[]>([]);
+export default function UserTicketsPage() {
+  const [tickets, setTickets] = useState<Ticket[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  function loadDocuments() {
-    api("get", "/api/document/user/" + AppStore.getState().auth.id, "user")
+  function loadTickets() {
+    api("get", "/api/ticket/user/" + AppStore.getState().auth.id, "user")
       .then((res) => {
         if (res.status === "error") {
           return setErrorMessage(res.data + "");
         }
 
-        setDocuments(res.data);
+        setTickets(res.data);
       })
       .catch((error) => {
         console.error("An error occured: ", error);
       });
   }
 
-  useEffect(loadDocuments, []);
+  useEffect(loadTickets, []);
 
   return (
     <div>
       {errorMessage && <p className="alert aler-danger">{errorMessage}</p>}
-      {!errorMessage && documents.length === 0 && (
+      {!errorMessage && tickets.length === 0 && (
         <p className="text-center mt-2">
-          You have no documents added at the moment.
+          You have no tickets generated at the moment.
         </p>
       )}
-      {!errorMessage && documents.length !== 0 && (
+      {!errorMessage && tickets.length !== 0 && (
         <table className="table table-sm table-hover document-list">
           <thead>
             <tr>
-              <th>Issuing country</th>
-              <th>Document type</th>
-              <th>Document number</th>
-              <th>Issuing date</th>
-              <th>Expiration date</th>
+              <th>Ticket number</th>
+              <th>Ticket holder name</th>
+              <th>Price</th>
+              <th>Flight number</th>
+              <th>Departure date and time</th>
+              <th>Flight fare code</th>
+              <th>Seat number</th>
             </tr>
           </thead>
           <tbody>
-            {documents.map((document) => (
-              <tr key={"document-" + document.documentId}>
+            {tickets.map((ticket) => (
+              <tr key={"ticket-" + ticket.ticketId}>
                 <td>
                   <div className="row">
-                    <span className="col col-6">
-                      {document.country?.countryName}
-                    </span>
+                    <span className="col col-6">{ticket.ticketNumber}</span>
                   </div>
                 </td>
                 <td>
                   <div className="row">
-                    <span className="col col-8">{document.documentType}</span>
+                    <span className="col col-8">{ticket.ticketHolderName}</span>
                   </div>
                 </td>
                 <td>
                   <div className="row">
-                    <span className="col col-8">{document.documentNumber}</span>
+                    <span className="col col-8">{ticket.price}</span>
                   </div>
                 </td>
                 <td>
                   <div className="row">
                     <span className="col col-8">
-                      {new Date(
-                        document.documentIssuingDate
-                      ).toLocaleDateString("sr", {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                      })}
+                      {ticket.flight?.flightCode}
                     </span>
                   </div>
                 </td>
@@ -79,13 +73,25 @@ export default function UserDocumentsPage() {
                   <div className="row">
                     <span className="col col-8">
                       {new Date(
-                        document.documentExpirationDate
-                      ).toLocaleDateString("sr", {
+                        ticket.flight!.departureDateAndTime
+                      ).toLocaleTimeString("sr", {
                         year: "numeric",
                         month: "numeric",
                         day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
                       })}
                     </span>
+                  </div>
+                </td>
+                <td>
+                  <div className="row">
+                    <span className="col col-8">{ticket.flightFareCode}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="row">
+                    <span className="col col-8">{ticket.seatNumber}</span>
                   </div>
                 </td>
               </tr>
