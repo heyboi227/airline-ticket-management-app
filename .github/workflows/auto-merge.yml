@@ -9,7 +9,6 @@ on:
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
     steps:
     - name: Merge PRs
       uses: actions/github-script@v3
