@@ -44,7 +44,7 @@
     "react-spinners": "^0.13.8",
     "react-transition-group": "^4.4.5",
     "redux": "^5.0.1",
-    "sass": "^1.71.1",
+    "sass": "^1.72.0",
     "stream-browserify": "^3.0.0",
     "typescript": "^5.4.2",
     "web-vitals": "^3.5.2"
