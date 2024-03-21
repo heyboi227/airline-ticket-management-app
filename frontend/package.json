@@ -46,7 +46,7 @@
     "redux": "^5.0.1",
     "sass": "^1.72.0",
     "stream-browserify": "^3.0.0",
-    "typescript": "^5.4.2",
+    "typescript": "^5.4.3",
     "web-vitals": "^3.5.2"
   },
   "scripts": {
