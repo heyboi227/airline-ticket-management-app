@@ -41,7 +41,7 @@
     "jsonwebtoken": "^9.0.2",
     "magic-bytes.js": "^1.10.0",
     "mysql2": "^3.11.3",
-    "nodemailer": "^6.9.15",
+    "nodemailer": "^6.9.16",
     "sharp": "^0.33.5",
     "uuid": "^10.0.0"
   }
