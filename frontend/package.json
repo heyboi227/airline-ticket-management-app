@@ -27,7 +27,7 @@
     "babel-plugin-macros": "^3.1.0",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
-    "caniuse-lite": "^1.0.30001685",
+    "caniuse-lite": "^1.0.30001686",
     "crypto-browserify": "^3.12.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.12.0",
