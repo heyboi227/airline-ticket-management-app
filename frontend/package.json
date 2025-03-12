@@ -23,7 +23,7 @@
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
-    "axios": "^1.8.2",
+    "axios": "^1.8.3",
     "babel-plugin-macros": "^3.1.0",
     "bootstrap": "^5.3.3",
     "buffer": "^6.0.3",
