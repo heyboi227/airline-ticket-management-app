@@ -34,7 +34,7 @@
     "lodash": "^4.17.21",
     "path-browserify": "^1.0.1",
     "random-js": "^2.1.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-bootstrap": "^2.10.9",
     "react-dom": "^19.0.0",
     "react-loader-spinner": "^6.1.6",
