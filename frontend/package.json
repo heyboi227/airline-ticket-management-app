@@ -47,7 +47,7 @@
     "sass": "^1.87.0",
     "stream-browserify": "^3.0.0",
     "typescript": "^5.8.3",
-    "web-vitals": "^4.2.4"
+    "web-vitals": "^5.0.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
