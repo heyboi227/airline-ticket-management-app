@@ -22,7 +22,7 @@
     "@types/lodash": "^4.17.17",
     "@types/node": "^22.15.29",
     "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5",
+    "@types/react-dom": "^19.1.6",
     "axios": "^1.9.0",
     "babel-plugin-macros": "^3.1.0",
     "bootstrap": "^5.3.6",
