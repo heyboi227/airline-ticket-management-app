@@ -25,7 +25,7 @@
     "@types/react-dom": "^19.1.6",
     "axios": "^1.10.0",
     "babel-plugin-macros": "^3.1.0",
-    "bootstrap": "^5.3.6",
+    "bootstrap": "^5.3.7",
     "buffer": "^6.0.3",
     "caniuse-lite": "^1.0.30001723",
     "crypto-browserify": "^3.12.1",
