@@ -39,7 +39,7 @@
     "generate-password": "^1.7.1",
     "image-size": "^2.0.2",
     "jsonwebtoken": "^9.0.3",
-    "magic-bytes.js": "^1.12.1",
+    "magic-bytes.js": "^1.13.0",
     "mysql2": "^3.16.1",
     "nodemailer": "^7.0.12",
     "sharp": "^0.34.5",
