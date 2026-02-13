@@ -40,7 +40,7 @@
     "image-size": "^2.0.2",
     "jsonwebtoken": "^9.0.3",
     "magic-bytes.js": "^1.13.0",
-    "mysql2": "^3.17.0",
+    "mysql2": "^3.17.1",
     "nodemailer": "^8.0.1",
     "sharp": "^0.34.5",
     "uuid": "^13.0.0"
