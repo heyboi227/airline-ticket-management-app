@@ -30,7 +30,7 @@
     "caniuse-lite": "^1.0.30001793",
     "crypto-browserify": "^3.12.1",
     "date-fns": "^4.2.1",
-    "framer-motion": "^12.38.0",
+    "framer-motion": "^12.39.0",
     "lodash": "^4.18.1",
     "path-browserify": "^1.0.1",
     "random-js": "^2.1.0",
